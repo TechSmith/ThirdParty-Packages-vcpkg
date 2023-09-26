@@ -38,3 +38,19 @@ for staticLibPath in ${ARM64_LIB}/*.a; do
    fi
 done
 
+find ${ARM64_LIB} -name "*.dylib" -type f -exec chmod +w {} \;
+find ${ARM64_LIB} -name "*.dylib" -type f -exec python3 makeInstallPathsRelative.py @rpath {} \;
+find ${X86_64_LIB} -name "*.dylib" -type f -exec chmod +w {} \;
+find ${X86_64_LIB} -name "*.dylib" -type f -exec python3 makeInstallPathsRelative.py @rpath {} \;
+
+# look through arm64 dylibs and start lipo'ing
+for dyLibPath in ${ARM64_LIB}/*.dylib; do   
+   filename="$(basename $dyLibPath)"
+   if [[ -L "$dyLibPath" ]]; then
+     echo "lib = $dyLibPath - copy symlink"
+     cp -a $dyLibPath ${UNIVERSAL_LIB}/$filename
+   else
+     echo "lib = $dyLibPath - need lipo"
+     lipo -create -output ${UNIVERSAL_LIB}/$filename ${ARM64_LIB}/$filename ${X86_64_LIB}/$filename
+   fi
+done
