@@ -94,6 +94,8 @@ stages:
       vmImage: ubuntu-latest
 
     steps:
+    - checkout: none
+    
     - template: steps/setup-auth.yml
 
     - task: DownloadPipelineArtifact@2
