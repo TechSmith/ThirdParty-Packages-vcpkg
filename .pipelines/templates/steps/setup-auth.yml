@@ -1,0 +1,3 @@
+steps:
+- script: git config --global url."https://$(GithubUsername):$(GithubToken)@github".insteadOf https://github
+  displayName: 'Set up git authentication'

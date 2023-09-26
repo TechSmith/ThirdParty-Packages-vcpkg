@@ -1,0 +1,30 @@
+pr: none
+
+trigger: none
+
+parameters:
+
+# We could map this parameter to a combination of default triplets for Mac and windows, as well as the default feature flags to pass to each
+# for example, ffmpeg might map to: ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib,dav1d]
+- name: packageDisplayName
+  displayName: Package to install (builds as a dynamic library, unless otherwise specified)
+  type: string
+  values:
+  - ffmpeg
+  - libpng
+  - openssl (static)
+  - pango
+  - tinyxml
+
+- name: publishToGitHubRelease
+  displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
+  type: boolean
+  default: true
+
+stages:
+- template: templates/build.yml
+  parameters:
+    packageDisplayName: ${{ parameters.packageDisplayName }}
+    publishToPipelineArtifacts: true
+    publishToGitHubRelease: ${{ parameters.publishToGitHubRelease }}
+    isPreconfiguredBuild: true

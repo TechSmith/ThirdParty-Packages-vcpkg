@@ -1,0 +1,6 @@
+steps:
+- checkout: self
+  clean: true
+  lfs: false
+  submodules: false
+  persistCredentials: true  # if 'true', leave the OAuth token in the Git config after the initial fetch; defaults to false

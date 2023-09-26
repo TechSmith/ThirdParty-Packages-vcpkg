@@ -1,0 +1,164 @@
+parameters:
+- name: packageDisplayName
+  displayName: The package name to use
+  type: string
+  default: 
+
+- name: package
+  displayName: The package name and feature flags to build the package with (ex. ""somepackage" or "somepackage[feature1,feature2]")
+  type: string
+  default: 
+
+- name: linkType
+  displayName: Type of linking to use for libs in package (dynamic or static)
+  type: string
+  default: 
+
+- name: buildType
+  displayName: Type of build to use for libs in package (release or debug)
+  type: string
+  default: 
+
+- name: publishToPipelineArtifacts
+  displayName: Publish built package artifacts to pipeline artifacts
+  type: boolean
+  default: false
+
+- name: publishToGitHubRelease
+  displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
+  type: boolean
+  default: false
+
+- name: isPreconfiguredBuild
+  displayName: isPreconfiguredBuild
+  type: boolean
+  default: false
+
+- name: isCustomBuild
+  displayName: isCustomBuild
+  type: boolean
+  default: false
+
+stages:
+- stage: Build
+  displayName: 'Build'
+  variables:
+  - template: steps/build-vars.yml
+
+  jobs:
+  - job: Build
+    condition: succeeded()  
+    strategy:
+      matrix:
+        Windows:
+          imageName: windows-2022
+          osName: win
+        Mac:
+          imageName: macOS-12
+          osName: mac
+      maxParallel: 2
+
+    pool:
+      vmImage: $(imageName)
+
+    steps:
+    - template: steps/setup-auth.yml
+
+    - template: steps/full-checkout.yml
+
+    - powershell: |
+        ./build-and-stage-preconfigured.ps1 -PackageDisplayName "${{ parameters.packageDisplayName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
+      displayName: 'Run: install & stage (preconfigured)'
+      condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
+
+    - powershell: |
+        ./build-and-stage.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
+      displayName: 'Run: install & stage (custom)'
+      condition: and(succeeded(), ${{ parameters.isCustomBuild }})
+
+    - task: PublishBuildArtifacts@1
+      displayName: Publish build artifacts
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: $(osName)
+      condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
+  
+- stage: PublishToGitHubRelease
+  displayName: 'Publish to GitHub Release'
+  dependsOn: Build
+  condition: and(succeeded(), ${{ parameters.publishToGitHubRelease }})
+
+  jobs:
+  - job: PublishToGitHubRelease
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+    - template: steps/setup-auth.yml
+
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download artifacts from previous stage'
+      inputs:
+        targetPath: $(Build.SourcesDirectory)/artifacts
+
+    - task: PowerShell@2
+      displayName: 'Prepare artifacts for staging'
+      inputs:
+        targetType: 'inline'
+        workingDirectory: $(Build.SourcesDirectory)/artifacts
+        script: |
+          Move-Item -Path ".\mac\*" -Destination . -Force
+          Remove-Item -Path ".\mac" -Recurse -Force
+          Move-Item -Path ".\win\*" -Destination . -Force
+          Remove-Item -Path ".\win" -Recurse -Force
+
+    - task: CopyFiles@2
+      displayName: 'Stage artifacts'
+      inputs:
+        Contents: '**'
+        SourceFolder: $(Build.SourcesDirectory)/artifacts
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: PowerShell@2
+      displayName: 'Getting info for GitHub release'
+      inputs:
+        targetType: 'inline'
+        workingDirectory: $(Build.SourcesDirectory)/artifacts
+        script: |
+          $packageInfoJsonFile = "package.json"
+          $artifactsUnzippedDir = "artifactContents"
+          $artifactZip = (Get-ChildItem -Filter "*.tar.gz" | Select-Object -First 1).Name
+          New-Item -ItemType Directory -Name "$artifactsUnzippedDir"
+          tar -xzvf $artifactZip -C $artifactsUnzippedDir
+          Push-Location $artifactsUnzippedDir
+          $gitReleaseTagName = ""
+          if (Test-Path -Path $packageInfoJsonFile -PathType Leaf) {
+              $jsonContent = Get-Content -Path $packageInfoJsonFile -Raw | ConvertFrom-Json
+              $version = $jsonContent.ReleaseVersion
+              Write-Host "`nversion is $version"
+              $tagBaseName = $jsonContent.ReleaseTagBaseName
+              Write-Host "tagBaseName is $tagBaseName"
+              $gitReleaseTagName = "$tagBaseName-$version"
+          }
+          Write-Host "`ngitReleaseTagName is $gitReleaseTagName"
+          Write-Host "##vso[task.setvariable variable=gitReleaseTagName]$gitReleaseTagName"
+          Pop-Location
+
+    - task: GitHubRelease@1
+      displayName: 'Create GitHub release'
+      inputs:
+        gitHubConnection: 'TechSmithGitHub'
+        repositoryName: '$(Build.Repository.Name)'
+        target: '$(Build.SourceVersion)'
+        action: 'create'
+        title: $(gitReleaseTagName)
+        tagSource: 'userSpecifiedTag'
+        tag: $(gitReleaseTagName)
+        releaseNotesSource: 'inline'
+        releaseNotesInline: 'Release - $(gitReleaseTagName)'
+        addChangeLog: false
+        isDraft: false
+        isPreRelease: false
+        assets: |
+          $(Build.ArtifactStagingDirectory)/*
+      condition: and(succeeded(), ${{ parameters.publishToGitHubRelease }})
