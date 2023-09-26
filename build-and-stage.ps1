@@ -43,11 +43,11 @@ if( $PackageDisplayName -eq "") {
 $IsOnWindowsOS = $false # Built-in IsWindows variable not working on Windows agent
 $IsOnMacOS = $false
 Write-Host "Checking OS..."
-if ($env:OS -like '*win*') {
-    $IsOnWindowsOS = $true
+$IsOnWindowsOS = Check-IsOnWindowsOS
+$IsOnMacOS = Check-IsOnMacOS
+if ($IsOnWindowsOS) {
     Write-Host "> Running on: Windows"
 } else {
-    $IsOnMacOS = $true
     Write-Host "> Running on: Mac"
 }
 
