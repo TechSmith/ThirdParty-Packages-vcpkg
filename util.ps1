@@ -69,3 +69,17 @@ function Get-PackageNameOnly {
    )
    return $PackageAndFeatures -replace '\[.*$', ''
 }
+
+function Check-IsOnWindowsOS {
+    if ($env:OS -like '*win*') {
+        return $true
+    }
+    return $false
+}
+
+function Check-IsOnMacOS {
+    if ($PSVersionTable.OS -like '*Darwin*') {
+        return $true
+    }
+    return $false
+}
