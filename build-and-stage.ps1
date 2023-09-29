@@ -8,9 +8,6 @@ param(
     [switch]$ShowDebug = $false                              # Show additional debugging information
 )
 
-$vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
-. "$PSScriptRoot\util.ps1"
-
 Write-Host "************************************************************"
 Write-Host "Starting vcpkg install for: $PackageAndFeatures"
 Write-Host "************************************************************"
@@ -33,13 +30,8 @@ Write-Host ""
 Write-Host "============================================================"
 Write-Host "Initializing"
 Write-Host "============================================================"
-$packageNameOnly = Get-PackageNameOnly -PackageAndFeatures $PackageAndFeatures
-if( $ReleaseTagBaseName -eq "") {
-   $ReleaseTagBaseName = "$packageNameOnly-$LinkType"
-}
-if( $PackageDisplayName -eq "") {
-   $PackageDisplayName = "$packageNameOnly-$LinkType"
-}
+. "$PSScriptRoot/util.ps1"
+$vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
 $IsOnWindowsOS = $false # Built-in IsWindows variable not working on Windows agent
 $IsOnMacOS = $false
 Write-Host "Checking OS..."
@@ -49,6 +41,18 @@ if ($IsOnWindowsOS) {
     Write-Host "> Running on: Windows"
 } else {
     Write-Host "> Running on: Mac"
+}
+
+if ( $IsOnMacOS ) {
+   Import-Module "$PSScriptRoot/ps-modules/MacUtil"
+}
+
+$packageNameOnly = Get-PackageNameOnly -PackageAndFeatures $PackageAndFeatures
+if( $ReleaseTagBaseName -eq "") {
+   $ReleaseTagBaseName = "$packageNameOnly-$LinkType"
+}
+if( $PackageDisplayName -eq "") {
+   $PackageDisplayName = "$packageNameOnly-$LinkType"
 }
 
 Write-Host ""
@@ -161,8 +165,7 @@ if($IsOnMacOS) {
    Write-Host "============================================================"
    Write-Host "Creating universal binary"
    Write-Host "============================================================"
-   Write-Host "Running: makeUniversalBinary.sh..."
-   bash ./makeUniversalBinary.sh "vcpkg/installed/$($triplets[0])" "vcpkg/installed/$($triplets[1])" "$preStagePath"
+   ConvertTo-UniversalBinaries -arm64Dir "vcpkg/installed/$($triplets[0])" -x86_64Dir "vcpkg/installed/$($triplets[1])" -universalDir "$preStagePath"
 }
 
 Write-Host ""
