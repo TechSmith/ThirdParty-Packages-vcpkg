@@ -83,3 +83,28 @@ function Check-IsOnMacOS {
     }
     return $false
 }
+
+function Invoke-Powershell {
+    param (
+        [string]$FilePath,
+        [PSObject]$ArgumentList
+    )
+
+    $invokePrefix = ""
+    
+    if (-not $IsOnWindowsOS) {
+        $invokePrefix = "pwsh "
+    }
+
+    $expression = "$invokePrefix./$FilePath"
+
+    if ($ArgumentList) {
+        foreach ($key in $ArgumentList.Keys) {
+            $value = $ArgumentList[$key]
+            $expression += " -$key $value"
+        }
+    }
+
+    Write-Host "Invoke-Expression $expression"
+    Invoke-Expression $expression
+}

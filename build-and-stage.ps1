@@ -136,12 +136,7 @@ Write-Host "Pre-build step"
 Write-Host "============================================================"
 $preBuildScript = "custom-steps/$packageNameOnly/pre-build.ps1"
 if (Test-Path -Path $preBuildScript -PathType Leaf) {
-    Write-Host "Executing: $preBuildScript..."
-    $invokePrefix = ""
-    if(-not $IsOnWindowsOS) {
-      $invokePrefix = "pwsh "
-    }
-    Invoke-Expression "$invokePrefix./$preBuildScript"
+   Invoke-Powershell -FilePath $preBuildScript
 } else {
     Write-Host "File does not exist: $preBuildScript.  Skipping step..."
 }
@@ -175,12 +170,8 @@ Write-Host "============================================================"
 $postBuildScript = "custom-steps/$packageNameOnly/post-build.ps1"
 $preStagePath = (Resolve-Path $preStagePath).Path -replace '\\', '/' # Expand this, so it is an absolute path we are passing to other scripts
 if (Test-Path -Path $postBuildScript -PathType Leaf) {
-    Write-Host "Executing: $postBuildScript..."
-    $invokePrefix = ""
-    if(-not $IsOnWindowsOS) {
-      $invokePrefix = "pwsh "
-    }
-    Invoke-Expression "$invokePrefix./$postBuildScript -BuildArtifactsPath $preStagePath"
+    $scriptArgs = @{ "BuildArtifactsPath" = "$preStagePath" }
+    Invoke-Powershell -FilePath $postBuildScript -ArgumentList $scriptArgs
 } else {
     Write-Host "File does not exist: $postBuildScript.  Skipping step..."
 }
