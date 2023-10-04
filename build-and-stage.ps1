@@ -32,17 +32,8 @@ Write-Host "Initializing"
 Write-Host "============================================================"
 Import-Module "$PSScriptRoot/ps-modules/Util"
 $vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
-$IsOnWindowsOS = $false # Built-in IsWindows variable not working on Windows agent
-$IsOnMacOS = $false
-Write-Host "Checking OS..."
 $IsOnWindowsOS = Get-IsOnWindowsOS
 $IsOnMacOS = Get-IsOnMacOS
-if ($IsOnWindowsOS) {
-    Write-Host "> Running on: Windows"
-} else {
-    Write-Host "> Running on: Mac"
-}
-
 if ( $IsOnMacOS ) {
    Import-Module "$PSScriptRoot/ps-modules/MacUtil"
 }
@@ -55,8 +46,6 @@ if( $PackageDisplayName -eq "") {
    $PackageDisplayName = "$packageNameOnly-$LinkType"
 }
 
-Write-Host ""
-Write-Host "Setting other vars based on OS..."
 $osName = ""
 $vcpkgExe = ""
 $vcpkgCacheDir = ""
@@ -71,7 +60,7 @@ if ($IsOnWindowsOS) {
    $triplets += "x64-windows-$LinkType-$BuildType"
    $preStagePath = "vcpkg/installed/$($triplets[0])"
    $artifactSubfolder = "$ReleaseTagBaseName-windows-$BuildType"
-} else {
+} elseif ($IsOnMacOS) {
    $osName = "Mac"
    $vcpkgExe = "./vcpkg/vcpkg"
    $vcpkgCacheDir = "$HOME/.cache/vcpkg/archives"
@@ -83,12 +72,25 @@ if ($IsOnWindowsOS) {
 }
 $artifactArchive = "$artifactSubfolder.tar.gz"
 
-Write-Host "- osName: $osName"
-Write-Host "- vcpkgExe: $vcpkgExe"
-Write-Host "- vcpkgCacheDir: $vcpkgCacheDir"
-Write-Host "- vcpkgBootstrapScript: $vcpkgBootstrapScript"
-Write-Host "- triplets: $triplets"
-Write-Host "- preStagePath: $preStagePath"
+$initParams = @{
+   vcpkgRepo = $vcpkgRepo
+   IsOnWindowsOS = $IsOnWindowsOS
+   IsOnMacOS = $IsOnMacOS
+   packageNameOnly = $packageNameOnly
+   osName = $osName
+   vcpkgExe = $vcpkgExe
+   vcpkgCacheDir = $vcpkgCacheDir
+   vcpkgBootstrapScript = $vcpkgBootstrapScript
+   triplets = $triplets
+   preStagePath = $preStagePath
+   artifactSubfolder = $artifactSubfolder
+}
+
+Write-Host "Initialized vars:"
+foreach ($paramName in $initParams.Keys) {
+    $paramValue = $initParams[$paramName]
+    Write-Host "- $paramName`: $paramValue"
+}
 
 Write-Host ""
 Write-Host "============================================================"
