@@ -1,15 +1,5 @@
 Import-Module "$PSScriptRoot/../../ps-modules/Util"
 
-function ConvertTo-RelativeInstallPaths([string]$directory, [string]$extension) {
-    Get-ChildItem -Path $directory -Filter "*.$extension" | ForEach-Object {
-        $filePath = $_.FullName
-        $fileName = $_.Name
-        Write-Host "> Processing: $fileName"
-        Set-ItemProperty -Path $filePath -Name IsReadOnly -Value $false
-        & python3 makeInstallPathsRelative.py @rpath $filePath
-    }
-}
-
 function ConvertTo-UniversalBinaries([string]$arm64Dir, [string]$x64Dir, [string]$universalDir) {
     Write-Host "Creating universal dir and copying headers..."
     if (Test-Path -Path $universalDir -PathType Container) {
@@ -50,27 +40,6 @@ function ConvertTo-UniversalBinaries([string]$arm64Dir, [string]$x64Dir, [string
             Invoke-Expression -Command "lipo -create -output `"$destPath`" `"$srcPathArm64`" `"$srcPathX64`""
         }
     }
-}
-
-function Update-LibraryPath {
-    param (
-        [string]$newPathSubStr,
-        [string]$libPath
-    )
-
-    Write-Host "Updating library path for: $libPath..."
-    if (-not (Test-Path $libPath -PathType Leaf)) {
-        Write-Host "> File '$libPath' does not exist."
-        return
-    }
-
-    $otoolCmd = "otool -L $libPath"
-    $p = Invoke-Expression -Command $otoolCmd
-
-    Process-OtoolOutput -Output $p -NewPathSubStr $newPathSubStr -StaticLibPath $libPath
-
-    Write-Host "********** FINAL RESULT*************"
-    Invoke-Expression -Command $otoolCmd
 }
 
 function Process-OtoolOutput {
@@ -115,6 +84,37 @@ function Process-OtoolOutput {
         }
 
         Invoke-Expression -Command $changeCmd
+    }
+}
+
+function Update-LibraryPath {
+    param (
+        [string]$newPathSubStr,
+        [string]$libPath
+    )
+
+    Write-Host "Updating library path for: $libPath..."
+    if (-not (Test-Path $libPath -PathType Leaf)) {
+        Write-Host "> File '$libPath' does not exist."
+        return
+    }
+
+    $otoolCmd = "otool -L $libPath"
+    $p = Invoke-Expression -Command $otoolCmd
+
+    Process-OtoolOutput -Output $p -NewPathSubStr $newPathSubStr -StaticLibPath $libPath
+
+    Write-Host "********** FINAL RESULT*************"
+    Invoke-Expression -Command $otoolCmd
+}
+
+function ConvertTo-RelativeInstallPaths([string]$directory, [string]$extension) {
+    Get-ChildItem -Path $directory -Filter "*.$extension" | ForEach-Object {
+        $filePath = $_.FullName
+        $fileName = $_.Name
+        Write-Host "> Processing: $fileName"
+        Set-ItemProperty -Path $filePath -Name IsReadOnly -Value $false
+        & python3 makeInstallPathsRelative.py @rpath $filePath
     }
 }
 
