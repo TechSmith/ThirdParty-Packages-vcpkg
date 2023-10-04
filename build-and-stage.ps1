@@ -30,13 +30,13 @@ Write-Host ""
 Write-Host "============================================================"
 Write-Host "Initializing"
 Write-Host "============================================================"
-. "$PSScriptRoot/util.ps1"
+Import-Module "$PSScriptRoot/ps-modules/Util"
 $vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
 $IsOnWindowsOS = $false # Built-in IsWindows variable not working on Windows agent
 $IsOnMacOS = $false
 Write-Host "Checking OS..."
-$IsOnWindowsOS = Check-IsOnWindowsOS
-$IsOnMacOS = Check-IsOnMacOS
+$IsOnWindowsOS = Get-IsOnWindowsOS
+$IsOnMacOS = Get-IsOnMacOS
 if ($IsOnWindowsOS) {
     Write-Host "> Running on: Windows"
 } else {
@@ -149,8 +149,8 @@ $tripletCount = $triplets.Length
 $tripletNum = 1
 foreach ($triplet in $triplets) {
    Write-Host "Installing for triplet $tripletNum/$tripletCount`: $triplet..."
-   Install-From-VcPkg -Package $PackageAndFeatures -Triplet $triplet -vcpkgExe $vcpkgExe
-   Exit-If-Error $LASTEXITCODE
+   Install-FromVcPkg -Package $PackageAndFeatures -Triplet $triplet -vcpkgExe $vcpkgExe
+   Exit-IfError $LASTEXITCODE
    Write-Host ""
    $tripletNum++
 }
@@ -160,7 +160,10 @@ if($IsOnMacOS) {
    Write-Host "============================================================"
    Write-Host "Creating universal binary"
    Write-Host "============================================================"
-   ConvertTo-UniversalBinaries -arm64Dir "vcpkg/installed/$($triplets[0])" -x86_64Dir "vcpkg/installed/$($triplets[1])" -universalDir "$preStagePath"
+   $arm64Dir = "vcpkg/installed/$($triplets[0])"
+   $x64Dir = "vcpkg/installed/$($triplets[1])"
+   Write-Host "$arm64Dir, $x64Dir ==> $preStagePath"
+   ConvertTo-UniversalBinaries -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
 }
 
 Write-Host ""

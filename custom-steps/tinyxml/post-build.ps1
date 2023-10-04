@@ -2,9 +2,9 @@ param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
 )
 
-. "$PSScriptRoot\..\..\util.ps1"
+Import-Module "$PSScriptRoot/../../ps-modules/Util"
 
-$IsOnMacOS = Check-IsOnMacOS
+$IsOnMacOS = Get-IsOnMacOS
 
 if(-not $IsOnMacOS) {
     Write-Host "Not on Mac OS.  Exiting..."
