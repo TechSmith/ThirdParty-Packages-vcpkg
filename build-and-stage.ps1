@@ -25,6 +25,7 @@ foreach ($paramName in $allParams.Keys) {
     $paramValue = $allParams[$paramName]
     Write-Host "- $paramName`: $paramValue"
 }
+[Console]::Out.Flush()
 
 Write-Host ""
 Write-Host "============================================================"
@@ -91,6 +92,7 @@ foreach ($paramName in $initParams.Keys) {
     $paramValue = $initParams[$paramName]
     Write-Host "- $paramName`: $paramValue"
 }
+[Console]::Out.Flush()
 
 Write-Host ""
 Write-Host "============================================================"
@@ -124,6 +126,7 @@ else
 {
     Write-Host "> Cloning repo: $vcpkgRepo"
     git clone $vcpkgRepo
+    [Console]::Out.Flush()
 
     Write-Host ""
     Write-Host "Bootstrapping vcpkg..."
@@ -131,6 +134,7 @@ else
     Invoke-Expression "$vcpkgBootstrapScript"
     Pop-Location
 }
+[Console]::Out.Flush()
 
 Write-Host ""
 Write-Host "============================================================"
@@ -142,6 +146,7 @@ if (Test-Path -Path $preBuildScript -PathType Leaf) {
 } else {
     Write-Host "File does not exist: $preBuildScript.  Skipping step..."
 }
+[Console]::Out.Flush()
 
 Write-Host ""
 Write-Host "============================================================"
@@ -156,6 +161,7 @@ foreach ($triplet in $triplets) {
    Write-Host ""
    $tripletNum++
 }
+[Console]::Out.Flush()
 
 if($IsOnMacOS) {
    Write-Host ""
@@ -166,6 +172,7 @@ if($IsOnMacOS) {
    $x64Dir = "vcpkg/installed/$($triplets[1])"
    Write-Host "$arm64Dir, $x64Dir ==> $preStagePath"
    ConvertTo-UniversalBinaries -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
+   [Console]::Out.Flush()
 }
 
 Write-Host ""
@@ -180,6 +187,7 @@ if (Test-Path -Path $postBuildScript -PathType Leaf) {
 } else {
     Write-Host "File does not exist: $postBuildScript.  Skipping step..."
 }
+[Console]::Out.Flush()
 
 Write-Host ""
 Write-Host "============================================================"
@@ -215,6 +223,7 @@ tar -czf "$StagedArtifactsPath/$artifactArchive" -C "$StagedArtifactsPath/$artif
 Write-Host ""
 Write-Host "Deleting: `"$artifactSubfolder`""
 Remove-Item -Path "$StagedArtifactsPath/$artifactSubfolder" -Recurse -Force
+[Console]::Out.Flush()
 
 if($ShowDebug)
 {
@@ -230,6 +239,7 @@ if($ShowDebug)
         # Show Mac debugging info
         Write-Host "No additional debugging information is available."
     }
+   [Console]::Out.Flush()
 }
 
 
