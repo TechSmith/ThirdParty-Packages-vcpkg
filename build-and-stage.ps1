@@ -5,6 +5,7 @@ param(
     [string]$StagedArtifactsPath = "StagedArtifacts",        # Output path to stage these artifacts to
     [string]$ReleaseTagBaseName = "",                        # The base name of the tag to be used when publishing the release (ex. "openssl-static").  If not specified, it will default to "$Package-$LinkType"
     [string]$PackageDisplayName = "",                        # The human-readable name of the package (ex. "openssl (static)").  If not specified, it will default to "$Package-$LinkType"
+    [string]$VcpkgHash = "",                                 # The hash of vcpkg to checkout (if applicable)
     [switch]$ShowDebug = $false                              # Show additional debugging information
 )
 
@@ -18,6 +19,7 @@ $allParams = @{
     StagedArtifactsPath = $StagedArtifactsPath
     ReleaseTagBaseName = $ReleaseTagBaseName
     PackageName = $PackageDisplayName
+    VcpkgHash = $VcpkgHash
     ShowDebug = $ShowDebug
 }
 Write-Host "Parameters:"
@@ -126,6 +128,12 @@ else
 {
     Write-Host "> Cloning repo: $vcpkgRepo"
     git clone $vcpkgRepo
+    if ($VcpkgHash -ne "") {
+        Write-Host "> Using hash: $VcpkgHash"
+        Push-Location vcpkg
+        git checkout $VcpkgHash
+        Pop-Location
+    }
     [Console]::Out.Flush()
 
     Write-Host ""

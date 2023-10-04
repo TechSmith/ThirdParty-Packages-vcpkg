@@ -26,15 +26,17 @@ $selectedSection = if ($IsOnWindowsOS) { "win" } else { "mac" }
 $packageAndFeatures = $packageInfo.$selectedSection.package
 $linkType = $packageInfo.$selectedSection.linkType
 $buildType = $packageInfo.$selectedSection.buildType
+$vcpkgHash = $packageInfo.$selectedSection.vcpkgHash
 
 Write-Host ""
 Write-Host "Variables set based on config for OS `"$selectedSection`":"
 $allParams = @{
     PackageDisplayName = $PackageDisplayName
     packageAndFeatures = $packageAndFeatures
-    linkType = $linkType
-    buildType = $buildType
-    tagBaseName = $tagBaseName
+    LinkType = $linkType
+    BuildType = $buildType
+    ReleaseTagBaseName = $tagBaseName
+    VcpkgHash = $vcpkgHash
 }
 Write-Host "Parameters:"
 foreach ($paramName in $allParams.Keys) {
@@ -45,4 +47,4 @@ foreach ($paramName in $allParams.Keys) {
 Write-Host ""
 Write-Host "Running build-and-stage.ps1..."
 Write-Host ""
-./build-and-stage.ps1 -PackageAndFeatures $packageAndFeatures -LinkType $linkType -BuildType $buildType -StagedArtifactsPath $StagedArtifactsPath -ReleaseTagBaseName $tagBaseName -PackageDisplayName $PackageDisplayName
+./build-and-stage.ps1 -PackageAndFeatures $packageAndFeatures -LinkType $linkType -BuildType $buildType -StagedArtifactsPath $StagedArtifactsPath -ReleaseTagBaseName $tagBaseName -PackageDisplayName $PackageDisplayName -VcpkgHash $vcpkgHash
