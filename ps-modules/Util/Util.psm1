@@ -98,7 +98,6 @@ function Invoke-Powershell {
         }
     }
 
-    Write-Host "Invoke-Expression $expression"
     Invoke-Expression $expression
 }
 
