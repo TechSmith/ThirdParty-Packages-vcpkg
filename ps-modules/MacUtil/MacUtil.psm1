@@ -28,8 +28,6 @@ function ConvertTo-UniversalBinaries([string]$arm64Dir, [string]$x64Dir, [string
         $srcPathX64 = (Join-Path $X64_LIB_DIR $fileName)
         $destPath = (Join-Path $UNIVERSAL_LIB_DIR $fileName)
         
-        Write-Host "destPath: $destPath, srcPathArm64: $srcPathArm64, srcPathX64: $srcPathX64"
-
         if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
             Write-Host "> Processing: $fileName - Copying symlink"
             #Copy-Item -LiteralPath $srcPathArm64 -Destination $destPath -Force -Recurse
@@ -129,14 +127,12 @@ Function Remove-DylibSymlinks {
     }
 
     Write-Host ""
-    Write-Host ""
     Write-Host "Dynamic library dependencies before changes..."
     foreach($main_file in $main_files) {
         Write-Host "> $main_file"
         Invoke-Expression "otool -L '$main_file' | grep '@rpath'"
     }
 
-    Write-Host ""
     Write-Host ""
     Write-Host "Updating paths to dynamic dependencies..."
     foreach ($main_file in $main_files) {
@@ -157,14 +153,12 @@ Function Remove-DylibSymlinks {
     }
 
     Write-Host ""
-    Write-Host ""
     Write-Host "Dynamic library dependenies after changes..."
     foreach($main_file in $main_files) {
         Write-Host "> $main_file"
         Invoke-Expression "otool -L '$main_file' | grep '@rpath'"
     }
 
-    Write-Host ""
     Write-Host ""
     Write-Host "Removing unused symlinks..."
     $files = Get-ChildItem -File -Recurse
@@ -176,7 +170,6 @@ Function Remove-DylibSymlinks {
     }
 
     # Rename files to the "main" filename we want
-    Write-Host ""
     Write-Host ""
     Write-Host "Renaming files..."
     $files = Get-ChildItem -File -Recurse
