@@ -42,15 +42,22 @@ function ConvertTo-UniversalBinaries([string]$arm64Dir, [string]$x64Dir, [string
     }
 }
 
-function Process-OtoolOutput {
+function Update-LibraryPath {
     param (
-        [string]$Output,
-        [string]$NewPathSubStr,
-        [string]$StaticLibPath
+        [string]$libPath
     )
 
-    $lines = $Output.Split([Environment]::NewLine)
+    Write-Host ">> Update-LibraryPath..."
 
+    if (-not (Test-Path $libPath -PathType Leaf)) {
+        Write-Host ">> File '$libPath' does not exist."
+        return
+    }
+
+    Write-Host ">> Updating library path for: $libPath..."
+    $otoolCmd = "otool -L $libPath"
+    $otoolOutput = Invoke-Expression -Command $otoolCmd
+    $lines = $otoolOutput.Split([Environment]::NewLine)
     foreach ($line in $lines) {
         if (-not $line.StartsWith("	")) {
             continue
@@ -69,42 +76,24 @@ function Process-OtoolOutput {
             continue
         }
 
-        $newPath = $path.Replace($dirname, $NewPathSubStr)
+        $newPath = $path.Replace($dirname, "@rpath")
         $dylibName = [System.IO.Path]::GetFileName($StaticLibPath)
 
         Write-Host ($path + "-" + $dylibName)
 
         if ([System.IO.Path]::GetFileName($path) -eq $dylibName) {
-            Write-Host "CHANGING ID"
+            Write-Host ">>> Changing ID"
             $changeCmd = "install_name_tool -id $newPath $StaticLibPath"
         }
         else {
-            Write-Host "CHANGING PATH"
+            Write-Host ">>> Changing path"
             $changeCmd = "install_name_tool -change $path $newPath $StaticLibPath"
         }
 
         Invoke-Expression -Command $changeCmd
     }
-}
 
-function Update-LibraryPath {
-    param (
-        [string]$newPathSubStr,
-        [string]$libPath
-    )
-
-    Write-Host "Updating library path for: $libPath..."
-    if (-not (Test-Path $libPath -PathType Leaf)) {
-        Write-Host "> File '$libPath' does not exist."
-        return
-    }
-
-    $otoolCmd = "otool -L $libPath"
-    $p = Invoke-Expression -Command $otoolCmd
-
-    Process-OtoolOutput -Output $p -NewPathSubStr $newPathSubStr -StaticLibPath $libPath
-
-    Write-Host "********** FINAL RESULT*************"
+    Write-Host ">> FINAL RESULT"
     Invoke-Expression -Command $otoolCmd
 }
 
@@ -114,7 +103,7 @@ function ConvertTo-RelativeInstallPaths([string]$directory, [string]$extension) 
         $fileName = $_.Name
         Write-Host "> Processing: $fileName"
         Set-ItemProperty -Path $filePath -Name IsReadOnly -Value $false
-        & python3 makeInstallPathsRelative.py @rpath $filePath
+        Update-LibraryPath -libPath $filePath
     }
 }
 
@@ -205,5 +194,4 @@ Function Remove-DylibSymlinks {
 }
 
 Export-ModuleMember -Function ConvertTo-UniversalBinaries
-Export-ModuleMember -Function Update-LibraryPath
 Export-ModuleMember -Function Remove-DylibSymlinks
