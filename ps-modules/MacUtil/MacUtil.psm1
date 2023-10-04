@@ -118,7 +118,7 @@ function Process-OtoolOutput {
     }
 }
 
-Function Remove-Symlinks {
+Function Remove-DylibSymlinks {
     param (
         [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
     )
@@ -141,7 +141,7 @@ Function Remove-Symlinks {
 
     Write-Host ""
     Write-Host ""
-    Write-Host "Dependencies before changes..."
+    Write-Host "Dynamic library dependencies before changes..."
     foreach($main_file in $main_files) {
         Write-Host "> $main_file"
         Invoke-Expression "otool -L '$main_file' | grep '@rpath'"
@@ -149,7 +149,7 @@ Function Remove-Symlinks {
 
     Write-Host ""
     Write-Host ""
-    Write-Host "Updating dependencies..."
+    Write-Host "Updating paths to dynamic dependencies..."
     foreach ($main_file in $main_files) {
         # Main file
         Write-Host ("> $main_file")
@@ -169,7 +169,7 @@ Function Remove-Symlinks {
 
     Write-Host ""
     Write-Host ""
-    Write-Host "Dependencies after changes..."
+    Write-Host "Dynamic library dependenies after changes..."
     foreach($main_file in $main_files) {
         Write-Host "> $main_file"
         Invoke-Expression "otool -L '$main_file' | grep '@rpath'"
@@ -206,4 +206,4 @@ Function Remove-Symlinks {
 
 Export-ModuleMember -Function ConvertTo-UniversalBinaries
 Export-ModuleMember -Function Update-LibraryPath
-Export-ModuleMember -Function Remove-Symlinks
+Export-ModuleMember -Function Remove-DylibSymlinks

@@ -16,4 +16,4 @@ Import-Module "$PSScriptRoot/../../ps-modules/MacUtil"
 Write-Host "Running post-build script..."
 Push-Location "$BuildArtifactsPath/lib"
 
-Remove-Symlinks -BuildArtifactsPath $BuildArtifactsPath
+Remove-DylibSymlinks -BuildArtifactsPath $BuildArtifactsPath
