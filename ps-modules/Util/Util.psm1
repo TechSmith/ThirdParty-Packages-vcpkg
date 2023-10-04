@@ -63,13 +63,6 @@ function Write-ReleaseInfoJson {
     $releaseInfo | ConvertTo-Json | Set-Content -Path $PathToJsonFile
 }
 
-function Get-PackageNameOnly {
-   param (
-      [string] $PackageNameAndFeatures
-   )
-   return $PackageAndFeatures -replace '\[.*$', ''
-}
-
 function Get-IsOnWindowsOS {
     if ($env:OS -like '*win*') {
         return $true
@@ -113,7 +106,6 @@ Export-ModuleMember -Function Show-FileContent
 Export-ModuleMember -Function Install-FromVcpkg
 Export-ModuleMember -Function Exit-IfError
 Export-ModuleMember -Function Write-ReleaseInfoJson
-Export-ModuleMember -Function Get-PackageNameOnly
 Export-ModuleMember -Function Get-IsOnMacOS
 Export-ModuleMember -Function Get-IsOnWindowsOS
 Export-ModuleMember -Function Invoke-Powershell

@@ -47,7 +47,7 @@ if ( $IsOnMacOS ) {
    Import-Module "$PSScriptRoot/ps-modules/MacUtil"
 }
 
-$packageNameOnly = Get-PackageNameOnly -PackageAndFeatures $PackageAndFeatures
+$packageNameOnly = $PackageAndFeatures -replace '\[.*$', ''
 if( $ReleaseTagBaseName -eq "") {
    $ReleaseTagBaseName = "$packageNameOnly-$LinkType"
 }
