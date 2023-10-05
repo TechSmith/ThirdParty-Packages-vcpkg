@@ -1,32 +1,38 @@
 Import-Module "$PSScriptRoot/../../ps-modules/Util"
 
-function ConvertTo-UniversalBinaries([string]$arm64Dir, [string]$x64Dir, [string]$universalDir) {
+function ConvertTo-UniversalBinaries {
+    param (
+        [string]$arm64Dir,
+        [string]$x64Dir,
+        [string]$universalDir
+    )
+
     Write-Host "Creating universal dir and copying headers..."
     if (Test-Path -Path $universalDir -PathType Container) {
        Remove-Item -Path "$universalDir" -Recurse -Force | Out-Null
     }
     New-Item -Path "$universalDir" -ItemType Directory -Force | Out-Null
+    $arm64LibDir = Join-Path $arm64Dir "lib"
+    $x64LibDir = Join-Path $x64Dir "lib"
     Copy-Item -Path "$x64Dir\include" -Destination "$universalDir\include" -Recurse | Out-Null # Assume arm64 and x86_64 are identical
 
     Write-Host "Making install paths relative..."
-    ConvertTo-RelativeInstallPaths "$arm64Dir" "a"
-    ConvertTo-RelativeInstallPaths "$arm64Dir" "dylib"
-    ConvertTo-RelativeInstallPaths "$x64Dir" "a"
-    ConvertTo-RelativeInstallPaths "$x64Dir" "dylib"
+    ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "a"
+    ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "dylib"
+    ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "a"
+    ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "dylib"
 
     Write-Host "Making binaries universal..."
-    $ARM64_LIB_DIR = Join-Path $arm64Dir "lib"
-    $X64_LIB_DIR = Join-Path $x64Dir "lib"
-    $UNIVERSAL_LIB_DIR = Join-Path $universalDir "lib"
-    New-Item -Path "$UNIVERSAL_LIB_DIR" -ItemType Directory -Force | Out-Null
+    $universalLibDir = Join-Path $universalDir "lib"
+    New-Item -Path "$universalLibDir" -ItemType Directory -Force | Out-Null
 
-    Write-Host "Looking in: $ARM64_LIB_DIR"
-    Get-ChildItem -Path "$ARM64_LIB_DIR\*.*" -Include *.a, *.dylib | ForEach-Object {
-        $item = $_
+    Write-Host "Looking in: $arm64LibDir"
+    $items = Get-ChildItem -Path "$arm64LibDir/*" -Include "*.dylib","*.a"
+    foreach($item in $items) {
         $fileName = $item.Name
         $srcPathArm64 = $item.FullName
-        $srcPathX64 = (Join-Path $X64_LIB_DIR $fileName)
-        $destPath = (Join-Path $UNIVERSAL_LIB_DIR $fileName)
+        $srcPathX64 = (Join-Path $x64LibDir $fileName)
+        $destPath = (Join-Path $universalLibDir $fileName)
         
         if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
             Write-Host "> Processing: $fileName - Copying symlink"
@@ -75,31 +81,34 @@ function Update-LibraryPath {
         }
 
         $newPath = $path.Replace($dirname, "@rpath")
-        $dylibName = [System.IO.Path]::GetFileName($StaticLibPath)
+        $dylibName = [System.IO.Path]::GetFileName($libPath)
 
         Write-Host ($path + "-" + $dylibName)
 
         if ([System.IO.Path]::GetFileName($path) -eq $dylibName) {
             Write-Host ">>> Changing ID"
-            $changeCmd = "install_name_tool -id $newPath $StaticLibPath"
+            $changeCmd = "install_name_tool -id $newPath $libPath"
         }
         else {
             Write-Host ">>> Changing path"
-            $changeCmd = "install_name_tool -change $path $newPath $StaticLibPath"
+            $changeCmd = "install_name_tool -change $path $newPath $libPath"
         }
 
         Invoke-Expression -Command $changeCmd
     }
-
-    Write-Host ">> FINAL RESULT"
-    Invoke-Expression -Command $otoolCmd
 }
 
-function ConvertTo-RelativeInstallPaths([string]$directory, [string]$extension) {
-    Get-ChildItem -Path $directory -Filter "*.$extension" | ForEach-Object {
-        $filePath = $_.FullName
-        $fileName = $_.Name
-        Write-Host "> Processing: $fileName"
+function ConvertTo-RelativeInstallPaths {
+    param (
+        [string]$directory,
+        [string]$extension
+    )
+
+    $libFiles = Get-ChildItem -Path $directory -Filter "*.$extension"
+    foreach ($libFile in $libFiles) {
+        $filePath = $libFile.FullName
+        $fileName = $libFile.Name
+        Write-Host ">> Processing: $fileName"
         Set-ItemProperty -Path $filePath -Name IsReadOnly -Value $false
         Update-LibraryPath -libPath $filePath
     }
