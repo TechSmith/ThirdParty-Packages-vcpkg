@@ -132,6 +132,24 @@ function NL {
    return [System.Environment]::NewLine
 }
 
+function Get-PackageInfo
+{
+    param(
+        [string]$PackageName
+    )
+    $jsonFilePath = "preconfigured-packages.json"
+    Write-Message "Reading config from: `"$jsonFilePath`""
+    $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
+    $pkg = $packagesJson.packages | Where-Object { $_.name -eq $PackageName }
+    if (-not $pkg) {
+        Write-Message "> Package not found in $jsonFilePath."
+        exit
+    }
+    $IsOnWindowsOS = Get-IsOnWindowsOS
+    $selectedSection = if ($IsOnWindowsOS) { "win" } else { "mac" }
+    return $pkg.$selectedSection
+}
+
 Export-ModuleMember -Function Show-FileContent
 Export-ModuleMember -Function Install-FromVcpkg
 Export-ModuleMember -Function Exit-IfError
@@ -142,6 +160,7 @@ Export-ModuleMember -Function Invoke-Powershell
 Export-ModuleMember -Function Write-Banner
 Export-ModuleMember -Function Write-Message
 Export-ModuleMember -Function NL
+Export-ModuleMember -Function Get-PackageInfo
 
 $IsOnMacOS = Get-IsOnMacOS
 if ( $IsOnMacOS ) {
