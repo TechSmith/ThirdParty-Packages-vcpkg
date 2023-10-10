@@ -50,15 +50,13 @@ function Exit-IfError {
 
 function Write-ReleaseInfoJson {
     param(
-        [string] $PackageDisplayName,
-        [string] $ReleaseTagBaseName,
-        [string] $ReleaseVersion,
+        [string] $PackageName,
+        [string] $Version,
         [string] $PathToJsonFile
     )
     $releaseInfo = @{
-        PackageDisplayName = $PackageDisplayName
-        ReleaseTagBaseName = $ReleaseTagBaseName
-        ReleaseVersion = $ReleaseVersion
+        packageName = $PackageName
+        version = $Version
     }
     $releaseInfo | ConvertTo-Json | Set-Content -Path $PathToJsonFile
 }

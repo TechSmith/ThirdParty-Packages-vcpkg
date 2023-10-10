@@ -1,10 +1,9 @@
 param(
     [Parameter(Mandatory=$true)][string]$PackageAndFeatures, # Name of package + optional feature flags ("foo" or "foo[feature1,feature2]")
     [Parameter(Mandatory=$true)][string]$LinkType,           # Linking type: static or dynamic
+    [string]$PackageName = "",                               # The base name of the tag to be used when publishing the release (ex. "openssl-static").  If not specified, it will default to "$Package-$LinkType"
     [string]$BuildType = "release",                          # Build type: release or debug
     [string]$StagedArtifactsPath = "StagedArtifacts",        # Output path to stage these artifacts to
-    [string]$ReleaseTagBaseName = "",                        # The base name of the tag to be used when publishing the release (ex. "openssl-static").  If not specified, it will default to "$Package-$LinkType"
-    [string]$PackageDisplayName = "",                        # The human-readable name of the package (ex. "openssl (static)").  If not specified, it will default to "$Package-$LinkType"
     [string]$VcpkgHash = "",                                 # The hash of vcpkg to checkout (if applicable)
     [switch]$ShowDebug = $false                              # Show additional debugging information
 )
@@ -13,12 +12,11 @@ Import-Module "$PSScriptRoot/ps-modules/Util"
 
 Write-Banner -Level 2 -Title "Starting vcpkg install for: $PackageAndFeatures"
 $allParams = @{
+    PackageName = $PackageName
     PackageAndFeatures = $PackageAndFeatures
     LinkType = $LinkType
     BuildType = $BuildType
     StagedArtifactsPath = $StagedArtifactsPath
-    ReleaseTagBaseName = $ReleaseTagBaseName
-    PackageName = $PackageDisplayName
     VcpkgHash = $VcpkgHash
     ShowDebug = $ShowDebug
 }
@@ -34,11 +32,8 @@ $IsOnWindowsOS = Get-IsOnWindowsOS
 $IsOnMacOS = Get-IsOnMacOS
 
 $packageNameOnly = $PackageAndFeatures -replace '\[.*$', ''
-if( $ReleaseTagBaseName -eq "") {
-   $ReleaseTagBaseName = "$packageNameOnly-$LinkType"
-}
-if( $PackageDisplayName -eq "") {
-   $PackageDisplayName = "$packageNameOnly-$LinkType"
+if( $PackageName -eq "") {
+   $PackageName = "$packageNameOnly-$LinkType"
 }
 
 $osName = ""
@@ -54,7 +49,7 @@ if ($IsOnWindowsOS) {
    $vcpkgBootstrapScript = "./bootstrap-vcpkg.bat"
    $triplets += "x64-windows-$LinkType-$BuildType"
    $preStagePath = "vcpkg/installed/$($triplets[0])"
-   $artifactSubfolder = "$ReleaseTagBaseName-windows-$BuildType"
+   $artifactSubfolder = "$PackageName-windows-$BuildType"
 } elseif ($IsOnMacOS) {
    $osName = "Mac"
    $vcpkgExe = "./vcpkg/vcpkg"
@@ -63,7 +58,7 @@ if ($IsOnWindowsOS) {
    $triplets += "x64-osx-$LinkType-$BuildType"
    $triplets += "arm64-osx-$LinkType-$BuildType"
    $preStagePath = "universal"
-   $artifactSubfolder = "$ReleaseTagBaseName-osx-$BuildType"
+   $artifactSubfolder = "$PackageName-osx-$BuildType"
 }
 $artifactArchive = "$artifactSubfolder.tar.gz"
 
@@ -176,7 +171,7 @@ $packageInfoFilename = "package.json"
 Write-Message "$(NL)Generating: `"$packageInfoFilename`"..."
 $dependenciesJson = Get-Content -Raw -Path "$StagedArtifactsPath/$artifactSubfolder/$dependenciesFilename" | ConvertFrom-Json
 $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
-Write-ReleaseInfoJson -PackageDisplayName $PackageDisplayName -ReleaseTagBaseName $ReleaseTagBaseName -ReleaseVersion $packageVersion -PathToJsonFile "$StagedArtifactsPath/$artifactSubfolder/$packageInfoFilename"
+Write-ReleaseInfoJson -PackageName $PackageName -Version $packageVersion -PathToJsonFile "$StagedArtifactsPath/$artifactSubfolder/$packageInfoFilename"
 
 # TODO: Add info in this file on where each package was downloaded from
 # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)

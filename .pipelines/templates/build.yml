@@ -1,5 +1,5 @@
 parameters:
-- name: packageDisplayName
+- name: packageName
   displayName: The package name to use
   type: string
   default: 
@@ -67,7 +67,7 @@ stages:
     - template: steps/full-checkout.yml
 
     - powershell: |
-        ./build-and-stage-preconfigured.ps1 -PackageDisplayName "${{ parameters.packageDisplayName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
+        ./build-and-stage-preconfigured.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 

@@ -1,17 +1,17 @@
 param(
-    [Parameter(Mandatory=$true)][string]$PackageDisplayName, # Name of package from preconfigured-packages.json
+    [Parameter(Mandatory=$true)][string]$PackageName, # Name of package from preconfigured-packages.json
     [string]$StagedArtifactsPath = "StagedArtifacts"  # Output path to stage these artifacts to
 )
 
 Import-Module "$PSScriptRoot/ps-modules/Util" -Force
  
-Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageDisplayName`""
+Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageName`""
 
 $jsonFilePath = "preconfigured-packages.json"
 Write-Message "Reading config from: `"$jsonFilePath`""
 $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
-$packageInfo = $packagesJson.packages | Where-Object { $_.name -eq $PackageDisplayName }
-if (-not $packageInfo) {
+$pkg = $packagesJson.packages | Where-Object { $_.name -eq $PackageName }
+if (-not $pkg) {
     Write-Message "> Package not found in $jsonFilePath."
     exit
 }
@@ -20,20 +20,19 @@ if ($env:OS -like '*win*') {
 } else {
     $IsOnMacOS = $true
 }
-$tagBaseName = $packageInfo.tag
 $selectedSection = if ($IsOnWindowsOS) { "win" } else { "mac" }
-$packageAndFeatures = $packageInfo.$selectedSection.package
-$linkType = $packageInfo.$selectedSection.linkType
-$buildType = $packageInfo.$selectedSection.buildType
-$vcpkgHash = $packageInfo.$selectedSection.vcpkgHash
+$osPkg = $pkg.$selectedSection
+$packageAndFeatures = $osPkg.package
+$linkType = $osPkg.linkType
+$buildType = $osPkg.buildType
+$vcpkgHash = $osPkg.vcpkgHash
 
 Write-Message "$(NL)Variables set based on config for OS `"$selectedSection`":"
 $allParams = @{
-    PackageDisplayName = $PackageDisplayName
-    packageAndFeatures = $packageAndFeatures
+    PackageName = $PackageName
+    PackageAndFeatures = $packageAndFeatures
     LinkType = $linkType
     BuildType = $buildType
-    ReleaseTagBaseName = $tagBaseName
     VcpkgHash = $vcpkgHash
 }
 Write-Message "Parameters:"
@@ -43,4 +42,4 @@ foreach ($paramName in $allParams.Keys) {
 }
 
 Write-Message "$(NL)Running build-and-stage.ps1...$(NL)"
-./build-and-stage.ps1 -PackageAndFeatures $packageAndFeatures -LinkType $linkType -BuildType $buildType -StagedArtifactsPath $StagedArtifactsPath -ReleaseTagBaseName $tagBaseName -PackageDisplayName $PackageDisplayName -VcpkgHash $vcpkgHash
+./build-and-stage.ps1 -PackageName $PackageName -PackageAndFeatures $PackageAndFeatures -LinkType $linkType -BuildType $buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $vcpkgHash
