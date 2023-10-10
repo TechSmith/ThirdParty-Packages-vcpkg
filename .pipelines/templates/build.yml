@@ -127,6 +127,23 @@ stages:
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
+          $zipFiles = (Get-ChildItem -Filter "*.tar.gz")
+          $gitReleaseNotes = "| File | Hash |"
+          $gitReleaseNotes += "`n| ---------- | ---------- |"
+          foreach ($zipFile in $zipFiles) {
+             $hash = (Get-FileHash -Algorithm MD5 -Path $zipFile.FullName).Hash.ToLower()
+             $gitReleaseNotes += "`n| $($zipFile.Name) | $hash |"
+          }
+          function Escape-Data {
+            param(
+              [string]$data
+            )
+            $data = $data -replace '%', '%AZP25'
+            $data = $data -replace [System.Environment]::NewLine, '%0A'
+            $data = $data -replace "`r", '%0D'
+            return $data
+          }
+          $gitReleaseNotes = Escape-Data $gitReleaseNotes
           $packageInfoJsonFile = "package.json"
           $artifactsUnzippedDir = "artifactContents"
           $artifactZip = (Get-ChildItem -Filter "*.tar.gz" | Select-Object -First 1).Name
@@ -136,15 +153,13 @@ stages:
           $gitReleaseTagName = ""
           if (Test-Path -Path $packageInfoJsonFile -PathType Leaf) {
               $jsonContent = Get-Content -Path $packageInfoJsonFile -Raw | ConvertFrom-Json
-              $version = $jsonContent.ReleaseVersion
-              Write-Host "`nversion is $version"
-              $tagBaseName = $jsonContent.ReleaseTagBaseName
-              Write-Host "tagBaseName is $tagBaseName"
-              $gitReleaseTagName = "$tagBaseName-$version"
+              $version = $jsonContent.version
+              $packageName = $jsonContent.packageName
+              $gitReleaseTagName = "$packageName-$version"
           }
-          Write-Host "`ngitReleaseTagName is $gitReleaseTagName"
-          Write-Host "##vso[task.setvariable variable=gitReleaseTagName]$gitReleaseTagName"
           Pop-Location
+          Write-Host "##vso[task.setvariable variable=gitReleaseTagName]$gitReleaseTagName"
+          Write-Host "##vso[task.setvariable variable=gitReleaseNotes]$gitReleaseNotes"
 
     - task: GitHubRelease@1
       displayName: 'Create GitHub release'
@@ -157,7 +172,8 @@ stages:
         tagSource: 'userSpecifiedTag'
         tag: $(gitReleaseTagName)
         releaseNotesSource: 'inline'
-        releaseNotesInline: 'Release - $(gitReleaseTagName)'
+        releaseNotesInline: |
+          $(gitReleaseNotes)
         addChangeLog: false
         isDraft: false
         isPreRelease: false
