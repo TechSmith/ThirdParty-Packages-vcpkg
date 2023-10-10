@@ -4,12 +4,10 @@ param(
 )
 
 Import-Module "$PSScriptRoot/ps-modules/Util" -Force
-$jsonFilePath = "preconfigured-packages.json"
+ 
+Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageDisplayName`""
 
-Write-Host ""
-Write-Host "************************************************************"
-Write-Host "Installing preconfigured package: `"$PackageDisplayName`""
-Write-Host "************************************************************"
+$jsonFilePath = "preconfigured-packages.json"
 Write-Host "Reading config from: `"$jsonFilePath`""
 $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
 $packageInfo = $packagesJson.packages | Where-Object { $_.name -eq $PackageDisplayName }

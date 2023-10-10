@@ -101,6 +101,29 @@ function Invoke-Powershell {
     Invoke-Expression $expression
 }
 
+function Write-Banner {
+    param (
+        [string]$Title,
+        [int]$Level = 1
+    )
+
+    $bannerChars = @("*", "=", "-", ".")
+    $bannerHorizontalBorderSizes = @(2, 1, 1, 1)
+
+    $bannerSize = 80
+    $bannerChar = $bannerChars[$Level - 1]
+    $bannerHorizontalBorderSize = $bannerHorizontalBorderSizes[$Level - 1]
+    $bannerLine = $bannerChar * $bannerSize
+    $titleLine = "$($bannerChar * $bannerHorizontalBorderSize) $Title $(' ' * $($bannerSize - $Title.Length - ($bannerHorizontalBorderSize * 2 + 3))) $($bannerChar * $bannerHorizontalBorderSize)"
+
+    [Console]::Out.Flush()
+    Write-Host ""
+    Write-Host $bannerLine
+    Write-Host $titleLine
+    Write-Host $bannerLine
+    [Console]::Out.Flush()
+}
+
 Export-ModuleMember -Function Show-FileContent
 Export-ModuleMember -Function Install-FromVcpkg
 Export-ModuleMember -Function Exit-IfError
@@ -108,6 +131,7 @@ Export-ModuleMember -Function Write-ReleaseInfoJson
 Export-ModuleMember -Function Get-IsOnMacOS
 Export-ModuleMember -Function Get-IsOnWindowsOS
 Export-ModuleMember -Function Invoke-Powershell
+Export-ModuleMember -Function Write-Banner
 
 $IsOnMacOS = Get-IsOnMacOS
 if ( $IsOnMacOS ) {

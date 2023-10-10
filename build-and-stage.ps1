@@ -9,13 +9,13 @@ param(
     [switch]$ShowDebug = $false                              # Show additional debugging information
 )
 
-Write-Host "************************************************************"
-Write-Host "Starting vcpkg install for: $PackageAndFeatures"
-Write-Host "************************************************************"
+Import-Module "$PSScriptRoot/ps-modules/Util"
+
+Write-Banner -Level 2 -Title "Starting vcpkg install for: $PackageAndFeatures"
 $allParams = @{
     PackageAndFeatures = $PackageAndFeatures
-    BuildType = $BuildType
     LinkType = $LinkType
+    BuildType = $BuildType
     StagedArtifactsPath = $StagedArtifactsPath
     ReleaseTagBaseName = $ReleaseTagBaseName
     PackageName = $PackageDisplayName
@@ -29,11 +29,7 @@ foreach ($paramName in $allParams.Keys) {
 }
 [Console]::Out.Flush()
 
-Write-Host ""
-Write-Host "============================================================"
-Write-Host "Initializing"
-Write-Host "============================================================"
-Import-Module "$PSScriptRoot/ps-modules/Util"
+Write-Banner -Level 3 -Title "Initializing"
 $vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
 $IsOnWindowsOS = Get-IsOnWindowsOS
 $IsOnMacOS = Get-IsOnMacOS
@@ -93,10 +89,7 @@ foreach ($paramName in $initParams.Keys) {
 }
 [Console]::Out.Flush()
 
-Write-Host ""
-Write-Host "============================================================"
-Write-Host "Setting up vcpkg"
-Write-Host "============================================================"
+Write-Banner -Level 3 -Title "Setting up vcpkg"
 Write-Host "Removing vcpkg system cache..."
 Write-Host "> Looking for user-specific vcpkg cache dir: $vcpkgCacheDir"
 if (Test-Path -Path $vcpkgCacheDir -PathType Container) {
@@ -141,22 +134,16 @@ else
 }
 [Console]::Out.Flush()
 
-Write-Host ""
-Write-Host "============================================================"
-Write-Host "Pre-build step"
-Write-Host "============================================================"
+Write-Banner -Level 3 -Title "Pre-build step"
 $preBuildScript = "custom-steps/$packageNameOnly/pre-build.ps1"
 if (Test-Path -Path $preBuildScript -PathType Leaf) {
    Invoke-Powershell -FilePath $preBuildScript
 } else {
-    Write-Host "File does not exist: $preBuildScript.  Skipping step..."
+   Write-Host "File does not exist: $preBuildScript.  Skipping step..."
 }
 [Console]::Out.Flush()
 
-Write-Host ""
-Write-Host "============================================================"
-Write-Host "Installing package: $Package"
-Write-Host "============================================================"
+Write-Banner -Level 3 -Title "Installing package: $Package"
 $tripletCount = $triplets.Length
 $tripletNum = 1
 foreach ($triplet in $triplets) {
@@ -169,10 +156,7 @@ foreach ($triplet in $triplets) {
 [Console]::Out.Flush()
 
 if($IsOnMacOS) {
-   Write-Host ""
-   Write-Host "============================================================"
-   Write-Host "Creating universal binary"
-   Write-Host "============================================================"
+   Write-Banner -Level 3 -Title "Creating universal binary"
    $arm64Dir = "vcpkg/installed/$($triplets[0])"
    $x64Dir = "vcpkg/installed/$($triplets[1])"
    Write-Host "$arm64Dir, $x64Dir ==> $preStagePath"
@@ -180,10 +164,7 @@ if($IsOnMacOS) {
    [Console]::Out.Flush()
 }
 
-Write-Host ""
-Write-Host "============================================================"
-Write-Host "Post-build step"
-Write-Host "============================================================"
+Write-Banner -Level 3 -Title "Post-build step"
 $postBuildScript = "custom-steps/$packageNameOnly/post-build.ps1"
 $preStagePath = (Resolve-Path $preStagePath).Path -replace '\\', '/' # Expand this, so it is an absolute path we are passing to other scripts
 if (Test-Path -Path $postBuildScript -PathType Leaf) {
@@ -194,10 +175,7 @@ if (Test-Path -Path $postBuildScript -PathType Leaf) {
 }
 [Console]::Out.Flush()
 
-Write-Host ""
-Write-Host "============================================================"
-Write-Host "Stage build artifacts"
-Write-Host "============================================================"
+Write-Banner -Level 3 -Title "Stage build artifacts"
 Write-Host "Creating dir: $artifactSubfolder"
 New-Item -Path $StagedArtifactsPath/$artifactSubfolder -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
@@ -232,10 +210,7 @@ Remove-Item -Path "$StagedArtifactsPath/$artifactSubfolder" -Recurse -Force
 
 if($ShowDebug)
 {
-    Write-Host ""
-    Write-Host "============================================================"
-    Write-Host "Showing debug info"
-    Write-Host "============================================================"
+    Write-Banner -Level 3 -Title "Showing debug info"
     if($IsOnWindowsOS) {
         # Show Windows debugging info
         Write-Host "No additional debugging information is available."
