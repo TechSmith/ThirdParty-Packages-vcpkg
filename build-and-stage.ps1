@@ -37,9 +37,6 @@ Import-Module "$PSScriptRoot/ps-modules/Util"
 $vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
 $IsOnWindowsOS = Get-IsOnWindowsOS
 $IsOnMacOS = Get-IsOnMacOS
-if ( $IsOnMacOS ) {
-   Import-Module "$PSScriptRoot/ps-modules/MacUtil"
-}
 
 $packageNameOnly = $PackageAndFeatures -replace '\[.*$', ''
 if( $ReleaseTagBaseName -eq "") {

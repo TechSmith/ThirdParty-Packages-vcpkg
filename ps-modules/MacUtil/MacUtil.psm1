@@ -1,5 +1,3 @@
-Import-Module "$PSScriptRoot/../../ps-modules/Util"
-
 function ConvertTo-UniversalBinaries {
     param (
         [string]$arm64Dir,

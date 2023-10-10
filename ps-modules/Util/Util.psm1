@@ -108,3 +108,10 @@ Export-ModuleMember -Function Write-ReleaseInfoJson
 Export-ModuleMember -Function Get-IsOnMacOS
 Export-ModuleMember -Function Get-IsOnWindowsOS
 Export-ModuleMember -Function Invoke-Powershell
+
+$IsOnMacOS = Get-IsOnMacOS
+if ( $IsOnMacOS ) {
+   Import-Module "$PSScriptRoot/../../ps-modules/MacUtil"
+   Export-ModuleMember -Function ConvertTo-UniversalBinaries
+   Export-ModuleMember -Function Remove-DylibSymlinks
+}
