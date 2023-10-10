@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory=$true)][string]$PackageDisplayName, # Name of package from preconfigured-packages.json
     [string]$StagedArtifactsPath = "StagedArtifacts"  # Output path to stage these artifacts to
 )
- 
+
+Import-Module "$PSScriptRoot/ps-modules/Util" -Force
 $jsonFilePath = "preconfigured-packages.json"
 
 Write-Host ""
