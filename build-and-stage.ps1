@@ -22,12 +22,11 @@ $allParams = @{
     VcpkgHash = $VcpkgHash
     ShowDebug = $ShowDebug
 }
-Write-Host "Parameters:"
+Write-Message "Parameters:"
 foreach ($paramName in $allParams.Keys) {
     $paramValue = $allParams[$paramName]
-    Write-Host "- $paramName`: $paramValue"
+    Write-Message "- $paramName`: $paramValue"
 }
-[Console]::Out.Flush()
 
 Write-Banner -Level 3 -Title "Initializing"
 $vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
@@ -82,86 +81,77 @@ $initParams = @{
    artifactSubfolder = $artifactSubfolder
 }
 
-Write-Host "Initialized vars:"
+Write-Message "Initialized vars:"
 foreach ($paramName in $initParams.Keys) {
     $paramValue = $initParams[$paramName]
-    Write-Host "- $paramName`: $paramValue"
+    Write-Message "- $paramName`: $paramValue"
 }
-[Console]::Out.Flush()
 
 Write-Banner -Level 3 -Title "Setting up vcpkg"
-Write-Host "Removing vcpkg system cache..."
-Write-Host "> Looking for user-specific vcpkg cache dir: $vcpkgCacheDir"
+Write-Message "Removing vcpkg system cache..."
+Write-Message "> Looking for user-specific vcpkg cache dir: $vcpkgCacheDir"
 if (Test-Path -Path $vcpkgCacheDir -PathType Container) {
-   Write-Host "> Deleting dir: $vcpkgCacheDir"
+   Write-Message "> Deleting dir: $vcpkgCacheDir"
    Remove-Item -Path $vcpkgCacheDir -Recurse -Force
 } else {
-   Write-Host "> Directory not found: $vcpkgCacheDir"
+   Write-Message "> Directory not found: $vcpkgCacheDir"
 }    
 
-Write-Host ""
-Write-Host "Removing dir: vcpkg"
+Write-Message "$(NL)Removing dir: vcpkg"
 $vcpkgDir = "./vcpkg"
 if (Test-Path -Path $vcpkgDir -PathType Container) {
-   Write-Host "> Directory found. Deleting: $vcpkgDir"
+   Write-Message "> Directory found. Deleting: $vcpkgDir"
    Remove-Item -Path $vcpkgDir -Recurse -Force
 } else {
-   Write-Host "> Directory not found: $vcpkgDir, skipping step."
+   Write-Message "> Directory not found: $vcpkgDir, skipping step."
 }
 
-Write-Host ""
-Write-Host "Installing vcpkg..."
+Write-Message "$(NL)Installing vcpkg..."
 if (Test-Path -Path $vcpkgDir -PathType Container) {
-    Write-Host "> Directory already exists: $vcpkgDir!!!"
+    Write-Message "> Directory already exists: $vcpkgDir!!!"
 }
 else
 {
-    Write-Host "> Cloning repo: $vcpkgRepo"
+    Write-Message "> Cloning repo: $vcpkgRepo"
     git clone $vcpkgRepo
     if ($VcpkgHash -ne "") {
-        Write-Host "> Using hash: $VcpkgHash"
+        Write-Message "> Using hash: $VcpkgHash"
         Push-Location vcpkg
         git checkout $VcpkgHash
         Pop-Location
     }
-    [Console]::Out.Flush()
 
-    Write-Host ""
-    Write-Host "Bootstrapping vcpkg..."
+    Write-Message "$(NL)Bootstrapping vcpkg..."
     Push-Location "vcpkg"
     Invoke-Expression "$vcpkgBootstrapScript"
     Pop-Location
 }
-[Console]::Out.Flush()
 
 Write-Banner -Level 3 -Title "Pre-build step"
 $preBuildScript = "custom-steps/$packageNameOnly/pre-build.ps1"
 if (Test-Path -Path $preBuildScript -PathType Leaf) {
    Invoke-Powershell -FilePath $preBuildScript
 } else {
-   Write-Host "File does not exist: $preBuildScript.  Skipping step..."
+   Write-Message "File does not exist: $preBuildScript.  Skipping step..."
 }
 [Console]::Out.Flush()
 
-Write-Banner -Level 3 -Title "Installing package: $Package"
+Write-Banner -Level 3 -Title "Installing package: $PackageAndFeatures"
 $tripletCount = $triplets.Length
 $tripletNum = 1
 foreach ($triplet in $triplets) {
-   Write-Host "Installing for triplet $tripletNum/$tripletCount`: $triplet..."
+   Write-Message "Installing for triplet $tripletNum/$tripletCount`: $triplet..."
    Install-FromVcPkg -Package $PackageAndFeatures -Triplet $triplet -vcpkgExe $vcpkgExe
    Exit-IfError $LASTEXITCODE
-   Write-Host ""
    $tripletNum++
 }
-[Console]::Out.Flush()
 
 if($IsOnMacOS) {
    Write-Banner -Level 3 -Title "Creating universal binary"
    $arm64Dir = "vcpkg/installed/$($triplets[0])"
    $x64Dir = "vcpkg/installed/$($triplets[1])"
-   Write-Host "$arm64Dir, $x64Dir ==> $preStagePath"
+   Write-Message "$arm64Dir, $x64Dir ==> $preStagePath"
    ConvertTo-UniversalBinaries -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
-   [Console]::Out.Flush()
 }
 
 Write-Banner -Level 3 -Title "Post-build step"
@@ -171,22 +161,19 @@ if (Test-Path -Path $postBuildScript -PathType Leaf) {
     $scriptArgs = @{ "BuildArtifactsPath" = "$preStagePath" }
     Invoke-Powershell -FilePath $postBuildScript -ArgumentList $scriptArgs
 } else {
-    Write-Host "File does not exist: $postBuildScript.  Skipping step..."
+    Write-Message "File does not exist: $postBuildScript.  Skipping step..."
 }
-[Console]::Out.Flush()
 
 Write-Banner -Level 3 -Title "Stage build artifacts"
-Write-Host "Creating dir: $artifactSubfolder"
+Write-Message "Creating dir: $artifactSubfolder"
 New-Item -Path $StagedArtifactsPath/$artifactSubfolder -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
 $dependenciesFilename = "dependencies.json"
-Write-Host ""
-Write-Host "Generating: `"$dependenciesFilename`"..."
+Write-Message "$(NL)Generating: `"$dependenciesFilename`"..."
 Invoke-Expression "$vcpkgExe list --x-json > $StagedArtifactsPath/$artifactSubfolder/$dependenciesFilename"
 
 $packageInfoFilename = "package.json"
-Write-Host ""
-Write-Host "Generating: `"$packageInfoFilename`"..."
+Write-Message "$(NL)Generating: `"$packageInfoFilename`"..."
 $dependenciesJson = Get-Content -Raw -Path "$StagedArtifactsPath/$artifactSubfolder/$dependenciesFilename" | ConvertFrom-Json
 $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
 Write-ReleaseInfoJson -PackageDisplayName $PackageDisplayName -ReleaseTagBaseName $ReleaseTagBaseName -ReleaseVersion $packageVersion -PathToJsonFile "$StagedArtifactsPath/$artifactSubfolder/$packageInfoFilename"
@@ -194,34 +181,28 @@ Write-ReleaseInfoJson -PackageDisplayName $PackageDisplayName -ReleaseTagBaseNam
 # TODO: Add info in this file on where each package was downloaded from
 # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)
 
-Write-Host ""
-Write-Host "Copying: $preStagePath =`> $artifactSubfolder"
+Write-Message "$(NL)Copying: $preStagePath =`> $artifactSubfolder"
 $excludedFolders = @("tools", "share", "debug")
 Copy-Item -Path "$preStagePath/*" -Destination $StagedArtifactsPath/$artifactSubfolder -Force -Recurse -Exclude $excludedFolders
 
-Write-Host ""
-Write-Host "Compressing: `"$artifactSubfolder`" =`> `"$artifactArchive`""
+Write-Message "$(NL)Compressing: `"$artifactSubfolder`" =`> `"$artifactArchive`""
 tar -czf "$StagedArtifactsPath/$artifactArchive" -C "$StagedArtifactsPath/$artifactSubfolder" .
 
-Write-Host ""
-Write-Host "Deleting: `"$artifactSubfolder`""
+Write-Message "$(NL)Deleting: `"$artifactSubfolder`""
 Remove-Item -Path "$StagedArtifactsPath/$artifactSubfolder" -Recurse -Force
-[Console]::Out.Flush()
 
 if($ShowDebug)
 {
     Write-Banner -Level 3 -Title "Showing debug info"
     if($IsOnWindowsOS) {
         # Show Windows debugging info
-        Write-Host "No additional debugging information is available."
+        Write-Message "No additional debugging information is available."
     }
     else {
         # Show Mac debugging info
-        Write-Host "No additional debugging information is available."
+        Write-Message "No additional debugging information is available."
     }
-   [Console]::Out.Flush()
 }
 
-
 # Done
-Write-Host "`n`nDone."
+Write-Message "$(NL)$(NL)Done."

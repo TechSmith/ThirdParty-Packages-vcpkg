@@ -3,26 +3,26 @@ function Show-FileContent {
         [string]$FilePath
     )
 
-    Write-Host "Getting contents of `"$FilePath`""
+    Write-Message "Getting contents of `"$FilePath`""
     $fileContent = ""
     try {
         $fileContent = Get-Content -Path $FilePath -ErrorAction Stop
-        Write-Host ">> Success"
+        Write-Message ">> Success"
     } catch {
-        Write-Host ">> Error: $_.Exception.Message"
+        Write-Message ">> Error: $_.Exception.Message"
     }
 
-    Write-Host ""
-    Write-Host "Contents of `"$FilePath`"" with original line endings
-    Write-Host "--START-----------------------------------------------------"
-    Write-Host $fileContent
-    Write-Host "--END-------------------------------------------------------"
+    Write-Message ""
+    Write-Message "Contents of `"$FilePath`"" with original line endings
+    Write-Message "--START-----------------------------------------------------"
+    Write-Message $fileContent
+    Write-Message "--END-------------------------------------------------------"
 
-    Write-Host ""
-    Write-Host "Contents of `"$FilePath`"" with normalized line endings
-    Write-Host "--START-----------------------------------------------------"
+    Write-Message ""
+    Write-Message "Contents of `"$FilePath`"" with normalized line endings
+    Write-Message "--START-----------------------------------------------------"
     Write-Output $fileContent
-    Write-Host "--END-------------------------------------------------------"
+    Write-Message "--END-------------------------------------------------------"
 }
 
 function Install-FromVcpkg {
@@ -33,7 +33,7 @@ function Install-FromVcpkg {
     )
 
     $pkgToInstall = "${Package}:${Triplet}"
-    Write-Host "Installing package: `"$pkgToInstall`""
+    Write-Message "Installing package: `"$pkgToInstall`""
     Invoke-Expression "$VcpkgExe install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
 }
 
@@ -43,7 +43,7 @@ function Exit-IfError {
     )
 
     if ($ExitCode -ne 0) {
-        Write-Host "Error: The last command returned an exit code of $ExitCode." 
+        Write-Message "Error: The last command returned an exit code of $ExitCode." 
         exit $ExitCode
     }
 }
@@ -117,11 +117,21 @@ function Write-Banner {
     $titleLine = "$($bannerChar * $bannerHorizontalBorderSize) $Title $(' ' * $($bannerSize - $Title.Length - ($bannerHorizontalBorderSize * 2 + 3))) $($bannerChar * $bannerHorizontalBorderSize)"
 
     [Console]::Out.Flush()
-    Write-Host ""
-    Write-Host $bannerLine
-    Write-Host $titleLine
-    Write-Host $bannerLine
+    Write-Message "$(NL)$bannerLine$(NL)$titleLine$(NL)$bannerLine"
     [Console]::Out.Flush()
+}
+
+function Write-Message {
+    param (
+        [string]$Message
+    )
+    [Console]::Out.Flush()
+    Write-Host $Message
+    [Console]::Out.Flush()
+}
+
+function NL {
+   return [System.Environment]::NewLine
 }
 
 Export-ModuleMember -Function Show-FileContent
@@ -132,6 +142,8 @@ Export-ModuleMember -Function Get-IsOnMacOS
 Export-ModuleMember -Function Get-IsOnWindowsOS
 Export-ModuleMember -Function Invoke-Powershell
 Export-ModuleMember -Function Write-Banner
+Export-ModuleMember -Function Write-Message
+Export-ModuleMember -Function NL
 
 $IsOnMacOS = Get-IsOnMacOS
 if ( $IsOnMacOS ) {

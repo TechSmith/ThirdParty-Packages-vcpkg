@@ -8,11 +8,11 @@ Import-Module "$PSScriptRoot/ps-modules/Util" -Force
 Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageDisplayName`""
 
 $jsonFilePath = "preconfigured-packages.json"
-Write-Host "Reading config from: `"$jsonFilePath`""
+Write-Message "Reading config from: `"$jsonFilePath`""
 $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
 $packageInfo = $packagesJson.packages | Where-Object { $_.name -eq $PackageDisplayName }
 if (-not $packageInfo) {
-    Write-Host "> Package not found in $jsonFilePath."
+    Write-Message "> Package not found in $jsonFilePath."
     exit
 }
 if ($env:OS -like '*win*') {
@@ -27,8 +27,7 @@ $linkType = $packageInfo.$selectedSection.linkType
 $buildType = $packageInfo.$selectedSection.buildType
 $vcpkgHash = $packageInfo.$selectedSection.vcpkgHash
 
-Write-Host ""
-Write-Host "Variables set based on config for OS `"$selectedSection`":"
+Write-Message "$(NL)Variables set based on config for OS `"$selectedSection`":"
 $allParams = @{
     PackageDisplayName = $PackageDisplayName
     packageAndFeatures = $packageAndFeatures
@@ -37,13 +36,11 @@ $allParams = @{
     ReleaseTagBaseName = $tagBaseName
     VcpkgHash = $vcpkgHash
 }
-Write-Host "Parameters:"
+Write-Message "Parameters:"
 foreach ($paramName in $allParams.Keys) {
     $paramValue = $allParams[$paramName]
     Write-Host "- $paramName`: $paramValue"
 }
 
-Write-Host ""
-Write-Host "Running build-and-stage.ps1..."
-Write-Host ""
+Write-Message "$(NL)Running build-and-stage.ps1...$(NL)"
 ./build-and-stage.ps1 -PackageAndFeatures $packageAndFeatures -LinkType $linkType -BuildType $buildType -StagedArtifactsPath $StagedArtifactsPath -ReleaseTagBaseName $tagBaseName -PackageDisplayName $PackageDisplayName -VcpkgHash $vcpkgHash

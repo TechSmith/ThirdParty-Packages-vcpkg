@@ -5,7 +5,7 @@ function ConvertTo-UniversalBinaries {
         [string]$universalDir
     )
 
-    Write-Host "Creating universal dir and copying headers..."
+    Write-Message "Creating universal dir and copying headers..."
     if (Test-Path -Path $universalDir -PathType Container) {
        Remove-Item -Path "$universalDir" -Recurse -Force | Out-Null
     }
@@ -14,17 +14,17 @@ function ConvertTo-UniversalBinaries {
     $x64LibDir = Join-Path $x64Dir "lib"
     Copy-Item -Path "$x64Dir\include" -Destination "$universalDir\include" -Recurse | Out-Null # Assume arm64 and x86_64 are identical
 
-    Write-Host "Making install paths relative..."
+    Write-Message "Making install paths relative..."
     ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "a"
     ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "dylib"
     ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "a"
     ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "dylib"
 
-    Write-Host "Making binaries universal..."
+    Write-Message "Making binaries universal..."
     $universalLibDir = Join-Path $universalDir "lib"
     New-Item -Path "$universalLibDir" -ItemType Directory -Force | Out-Null
 
-    Write-Host "Looking in: $arm64LibDir"
+    Write-Message "Looking in: $arm64LibDir"
     $items = Get-ChildItem -Path "$arm64LibDir/*" -Include "*.dylib","*.a"
     foreach($item in $items) {
         $fileName = $item.Name
@@ -33,12 +33,12 @@ function ConvertTo-UniversalBinaries {
         $destPath = (Join-Path $universalLibDir $fileName)
         
         if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-            Write-Host "> Processing: $fileName - Copying symlink"
+            Write-Message "> Processing: $fileName - Copying symlink"
             #Copy-Item -LiteralPath $srcPathArm64 -Destination $destPath -Force -Recurse
             Invoke-Expression -Command "cp -R `"$srcPathArm64`" `"$destPath`""
         }
         elseif (-not $item.PSIsContainer) {
-            Write-Host "> Processing: $filename - Running lipo"
+            Write-Message "> Processing: $filename - Running lipo"
             Invoke-Expression -Command "lipo -create -output `"$destPath`" `"$srcPathArm64`" `"$srcPathX64`""
         }
     }
@@ -49,14 +49,14 @@ function Update-LibraryPath {
         [string]$libPath
     )
 
-    Write-Host ">> Update-LibraryPath..."
+    Write-Message ">> Update-LibraryPath..."
 
     if (-not (Test-Path $libPath -PathType Leaf)) {
-        Write-Host ">> File '$libPath' does not exist."
+        Write-Message ">> File '$libPath' does not exist."
         return
     }
 
-    Write-Host ">> Updating library path for: $libPath..."
+    Write-Message ">> Updating library path for: $libPath..."
     $otoolCmd = "otool -L $libPath"
     $otoolOutput = Invoke-Expression -Command $otoolCmd
     $lines = $otoolOutput.Split([Environment]::NewLine)
@@ -81,14 +81,14 @@ function Update-LibraryPath {
         $newPath = $path.Replace($dirname, "@rpath")
         $dylibName = [System.IO.Path]::GetFileName($libPath)
 
-        Write-Host ($path + "-" + $dylibName)
+        Write-Message ($path + "-" + $dylibName)
 
         if ([System.IO.Path]::GetFileName($path) -eq $dylibName) {
-            Write-Host ">>> Changing ID"
+            Write-Message ">>> Changing ID"
             $changeCmd = "install_name_tool -id $newPath $libPath"
         }
         else {
-            Write-Host ">>> Changing path"
+            Write-Message ">>> Changing path"
             $changeCmd = "install_name_tool -change $path $newPath $libPath"
         }
 
@@ -106,7 +106,7 @@ function ConvertTo-RelativeInstallPaths {
     foreach ($libFile in $libFiles) {
         $filePath = $libFile.FullName
         $fileName = $libFile.Name
-        Write-Host ">> Processing: $fileName"
+        Write-Message ">> Processing: $fileName"
         Set-ItemProperty -Path $filePath -Name IsReadOnly -Value $false
         Update-LibraryPath -libPath $filePath
     }
@@ -133,18 +133,16 @@ Function Remove-DylibSymlinks {
         }
     }
 
-    Write-Host ""
-    Write-Host "Dynamic library dependencies before changes..."
+    Write-Message "$(NL)Dynamic library dependencies before changes..."
     foreach($main_file in $main_files) {
-        Write-Host "> $main_file"
+        Write-Message "> $main_file"
         Invoke-Expression "otool -L '$main_file' | grep '@rpath'"
     }
 
-    Write-Host ""
-    Write-Host "Updating paths to dynamic dependencies..."
+    Write-Message "$(NL)Updating paths to dynamic dependencies..."
     foreach ($main_file in $main_files) {
         # Main file
-        Write-Host ("> $main_file")
+        Write-Message ("> $main_file")
         Invoke-Expression "install_name_tool -id '@rpath/$main_file' '$main_file'"
 
         # All other files that might point to it
@@ -154,43 +152,38 @@ Function Remove-DylibSymlinks {
             if ($main_files -contains $new_dependency) {
                 Invoke-Expression "install_name_tool -change '@rpath/$possible_current_dependency' '@rpath/$new_dependency' '$main_file'"
             } else {
-                Write-Host (">> Matching main file not found for: $possible_current_dependency!!!")
+                Write-Message (">> Matching main file not found for: $possible_current_dependency!!!")
             }
         }
     }
 
-    Write-Host ""
-    Write-Host "Dynamic library dependenies after changes..."
+    Write-Message "$(NL)Dynamic library dependenies after changes..."
     foreach($main_file in $main_files) {
-        Write-Host "> $main_file"
+        Write-Message "> $main_file"
         Invoke-Expression "otool -L '$main_file' | grep '@rpath'"
     }
 
-    Write-Host ""
-    Write-Host "Removing unused symlinks..."
+    Write-Message "$(NL)Removing unused symlinks..."
     $files = Get-ChildItem -File -Recurse
     foreach ($file in $files) {
         if ($file.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-            Write-Host "Removing symlink: $($file.FullName)"
+            Write-Message "Removing symlink: $($file.FullName)"
             Remove-Item $file.FullName
         }
     }
 
     # Rename files to the "main" filename we want
-    Write-Host ""
-    Write-Host "Renaming files..."
+    Write-Message "$(NL)Renaming files..."
     $files = Get-ChildItem -File -Recurse
     foreach ($file in $files) {
         $old_filename = $file.Name
         $base_filename = ($old_filename -split '[^a-zA-Z0-9]')[0] # Discard anything after the first non-alphanumeric character
         $new_filename = "$base_filename" + [System.IO.Path]::GetExtension($file)
-        Write-Host "$old_filename ==> $new_filename"
+        Write-Message "$old_filename ==> $new_filename"
         Move-Item -Path $file.Name -Destination $new_filename
     }
 
     Pop-Location
-
-
 }
 
 Export-ModuleMember -Function ConvertTo-UniversalBinaries
