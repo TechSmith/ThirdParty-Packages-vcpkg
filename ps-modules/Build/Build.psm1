@@ -65,7 +65,7 @@ function Initialize-Variables {
    if ($isOnWindowsOS) {
        $osName = "Windows"
        $vcpkgExe = "./vcpkg/vcpkg.exe"
-       $vcpkgCacheDir = "$env:LocalAppData\vcpkg\archives"
+       $vcpkgCacheDir = "$env:LocalAppData/vcpkg/archives"
        $vcpkgBootstrapScript = "./bootstrap-vcpkg.bat"
        $triplets += "x64-windows-$linkType-$buildType"
        $preStagePath = "vcpkg/installed/$($triplets[0])"

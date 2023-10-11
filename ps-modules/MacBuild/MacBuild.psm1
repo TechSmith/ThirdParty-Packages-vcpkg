@@ -13,7 +13,7 @@ function ConvertTo-UniversalBinaries {
     New-Item -Path "$universalDir" -ItemType Directory -Force | Out-Null
     $arm64LibDir = Join-Path $arm64Dir "lib"
     $x64LibDir = Join-Path $x64Dir "lib"
-    Copy-Item -Path "$x64Dir\include" -Destination "$universalDir\include" -Recurse | Out-Null # Assume arm64 and x86_64 are identical
+    Copy-Item -Path "$x64Dir/include" -Destination "$universalDir/include" -Recurse | Out-Null # Assume arm64 and x86_64 are identical
 
     Write-Debug "Making install paths relative..."
     ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "a"

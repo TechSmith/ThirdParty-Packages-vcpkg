@@ -109,10 +109,10 @@ stages:
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
-          Move-Item -Path ".\mac\*" -Destination . -Force
-          Remove-Item -Path ".\mac" -Recurse -Force
-          Move-Item -Path ".\win\*" -Destination . -Force
-          Remove-Item -Path ".\win" -Recurse -Force
+          Move-Item -Path "./mac/*" -Destination . -Force
+          Remove-Item -Path "./mac" -Recurse -Force
+          Move-Item -Path "./win/*" -Destination . -Force
+          Remove-Item -Path "./win" -Recurse -Force
 
     - task: CopyFiles@2
       displayName: 'Stage artifacts'
