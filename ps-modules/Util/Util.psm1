@@ -112,7 +112,7 @@ function Write-Banner {
     $bannerChar = $bannerChars[$Level - 1]
     $bannerHorizontalBorderSize = $bannerHorizontalBorderSizes[$Level - 1]
     $bannerLine = $bannerChar * $bannerSize
-    $titleLine = "$($bannerChar * $bannerHorizontalBorderSize) $Title $(' ' * $($bannerSize - $Title.Length - ($bannerHorizontalBorderSize * 2 + 3))) $($bannerChar * $bannerHorizontalBorderSize)"
+    $titleLine = "$($bannerChar * $bannerHorizontalBorderSize) $Title"
 
     [Console]::Out.Flush()
     Write-Message "$(NL)$bannerLine$(NL)$titleLine$(NL)$bannerLine"
