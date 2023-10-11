@@ -150,6 +150,23 @@ function Get-PackageInfo
     return $pkg.$selectedSection
 }
 
+function Get-PSObjectAsFormattedList
+{
+    param(
+        [PSObject]$Object
+    )
+
+    $output = ""
+    $count = 0
+    $keys = $Object.Keys | Sort-Object $_
+    foreach ($key in $keys) {
+        $value = $Object[$key]
+        $output += "$(if($count -gt 0) { NL } )- $key`: $value"
+        $count++
+    }
+    return $output
+}
+
 Export-ModuleMember -Function Show-FileContent
 Export-ModuleMember -Function Install-FromVcpkg
 Export-ModuleMember -Function Exit-IfError
@@ -161,6 +178,7 @@ Export-ModuleMember -Function Write-Banner
 Export-ModuleMember -Function Write-Message
 Export-ModuleMember -Function NL
 Export-ModuleMember -Function Get-PackageInfo
+Export-ModuleMember -Function Get-PSObjectAsFormattedList
 
 $IsOnMacOS = Get-IsOnMacOS
 if ( $IsOnMacOS ) {
