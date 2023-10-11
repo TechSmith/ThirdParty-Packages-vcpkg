@@ -1,8 +1,6 @@
-Import-Module "$PSScriptRoot/../../ps-modules/Util"
+Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
 
-$IsOnMacOS = Get-IsOnMacOS
-
-if(-not $IsOnMacOS) {
+if(-not (Get-IsOnMacOS)) {
     Write-Host "The step is only required for MacOS.  Skipping step..."
     exit
 }

@@ -1,13 +1,46 @@
-Import-Module "$PSScriptRoot/../../ps-modules/Util" -DisableNameChecking
+Import-Module "$PSScriptRoot/../../ps-modules/Util" -Force -DisableNameChecking
 
-function Write-Debug { 
+function Install-FromVcpkg {
     param(
-       [string]$message,
-       [switch]$showDebug = $false
+        [string] $Package,
+        [string] $Triplet,
+        [string] $VcpkgExe
     )
-    if($showDebug) {
-        Write-Message $message
+
+    $pkgToInstall = "${Package}:${Triplet}"
+    Write-Message "Installing package: `"$pkgToInstall`""
+    Invoke-Expression "$VcpkgExe install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
+}
+
+function Write-ReleaseInfoJson {
+    param(
+        [string] $PackageName,
+        [string] $Version,
+        [string] $PathToJsonFile
+    )
+    $releaseInfo = @{
+        packageName = $PackageName
+        version = $Version
     }
+    $releaseInfo | ConvertTo-Json | Set-Content -Path $PathToJsonFile
+}
+
+function Get-PackageInfo
+{
+    param(
+        [string]$PackageName
+    )
+    $jsonFilePath = "preconfigured-packages.json"
+    Write-Message "Reading config from: `"$jsonFilePath`""
+    $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
+    $pkg = $packagesJson.packages | Where-Object { $_.name -eq $PackageName }
+    if (-not $pkg) {
+        Write-Message "> Package not found in $jsonFilePath."
+        exit
+    }
+    $IsOnWindowsOS = Get-IsOnWindowsOS
+    $selectedSection = if ($IsOnWindowsOS) { "win" } else { "mac" }
+    return $pkg.$selectedSection
 }
 
 function Initialize-Variables {
@@ -125,21 +158,6 @@ function Setup-Vcpkg {
    }
 }
 
-function Run-ScriptIfExists {
-   param(
-      [string]$title,
-      [string]$script,
-      [PSObject]$scriptArgs,
-      [switch]$showDebug = $false
-   )
-   if ( -not (Test-Path -Path $script -PathType Leaf) ) {
-      return
-   }
-   Write-Banner -Level 3 -Title $title
-   Write-Debug -showDebug:$showDebug -message "> Executing: $script"
-   Invoke-Powershell -FilePath $script -ArgumentList $scriptArgs
-}
-
 function Run-PreBuildScriptIfExists {
    param(
       $script,
@@ -240,8 +258,17 @@ Export-ModuleMember -Function Run-PostBuildScriptIfExists
 Export-ModuleMember -Function Install-Package
 Export-ModuleMember -Function ConvertTo-UniversalBinaryIfOnMac
 Export-ModuleMember -Function Stage-Artifacts
+Export-ModuleMember -Function Get-PackageInfo
 
 Export-ModuleMember -Function Write-Banner
 Export-ModuleMember -Function Write-Message
 Export-ModuleMember -Function NL
 Export-ModuleMember -Function Get-PSObjectAsFormattedList
+Export-ModuleMember -Function Get-IsOnMacOS
+Export-ModuleMember -Function Get-IsOnWindowsOS
+
+if ( (Get-IsOnMacOS) ) {
+   Import-Module "$PSScriptRoot/../../ps-modules/MacBuild"
+   Export-ModuleMember -Function ConvertTo-UniversalBinaries
+   Export-ModuleMember -Function Remove-DylibSymlinks
+}

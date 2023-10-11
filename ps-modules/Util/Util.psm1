@@ -25,18 +25,6 @@ function Show-FileContent {
     Write-Message "--END-------------------------------------------------------"
 }
 
-function Install-FromVcpkg {
-    param(
-        [string] $Package,
-        [string] $Triplet,
-        [string] $VcpkgExe
-    )
-
-    $pkgToInstall = "${Package}:${Triplet}"
-    Write-Message "Installing package: `"$pkgToInstall`""
-    Invoke-Expression "$VcpkgExe install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
-}
-
 function Exit-IfError {
     param (
         [int]$ExitCode
@@ -46,19 +34,6 @@ function Exit-IfError {
         Write-Message "Error: The last command returned an exit code of $ExitCode." 
         exit $ExitCode
     }
-}
-
-function Write-ReleaseInfoJson {
-    param(
-        [string] $PackageName,
-        [string] $Version,
-        [string] $PathToJsonFile
-    )
-    $releaseInfo = @{
-        packageName = $PackageName
-        version = $Version
-    }
-    $releaseInfo | ConvertTo-Json | Set-Content -Path $PathToJsonFile
 }
 
 function Get-IsOnWindowsOS {
@@ -132,24 +107,6 @@ function NL {
    return [System.Environment]::NewLine
 }
 
-function Get-PackageInfo
-{
-    param(
-        [string]$PackageName
-    )
-    $jsonFilePath = "preconfigured-packages.json"
-    Write-Message "Reading config from: `"$jsonFilePath`""
-    $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
-    $pkg = $packagesJson.packages | Where-Object { $_.name -eq $PackageName }
-    if (-not $pkg) {
-        Write-Message "> Package not found in $jsonFilePath."
-        exit
-    }
-    $IsOnWindowsOS = Get-IsOnWindowsOS
-    $selectedSection = if ($IsOnWindowsOS) { "win" } else { "mac" }
-    return $pkg.$selectedSection
-}
-
 function Get-PSObjectAsFormattedList
 {
     param(
@@ -167,6 +124,31 @@ function Get-PSObjectAsFormattedList
     return $output
 }
 
+function Write-Debug { 
+    param(
+       [string]$message,
+       [switch]$showDebug = $false
+    )
+    if($showDebug) {
+        Write-Message $message
+    }
+}
+
+function Run-ScriptIfExists {
+   param(
+      [string]$title,
+      [string]$script,
+      [PSObject]$scriptArgs,
+      [switch]$showDebug = $false
+   )
+   if ( -not (Test-Path -Path $script -PathType Leaf) ) {
+      return
+   }
+   Write-Banner -Level 3 -Title $title
+   Write-Debug -showDebug:$showDebug -message "> Executing: $script"
+   Invoke-Powershell -FilePath $script -ArgumentList $scriptArgs
+}
+
 Export-ModuleMember -Function Show-FileContent
 Export-ModuleMember -Function Install-FromVcpkg
 Export-ModuleMember -Function Exit-IfError
@@ -176,13 +158,7 @@ Export-ModuleMember -Function Get-IsOnWindowsOS
 Export-ModuleMember -Function Invoke-Powershell
 Export-ModuleMember -Function Write-Banner
 Export-ModuleMember -Function Write-Message
+Export-ModuleMember -Function Write-Debug
 Export-ModuleMember -Function NL
-Export-ModuleMember -Function Get-PackageInfo
 Export-ModuleMember -Function Get-PSObjectAsFormattedList
-
-$IsOnMacOS = Get-IsOnMacOS
-if ( $IsOnMacOS ) {
-   Import-Module "$PSScriptRoot/../../ps-modules/MacUtil"
-   Export-ModuleMember -Function ConvertTo-UniversalBinaries
-   Export-ModuleMember -Function Remove-DylibSymlinks
-}
+Export-ModuleMember -Function Run-ScriptIfExists

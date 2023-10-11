@@ -4,7 +4,7 @@ param(
     [switch]$ShowDebug = $false
 )
 
-Import-Module "$PSScriptRoot/ps-modules/Util" -Force
+Import-Module "$PSScriptRoot/ps-modules/Build" -Force -DisableNameChecking
  
 Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageName`""
 $pkg = Get-PackageInfo -PackageName $PackageName

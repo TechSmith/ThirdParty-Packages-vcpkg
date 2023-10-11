@@ -8,7 +8,7 @@ param(
     [switch]$ShowDebug = $false                              # Show additional debugging information
 )
 
-Import-Module "$PSScriptRoot/ps-modules/BuildAndStage" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot/ps-modules/Build" -Force -DisableNameChecking
 
 Write-Banner -Level 2 -Title "Starting vcpkg install for: $PackageAndFeatures"
 Write-Message "Params:"

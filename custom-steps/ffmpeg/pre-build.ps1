@@ -1,4 +1,4 @@
-Import-Module "$PSScriptRoot/../../ps-modules/Util"
+Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
 
 $IsOnMacOS = Get-IsOnMacOS
 
