@@ -21,6 +21,6 @@ Run-PreBuildScriptIfExists -script $vars.prebuildScript
 Install-Package -vcpkgExe $vars.vcpkgExe -package $PackageAndFeatures -triplets $vars.triplets
 Create-FinalArtifacts -x64Dir $vars.macX64Dir -arm64Dir $vars.macArm64Dir -preStagePath $vars.preStagePath
 Run-PostBuildScriptIfExists -script $vars.postbuildScript -preStagePath $vars.preStagePath
-Stage-Artifacts -vcPkgExe $vars.vcpkgExe -preStagePath $vars.preStagePath -stagePath $vars.stagePath -artifactName $vars.artifactName
+Stage-Artifacts -vcPkgExe $vars.vcpkgExe -preStagePath $vars.preStagePath -stagePath $vars.stagePath -packageNameOnly $vars.packageNameOnly -artifactName $vars.artifactName
 
 Write-Message "$(NL)$(NL)Done."

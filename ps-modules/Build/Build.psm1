@@ -208,6 +208,7 @@ function Stage-Artifacts {
       $vcpkgExe,
       $preStagePath,
       $stagePath,
+      $packageNameOnly,
       $artifactName
    )
    
@@ -225,7 +226,7 @@ function Stage-Artifacts {
    Write-Debug "Generating: `"$packageInfoFilename`"..."
    $dependenciesJson = Get-Content -Raw -Path "$stagePath/$artifactName/$dependenciesFilename" | ConvertFrom-Json
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
-   Write-ReleaseInfoJson -PackageName $packageName -Version $packageVersion -PathToJsonFile "$stagePath/$artifactName/$packageInfoFilename"
+   Write-ReleaseInfoJson -PackageName $packageNameOnly -Version $packageVersion -PathToJsonFile "$stagePath/$artifactName/$packageInfoFilename"
    
    # TODO: Add info in this file on where each package was downloaded from
    # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)
