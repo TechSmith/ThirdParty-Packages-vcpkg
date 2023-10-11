@@ -19,7 +19,7 @@ $vars = Initialize-Variables -packageAndFeatures $PackageAndFeatures -linkType $
 Setup-VcPkg -repo $vars.vcpkgRepo -repoHash $vars.vcpkgRepoHash -installDir $vars.vcpkgInstallDir -cacheDir $vars.vcpkgCacheDir -bootstrapScript $vars.vcpkgBootstrapScript
 Run-PreBuildScriptIfExists -script $vars.prebuildScript
 Install-Package -vcpkgExe $vars.vcpkgExe -package $PackageAndFeatures -triplets $vars.triplets
-ConvertTo-UniversalBinaryIfOnMac -vcpkgInstallDir $vcpkgInstallDir -preStagePath $vars.preStagePath -x64Dir $vars.macX64Dir -arm64Dir $vars.macArm64Dir
+Create-FinalArtifacts -x64Dir $vars.macX64Dir -arm64Dir $vars.macArm64Dir -preStagePath $vars.preStagePath
 Run-PostBuildScriptIfExists -script $vars.postbuildScript -preStagePath $vars.preStagePath
 Stage-Artifacts -vcPkgExe $vars.vcpkgExe -preStagePath $vars.preStagePath -stagePath $vars.stagePath -artifactName $vars.artifactName
 

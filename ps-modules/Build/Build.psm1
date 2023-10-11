@@ -192,17 +192,15 @@ function Install-Package
    }
 }
 
-function ConvertTo-UniversalBinaryIfOnMac {
+function Create-FinalArtifacts {
    param(
-      [string]$vcpkgInstallDir,
-      [string]$preStagePath,
       [string]$arm64Dir,
-      [string]$x64Dir
+      [string]$x64Dir,
+      [string]$preStagePath
    )
-   if (-not (Get-isOnMacOS)) { return }
-   Write-Banner -Level 3 -Title "Creating universal binary"
-   Write-Debug "$arm64Dir, $x64Dir ==> $preStagePath"
-   ConvertTo-UniversalBinaries -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
+   if (-not (Get-isOnMacOS)) { return } # This is only required on Mac
+   Write-Banner -Level 3 -Title "Creating final Mac artifacts"
+   Create-FinalMacArtifacts -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
 }
 
 function Stage-Artifacts {
@@ -249,7 +247,7 @@ Export-ModuleMember -Function Setup-Vcpkg
 Export-ModuleMember -Function Run-PreBuildScriptIfExists
 Export-ModuleMember -Function Run-PostBuildScriptIfExists
 Export-ModuleMember -Function Install-Package
-Export-ModuleMember -Function ConvertTo-UniversalBinaryIfOnMac
+Export-ModuleMember -Function Create-FinalArtifacts
 Export-ModuleMember -Function Stage-Artifacts
 Export-ModuleMember -Function Get-PackageInfo
 
@@ -261,7 +259,6 @@ Export-ModuleMember -Function Get-IsOnMacOS
 Export-ModuleMember -Function Get-IsOnWindowsOS
 
 if ( (Get-IsOnMacOS) ) {
-   Import-Module "$PSScriptRoot/../../ps-modules/MacBuild"
-   Export-ModuleMember -Function ConvertTo-UniversalBinaries
+   Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking
    Export-ModuleMember -Function Remove-DylibSymlinks
 }

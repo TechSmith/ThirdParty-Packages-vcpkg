@@ -1,48 +1,72 @@
-function ConvertTo-UniversalBinaries {
+function Create-UniversalDir {
+    param(
+       $universalDir
+    )
+    if (Test-Path -Path $universalDir -PathType Container) {
+       Write-Debug "Removing universal dir..."
+       Remove-Item -Path "$universalDir" -Recurse -Force | Out-Null
+    }
+    Write-Debug "Creating universal dir..."
+    New-Item -Path "$universalDir" -ItemType Directory -Force | Out-Null
+}
+
+function Update-LibsToRelativePaths {
+   param(
+      [string]$arm64LibDir,
+      [string]$x64LibDir
+   )
+   Write-Debug "Making install paths relative..."
+   ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "a"
+   ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "dylib"
+   ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "a"
+   ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "dylib"
+}
+
+function Create-UniversalBinaries {
+   param(
+      [string]$arm64LibDir,
+      [string]$x64LibDir,
+      [string]$universalLibDir
+   )
+   Write-Debug "Making binaries universal..."
+   $universalLibDir = (Join-Path $universalDir "lib")
+   New-Item -Path "$universalLibDir" -ItemType Directory -Force | Out-Null
+
+   Write-Debug "Looking in: $arm64LibDir"
+   $items = Get-ChildItem -Path "$arm64LibDir/*" -Include "*.dylib","*.a"
+   foreach($item in $items) {
+       $fileName = $item.Name
+       $srcPathArm64 = $item.FullName
+       $srcPathX64 = (Join-Path $x64LibDir $fileName)
+       $destPath = (Join-Path $universalLibDir $fileName)
+       
+       if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+           Write-Debug "> Processing: $fileName - Copying symlink"
+           Invoke-Expression -Command "cp -R `"$srcPathArm64`" `"$destPath`""
+       }
+       elseif (-not $item.PSIsContainer) {
+           Write-Debug "> Processing: $filename - Running lipo"
+           Invoke-Expression -Command "lipo -create -output `"$destPath`" `"$srcPathArm64`" `"$srcPathX64`""
+       }
+   }
+}
+
+function Create-FinalMacArtifacts {
     param (
         [string]$arm64Dir,
         [string]$x64Dir,
         [string]$universalDir
     )
-    Write-Message "Combining binaries into universal binaries..."
-
+    Write-Message "$arm64Dir, $x64Dir ==> $preStagePath"
+    
+    Create-UniversalDir $universalDir
     Write-Debug "Creating universal dir and copying headers..."
-    if (Test-Path -Path $universalDir -PathType Container) {
-       Remove-Item -Path "$universalDir" -Recurse -Force | Out-Null
-    }
-    New-Item -Path "$universalDir" -ItemType Directory -Force | Out-Null
-    $arm64LibDir = Join-Path $arm64Dir "lib"
-    $x64LibDir = Join-Path $x64Dir "lib"
     Copy-Item -Path "$x64Dir/include" -Destination "$universalDir/include" -Recurse | Out-Null # Assume arm64 and x86_64 are identical
 
-    Write-Debug "Making install paths relative..."
-    ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "a"
-    ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "dylib"
-    ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "a"
-    ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "dylib"
-
-    Write-Debug "Making binaries universal..."
-    $universalLibDir = Join-Path $universalDir "lib"
-    New-Item -Path "$universalLibDir" -ItemType Directory -Force | Out-Null
-
-    Write-Debug "Looking in: $arm64LibDir"
-    $items = Get-ChildItem -Path "$arm64LibDir/*" -Include "*.dylib","*.a"
-    foreach($item in $items) {
-        $fileName = $item.Name
-        $srcPathArm64 = $item.FullName
-        $srcPathX64 = (Join-Path $x64LibDir $fileName)
-        $destPath = (Join-Path $universalLibDir $fileName)
-        
-        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-            Write-Debug "> Processing: $fileName - Copying symlink"
-            #Copy-Item -LiteralPath $srcPathArm64 -Destination $destPath -Force -Recurse
-            Invoke-Expression -Command "cp -R `"$srcPathArm64`" `"$destPath`""
-        }
-        elseif (-not $item.PSIsContainer) {
-            Write-Debug "> Processing: $filename - Running lipo"
-            Invoke-Expression -Command "lipo -create -output `"$destPath`" `"$srcPathArm64`" `"$srcPathX64`""
-        }
-    }
+    $arm64LibDir = (Join-Path $arm64Dir "lib")
+    $x64LibDir = (Join-Path $x64Dir "lib")
+    Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
+    Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalDir $universalDir
 }
 
 function Update-LibraryPath {
@@ -196,5 +220,5 @@ function Remove-DylibSymlinks {
     Pop-Location
 }
 
-Export-ModuleMember -Function ConvertTo-UniversalBinaries
+Export-ModuleMember -Function Create-FinalMacArtifacts
 Export-ModuleMember -Function Remove-DylibSymlinks
