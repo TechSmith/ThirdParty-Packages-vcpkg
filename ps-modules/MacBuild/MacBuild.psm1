@@ -113,7 +113,21 @@ function ConvertTo-RelativeInstallPaths {
     }
 }
 
-Function Remove-DylibSymlinks {
+function Debug-WriteLibraryDependencies {
+   param(
+      [PSObject]$files
+   )
+   if (-not $global:showDebug) {
+      return
+   }
+
+   foreach($mainFile in $mainFiles) {
+      Write-Message "> $mainFile"
+      Invoke-Expression "otool -L '$mainFile' | grep '@rpath'"
+   }
+}
+
+function Remove-DylibSymlinks {
     param (
         [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
     )
@@ -136,10 +150,7 @@ Function Remove-DylibSymlinks {
     }
 
     Write-Debug "$(NL)Dynamic library dependencies before changes..."
-    foreach($mainFile in $mainFiles) {
-        Write-Debug "> $mainFile"
-        Write-Debug (Invoke-Expression "otool -L '$mainFile' | grep '@rpath'")
-    }
+    Debug-WriteLibraryDependencies $mainFiles
 
     Write-Debug "$(NL)Updating paths to dynamic dependencies..."
     foreach ($mainFile in $mainFiles) {
@@ -160,10 +171,7 @@ Function Remove-DylibSymlinks {
     }
 
     Write-Debug "$(NL)Dynamic library dependenies after changes..."
-    foreach($mainFile in $mainFiles) {
-        Write-Debug "> $mainFile"
-        Invoke-Expression "otool -L '$mainFile' | grep '@rpath'"
-    }
+    Debug-WriteLibraryDependencies $mainFiles
 
     Write-Debug "$(NL)Removing unused symlinks..."
     $files = Get-ChildItem -File -Recurse
