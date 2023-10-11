@@ -1,12 +1,7 @@
 Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
 
-$IsOnMacOS = Get-IsOnMacOS
-
-if(-not $IsOnMacOS) {
-    Write-Host "The step is only required for MacOS.  Skipping step..."
+if (-not (Get-IsOnMacOS)) {
     exit
 }
-
-Write-Host "Running pre-build script..."
-Write-Host "> Installing nasm..."
+Write-Message "Installing nasm..."
 brew install nasm

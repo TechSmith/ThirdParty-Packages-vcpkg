@@ -1,14 +1,13 @@
+# This script is here just for testing purposes
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
 )
 
 Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
 
-$IsOnMacOS = Get-IsOnMacOS
-
-if(-not $IsOnMacOS) {
-    Write-Host "The step is only required for MacOS.  Skipping step..."
+Write-Message "Test: Running post-build script..."
+if (-not (Get-IsOnMacOS)) {
+    Write-Message "> Running on Windows!"
     exit
 }
-
-Write-Host "Running post-build script..."
+Write-Message "> Running on Mac!"

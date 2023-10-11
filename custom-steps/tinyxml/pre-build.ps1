@@ -1,8 +1,9 @@
+# This script is here just for testing purposes
 Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
 
-if(-not (Get-IsOnMacOS)) {
-    Write-Host "The step is only required for MacOS.  Skipping step..."
+Write-Message "Test: Running pre-build script..."
+if (-not (Get-IsOnMacOS)) {
+    Write-Message "> Running on Windows!"
     exit
 }
-
-Write-Host "Running pre-build script..."
+Write-Message "> Running on Mac!"
