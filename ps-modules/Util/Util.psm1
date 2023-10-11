@@ -126,10 +126,9 @@ function Get-PSObjectAsFormattedList
 
 function Write-Debug { 
     param(
-       [string]$message,
-       [switch]$showDebug = $false
+       [string]$message
     )
-    if($showDebug) {
+    if($global:showDebug) {
         Write-Message $message
     }
 }
@@ -138,14 +137,13 @@ function Run-ScriptIfExists {
    param(
       [string]$title,
       [string]$script,
-      [PSObject]$scriptArgs,
-      [switch]$showDebug = $false
+      [PSObject]$scriptArgs
    )
    if ( -not (Test-Path -Path $script -PathType Leaf) ) {
       return
    }
    Write-Banner -Level 3 -Title $title
-   Write-Debug -showDebug:$showDebug -message "> Executing: $script"
+   Write-Debug "> Executing: $script"
    Invoke-Powershell -FilePath $script -ArgumentList $scriptArgs
 }
 

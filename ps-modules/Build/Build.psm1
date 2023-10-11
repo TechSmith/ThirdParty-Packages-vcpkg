@@ -50,8 +50,7 @@ function Initialize-Variables {
       [string]$packageName = "",
       [string]$buildType = "release",
       [string]$stagedArtifactsPath = "StagedArtifacts",
-      [string]$vcpkgHash = "",
-      [switch]$showDebug = $false
+      [string]$vcpkgHash = ""
    )
 
    $vcpkgRepo = "https://github.com/TechSmith/vcpkg.git"
@@ -104,8 +103,8 @@ function Initialize-Variables {
        $vars.macArm64Dir = "$vcpkgInstallDir/installed/$($triplets[0])"
        $vars.macX64Dir = "$vcpkgInstallDir/installed/$($triplets[1])"
    }
-   Write-Debug -showDebug:$showDebug -message "$(NL)Initialized vars:"
-   Write-Debug -showDebug:$showDebug -message (Get-PSObjectAsFormattedList -Object $vars)
+   Write-Debug "$(NL)Initialized vars:"
+   Write-Debug (Get-PSObjectAsFormattedList -Object $vars)
    return $vars
 }
 
@@ -115,43 +114,42 @@ function Setup-Vcpkg {
       [string]$repoHash,
       [string]$installDir,
       [string]$cacheDir,
-      [string]$bootstrapScript,
-      [switch]$showDebug = $false
+      [string]$bootstrapScript
    )
    Write-Banner -Level 3 -Title "Setting up vcpkg"
    Write-Message "Removing vcpkg..."
-   Write-Debug -showDebug:$showDebug -message "> Removing vcpkg system cache..."
-   Write-Debug -showDebug:$showDebug -message ">> Looking for user-specific vcpkg cache dir: $cacheDir"
+   Write-Debug "> Removing vcpkg system cache..."
+   Write-Debug ">> Looking for user-specific vcpkg cache dir: $cacheDir"
    if (Test-Path -Path $cacheDir -PathType Container) {
-      Write-Debug -showDebug:$showDebug -message ">> Deleting dir: $cacheDir"
+      Write-Debug ">> Deleting dir: $cacheDir"
       Remove-Item -Path $cacheDir -Recurse -Force
    } else {
-      Write-Debug -showDebug:$showDebug -message ">> Directory not found: $cacheDir"
+      Write-Debug ">> Directory not found: $cacheDir"
    }    
-   Write-Debug -showDebug:$showDebug -message "> Removing dir: vcpkg"
+   Write-Debug "> Removing dir: vcpkg"
    if (Test-Path -Path $installDir -PathType Container) {
-      Write-Debug -showDebug:$showDebug -message ">> Directory found. Deleting: $installDir"
+      Write-Debug ">> Directory found. Deleting: $installDir"
       Remove-Item -Path $installDir -Recurse -Force
    } else {
-      Write-Debug -showDebug:$showDebug -message ">> Directory not found: $installDir, skipping step."
+      Write-Debug ">> Directory not found: $installDir, skipping step."
    }
 
    Write-Message "$(NL)Installing vcpkg..."
    if (Test-Path -Path $installDir -PathType Container) {
-       Write-Debug -showDebug:$showDebug -message "> Directory already exists: $installDir!!!"
+       Write-Debug "> Directory already exists: $installDir!!!"
    }
    else
    {
-       Write-Debug -showDebug:$showDebug -message "> Cloning repo: $repo"
+       Write-Debug "> Cloning repo: $repo"
        git clone $repo
        if ($repoHash -ne "") {
-           Write-Debug -showDebug:$showDebug -message ">> Checking out hash: $repoHash"
+           Write-Debug ">> Checking out hash: $repoHash"
            Push-Location vcpkg
            git checkout $repoHash
            Pop-Location
        }
 
-       Write-Debug -showDebug:$showDebug -message "> Bootstrapping vcpkg..."
+       Write-Debug "> Bootstrapping vcpkg..."
        Push-Location $installDir
        Invoke-Expression "$bootstrapScript"
        Pop-Location
@@ -160,8 +158,7 @@ function Setup-Vcpkg {
 
 function Run-PreBuildScriptIfExists {
    param(
-      $script,
-      [switch]$showDebug = $false
+      $script
    )
    Run-ScriptIfExists -title "Pre-build step" -script $script
 }
@@ -169,8 +166,7 @@ function Run-PreBuildScriptIfExists {
 function Run-PostBuildScriptIfExists {
    param(
       $script,
-      $preStagePath,
-      [switch]$showDebug = $false
+      $preStagePath
    )
    $scriptArgs = @{ BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/') }
    Run-ScriptIfExists -title "Post-build step" -script $script -scriptArgs $scriptArgs
@@ -181,8 +177,7 @@ function Install-Package
    param(
       [string]$vcpkgExe,
       [string]$package,
-      [PSObject]$triplets,
-      [switch]$showDebug = $false
+      [PSObject]$triplets
    )
    Write-Banner -Level 3 -Title "Installing package: $package"
    $tripletCount = $triplets.Length
@@ -202,12 +197,11 @@ function ConvertTo-UniversalBinaryIfOnMac {
       [string]$vcpkgInstallDir,
       [string]$preStagePath,
       [string]$arm64Dir,
-      [string]$x64Dir,
-      [switch]$showDebug = $false
+      [string]$x64Dir
    )
    if (-not (Get-isOnMacOS)) { return }
    Write-Banner -Level 3 -Title "Creating universal binary"
-   Write-Debug -showDebug:$showDebug -message "$arm64Dir, $x64Dir ==> $preStagePath"
+   Write-Debug "$arm64Dir, $x64Dir ==> $preStagePath"
    ConvertTo-UniversalBinaries -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
 }
 
@@ -216,22 +210,21 @@ function Stage-Artifacts {
       $vcpkgExe,
       $preStagePath,
       $stagePath,
-      $artifactName,
-      [switch]$showDebug = $false
+      $artifactName
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
-   Write-Debug -showDebug:$showDebug -message "Creating dir: $artifactName"
+   Write-Debug "Creating dir: $artifactName"
    New-Item -Path $stagePath/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
-   Write-Debug -showDebug:$showDebug -message "Generating: `"$dependenciesFilename`"..."
-   Write-Debug -showDebug:$showDebug -message "> $stagePath/$artifactName/$dependenciesFilename"
+   Write-Debug "Generating: `"$dependenciesFilename`"..."
+   Write-Debug "> $stagePath/$artifactName/$dependenciesFilename"
    Invoke-Expression "$vcpkgExe list --x-json > $stagePath/$artifactName/$dependenciesFilename"
 
    $packageInfoFilename = "package.json"
-   Write-Debug -showDebug:$showDebug -message "Generating: `"$packageInfoFilename`"..."
+   Write-Debug "Generating: `"$packageInfoFilename`"..."
    $dependenciesJson = Get-Content -Raw -Path "$stagePath/$artifactName/$dependenciesFilename" | ConvertFrom-Json
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
    Write-ReleaseInfoJson -PackageName $packageName -Version $packageVersion -PathToJsonFile "$stagePath/$artifactName/$packageInfoFilename"
@@ -247,7 +240,7 @@ function Stage-Artifacts {
    Write-Message "Compressing: `"$artifactName`" =`> `"$artifactArchive`""
    tar -czf "$stagePath/$artifactArchive" -C "$stagePath/$artifactName" .
    
-   Write-Debug -showDebug:$showDebug -message "Deleting: `"$artifactName`""
+   Write-Debug "Deleting: `"$artifactName`""
    Remove-Item -Path "$stagePath/$artifactName" -Recurse -Force
 }
 
