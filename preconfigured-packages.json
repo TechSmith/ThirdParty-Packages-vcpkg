@@ -4,12 +4,12 @@
       "name": "ffmpeg",
       "tag": "ffmpeg",
       "mac": {
-        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib]",
+        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib]",
+        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
         "buildType": "release"
       }
