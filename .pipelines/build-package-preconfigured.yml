@@ -13,6 +13,7 @@ parameters:
   - ffmpeg
   - libpng
   - openssl-static
+  - opencv4
   - pango
   - tinyxml
 
