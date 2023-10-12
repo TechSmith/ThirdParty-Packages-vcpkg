@@ -53,6 +53,19 @@
       }
     },
     {
+      "name": "opencv4",
+      "mac": {
+        "package": "opencv4[core,dnn,quirc]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "opencv4[core,dnn,quirc]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "tinyxml",
       "mac": {
         "package": "tinyxml",
