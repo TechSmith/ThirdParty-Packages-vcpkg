@@ -5,14 +5,12 @@
       "mac": {
         "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
-        "buildType": "release",
-        "vcpkgHash": "0695a7d231daf2b72c2851faea45c46c9ec5bf1a"
+        "buildType": "release"
       },
       "win": {
         "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
-        "buildType": "release",
-        "vcpkgHash": "0695a7d231daf2b72c2851faea45c46c9ec5bf1a"
+        "buildType": "release"
       }
     },
     {
