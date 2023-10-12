@@ -47,7 +47,7 @@ set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetec
 # <Additional custom TechSmith options>
 set(OPTIONS "${OPTIONS} --disable-encoders --disable-decoders --disable-gpl")
 if(VCPKG_TARGET_IS_WINDOWS)
-   set(OPTIONS "${OPTIONS} --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices")
+   set(OPTIONS "${OPTIONS} --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
    set(OPTIONS "${OPTIONS} --enable-encoder=libmp3lame --enable-decoder=hevc,mp3*,pcm* --enable-muxer=mp3 --enable-demuxer=hevc,mov,mp3,mp4 --enable-hwaccel=hevc_d3d*")
 elseif(VCPKG_TARGET_IS_OSX)
    set(OPTIONS "${OPTIONS} --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
