@@ -2,21 +2,19 @@
   "packages": [
     {
       "name": "ffmpeg",
-      "tag": "ffmpeg",
       "mac": {
-        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib]",
+        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib]",
+        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
         "buildType": "release"
       }
     },
     {
       "name": "libpng",
-      "tag": "libpng",
       "mac": {
         "package": "libpng",
         "linkType": "dynamic",
@@ -29,8 +27,7 @@
       }
     },
     {
-      "name": "openssl (static)",
-      "tag": "openssl-static",
+      "name": "openssl-static",
       "mac": {
         "package": "openssl",
         "linkType": "static",
@@ -44,7 +41,6 @@
     },
     {
       "name": "pango",
-      "tag": "pango",
       "mac": {
         "package": "pango",
         "linkType": "dynamic",
@@ -58,7 +54,6 @@
     },
     {
       "name": "tinyxml",
-      "tag": "tinyxml",
       "mac": {
         "package": "tinyxml",
         "linkType": "dynamic",

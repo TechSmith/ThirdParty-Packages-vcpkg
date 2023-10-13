@@ -1,48 +1,13 @@
 param(
-    [Parameter(Mandatory=$true)][string]$PackageDisplayName, # Name of package from preconfigured-packages.json
-    [string]$StagedArtifactsPath = "StagedArtifacts"  # Output path to stage these artifacts to
+    [Parameter(Mandatory=$true)][string]$PackageName, # Name of package from preconfigured-packages.json
+    [string]$StagedArtifactsPath = "StagedArtifacts", # Output path to stage these artifacts to
+    [switch]$ShowDebug = $false
 )
+
+Import-Module "$PSScriptRoot/ps-modules/Build" -Force -DisableNameChecking
  
-$jsonFilePath = "preconfigured-packages.json"
+Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageName`""
+$pkg = Get-PackageInfo -PackageName $PackageName
 
-Write-Host ""
-Write-Host "************************************************************"
-Write-Host "Installing preconfigured package: `"$PackageDisplayName`""
-Write-Host "************************************************************"
-Write-Host "Reading config from: `"$jsonFilePath`""
-$packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
-$packageInfo = $packagesJson.packages | Where-Object { $_.name -eq $PackageDisplayName }
-if (-not $packageInfo) {
-    Write-Host "> Package not found in $jsonFilePath."
-    exit
-}
-if ($env:OS -like '*win*') {
-    $IsOnWindowsOS = $true
-} else {
-    $IsOnMacOS = $true
-}
-$tagBaseName = $packageInfo.tag
-$selectedSection = if ($IsOnWindowsOS) { "win" } else { "mac" }
-$packageAndFeatures = $packageInfo.$selectedSection.package
-$linkType = $packageInfo.$selectedSection.linkType
-$buildType = $packageInfo.$selectedSection.buildType
-
-Write-Host ""
-Write-Host "Variables set based on config for OS `"$selectedSection`":"
-$allParams = @{
-    PackageDisplayName = $PackageDisplayName
-    packageAndFeatures = $packageAndFeatures
-    linkType = $linkType
-    buildType = $buildType
-    tagBaseName = $tagBaseName
-}
-Write-Host "Parameters:"
-foreach ($paramName in $allParams.Keys) {
-    $paramValue = $allParams[$paramName]
-    Write-Host "- $paramName`: $paramValue"
-}
-
-Write-Host ""
-Write-Host "Running build-and-stage.ps1..."
-Write-Host ""
-./build-and-stage.ps1 -PackageAndFeatures $packageAndFeatures -LinkType $linkType -BuildType $buildType -StagedArtifactsPath $StagedArtifactsPath -ReleaseTagBaseName $tagBaseName -PackageDisplayName $PackageDisplayName
+Write-Message "$(NL)Running build-and-stage.ps1...$(NL)"
+./build-and-stage.ps1 -PackageName $PackageName -PackageAndFeatures $pkg.package -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -ShowDebug:$ShowDebug
