@@ -143,7 +143,6 @@ function Run-ScriptIfExists {
       return
    }
    Write-Banner -Level 3 -Title $title
-   Write-Debug "> Executing: $script"
    Invoke-Powershell -FilePath $script -ArgumentList $scriptArgs
 }
 

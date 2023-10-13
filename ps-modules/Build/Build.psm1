@@ -137,42 +137,27 @@ function Run-SetupVcpkgStep {
 
    Write-Banner -Level 3 -Title "Setting up vcpkg"
    Write-Message "Removing vcpkg..."
-   Write-Debug "> Removing vcpkg system cache..."
-   Write-Debug ">> Looking for user-specific vcpkg cache dir: $cacheDir"
    if (Test-Path -Path $cacheDir -PathType Container) {
-      Write-Debug ">> Deleting dir: $cacheDir"
       Remove-Item -Path $cacheDir -Recurse -Force
-   } else {
-      Write-Debug ">> Directory not found: $cacheDir"
-   }    
-   Write-Debug "> Removing dir: vcpkg"
+   }
    if (Test-Path -Path $installDir -PathType Container) {
-      Write-Debug ">> Directory found. Deleting: $installDir"
       Remove-Item -Path $installDir -Recurse -Force
-   } else {
-      Write-Debug ">> Directory not found: $installDir, skipping step."
    }
 
    Write-Message "$(NL)Installing vcpkg..."
-   if (Test-Path -Path $installDir -PathType Container) {
-       Write-Debug "> Directory already exists: $installDir!!!"
+   if (-not (Test-Path -Path $installDir -PathType Container)) {
+      git clone $repo
+      if ($repoHash -ne "") {
+          Push-Location $installDir
+          git checkout $repoHash
+          Pop-Location
+      }
    }
-   else
-   {
-       Write-Debug "> Cloning repo: $repo"
-       git clone $repo
-       if ($repoHash -ne "") {
-           Write-Debug ">> Checking out hash: $repoHash"
-           Push-Location vcpkg
-           git checkout $repoHash
-           Pop-Location
-       }
 
-       Write-Debug "> Bootstrapping vcpkg..."
-       Push-Location $installDir
-       Invoke-Expression "$bootstrapScript"
-       Pop-Location
-   }
+   Write-Message "$(NL)Bootstrapping vcpkg..."
+   Push-Location $installDir
+   Invoke-Expression "$bootstrapScript"
+   Pop-Location
 }
 
 function Run-PreBuildStep {
@@ -222,7 +207,6 @@ function Run-PostBuildStep {
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $preStagePath = (Get-PreStagePath -linkType $linkType -buildType $buildType)
-   Write-Debug "preStagePath: $preStagePath"
    $scriptArgs = @{ BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/') }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
 }
@@ -239,16 +223,14 @@ function Run-StageArtifactsStep {
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $artifactName = (Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType)
-   Write-Debug "Creating dir: $artifactName"
    New-Item -Path $stagedArtifactsPath/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
-   Write-Debug "Generating: `"$dependenciesFilename`"..."
-   Write-Debug "> $stagedArtifactsPath/$artifactName/$dependenciesFilename"
+   Write-Message "Generating: `"$dependenciesFilename`"..."
    Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactsPath/$artifactName/$dependenciesFilename"
 
    $packageInfoFilename = "package.json"
-   Write-Debug "Generating: `"$packageInfoFilename`"..."
+   Write-Message "Generating: `"$packageInfoFilename`"..."
    $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactsPath/$artifactName/$dependenciesFilename" | ConvertFrom-Json
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
@@ -258,15 +240,13 @@ function Run-StageArtifactsStep {
    # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)
    
    $preStagePath = (Get-PreStagePath -linkType $linkType -buildType $buildType)
-   Write-Message "Copying: $preStagePath =`> $artifactName"
+   Write-Message "Copying files: $preStagePath =`> $artifactName"
    $excludedFolders = @("tools", "share", "debug")
    Copy-Item -Path "$preStagePath/*" -Destination $stagedArtifactsPath/$artifactName -Force -Recurse -Exclude $excludedFolders
    
    $artifactArchive = "$artifactName.tar.gz"
-   Write-Message "Compressing: `"$artifactName`" =`> `"$artifactArchive`""
+   Write-Message "Creating final artifact: `"$artifactArchive`""
    tar -czf "$stagedArtifactsPath/$artifactArchive" -C "$stagedArtifactsPath/$artifactName" .
-   
-   Write-Debug "Deleting: `"$artifactName`""
    Remove-Item -Path "$stagedArtifactsPath/$artifactName" -Recurse -Force
 }
 
