@@ -57,12 +57,14 @@
       "mac": {
         "package": "opencv4[core,dnn,quirc]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "4fb51523e91e7a98150e3810241b83757a8d2706"
       },
       "win": {
         "package": "opencv4[core,dnn,quirc]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "4fb51523e91e7a98150e3810241b83757a8d2706"
       }
     },
     {
