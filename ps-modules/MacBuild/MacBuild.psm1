@@ -158,16 +158,17 @@ function Remove-DylibSymlinks {
 
     Debug-WriteLibraryDependencies $mainFiles
 
+    $baseFilenameStartPattern = '[^a-zA-Z0-9-_]'
     foreach ($mainFile in $mainFiles) {
         # Main file
         Invoke-Expression "install_name_tool -id '@rpath/$mainFile' '$mainFile'"
 
         # All other files that might point to it
-        foreach ($possible_current_dependency in $filesWithVersions) {
-            $base_filename = ($possible_current_dependency -split '[^a-zA-Z0-9]')[0] # Discard anything after the first non-alphanumeric character
-            $new_dependency = "$base_filename.dylib"
-            if ($mainFiles -contains $new_dependency) {
-                Invoke-Expression "install_name_tool -change '@rpath/$possible_current_dependency' '@rpath/$new_dependency' '$mainFile'"
+        foreach ($possibleDependency in $filesWithVersions) {
+            $baseFilename = ($possibleDependency -split $baseFilenameStartPattern)[0]
+            $newDependency = "$baseFilename.dylib"
+            if ($mainFiles -contains $newDependency) {
+                Invoke-Expression "install_name_tool -change '@rpath/$possibleDependency' '@rpath/$newDependency' '$mainFile'"
             }
         }
     }
@@ -185,8 +186,8 @@ function Remove-DylibSymlinks {
     $files = Get-ChildItem -File -Recurse
     foreach ($file in $files) {
         $oldFilename = $file.Name
-        $base_filename = ($oldFilename -split '[^a-zA-Z0-9]')[0] # Discard anything after the first non-alphanumeric character
-        $newFilename = "$base_filename" + [System.IO.Path]::GetExtension($file)
+        $baseFilename = ($oldFilename -split $baseFilenameStartPattern)[0]
+        $newFilename = "$baseFilename" + [System.IO.Path]::GetExtension($file)
         Move-Item -Path $file.Name -Destination $newFilename
     }
 
