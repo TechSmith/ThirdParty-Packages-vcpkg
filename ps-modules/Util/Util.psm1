@@ -147,16 +147,4 @@ function Run-ScriptIfExists {
    Invoke-Powershell -FilePath $script -ArgumentList $scriptArgs
 }
 
-Export-ModuleMember -Function Show-FileContent
-Export-ModuleMember -Function Install-FromVcpkg
-Export-ModuleMember -Function Exit-IfError
-Export-ModuleMember -Function Write-ReleaseInfoJson
-Export-ModuleMember -Function Get-IsOnMacOS
-Export-ModuleMember -Function Get-IsOnWindowsOS
-Export-ModuleMember -Function Invoke-Powershell
-Export-ModuleMember -Function Write-Banner
-Export-ModuleMember -Function Write-Message
-Export-ModuleMember -Function Write-Debug
-Export-ModuleMember -Function NL
-Export-ModuleMember -Function Get-PSObjectAsFormattedList
-Export-ModuleMember -Function Run-ScriptIfExists
+Export-ModuleMember -Function Show-FileContent, Install-FromVcpkg, Exit-IfError, Write-ReleaseInfoJson, Get-IsOnMacOS, Get-IsOnWindowsOS, Invoke-Powershell, Write-Banner, Write-Message, Write-Debug, NL, Get-PSObjectAsFormattedList, Run-ScriptIfExists

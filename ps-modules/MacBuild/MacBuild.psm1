@@ -220,5 +220,4 @@ function Remove-DylibSymlinks {
     Pop-Location
 }
 
-Export-ModuleMember -Function Create-FinalMacArtifacts
-Export-ModuleMember -Function Remove-DylibSymlinks
+Export-ModuleMember -Function Create-FinalMacArtifacts, Remove-DylibSymlinks
