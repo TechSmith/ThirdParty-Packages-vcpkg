@@ -10,17 +10,12 @@ param(
 
 $global:showDebug = $ShowDebug
 Import-Module "$PSScriptRoot/ps-modules/Build" -Force -DisableNameChecking
+Run-WriteParamsStep -packageAndFeatures $PackageAndFeatures -scriptArgs $PSBoundParameters
+Run-SetupVcPkgStep $VcPkgHash
+Run-PreBuildStep $PackageAndFeatures
+Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
+Run-FinalizeArtifactsStep -linkType $LinkType -buildType $BuildType
+Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $linkType -buildType $buildType
+Run-StageArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $buildType -stagedArtifactsPath $StagedArtifactsPath
 
-Write-Banner -Level 2 -Title "Starting vcpkg install for: $PackageAndFeatures"
-Write-Message "Params:"
-Write-Message (Get-PSObjectAsFormattedList -Object $PSBoundParameters)
-
-$vars = Initialize-Variables -packageAndFeatures $PackageAndFeatures -linkType $LinkType -packageName $PackageName -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath -vcpkgHash $VcpkgHash
-Setup-VcPkg -repo $vars.vcpkgRepo -repoHash $vars.vcpkgRepoHash -installDir $vars.vcpkgInstallDir -cacheDir $vars.vcpkgCacheDir -bootstrapScript $vars.vcpkgBootstrapScript
-Run-PreBuildScriptIfExists -script $vars.prebuildScript
-Install-Package -vcpkgExe $vars.vcpkgExe -package $PackageAndFeatures -triplets $vars.triplets
-Create-FinalArtifacts -x64Dir $vars.macX64Dir -arm64Dir $vars.macArm64Dir -preStagePath $vars.preStagePath
-Run-PostBuildScriptIfExists -script $vars.postbuildScript -preStagePath $vars.preStagePath
-Stage-Artifacts -vcPkgExe $vars.vcpkgExe -preStagePath $vars.preStagePath -stagePath $vars.stagePath -packageNameOnly $vars.packageNameOnly -artifactName $vars.artifactName
-
-Write-Message "$(NL)$(NL)Done."
+Write-Message "$(NL)$(NL)Done.$(NL)"
