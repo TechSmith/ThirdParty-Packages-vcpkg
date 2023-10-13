@@ -57,7 +57,7 @@ function Create-FinalMacArtifacts {
         [string]$x64Dir,
         [string]$universalDir
     )
-    Write-Message "$arm64Dir, $x64Dir ==> $preStagePath"
+    Write-Message "$arm64Dir, $x64Dir ==> $universalDir"
     
     Create-UniversalDir $universalDir
     Write-Debug "Creating universal dir and copying headers..."
