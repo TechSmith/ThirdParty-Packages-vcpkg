@@ -66,6 +66,19 @@
       }
     },
     {
+      "name": "libzip-static",
+      "mac": {
+        "package": "libzip[core]",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "libzip[core]",
+        "linkType": "static",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "tinyxml",
       "mac": {
         "package": "tinyxml",

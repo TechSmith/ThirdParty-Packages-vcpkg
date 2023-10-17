@@ -21,10 +21,15 @@ vcpkg_check_features(
         mbedtls ENABLE_MBEDTLS
 )
 
+#<TechSmith-specific flags>
+set(TECHSMITH_FLAGS "-DLIBZIP_DO_INSTALL=OFF -DBUILD_OSSFUZZ=OFF -DBUILD_REGRESS=OFF")
+#</TechSmith-specific flags>
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         ${FEATURE_OPTIONS}
+        ${TECHSMITH_FLAGS}
         -DBUILD_DOC=OFF
         -DBUILD_EXAMPLES=OFF
         -DBUILD_REGRESS=OFF
