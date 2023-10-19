@@ -13,6 +13,7 @@ parameters:
   - ffmpeg
   - libpng
   - libzip-static
+  - libzip-dynamic
   - openssl-static
   - opencv4
   - pango
