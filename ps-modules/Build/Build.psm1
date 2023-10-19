@@ -234,7 +234,7 @@ function Run-StageArtifactsStep {
    $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactsPath/$artifactName/$dependenciesFilename" | ConvertFrom-Json
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
-   Write-ReleaseInfoJson -packageName $packageNameOnly -version $packageVersion -pathToJsonFile "$stagedArtifactsPath/$artifactName/$packageInfoFilename"
+   Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactsPath/$artifactName/$packageInfoFilename"
    
    # TODO: Add info in this file on where each package was downloaded from
    # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)
