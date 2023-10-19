@@ -79,6 +79,19 @@
       }
     },
     {
+      "name": "libzip-dynamic",
+      "mac": {
+        "package": "libzip[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "libzip[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "tinyxml",
       "mac": {
         "package": "tinyxml",
