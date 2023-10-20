@@ -256,4 +256,7 @@ Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFor
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force
    Export-ModuleMember -Function Remove-DylibSymlinks
-}
+} elseif ( (Get-IsOnWindowsOS) ) {
+   Import-Module "$PSScriptRoot/../../ps-modules/WinBuild" -DisableNameChecking -Force
+   Export-ModuleMember -Function Update-VersionInfoForDlls
+} 
