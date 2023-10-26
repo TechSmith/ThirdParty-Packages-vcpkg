@@ -14,6 +14,19 @@
       }
     },
     {
+      "name": "hunspell",
+      "mac": {
+        "package": "hunspell",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "hunspell",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "libpng",
       "mac": {
         "package": "libpng",
