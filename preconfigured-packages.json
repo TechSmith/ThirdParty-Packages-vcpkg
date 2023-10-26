@@ -92,6 +92,19 @@
       }
     },
     {
+      "name": "skia",
+      "mac": {
+        "package": "skia[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "skia[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "sqlite3",
       "mac": {
         "package": "sqlite3",
