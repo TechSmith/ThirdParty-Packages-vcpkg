@@ -11,6 +11,7 @@ parameters:
   type: string
   values:
   - ffmpeg
+  - hunspell
   - libpng
   - libzip-static
   - libzip-dynamic
