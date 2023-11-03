@@ -17,6 +17,7 @@ parameters:
   - openssl-static
   - opencv4
   - pango
+  - sqlite3
   - tinyxml
 
 - name: publishToGitHubRelease
