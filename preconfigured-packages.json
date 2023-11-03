@@ -16,12 +16,12 @@
     {
       "name": "hunspell",
       "mac": {
-        "package": "hunspell",
+        "package": "hunspell[core]",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "hunspell",
+        "package": "hunspell[core]",
         "linkType": "dynamic",
         "buildType": "release"
       }
