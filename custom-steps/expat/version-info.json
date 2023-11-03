@@ -1,0 +1,12 @@
+{
+    "files": [
+      {
+        "filename": "bin/libexpat.dll",
+        "fileDescription": "Expat XML Parser 2.5.0",
+        "fileVersion": "2.5.0",
+        "productName": "Expat 2.5.0",
+        "productVersion": "2.5.0",
+        "copyright": "Copyright © 1997-2022 Thai Open Source Software Center, Clark Cooper, and the Expat maintainers"
+      }
+    ]
+}
