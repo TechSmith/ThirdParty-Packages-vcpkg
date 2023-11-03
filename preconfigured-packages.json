@@ -92,6 +92,19 @@
       }
     },
     {
+      "name": "sqlite3",
+      "mac": {
+        "package": "sqlite3",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "sqlite3",
+        "linkType": "static",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "tinyxml",
       "mac": {
         "package": "tinyxml",
