@@ -4,7 +4,9 @@ param (
 
 Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking -Force
 
-if (-not (Get-IsOnWindowsOS)) {
-    exit
+if ((Get-IsOnMacOS)) {
+    Remove-DylibSymlinks -BuildArtifactsPath $BuildArtifactsPath
 }
-Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+elseif((Get-IsOnWindowsOS)) {
+    Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+}
