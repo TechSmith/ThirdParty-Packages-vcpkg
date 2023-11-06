@@ -94,12 +94,12 @@
     {
       "name": "skia",
       "mac": {
-        "package": "skia[core]",
+        "package": "skia[core,harfbuzz]",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "skia[core]",
+        "package": "skia[core,harfbuzz]",
         "linkType": "dynamic",
         "buildType": "release"
       }
