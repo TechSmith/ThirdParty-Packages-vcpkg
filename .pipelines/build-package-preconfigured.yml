@@ -16,6 +16,7 @@ parameters:
   - libzip-dynamic
   - openssl-static
   - opencv4
+  - opencv4-4.3
   - pango
   - skia
   - sqlite3
