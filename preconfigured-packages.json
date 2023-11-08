@@ -69,13 +69,13 @@
       "name": "opencv4-4.3",
       "mac": {
         "package": "opencv4[core,dnn]",
-        "linkType": "dynamic",
+        "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "42bb41fa2d5f84a6d598e5d44eab168d8f4ae601"
       },
       "win": {
         "package": "opencv4[core,dnn]",
-        "linkType": "dynamic",
+        "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "42bb41fa2d5f84a6d598e5d44eab168d8f4ae601"
       }
