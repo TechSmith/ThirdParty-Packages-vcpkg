@@ -42,6 +42,15 @@
       }
     },
     {
+      "name": "ffmpeg-iOS",
+      "mac": {
+        "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "fa5b03e311ab2c5997fb34f043105e1b45f0131d"
+      }
+    },
+    {
       "name": "libpng",
       "mac": {
         "package": "libpng",
