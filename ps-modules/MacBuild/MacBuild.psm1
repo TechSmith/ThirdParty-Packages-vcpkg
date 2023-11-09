@@ -188,6 +188,7 @@ function Remove-DylibSymlinks {
         $oldFilename = $file.Name
         $baseFilename = ($oldFilename -split $baseFilenameStartPattern)[0]
         $newFilename = "$baseFilename" + [System.IO.Path]::GetExtension($file)
+        Write-Message "Consolidating Moving $oldFilename to $newFilename"
         Move-Item -Path $file.Name -Destination $newFilename
     }
 

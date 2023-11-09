@@ -43,7 +43,8 @@ function Get-PreStagePath {
       $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
       return "vcpkg/installed/$firstTriplet"
    } elseif ( (Get-IsOnMacOS) ) {
-      return "universal"
+      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
+      return "vcpkg/installed/$firstTriplet"
    }
    throw [System.Exception]::new("Invalid OS")
 }
