@@ -29,7 +29,7 @@ function Get-Triplets {
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
    } elseif (Get-IsOnMacOS) {
-       return @("x64-osx-$linkType-$buildType", "arm64-osx-$linkType-$buildType")
+       return @("arm64-iOS-$linkType-$buildType")
    }
    throw [System.Exception]::new("Invalid OS")
 }
@@ -72,7 +72,7 @@ function Get-ArtifactName {
    if ( (Get-IsOnWindowsOS) ) {
       return "$packageName-windows-$buildType"
    } elseif ( (Get-IsOnMacOS) ) {
-      return "$packageName-osx-$buildType"
+      return "$packageName-iOS-$buildType"
    }
    throw [System.Exception]::new("Invalid OS")
 }
@@ -191,12 +191,12 @@ function Run-FinalizeArtifactsStep {
    )
    if (-not (Get-IsOnMacOS)) { return } # This is only required on Mac
    
-   Write-Banner -Level 3 -Title "Creating final Mac artifacts"
-   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
-   $arm64Dir = "./vcpkg/installed/$($triplets[0])"
-   $x64Dir = "./vcpkg/installed/$($triplets[1])"
-   $preStagePath = (Get-PreStagePath -linkType $linkType -buildType $buildType)
-   Create-FinalMacArtifacts -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
+   #Write-Banner -Level 3 -Title "Creating final Mac artifacts"
+   #$triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
+   #$arm64Dir = "./vcpkg/installed/$($triplets[0])"
+   #$x64Dir = "./vcpkg/installed/$($triplets[1])"
+   #$preStagePath = (Get-PreStagePath -linkType $linkType -buildType $buildType)
+   #Create-FinalMacArtifacts -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
 }
 
 function Run-PostBuildStep {
