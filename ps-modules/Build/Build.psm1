@@ -29,7 +29,7 @@ function Get-Triplets {
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
    } elseif (Get-IsOnMacOS) {
-       return @("x64-osx-$linkType-$buildType", "arm64-osx-$linkType-$buildType")
+       return @("arm64-iOS-$linkType-$buildType")
    }
    throw [System.Exception]::new("Invalid OS")
 }
@@ -62,7 +62,7 @@ function Get-ArtifactName {
    if ( (Get-IsOnWindowsOS) ) {
       return "$packageName-windows-$buildType"
    } elseif ( (Get-IsOnMacOS) ) {
-      return "$packageName-osx-$buildType"
+      return "$packageName-iOS-$buildType"
    }
    throw [System.Exception]::new("Invalid OS")
 }
@@ -209,29 +209,29 @@ function Run-PrestageAndFinalizeArtifactsStep {
    }
    elseif((Get-IsOnMacOS))
    {
-      $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
-      $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
-      $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
-      $destArm64LibDir = "$preStagePath/arm64Lib"
-      $destX64LibDir = "$preStagePath/x64Lib"
-      $srcToDestDirs = @{
-         "$srcArm64Dir/include" = "$preStagePath"
-         "$srcArm64Dir/share" = "$preStagePath"
-         "$srcArm64Dir/$libDir" = "$destArm64LibDir"
-         "$srcX64Dir/$libDir" = "$destX64LibDir"
-      }
-      foreach ($srcDir in $srcToDestDirs.Keys) {
-          $destDir = $srcToDestDirs[$srcDir]
-          if (Test-Path $srcDir) {
-             Write-Message "$srcDir ==> $destDir"
-             if (Test-Path -Path $destDir -PathType Container) {
-               New-Item -ItemType Directory -Force -Path "$destDir"
-             }
-             cp -RP "$srcDir" "$destDir"
-          }
-      }
-      $destUniversalLibDir = "$preStagePath/lib"
-      Create-FinalizedMacArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+      #$triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
+      #$srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
+      #$srcX64Dir = "./vcpkg/installed/$($triplets[1])"
+      #$destArm64LibDir = "$preStagePath/arm64Lib"
+      #$destX64LibDir = "$preStagePath/x64Lib"
+      #$srcToDestDirs = @{
+      #   "$srcArm64Dir/include" = "$preStagePath"
+      #   "$srcArm64Dir/share" = "$preStagePath"
+      #   "$srcArm64Dir/$libDir" = "$destArm64LibDir"
+      #   "$srcX64Dir/$libDir" = "$destX64LibDir"
+      #}
+      #foreach ($srcDir in $srcToDestDirs.Keys) {
+      #    $destDir = $srcToDestDirs[$srcDir]
+      #    if (Test-Path $srcDir) {
+      #       Write-Message "$srcDir ==> $destDir"
+      #       if (Test-Path -Path $destDir -PathType Container) {
+      #         New-Item -ItemType Directory -Force -Path "$destDir"
+      #       }
+      #       cp -RP "$srcDir" "$destDir"
+      #    }
+      #}
+      #$destUniversalLibDir = "$preStagePath/lib"
+      #Create-FinalizedMacArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
    else
    {
