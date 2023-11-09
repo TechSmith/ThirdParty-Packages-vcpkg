@@ -42,7 +42,7 @@
       }
     },
     {
-      "name": "ffmpeg-iOS",
+      "name": "ffmpeg-ios",
       "mac": {
         "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
