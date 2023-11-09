@@ -4,7 +4,7 @@ param(
     [string]$PackageName = "",                               # The base name of the tag to be used when publishing the release (ex. "openssl-static").  If not specified, it will default to "$Package-$LinkType"
     [string]$BuildType = "release",                          # Build type: release or debug
     [string]$StagedArtifactsPath = "StagedArtifacts",        # Output path to stage these artifacts to
-    [string]$VcpkgHash = "",                                 # The hash of vcpkg to checkout (if applicable)
+    [string]$VcpkgHash = "fa5b03e311ab2c5997fb34f043105e1b45f0131d",                                 # The hash of vcpkg to checkout (if applicable)
     [switch]$ShowDebug = $false                              # Show additional debugging information
 )
 
