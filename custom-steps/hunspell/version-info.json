@@ -1,0 +1,20 @@
+{
+  "files": [
+    {
+      "filename": "bin/hunspell-1.7-0.dll",
+      "fileDescription": "libhunspell",
+      "fileVersion": "1.7.2",
+      "productName": "Hunspell Dynamic Link Library",
+      "productVersion": "1.7.2",
+      "copyright": "Copyright (c) 2007-2022"
+    },
+    {
+      "filename": "bin/charset-1.dll",
+      "fileDescription": "libcharset",
+      "fileVersion": "1.5",
+      "productName": "libcharset 1.5",
+      "productVersion": "1.5",
+      "copyright": ""
+    }
+  ]
+}
