@@ -12,6 +12,7 @@ parameters:
   values:
   - ffmpeg
   - hunspell
+  - hunspell-debug
   - libpng
   - libzip-static
   - libzip-dynamic
