@@ -35,17 +35,7 @@ function Get-Triplets {
 }
 
 function Get-PreStagePath {
-   param(
-      [string]$linkType,
-      [string]$buildType
-   )
-   if ( (Get-IsOnWindowsOS) ) {
-      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
-      return "vcpkg/installed/$firstTriplet"
-   } elseif ( (Get-IsOnMacOS) ) {
-      return "universal"
-   }
-   throw [System.Exception]::new("Invalid OS")
+   return "PreStage"
 }
 
 function Get-VcPkgExe {
@@ -184,19 +174,69 @@ function Run-InstallPackageStep
    }
 }
 
-function Run-FinalizeArtifactsStep {
+function Run-PrestageAndFinalizeArtifactsStep {
    param(
       [string]$linkType,
       [string]$buildType
    )
-   if (-not (Get-IsOnMacOS)) { return } # This is only required on Mac
-   
-   Write-Banner -Level 3 -Title "Creating final Mac artifacts"
-   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
-   $arm64Dir = "./vcpkg/installed/$($triplets[0])"
-   $x64Dir = "./vcpkg/installed/$($triplets[1])"
-   $preStagePath = (Get-PreStagePath -linkType $linkType -buildType $buildType)
-   Create-FinalMacArtifacts -arm64Dir "$arm64Dir" -x64Dir "$x64Dir" -universalDir "$preStagePath"
+   $preStagePath = (Get-PreStagePath)
+   Create-EmptyDir $preStagePath
+   Write-Banner -Level 3 -Title "Pre-staging artifacts"
+   $libDir = "lib"
+   $binDir = "bin"
+   if( $buildType -eq "debug" ) {
+      $libDir = "debug/lib"
+      $binDir = "debug/bin"
+   }
+
+   if ((Get-IsOnWindowsOS))
+   {  
+      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
+      $mainSrcDir = "./vcpkg/installed/$firstTriplet"
+      $srcToDestDirs = @{
+         "$mainSrcDir/include" = "$preStagePath/include"
+         "$mainSrcDir/share" = "$preStagePath/share"
+         "$mainSrcDir/$libDir" = "$preStagePath/lib"
+         "$mainSrcDir/$binDir" = "$preStagePath/bin"
+      }
+      foreach ($srcDir in $srcToDestDirs.Keys) {
+          $destDir = $srcToDestDirs[$srcDir]
+          if (Test-Path $srcDir) {
+             Write-Message "$srcDir ==> $destDir"
+             Copy-Item -Path $srcDir -Destination $destDir -Force -Recurse
+          }
+      }
+   }
+   elseif((Get-IsOnMacOS))
+   {
+      $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
+      $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
+      $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
+      $destArm64LibDir = "$preStagePath/arm64Lib"
+      $destX64LibDir = "$preStagePath/x64Lib"
+      $srcToDestDirs = @{
+         "$srcArm64Dir/include" = "$preStagePath"
+         "$srcArm64Dir/share" = "$preStagePath"
+         "$srcArm64Dir/$libDir" = "$destArm64LibDir"
+         "$srcX64Dir/$libDir" = "$destX64LibDir"
+      }
+      foreach ($srcDir in $srcToDestDirs.Keys) {
+          $destDir = $srcToDestDirs[$srcDir]
+          if (Test-Path $srcDir) {
+             Write-Message "$srcDir ==> $destDir"
+             if (Test-Path -Path $destDir -PathType Container) {
+               New-Item -ItemType Directory -Force -Path "$destDir"
+             }
+             cp -RP "$srcDir" "$destDir"
+          }
+      }
+      $destUniversalLibDir = "$preStagePath/lib"
+      Create-FinalizedMacArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+   }
+   else
+   {
+      throw [System.Exception]::new("Invalid OS")
+   }
 }
 
 function Run-PostBuildStep {
@@ -206,7 +246,7 @@ function Run-PostBuildStep {
       [string]$buildType
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
-   $preStagePath = (Get-PreStagePath -linkType $linkType -buildType $buildType)
+   $preStagePath = (Get-PreStagePath)
    $scriptArgs = @{ BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/') }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
 }
@@ -239,18 +279,24 @@ function Run-StageArtifactsStep {
    # TODO: Add info in this file on where each package was downloaded from
    # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)
    
-   $preStagePath = (Get-PreStagePath -linkType $linkType -buildType $buildType)
+   $preStagePath = (Get-PreStagePath)
    Write-Message "Copying files: $preStagePath =`> $artifactName"
-   $excludedFolders = @("tools", "share", "debug")
+   $excludedFolders = @("tools", "debug")
    Copy-Item -Path "$preStagePath/*" -Destination $stagedArtifactsPath/$artifactName -Force -Recurse -Exclude $excludedFolders
-   
+#   if( $buildType -eq "debug" ) {
+#      # This will only run for Windows, which does not have a separate pre-stage path
+#      # TODO: Consider change for Windows so that it also has a separate pre-stage path, for consistency
+#      if (Test-Path "$preStagePath/debug" -PathType Container -ErrorAction SilentlyContinue) {
+#         Copy-Item -Path "$preStagePath/debug/bin", "$preStagePath/debug/lib" -Destination "$stagedArtifactsPath/$artifactName/" -Force -Recurse
+#      }
+#   }
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""
    tar -czf "$stagedArtifactsPath/$artifactArchive" -C "$stagedArtifactsPath/$artifactName" .
    Remove-Item -Path "$stagedArtifactsPath/$artifactName" -Recurse -Force
 }
 
-Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-FinalizeArtifactsStep, Run-PostBuildStep, Run-StageArtifactsStep
+Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeArtifactsStep, Run-PostBuildStep, Run-StageArtifactsStep
 Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS
 
 if ( (Get-IsOnMacOS) ) {
@@ -260,3 +306,13 @@ if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/WinBuild" -DisableNameChecking -Force
    Export-ModuleMember -Function Update-VersionInfoForDlls
 } 
+
+function Create-EmptyDir {
+    param(
+       $dir
+    )
+    if (Test-Path -Path $dir -PathType Container) {
+       Remove-Item -Path "$dir" -Recurse -Force | Out-Null
+    }
+    New-Item -Path "$dir" -ItemType Directory -Force | Out-Null
+}
