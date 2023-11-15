@@ -1,13 +1,3 @@
-function Create-UniversalDir {
-    param(
-       $universalDir
-    )
-    if (Test-Path -Path $universalDir -PathType Container) {
-       Remove-Item -Path "$universalDir" -Recurse -Force | Out-Null
-    }
-    New-Item -Path "$universalDir" -ItemType Directory -Force | Out-Null
-}
-
 function Update-LibsToRelativePaths {
    param(
       [string]$arm64LibDir,
@@ -25,12 +15,12 @@ function Create-UniversalBinaries {
       [string]$x64LibDir,
       [string]$universalLibDir
    )
-   $universalLibDir = (Join-Path $universalDir "lib")
    New-Item -Path "$universalLibDir" -ItemType Directory -Force | Out-Null
-
+   Write-Message "Creating universal bins: $arm64LibDir..."
    $items = Get-ChildItem -Path "$arm64LibDir/*" -Include "*.dylib","*.a"
    foreach($item in $items) {
        $fileName = $item.Name
+       Write-Message "> $fileName"
        $srcPathArm64 = $item.FullName
        $srcPathX64 = (Join-Path $x64LibDir $fileName)
        $destPath = (Join-Path $universalLibDir $fileName)
@@ -44,21 +34,18 @@ function Create-UniversalBinaries {
    }
 }
 
-function Create-FinalMacArtifacts {
+function Create-FinalizedMacArtifacts {
     param (
-        [string]$arm64Dir,
-        [string]$x64Dir,
-        [string]$universalDir
+        [string]$arm64LibDir,
+        [string]$x64LibDir,
+        [string]$universalLibDir
     )
-    Write-Message "$arm64Dir, $x64Dir ==> $universalDir"
-    
-    Create-UniversalDir $universalDir
-    Copy-Item -Path "$x64Dir/include" -Destination "$universalDir/include" -Recurse | Out-Null # Assume arm64 and x86_64 are identical
-
-    $arm64LibDir = (Join-Path $arm64Dir "lib")
-    $x64LibDir = (Join-Path $x64Dir "lib")
+    Write-Banner -Level 3 -Title "Finalizing Mac artifacts"
+    Write-Message "arm64LibDir: $arm64LibDir"
     Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
-    Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalDir $universalDir
+    Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalLibDir $universalLibDir
+    Remove-Item -Force -Recurse -Path $arm64LibDir
+    Remove-Item -Force -Recurse -Path $x64LibDir
 }
 
 function Update-LibraryPath {
@@ -194,4 +181,4 @@ function Remove-DylibSymlinks {
     Pop-Location
 }
 
-Export-ModuleMember -Function Create-FinalMacArtifacts, Remove-DylibSymlinks
+Export-ModuleMember -Function Create-FinalizedMacArtifacts, Remove-DylibSymlinks
