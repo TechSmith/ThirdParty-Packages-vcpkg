@@ -14,6 +14,32 @@
       }
     },
     {
+      "name": "hunspell",
+      "mac": {
+        "package": "hunspell[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "hunspell[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "hunspell-debug",
+      "mac": {
+        "package": "hunspell[core]",
+        "linkType": "dynamic",
+        "buildType": "debug"
+      },
+      "win": {
+        "package": "hunspell[core]",
+        "linkType": "dynamic",
+        "buildType": "debug"
+      }
+    },
+    {
       "name": "libpng",
       "mac": {
         "package": "libpng",

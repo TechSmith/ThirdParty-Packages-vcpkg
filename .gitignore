@@ -1,2 +1,4 @@
 .vs/
-vcpkg
+vcpkg/
+PreStage/
+StagedArtifacts/

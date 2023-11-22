@@ -14,7 +14,7 @@ Run-WriteParamsStep -packageAndFeatures $PackageAndFeatures -scriptArgs $PSBound
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
 Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
-Run-FinalizeArtifactsStep -linkType $LinkType -buildType $BuildType
+Run-PrestageAndFinalizeArtifactsStep -linkType $LinkType -buildType $BuildType
 Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
 Run-StageArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath
 
