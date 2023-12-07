@@ -168,19 +168,6 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
-    },
-    {
-      "name": "onnxruntime-gpu",
-      "mac": {
-        "package": "onnxruntime-gpu",
-        "linkType": "dynamic",
-        "buildType": "release"
-      },
-      "win": {
-        "package": "onnxruntime-gpu",
-        "linkType": "dynamic",
-        "buildType": "release"
-      }
     }
   ]
 }
