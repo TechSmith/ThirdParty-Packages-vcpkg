@@ -1,6 +1,19 @@
 {
   "packages": [
     {
+      "name": "expat",
+      "mac": {
+        "package": "expat[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "expat[core]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "ffmpeg",
       "mac": {
         "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
