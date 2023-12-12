@@ -17,6 +17,7 @@ parameters:
   - libpng
   - libzip-static
   - libzip-dynamic
+  - onnx
   - openssl-static
   - opencv4
   - pango
