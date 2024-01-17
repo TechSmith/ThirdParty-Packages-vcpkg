@@ -157,6 +157,19 @@
       }
     },
     {
+      "name": "sqlite-modern-cpp",
+      "mac": {
+        "package": "sqlite-modern-cpp",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "sqlite-modern-cpp",
+        "linkType": "static",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "tinyxml",
       "mac": {
         "package": "tinyxml",
