@@ -22,6 +22,7 @@ parameters:
   - pango
   - skia
   - sqlite3
+  - sqlite-modern-cpp
   - tinyxml
 
 - name: publishToGitHubRelease
