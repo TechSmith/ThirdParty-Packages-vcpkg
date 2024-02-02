@@ -14,4 +14,13 @@ vcpkg_configure_cmake(
 
 vcpkg_install_cmake()
 vcpkg_copy_pdbs()
+
+# Store all .libs in the root lib directory.  For Windows SHARED builds, these will be import libraries (not static libs).
+file(GLOB_RECURSE LIB_FILES "${CURRENT_PACKAGES_DIR}/lib/static/*.lib")
+foreach(LIB_FILE ${LIB_FILES})
+    get_filename_component(LIB_NAME ${LIB_FILE} NAME)
+    file(RENAME ${LIB_FILE} "${CURRENT_PACKAGES_DIR}/lib/${LIB_NAME}")
+endforeach()
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/static")
+
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
