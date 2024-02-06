@@ -181,6 +181,19 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "whispercpp",
+      "mac": {
+        "package": "whispercpp",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "whispercpp",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
