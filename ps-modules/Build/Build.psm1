@@ -115,7 +115,7 @@ function Run-SetupVcpkgStep {
       [string]$repoHash
    )
 
-   $repo = "https://github.com/TechSmith/vcpkg.git"
+   $repo = "https://github.com/microsoft/vcpkg.git"
    $installDir = "./vcpkg"
    if ( (Get-IsOnWindowsOS) ) {
        $bootstrapScript = "./bootstrap-vcpkg.bat"
