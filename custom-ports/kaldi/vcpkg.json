@@ -1,0 +1,21 @@
+{
+  "name": "kaldi",
+  "version": "2024.2.23",
+  "port-version": 1,
+  "description": "Kaldi Speech Recognition Toolkit",
+  "homepage": "https://github.com/kaldi-asr/kaldi",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    "zlib",
+    "icu",
+    "portaudio",
+    "openfstwin"
+  ]
+}
