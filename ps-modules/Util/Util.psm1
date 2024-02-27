@@ -58,7 +58,7 @@ function Invoke-Powershell {
 
     $invokePrefix = ""
     
-    if (-not $IsOnWindowsOS) {
+    if (-not (Get-IsOnWindowsOS)) {
         $invokePrefix = "pwsh "
     }
 
