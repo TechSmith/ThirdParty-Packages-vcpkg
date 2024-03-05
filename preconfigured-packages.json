@@ -86,13 +86,13 @@
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "fba75d09065fcc76a25dcf386b1d00d33f5175af"
       },
       "win": {
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "fba75d09065fcc76a25dcf386b1d00d33f5175af"
       }
     },
     {
