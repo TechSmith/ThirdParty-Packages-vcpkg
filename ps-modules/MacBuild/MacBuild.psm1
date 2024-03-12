@@ -34,6 +34,21 @@ function Create-UniversalBinaries {
    }
 }
 
+function Copy-NonLibraryFiles {
+   param(
+      [string]$srcDir,
+      [string]$destDir
+   )
+   Write-Message "Copying non-library files: $srcDir ==> $destDir..."
+   $srcDir = (Convert-Path -LiteralPath $srcDir)
+   $destDir = (Convert-Path -LiteralPath $destDir)
+
+   Get-ChildItem -Path $srcDir -Recurse | Where-Object { $_.Extension -notin ('.dylib', '.a') } | ForEach-Object {
+   $destinationPath = Join-Path -Path $destDir -ChildPath $_.FullName.Substring($srcDir.Length)
+      Copy-Item -Path $_.FullName -Destination $destinationPath
+   }
+}
+
 function Create-FinalizedMacArtifacts {
     param (
         [string]$arm64LibDir,
@@ -44,6 +59,7 @@ function Create-FinalizedMacArtifacts {
     Write-Message "arm64LibDir: $arm64LibDir"
     Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
     Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalLibDir $universalLibDir
+    Copy-NonLibraryFiles -srcDir $arm64LibDir -destDir $universalLibDir
     Remove-Item -Force -Recurse -Path $arm64LibDir
     Remove-Item -Force -Recurse -Path $x64LibDir
 }
