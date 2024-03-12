@@ -186,7 +186,7 @@ function Remove-DylibSymlinks {
     }
 
     # Rename files to the "main" filename we want
-    $files = Get-ChildItem -File -Recurse
+    $files = Get-ChildItem -File -Recurse -Include "*.dylib"
     foreach ($file in $files) {
         $oldFilename = $file.Name
         $baseFilename = ($oldFilename -split $baseFilenameStartPattern)[0]
