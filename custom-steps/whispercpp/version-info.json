@@ -3,9 +3,9 @@
     {
       "filename": "bin/whisper.dll",
       "fileDescription": "Whisper speech recognition",
-      "fileVersion": "1.5.4",
+      "fileVersion": "2024.2.27",
       "productName": "WhisperCpp",
-      "productVersion": "1.5.4",
+      "productVersion": "2024.2.27",
       "copyright": "Copyright (c) 2023 Georgi Gerganov"
     }
   ]
