@@ -247,17 +247,22 @@ function Run-PostBuildStep {
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $preStagePath = (Get-PreStagePath)
-   $scriptArgs = @{ BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/') }
+   $scriptArgs = @{ 
+      BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/')
+      PackageAndFeatures = ($packageAndFeatures -replace ',', '`,')
+      LinkType = "$linkType"
+      BuildType = "$buildType"
+   }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
 }
 
 function Run-StageArtifactsStep {
    param(
-      $packageName,
-      $packageAndFeatures,
-      $linkType,
-      $buildType,
-      $stagedArtifactsPath
+      [string]$packageName,
+      [string]$packageAndFeatures,
+      [string]$linkType,
+      [string]$buildType,
+      [string]$stagedArtifactsPath
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
