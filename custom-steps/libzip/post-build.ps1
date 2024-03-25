@@ -1,12 +1,18 @@
 param (
-    [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
+    [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
+    [Parameter(Mandatory=$false)][string]$PackageAndFeatures,
+    [Parameter(Mandatory=$false)][string]$LinkType,
+    [Parameter(Mandatory=$false)][string]$BuildType
 )
-
-Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking -Force
 
 if ((Get-IsOnMacOS)) {
     Remove-DylibSymlinks -BuildArtifactsPath $BuildArtifactsPath
 }
 elseif((Get-IsOnWindowsOS)) {
-    Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+    if($LinkType -eq "dynamic") {
+        Update-VersionInfoForDlls -buildArtifactsPath $BuildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+    }
+    else {
+        Write-Message "LinkType is not `"dynamic`".  Skipping post-build step..."
+    }
 }

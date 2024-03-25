@@ -1,0 +1,164 @@
+{
+    "files": [
+        {
+            "filename": "bin/brotlicommon.dll",
+            "fileDescription": "Brotli common dictionary library",
+            "fileVersion": "1.1.0",
+            "productName": "Brotli",
+            "productVersion": "1.1.0",
+            "copyright": "Copyright (c) 2016 Google Inc."
+        },
+        {
+            "filename": "bin/brotlidec.dll",
+            "fileDescription": "Brotli decoder library",
+            "fileVersion": "1.1.0",
+            "productName": "Brotli",
+            "productVersion": "1.1.0",
+            "copyright": "Copyright (c) 2016 Google Inc."
+        },
+        {
+            "filename": "bin/brotlienc.dll",
+            "fileDescription": "Brotli encoder library",
+            "fileVersion": "1.1.0",
+            "productName": "Brotli",
+            "productVersion": "1.1.0",
+            "copyright": "Copyright (c) 2016 Google Inc."
+        },
+        {
+            "filename": "bin/bz2.dll",
+            "fileDescription": "A program and library for lossless, block-sorting data compression",
+            "fileVersion": "1.0.8",
+            "productName": "Bzip2",
+            "productVersion": "1.0.8",
+            "copyright": "Copyright (c) 1996-2019 Julian Seward"
+        },
+        {
+            "filename": "bin/cairo-2.dll",
+            "fileDescription": "Cairo Graphics Library",
+            "fileVersion": "1.17.8",
+            "productName": "Cairo",
+            "productVersion": "1.17.8"
+        },
+        {
+            "filename": "bin/cairo-gobject-2.dll",
+            "fileDescription": "Cairo gobject",
+            "fileVersion": "1.17.8",
+            "productName": "Cairo",
+            "productVersion": "1.17.8"
+        },
+        {
+            "filename": "bin/cairo-script-interpreter-2.dll",
+            "fileDescription": "Cairo script interpreter",
+            "fileVersion": "1.17.8",
+            "productName": "Cairo",
+            "productVersion": "1.17.8"
+        },
+        {
+            "filename": "bin/charset-1.dll",
+            "fileDescription": "libcharset",
+            "fileVersion": "1.5",
+            "productName": "libcharset",
+            "productVersion": "1.5"
+        },
+        {
+            "filename": "bin/ffi-8.dll",
+            "fileDescription": "Portable foreign function interface library.",
+            "fileVersion": "3.4.4",
+            "productName": "libffi",
+            "productVersion": "3.4.4",
+            "copyright": "Copyright (c) 2008-2019, 2021, 2022 Anthony Green and Red Hat, Inc."
+        },
+        {
+            "filename": "bin/fontconfig-1.dll",
+            "fileDescription": "Font configuration and customization library",
+            "fileVersion": "2.14.2",
+            "productName": "FontConfig",
+            "productVersion": "2.14.2",
+            "copyright": "Copyright (c) 2001 Keith Packard"
+        },
+        {
+            "filename": "bin/fribidi-0.dll",
+            "fileDescription": "GNU FriBidi",
+            "fileVersion": "1.0.13",
+            "productName": "FriBidi",
+            "productVersion": "1.0.13",
+            "copyright": "Copyright (c) 2004 Sharif FarsiWeb, Inc"
+        },
+        {
+            "filename": "bin/getopt.dll",
+            "fileDescription": "Getopt for Microsoft C",
+            "fileVersion": "1.1",
+            "productName": "Getopt",
+            "productVersion": "1.1"
+        },
+        {
+            "filename": "bin/harfbuzz.dll",
+            "fileDescription": "HarfBuzz",
+            "fileVersion": "8.3.0",
+            "productName": "HarfBuzz",
+            "productVersion": "8.3.0",
+            "copyright": "Copyright (c) 2011 Google, Inc."
+        },
+        {
+            "filename": "bin/harfbuzz-subset.dll",
+            "fileDescription": "HarfBuzz",
+            "fileVersion": "8.3.0",
+            "productName": "HarfBuzz",
+            "productVersion": "8.3.0",
+            "copyright": "Copyright (c) 2011 Google, Inc."
+        },
+        {
+            "filename": "bin/libexpat.dll",
+            "fileDescription": "Expat XML Parser",
+            "productName": "Expat"
+        },
+        {
+            "filename": "bin/libpng16.dll",
+            "fileDescription": "PNG image compression library",
+            "fileVersion": "1.6.40",
+            "productName": "LibPNG",
+            "productVersion": "1.6.40",
+            "copyright": "Copyright (c) 1998-2009 Glenn Randers-Pehrson et al."
+        },
+        {
+            "filename": "bin/pcre2-16.dll",
+            "fileDescription": "Perl-Compatible Regular Expressions",
+            "fileVersion": "10.42",
+            "productName": "PCRE2",
+            "productVersion": "10.42",
+            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
+        },
+        {
+            "filename": "bin/pcre2-32.dll",
+            "fileDescription": "Perl-Compatible Regular Expressions",
+            "fileVersion": "10.42",
+            "productName": "PCRE2",
+            "productVersion": "10.42",
+            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
+        },
+        {
+            "filename": "bin/pcre2-8.dll",
+            "fileDescription": "Perl-Compatible Regular Expressions",
+            "fileVersion": "10.42",
+            "productName": "PCRE2",
+            "productVersion": "10.42",
+            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
+        },
+        {
+            "filename": "bin/pcre2-posix.dll",
+            "fileDescription": "Posix compatible interface to libpcre2-8",
+            "fileVersion": "10.42",
+            "productName": "PCRE2-POSIX",
+            "productVersion": "10.42",
+            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
+        },
+        {
+            "filename": "bin/pixman-1-0.dll",
+            "fileDescription": "Pixman",
+            "fileVersion": "0.43.2",
+            "productName": "Pixman",
+            "productVersion": "0.43.2",
+            "copyright": "Copyright (c) 2008 Red Hat, Inc."
+        }
+    ]
+}

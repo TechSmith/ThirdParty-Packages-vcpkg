@@ -17,10 +17,10 @@ parameters:
   - libpng
   - libzip-static
   - libzip-dynamic
+  - minizip
   - openssl-static
   - opencv4
   - pango
-  - skia
   - sqlite3
   - sqlite-modern-cpp
   - tinyxml

@@ -1,9 +1,10 @@
 # This script is here just for testing purposes
 param (
-    [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
+    [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
+    [Parameter(Mandatory=$false)][string]$PackageAndFeatures,
+    [Parameter(Mandatory=$false)][string]$LinkType,
+    [Parameter(Mandatory=$false)][string]$BuildType
 )
-
-Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
 
 Write-Message "Test: Running post-build script..."
 if (-not (Get-IsOnMacOS)) {

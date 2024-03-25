@@ -24,7 +24,9 @@ function Set-DllVersionInfo {
         $value = $fileInfo[$type]
 
         if ($rceditType) {
-            Invoke-Expression "./rcedit.exe `"$filePath`" $rceditType `"$value`""
+            if ($null -ne $value) {
+               Invoke-Expression "./rcedit.exe `"$filePath`" $rceditType `"$value`""
+            }
         } else {
             Write-Message "Invalid VersionInfoType: $type"
         }

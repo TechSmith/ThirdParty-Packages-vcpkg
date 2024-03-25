@@ -34,6 +34,21 @@ function Create-UniversalBinaries {
    }
 }
 
+function Copy-NonLibraryFiles {
+   param(
+      [string]$srcDir,
+      [string]$destDir
+   )
+   Write-Message "Copying non-library files: $srcDir ==> $destDir..."
+   $srcDir = (Convert-Path -LiteralPath $srcDir)
+   $destDir = (Convert-Path -LiteralPath $destDir)
+
+   Get-ChildItem -Path $srcDir -Recurse | Where-Object { $_.Extension -notin ('.dylib', '.a') } | ForEach-Object {
+   $destinationPath = Join-Path -Path $destDir -ChildPath $_.FullName.Substring($srcDir.Length)
+      Copy-Item -Path $_.FullName -Destination $destinationPath
+   }
+}
+
 function Create-FinalizedMacArtifacts {
     param (
         [string]$arm64LibDir,
@@ -44,6 +59,7 @@ function Create-FinalizedMacArtifacts {
     Write-Message "arm64LibDir: $arm64LibDir"
     Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
     Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalLibDir $universalLibDir
+    Copy-NonLibraryFiles -srcDir $arm64LibDir -destDir $universalLibDir
     Remove-Item -Force -Recurse -Path $arm64LibDir
     Remove-Item -Force -Recurse -Path $x64LibDir
 }
@@ -121,6 +137,62 @@ function Debug-WriteLibraryDependencies {
    }
 }
 
+function Find-FirstSymlink
+{
+    param (
+        [Parameter(Mandatory=$true)][PSObject]$file,
+        [Parameter(Mandatory=$true)][array]$symlinks
+    )
+    foreach($symlink in $symlinks) {
+        $symlinkPath = "$pwd/" + (readlink $symlink)
+        if($symlinkPath -eq $file.FullName)
+        {
+            return $symlink
+        }
+    }
+}
+
+function Get-SymlinkChains {
+    param (
+        [Parameter(Mandatory=$true)][array]$files
+    )
+
+    $dirFiles = @()
+    $dirSymlinks = @()
+    foreach($file in $files) {
+        if($file.Attributes -eq 'ReparsePoint') {
+            $dirSymlinks += $file
+        }
+        else {
+            $dirFiles += $file
+        }
+    }
+
+    $symlinkChains = @()
+    foreach($file in $dirFiles)
+    {
+        $topOfChainFilename = $file
+        $symlinks = @()
+        $symlink = $file
+        while($symlink) {
+            $topOfChainFilename = $symlink
+            $symlink = Find-FirstSymlink -file $symlink -symlinks $dirSymlinks
+            if(-not $symlink) {
+                continue
+            }
+            $symlinks += $symlink
+        }
+        $symlinkChain = @{
+            PhysicalFilename = $file
+            TopOfChainFilename = $topOfChainFilename
+            Symlinks = $symlinks
+        }
+        $symlinkChains += $symlinkChain
+    }
+
+    return $symlinkChains
+}
+
 function Remove-DylibSymlinks {
     param (
         [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
@@ -130,52 +202,65 @@ function Remove-DylibSymlinks {
     Push-Location "$BuildArtifactsPath/lib"
 
     # Enumerate files
-    $mainFiles = @()
-    $filesWithVersions = @()
+    $physicalFiles = @()
     $dylibFiles = Get-ChildItem -Path . -Filter "*.dylib"
-    foreach ($dylibFile in $dylibFiles) {
-        # Check if the file name contains more than one dot
-        if (-not ($dylibFile.Name -match '\..*\..*')) {
-            $mainFiles += $dylibFile.Name
-        }
-        else {
-            $filesWithVersions += $dylibFile.Name
-        }
+    $symlinkChains = Get-SymlinkChains -files $dylibFiles
+    foreach ($chain in $symlinkChains) {
+        $physicalFiles += $chain.PhysicalFilename
     }
+    Debug-WriteLibraryDependencies $physicalFiles
 
-    Debug-WriteLibraryDependencies $mainFiles
-
-    $baseFilenameStartPattern = '[^a-zA-Z0-9-_]'
-    foreach ($mainFile in $mainFiles) {
-        # Main file
-        Invoke-Expression "install_name_tool -id '@rpath/$mainFile' '$mainFile'"
-
-        # All other files that might point to it
-        foreach ($possibleDependency in $filesWithVersions) {
-            $baseFilename = ($possibleDependency -split $baseFilenameStartPattern)[0]
-            $newDependency = "$baseFilename.dylib"
-            if ($mainFiles -contains $newDependency) {
-                Invoke-Expression "install_name_tool -change '@rpath/$possibleDependency' '@rpath/$newDependency' '$mainFile'"
+    $dependencyChanges = @()
+    foreach($chain in $symlinkChains) {
+        $newDependencyFilename = Split-Path $chain.TopOfChainFilename -Leaf
+        $oldDependencyFilename = Split-Path $chain.PhysicalFilename -Leaf
+        if(-not ($oldDependencyFilename -eq $newDependencyFilename)) {
+            $dependencyChanges += @{
+                New = $newDependencyFilename
+                Old = $oldDependencyFilename
+            }
+        }
+        foreach($symlink in $chain.Symlinks) {
+            $oldDependencyFilename = Split-Path $symlink -Leaf
+            if($oldDependencyFilename -eq $newDependencyFilename) {
+                continue
+            }
+            $dependencyChanges += @{
+                New = $newDependencyFilename
+                Old = $oldDependencyFilename
             }
         }
     }
 
-    Debug-WriteLibraryDependencies $mainFiles
-
-    $files = Get-ChildItem -File -Recurse
-    foreach ($file in $files) {
-        if ($file.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-            Remove-Item $file.FullName
+    Write-Host "Updating files..."
+    foreach ($chain in $symlinkChains) {
+        $newFullFilename = $chain.TopOfChainFilename
+        $newFilename = Split-Path $newFullFilename -Leaf
+        $physicalFullFilename = $chain.PhysicalFilename
+        
+        # Main file
+        Write-Host "> Updating: $physicalFullFilename"
+        Invoke-Expression "install_name_tool -id '@rpath/$newFilename' '$physicalFullFilename'"
+        foreach($change in $dependencyChanges) {
+            Invoke-Expression "install_name_tool -change '@rpath/$($change.Old)' '@rpath/$($change.New)' '$physicalFullFilename'"
         }
     }
 
-    # Rename files to the "main" filename we want
-    $files = Get-ChildItem -File -Recurse
-    foreach ($file in $files) {
-        $oldFilename = $file.Name
-        $baseFilename = ($oldFilename -split $baseFilenameStartPattern)[0]
-        $newFilename = "$baseFilename" + [System.IO.Path]::GetExtension($file)
-        Move-Item -Path $file.Name -Destination $newFilename
+    Debug-WriteLibraryDependencies $physicalFiles
+
+    # Rename files & delete symlinks
+    Write-Message "Renaming files & deleting symlinks..."
+    foreach ($chain in $symlinkChains) {
+        foreach($symlink in $chain.Symlinks) {
+            $symlinkFullFilename = $symlink.FullName
+            Remove-Item $symlinkFullFilename
+        }
+        $oldFileFullName = $chain.PhysicalFilename
+        $newFileFullName = $chain.TopOfChainFilename
+        if($oldFilename -eq $newFilename) {
+            continue
+        }
+        Move-Item -Path $oldFileFullName -Destination $newFileFullName
     }
 
     Pop-Location
