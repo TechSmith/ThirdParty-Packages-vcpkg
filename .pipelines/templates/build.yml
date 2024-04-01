@@ -29,6 +29,11 @@ parameters:
   type: boolean
   default: false
 
+- name: appendStringToGitHubRelease
+  displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
+  type: string
+  default: 
+
 - name: isPreconfiguredBuild
   displayName: isPreconfiguredBuild
   type: boolean
@@ -151,6 +156,7 @@ stages:
           tar -xzvf $artifactZip -C $artifactsUnzippedDir
           Push-Location $artifactsUnzippedDir
           $gitReleaseTagName = ""
+          $gitReleaseTagSuffix = "${{ parameters.appendStringToGitHubRelease }}".Trim()
           if (Test-Path -Path $packageInfoJsonFile -PathType Leaf) {
               $jsonContent = Get-Content -Path $packageInfoJsonFile -Raw | ConvertFrom-Json
               $version = $jsonContent.version
@@ -158,6 +164,9 @@ stages:
               $gitReleaseTagName = "$packageName-$version"
           }
           Pop-Location
+          if( $gitReleaseTagSuffix -ne "") {
+             $gitReleaseTagName += "--$gitReleaseTagSuffix"
+          }
           Write-Host "##vso[task.setvariable variable=gitReleaseTagName]$gitReleaseTagName"
           Write-Host "##vso[task.setvariable variable=gitReleaseNotes]$gitReleaseNotes"
 
