@@ -215,6 +215,19 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "openfstwin",
+      "mac": {
+        "package": "openfstwin",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "openfstwin",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }

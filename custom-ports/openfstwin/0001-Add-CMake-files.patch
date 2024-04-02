@@ -1,0 +1,1296 @@
+From 9992cf7ad08cb12a7e100e2a1985679d35ef451b Mon Sep 17 00:00:00 2001
+From: Michael McAuliffe <michael.e.mcauliffe@gmail.com>
+Date: Fri, 19 Jan 2024 12:53:40 -0800
+Subject: [PATCH] Add CMake files
+
+---
+ CMakeLists.txt                          |  55 +++++++
+ src/CMakeLists.txt                      |  20 +++
+ src/bin/CMakeLists.txt                  |  85 +++++++++++
+ src/extensions/CMakeLists.txt           |  43 ++++++
+ src/extensions/compact/CMakeLists.txt   | 103 +++++++++++++
+ src/extensions/compress/CMakeLists.txt  |  59 ++++++++
+ src/extensions/const/CMakeLists.txt     |  49 +++++++
+ src/extensions/far/CMakeLists.txt       |  77 ++++++++++
+ src/extensions/linear/CMakeLists.txt    |  88 +++++++++++
+ src/extensions/lookahead/CMakeLists.txt |  43 ++++++
+ src/extensions/mpdt/CMakeLists.txt      |  38 +++++
+ src/extensions/ngram/CMakeLists.txt     |  54 +++++++
+ src/extensions/pdt/CMakeLists.txt       |  44 ++++++
+ src/extensions/python/CMakeLists.txt    |  22 +++
+ src/extensions/special/CMakeLists.txt   |  47 ++++++
+ src/lib/CMakeLists.txt                  |  41 ++++++
+ src/script/CMakeLists.txt               |  75 ++++++++++
+ src/test/CMakeLists.txt                 | 185 ++++++++++++++++++++++++
+ 18 files changed, 1128 insertions(+)
+ create mode 100644 CMakeLists.txt
+ create mode 100644 src/CMakeLists.txt
+ create mode 100644 src/bin/CMakeLists.txt
+ create mode 100644 src/extensions/CMakeLists.txt
+ create mode 100644 src/extensions/compact/CMakeLists.txt
+ create mode 100644 src/extensions/compress/CMakeLists.txt
+ create mode 100644 src/extensions/const/CMakeLists.txt
+ create mode 100644 src/extensions/far/CMakeLists.txt
+ create mode 100644 src/extensions/linear/CMakeLists.txt
+ create mode 100644 src/extensions/lookahead/CMakeLists.txt
+ create mode 100644 src/extensions/mpdt/CMakeLists.txt
+ create mode 100644 src/extensions/ngram/CMakeLists.txt
+ create mode 100644 src/extensions/pdt/CMakeLists.txt
+ create mode 100644 src/extensions/python/CMakeLists.txt
+ create mode 100644 src/extensions/special/CMakeLists.txt
+ create mode 100644 src/lib/CMakeLists.txt
+ create mode 100644 src/script/CMakeLists.txt
+ create mode 100644 src/test/CMakeLists.txt
+
+diff --git CMakeLists.txt CMakeLists.txt
+new file mode 100644
+index 0000000..21e4c5c
+--- /dev/null
++++ CMakeLists.txt
+@@ -0,0 +1,55 @@
++
++cmake_minimum_required(VERSION 3.20)
++project(openfst)
++
++include(GNUInstallDirs)
++include(GenerateExportHeader)
++set(CMAKE_MACOSX_RPATH 1)
++set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_EXTENSIONS OFF)
++
++set(CMAKE_POSITION_INDEPENDENT_CODE ON)
++if (MSVC)
++    find_package(dlfcn-win32 REQUIRED)
++    set(CMAKE_DL_LIBS dlfcn-win32::dl)
++    set(CMAKE_ENABLE_EXPORTS ON)
++
++    #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
++    add_definitions(-DWIN32_LEAN_AND_MEAN)
++    add_definitions(-DNOMINMAX)
++    add_definitions(-D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
++    add_definitions(-D_USE_MATH_DEFINES)
++    add_compile_options(/permissive- /FS /wd4819 /EHsc /bigobj)
++
++    # some warnings related with fst
++    add_compile_options(/wd4018 /wd4244 /wd4267 /wd4291 /wd4305)
++    
++endif (MSVC)
++option(BUILD_SHARED_LIBS "Build shared libraries" ON)
++
++set(SOVERSION "26")
++
++
++option(HAVE_BIN          "Build the fst binaries" ON)
++option(HAVE_SCRIPT       "Build the fstscript" ON)
++option(HAVE_COMPACT      "Build compact" ON)
++option(HAVE_COMPRESS "Build compress" ON)
++option(HAVE_CONST   "Build const" ON)
++option(HAVE_FAR  "Build far" ON)
++option(HAVE_GRM "Build grm" ON)
++option(HAVE_PDT "Build pdt" ON)
++option(HAVE_MPDT "Build mpdt" ON)
++option(HAVE_LINEAR "Build linear" ON)
++option(HAVE_LOOKAHEAD "Build lookahead" ON)
++option(HAVE_NGRAM "Build ngram" ON)
++option(HAVE_PYTHON "Build python" OFF)
++option(HAVE_SPECIAL "Build special" ON)
++option(OPENFST_BUILD_TEST "Build tests" ON) 
++
++if (OPENFST_BUILD_TEST)
++    include(CTest)
++    enable_testing()
++    set(CTEST_OUTPUT_ON_FAILURE ON)
++endif()
++
++add_subdirectory(src)
+diff --git src/CMakeLists.txt src/CMakeLists.txt
+new file mode 100644
+index 0000000..0bdd55d
+--- /dev/null
++++ src/CMakeLists.txt
+@@ -0,0 +1,20 @@
++#-DHAVE_CONFIG_H -I./../include -fno-exceptions -funsigned-char -std=c++11 -MT symbol-table.lo -MD -MP -MF .deps/symbol-table.Tpo -c symbol-table.cc  -fno-common -DPIC -o .libs/symbol-table.o
++
++include_directories(./include/)
++install(DIRECTORY include/ DESTINATION include/
++        FILES_MATCHING PATTERN "*.h")
++install(DIRECTORY include/ DESTINATION include/
++        FILES_MATCHING PATTERN "*.inc")
++
++add_subdirectory(lib)
++add_subdirectory(script)
++
++if(HAVE_BIN)
++  add_subdirectory(bin)
++endif(HAVE_BIN)
++
++add_subdirectory(extensions)
++
++if (${OPENFST_BUILD_TEST})
++add_subdirectory(test)
++endif()
+\ No newline at end of file
+diff --git src/bin/CMakeLists.txt src/bin/CMakeLists.txt
+new file mode 100644
+index 0000000..2d02c25
+--- /dev/null
++++ src/bin/CMakeLists.txt
+@@ -0,0 +1,85 @@
++function (add_executable2 _name)
++    add_executable(${ARGV})
++    if (TARGET ${_name})
++        target_link_libraries(${_name} fstscript fst ${CMAKE_DL_LIBS})
++        set_target_properties(${_name} PROPERTIES FOLDER bin)
++    endif()
++
++    install(TARGETS ${_name} RUNTIME DESTINATION bin)
++endfunction()
++
++include_directories(../include ../script/)
++
++add_executable2(fstarcsort fstarcsort-main.cc fstarcsort.cc)
++
++add_executable2(fstclosure fstclosure-main.cc fstclosure.cc)
++
++add_executable2(fstcompile  fstcompile-main.cc fstcompile.cc)
++
++add_executable2(fstcompose fstcompose-main.cc fstcompose.cc)
++
++add_executable2(fstconcat fstconcat-main.cc fstconcat.cc)
++
++add_executable2(fstconnect fstconnect-main.cc fstconnect.cc)
++
++add_executable2(fstconvert fstconvert-main.cc fstconvert.cc)
++
++add_executable2(fstdeterminize fstdeterminize-main.cc fstdeterminize.cc)
++
++add_executable2(fstdifference fstdifference-main.cc fstdifference.cc)
++
++add_executable2(fstdisambiguate fstdisambiguate-main.cc fstdisambiguate.cc)
++
++add_executable2(fstdraw fstdraw-main.cc fstdraw.cc)
++
++add_executable2(fstencode fstencode-main.cc fstencode.cc)
++
++add_executable2(fstepsnormalize fstepsnormalize-main.cc fstepsnormalize.cc)
++
++add_executable2(fstequal fstequal-main.cc fstequal.cc)
++
++add_executable2(fstequivalent fstequivalent-main.cc fstequivalent.cc)
++
++add_executable2(fstinfo fstinfo-main.cc fstinfo.cc)
++
++add_executable2(fstintersect fstintersect-main.cc fstintersect.cc)
++
++add_executable2(fstinvert fstinvert-main.cc fstinvert.cc)
++
++add_executable2(fstisomorphic fstisomorphic-main.cc fstisomorphic.cc)
++
++add_executable2(fstmap fstmap-main.cc fstmap.cc)
++
++add_executable2(fstminimize fstminimize-main.cc fstminimize.cc)
++
++add_executable2(fstprint fstprint-main.cc fstprint.cc)
++
++add_executable2(fstproject fstproject-main.cc fstproject.cc)
++
++add_executable2(fstprune fstprune-main.cc fstprune.cc)
++
++add_executable2(fstpush fstpush-main.cc fstpush.cc)
++
++add_executable2(fstrandgen fstrandgen-main.cc fstrandgen.cc)
++
++add_executable2(fstrelabel fstrelabel-main.cc fstrelabel.cc)
++
++add_executable2(fstreplace fstreplace-main.cc fstreplace.cc)
++
++add_executable2(fstreverse fstreverse-main.cc fstreverse.cc)
++
++add_executable2(fstreweight fstreweight-main.cc fstreweight.cc)
++
++add_executable2(fstrmepsilon fstrmepsilon-main.cc fstrmepsilon.cc)
++
++add_executable2(fstshortestdistance fstshortestdistance-main.cc fstshortestdistance.cc)
++
++add_executable2(fstshortestpath fstshortestpath-main.cc fstshortestpath.cc)
++
++add_executable2(fstsymbols fstsymbols-main.cc fstsymbols.cc)
++
++add_executable2(fstsynchronize fstsynchronize-main.cc fstsynchronize.cc)
++
++add_executable2(fsttopsort fsttopsort-main.cc fsttopsort.cc)
++
++add_executable2(fstunion fstunion-main.cc fstunion.cc)
+\ No newline at end of file
+diff --git src/extensions/CMakeLists.txt src/extensions/CMakeLists.txt
+new file mode 100644
+index 0000000..094ab74
+--- /dev/null
++++ src/extensions/CMakeLists.txt
+@@ -0,0 +1,43 @@
++if(HAVE_COMPACT)
++  add_subdirectory(compact)
++endif(HAVE_COMPACT)
++
++if(HAVE_COMPRESS)
++  add_subdirectory(compress)
++endif(HAVE_COMPRESS)
++
++if(HAVE_CONST)
++  add_subdirectory(const)
++endif(HAVE_CONST)
++
++if(HAVE_FAR OR HAVE_GRM)
++  add_subdirectory(far)
++endif(HAVE_FAR OR HAVE_GRM)
++
++if(HAVE_LINEAR)
++  add_subdirectory(linear)
++endif(HAVE_LINEAR)
++
++if(HAVE_LOOKAHEAD)
++  add_subdirectory(lookahead)
++endif(HAVE_LOOKAHEAD)
++
++if(HAVE_MPDT OR HAVE_GRM)
++  add_subdirectory(mpdt)
++endif(HAVE_MPDT OR HAVE_GRM)
++
++if(HAVE_NGRAM)
++  add_subdirectory(ngram)
++endif(HAVE_NGRAM)
++
++if(HAVE_PYTHON)
++  add_subdirectory(python)
++endif(HAVE_PYTHON)
++
++if(HAVE_PDT OR HAVE_MPDT OR HAVE_GRM)
++  add_subdirectory(pdt)
++endif(HAVE_PDT OR HAVE_MPDT OR HAVE_GRM)
++
++if(HAVE_SPECIAL)
++  add_subdirectory(special)
++endif(HAVE_SPECIAL)
+\ No newline at end of file
+diff --git src/extensions/compact/CMakeLists.txt src/extensions/compact/CMakeLists.txt
+new file mode 100644
+index 0000000..cb8a2b1
+--- /dev/null
++++ src/extensions/compact/CMakeLists.txt
+@@ -0,0 +1,103 @@
++add_library(fstcompact
++  compact8_acceptor-fst.cc 
++  compact8_string-fst.cc 
++  compact8_unweighted-fst.cc 
++  compact8_unweighted_acceptor-fst.cc 
++  compact8_weighted_string-fst.cc 
++  compact16_acceptor-fst.cc 
++  compact16_string-fst.cc 
++  compact16_unweighted-fst.cc 
++  compact16_unweighted_acceptor-fst.cc 
++  compact16_weighted_string-fst.cc 
++  compact64_acceptor-fst.cc 
++  compact64_string-fst.cc 
++  compact64_unweighted-fst.cc 
++  compact64_unweighted_acceptor-fst.cc 
++  compact64_weighted_string-fst.cc
++)
++
++target_link_libraries(fstcompact fst)
++set_target_properties(fstcompact PROPERTIES 
++  SOVERSION "${SOVERSION}"
++)
++GENERATE_EXPORT_HEADER( fstcompact
++             BASE_NAME fstcompact
++             EXPORT_MACRO_NAME fstcompact_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstcompact_Export.h
++             STATIC_DEFINE fstcompact_BUILT_AS_STATIC
++)
++target_compile_definitions(fstcompact PRIVATE fstcompact_EXPORTS)
++target_include_directories(fstcompact PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++
++install(TARGETS fstcompact 
++	        LIBRARY DESTINATION lib
++			ARCHIVE DESTINATION lib
++            RUNTIME DESTINATION bin
++)
++
++function (add_module _name)
++    add_library(${ARGV})
++    if (TARGET ${_name})
++        target_link_libraries(${_name} fst)
++    endif()
++
++    #set_target_properties(${_name} PROPERTIES SOVERSION "1")
++    if (MSVC)
++    install(TARGETS ${_name} 
++	        LIBRARY DESTINATION bin
++			ARCHIVE DESTINATION bin
++            RUNTIME DESTINATION bin)
++    else()
++    install(TARGETS ${_name} 
++	        LIBRARY DESTINATION lib
++			ARCHIVE DESTINATION lib
++            RUNTIME DESTINATION bin)
++    endif()
++endfunction()
++
++add_module(compact8_acceptor-fst MODULE
++  compact8_acceptor-fst.cc)
++ 
++add_module(compact8_string-fst MODULE
++  compact8_string-fst.cc)
++ 
++add_module(compact8_unweighted-fst MODULE
++  compact8_unweighted-fst.cc)
++ 
++add_module(compact8_unweighted_acceptor-fst MODULE
++  compact8_unweighted_acceptor-fst.cc)
++ 
++add_module(compact8_weighted_string-fst MODULE
++  compact8_weighted_string-fst.cc)
++ 
++add_module(compact16_acceptor-fst MODULE
++  compact16_acceptor-fst.cc)
++ 
++add_module(compact16_string-fst MODULE
++  compact16_string-fst.cc)
++ 
++add_module(compact16_unweighted-fst MODULE
++  compact16_unweighted-fst.cc)
++ 
++add_module(compact16_unweighted_acceptor-fst MODULE
++  compact16_unweighted_acceptor-fst.cc)
++ 
++add_module(compact16_weighted_string-fst MODULE
++  compact16_weighted_string-fst.cc)
++ 
++add_module(compact64_acceptor-fst MODULE
++  compact64_acceptor-fst.cc)
++ 
++add_module(compact64_string-fst MODULE
++  compact64_string-fst.cc)
++ 
++add_module(compact64_unweighted-fst MODULE
++  compact64_unweighted-fst.cc)
++ 
++add_module(compact64_unweighted_acceptor-fst MODULE
++  compact64_unweighted_acceptor-fst.cc)
++ 
++add_module(compact64_weighted_string-fst MODULE
++  compact64_weighted_string-fst.cc)
++
+diff --git src/extensions/compress/CMakeLists.txt src/extensions/compress/CMakeLists.txt
+new file mode 100644
+index 0000000..028cd76
+--- /dev/null
++++ src/extensions/compress/CMakeLists.txt
+@@ -0,0 +1,59 @@
++
++add_library(fstcompressscript
++  compressscript.cc
++ )
++if (MSVC)
++  target_link_libraries(fstcompressscript
++    fstscript
++    fst
++  )
++GENERATE_EXPORT_HEADER( fstcompressscript
++             BASE_NAME fstcompressscript
++             EXPORT_MACRO_NAME fstcompressscript_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstcompressscript_Export.h
++             STATIC_DEFINE fstcompressscript_BUILT_AS_STATIC
++)
++target_compile_definitions(fstcompressscript PRIVATE fstcompressscript_EXPORTS)
++target_include_directories(fstcompressscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++else()
++  target_link_libraries(fstcompressscript
++    fstscript
++    fst
++  )
++endif()
++set_target_properties(fstcompressscript PROPERTIES
++  SOVERSION "${SOVERSION}"
++)
++install(TARGETS fstcompressscript
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++  RUNTIME DESTINATION bin
++ )
++
++if(HAVE_BIN)
++  add_executable(fstcompress
++    fstcompress.cc
++    fstcompress-main.cc)
++
++    if (MSVC)
++      target_link_libraries(fstcompress
++        fstcompressscript
++        fstscript
++        fst
++      )
++    else()
++      target_link_libraries(fstcompress
++        fstcompressscript
++        fstscript
++        fst
++        ${CMAKE_DL_LIBS}
++      )
++    endif()
++
++  install(TARGETS fstcompress
++	        LIBRARY DESTINATION lib
++			ARCHIVE DESTINATION lib
++            RUNTIME DESTINATION bin
++		)
++endif(HAVE_BIN)
+\ No newline at end of file
+diff --git src/extensions/const/CMakeLists.txt src/extensions/const/CMakeLists.txt
+new file mode 100644
+index 0000000..1f041b2
+--- /dev/null
++++ src/extensions/const/CMakeLists.txt
+@@ -0,0 +1,49 @@
++function (add_module _name)
++    add_library(${ARGV})
++    if (TARGET ${_name})
++        target_link_libraries(${_name} fst)
++    endif()
++
++    if (MSVC)
++    install(TARGETS ${_name} 
++	        LIBRARY DESTINATION bin
++			ARCHIVE DESTINATION bin
++            RUNTIME DESTINATION bin)
++    else()
++    install(TARGETS ${_name} 
++	        LIBRARY DESTINATION lib
++			ARCHIVE DESTINATION lib
++            RUNTIME DESTINATION bin)
++    endif()
++endfunction()
++
++
++add_module(const8-fst MODULE const8-fst.cc)
++
++add_module(const16-fst MODULE const16-fst.cc)
++
++add_module(const64-fst MODULE const64-fst.cc)
++
++add_library(fstconst 
++  const8-fst.cc 
++  const16-fst.cc 
++  const64-fst.cc)
++target_link_libraries(fstconst fst)
++set_target_properties(fstconst PROPERTIES
++  SOVERSION "${SOVERSION}"
++)
++GENERATE_EXPORT_HEADER( fstconst
++             BASE_NAME fstconst
++             EXPORT_MACRO_NAME fstconst_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstconst_Export.h
++             STATIC_DEFINE fstconst_BUILT_AS_STATIC
++)
++target_compile_definitions(fstconst PRIVATE fstconst_EXPORTS)
++target_include_directories(fstconst PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++
++install(TARGETS fstconst 
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++  RUNTIME DESTINATION bin
++ )
+\ No newline at end of file
+diff --git src/extensions/far/CMakeLists.txt src/extensions/far/CMakeLists.txt
+new file mode 100644
+index 0000000..e37ce8f
+--- /dev/null
++++ src/extensions/far/CMakeLists.txt
+@@ -0,0 +1,77 @@
++
++add_library(fstfar
++  sttable.cc
++  stlist.cc
++)
++target_link_libraries(fstfar fst)
++set_target_properties(fstfar PROPERTIES 
++  SOVERSION "${SOVERSION}"
++  FOLDER far
++)
++GENERATE_EXPORT_HEADER( fstfar
++             BASE_NAME fstfar
++             EXPORT_MACRO_NAME fstfar_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstfar_Export.h
++             STATIC_DEFINE fstfar_BUILT_AS_STATIC
++)
++target_compile_definitions(fstfar PRIVATE fstfar_EXPORTS)
++target_include_directories(fstfar PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++
++install(TARGETS fstfar
++LIBRARY DESTINATION lib
++ARCHIVE DESTINATION lib
++RUNTIME DESTINATION bin
++)
++
++if(HAVE_SCRIPT)
++  add_library(fstfarscript
++    compile-strings.cc 
++    far-class.cc 
++    farscript.cc
++    getters.cc 
++    script-impl.cc
++  )
++  if (MSVC)
++GENERATE_EXPORT_HEADER( fstfarscript
++             BASE_NAME fstfarscript
++             EXPORT_MACRO_NAME fstfarscript_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstfarscript_Export.h
++             STATIC_DEFINE fstfarscript_BUILT_AS_STATIC
++)
++target_compile_definitions(fstfarscript PRIVATE fstfarscript_EXPORTS)
++target_include_directories(fstfarscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++  endif()
++    target_link_libraries(fstfarscript fstfar fstscript fst ${CMAKE_DL_LIBS})
++  set_target_properties(fstfarscript PROPERTIES 
++    SOVERSION "${SOVERSION}"
++  )
++
++  install(TARGETS fstfarscript
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++  RUNTIME DESTINATION bin
++  )
++endif(HAVE_SCRIPT)
++
++if(HAVE_BIN)
++  function (add_executable2 _name)
++      add_executable(${ARGV})
++      if (TARGET ${_name})
++        target_link_libraries(${_name} fstfarscript fstscript fst ${CMAKE_DL_LIBS})
++      endif()
++      install(TARGETS ${_name} RUNTIME DESTINATION bin)
++  endfunction()
++
++  add_executable2(farcompilestrings farcompilestrings.cc farcompilestrings-main.cc)
++  add_executable2(farcreate  farcreate.cc farcreate-main.cc)
++  add_executable2(farconvert  farconvert.cc farconvert-main.cc)
++  add_executable2(farencode  farencode.cc farencode-main.cc)
++  add_executable2(farequal  farequal.cc farequal-main.cc)
++  add_executable2(farextract  farextract.cc farextract-main.cc)
++  add_executable2(farinfo  farinfo.cc farinfo-main.cc)
++  add_executable2(farisomorphic  farisomorphic.cc  farisomorphic-main.cc)
++  add_executable2(farprintstrings  farprintstrings.cc farprintstrings-main.cc)
++endif(HAVE_BIN)
++
+diff --git src/extensions/linear/CMakeLists.txt src/extensions/linear/CMakeLists.txt
+new file mode 100644
+index 0000000..6a5ecfd
+--- /dev/null
++++ src/extensions/linear/CMakeLists.txt
+@@ -0,0 +1,88 @@
++
++
++if(HAVE_SCRIPT)
++  add_library(fstlinearscript
++    linearscript.cc
++  )
++  set_target_properties(fstlinearscript PROPERTIES 
++    SOVERSION "${SOVERSION}"
++  )
++    target_link_libraries(fstlinearscript
++      fstscript
++      fst
++    )
++  if (MSVC)
++GENERATE_EXPORT_HEADER( fstlinearscript
++             BASE_NAME fstlinearscript
++             EXPORT_MACRO_NAME fstlinearscript_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstlinearscript_Export.h
++             STATIC_DEFINE fstlinearscript_BUILT_AS_STATIC
++)
++target_compile_definitions(fstlinearscript PRIVATE fstlinearscript_EXPORTS)
++target_include_directories(fstlinearscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++    install(TARGETS fstlinearscript
++    LIBRARY DESTINATION bin
++    ARCHIVE DESTINATION lib
++    RUNTIME DESTINATION bin
++    )
++  else()
++    install(TARGETS fstlinearscript
++    LIBRARY DESTINATION lib
++    ARCHIVE DESTINATION lib
++    RUNTIME DESTINATION bin
++    )
++  endif()
++  
++endif(HAVE_SCRIPT)
++
++if(HAVE_BIN)
++  add_executable(fstlinear
++    fstlinear.cc 
++    fstlinear-main.cc)
++    target_link_libraries(fstlinear
++      fstlinearscript
++      fstscript 
++      fst
++      ${CMAKE_DL_LIBS}
++    )
++
++  add_executable(fstloglinearapply
++    fstloglinearapply.cc 
++    fstloglinearapply-main.cc)
++  target_link_libraries(fstloglinearapply
++    fstlinearscript
++    fstscript 
++    fst
++    ${CMAKE_DL_LIBS}
++  )
++  install(TARGETS fstlinear fstloglinearapply
++    RUNTIME DESTINATION bin
++  )
++endif(HAVE_BIN)
++
++
++function (add_module _name)
++    add_library(${ARGV})
++    if (TARGET ${_name})
++        target_link_libraries(${_name} fst)
++    endif()
++
++    if (MSVC)
++      install(TARGETS ${_name}
++      LIBRARY DESTINATION bin
++      ARCHIVE DESTINATION bin
++      RUNTIME DESTINATION bin)
++    else()
++      install(TARGETS ${_name}
++      LIBRARY DESTINATION lib
++      ARCHIVE DESTINATION lib
++      RUNTIME DESTINATION bin)
++    endif()
++endfunction()
++
++add_module(linear-tagger-fst MODULE
++  linear-tagger-fst.cc)
++
++add_module(linear-classifier-fst MODULE
++  linear-classifier-fst.cc)
+diff --git src/extensions/lookahead/CMakeLists.txt src/extensions/lookahead/CMakeLists.txt
+new file mode 100644
+index 0000000..e265acc
+--- /dev/null
++++ src/extensions/lookahead/CMakeLists.txt
+@@ -0,0 +1,43 @@
++add_library(fstlookahead
++  arc_lookahead-fst.cc 
++  ilabel_lookahead-fst.cc
++  olabel_lookahead-fst.cc
++)
++target_link_libraries(fstlookahead fst)
++set_target_properties(fstlookahead PROPERTIES 
++  SOVERSION "${SOVERSION}"
++)
++
++install(TARGETS fstlookahead 
++LIBRARY DESTINATION lib
++ARCHIVE DESTINATION lib
++RUNTIME DESTINATION bin
++)
++  
++function (add_module _name)
++    add_library(${ARGV})
++    if (TARGET ${_name})
++        target_link_libraries(${_name} fst)
++    endif()
++
++    if (MSVC)
++    install(TARGETS ${_name} 
++	        LIBRARY DESTINATION bin
++			ARCHIVE DESTINATION bin
++            RUNTIME DESTINATION bin)
++    else()
++    install(TARGETS ${_name} 
++	        LIBRARY DESTINATION lib
++			ARCHIVE DESTINATION lib
++            RUNTIME DESTINATION bin)
++    endif()
++endfunction()
++  
++add_module(arc_lookahead-fst MODULE
++  arc_lookahead-fst.cc)
++ 
++add_module(ilabel_lookahead-fst MODULE
++  ilabel_lookahead-fst.cc)
++
++add_module(olabel_lookahead-fst MODULE
++  olabel_lookahead-fst.cc)
+\ No newline at end of file
+diff --git src/extensions/mpdt/CMakeLists.txt src/extensions/mpdt/CMakeLists.txt
+new file mode 100644
+index 0000000..ef89f17
+--- /dev/null
++++ src/extensions/mpdt/CMakeLists.txt
+@@ -0,0 +1,38 @@
++
++if(HAVE_SCRIPT)
++  add_library(fstmpdtscript mpdtscript.cc)
++    target_link_libraries(fstmpdtscript fstscript fst)
++  if (MSVC)
++GENERATE_EXPORT_HEADER( fstmpdtscript
++             BASE_NAME fstmpdtscript
++             EXPORT_MACRO_NAME fstmpdtscript_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstmpdtscript_Export.h
++             STATIC_DEFINE fstmpdtscript_BUILT_AS_STATIC
++)
++target_compile_definitions(fstmpdtscript PUBLIC fstmpdtscript_EXPORTS)
++target_include_directories(fstmpdtscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++  endif()
++  set_target_properties(fstmpdtscript PROPERTIES 
++    SOVERSION "${SOVERSION}"
++  )
++  install(TARGETS fstmpdtscript 
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++  RUNTIME DESTINATION bin
++  )
++endif(HAVE_SCRIPT)
++
++if(HAVE_BIN)
++  function (add_executable2 _name)
++      add_executable(${ARGV})
++      if (TARGET ${_name})
++          target_link_libraries(${_name} fstmpdtscript fstpdtscript fstscript fst ${CMAKE_DL_LIBS})
++      endif()
++    install(TARGETS ${_name} RUNTIME DESTINATION bin)
++  endfunction()
++  add_executable2(mpdtcompose  mpdtcompose.cc mpdtcompose-main.cc)
++  add_executable2(mpdtexpand  mpdtexpand.cc mpdtexpand-main.cc)
++  add_executable2(mpdtinfo  mpdtinfo.cc mpdtinfo-main.cc)
++  add_executable2(mpdtreverse  mpdtreverse.cc mpdtreverse-main.cc)
++endif(HAVE_BIN)
+\ No newline at end of file
+diff --git src/extensions/ngram/CMakeLists.txt src/extensions/ngram/CMakeLists.txt
+new file mode 100644
+index 0000000..206f3c9
+--- /dev/null
++++ src/extensions/ngram/CMakeLists.txt
+@@ -0,0 +1,54 @@
++
++add_library(fstngram
++    bitmap-index.cc 
++    ngram-fst.cc 
++    nthbit.cc
++)
++
++target_link_libraries(fstngram
++    fst
++)
++GENERATE_EXPORT_HEADER( fstngram
++             BASE_NAME fstngram
++             EXPORT_MACRO_NAME fstngram_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstngram_Export.h
++             STATIC_DEFINE fstngram_BUILT_AS_STATIC
++)
++target_compile_definitions(fstngram PRIVATE fstngram_EXPORTS)
++target_include_directories(fstngram PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++
++set_target_properties(fstngram PROPERTIES
++  SOVERSION "${SOVERSION}"
++)
++
++install(TARGETS fstngram 
++LIBRARY DESTINATION lib
++ARCHIVE DESTINATION lib
++RUNTIME DESTINATION bin
++)
++
++add_library(ngram_fst MODULE
++    bitmap-index.cc 
++    ngram-fst.cc 
++    nthbit.cc
++)
++
++target_link_libraries(ngram_fst
++    fst
++)
++target_compile_definitions(ngram_fst PRIVATE fstngram_EXPORTS)
++target_include_directories(ngram_fst PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++
++if (MSVC)
++install(TARGETS ${_name} 
++        LIBRARY DESTINATION bin
++        ARCHIVE DESTINATION bin
++        RUNTIME DESTINATION bin)
++else()
++install(TARGETS ${_name} 
++        LIBRARY DESTINATION lib
++        ARCHIVE DESTINATION lib
++        RUNTIME DESTINATION bin)
++endif()
+\ No newline at end of file
+diff --git src/extensions/pdt/CMakeLists.txt src/extensions/pdt/CMakeLists.txt
+new file mode 100644
+index 0000000..10c5907
+--- /dev/null
++++ src/extensions/pdt/CMakeLists.txt
+@@ -0,0 +1,44 @@
++
++
++if(HAVE_SCRIPT)
++  add_library(fstpdtscript getters.cc pdtscript.cc)
++    target_link_libraries(fstpdtscript fstscript fst)
++  if (MSVC)
++GENERATE_EXPORT_HEADER( fstpdtscript
++             BASE_NAME fstpdtscript
++             EXPORT_MACRO_NAME fstpdtscript_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstpdtscript_Export.h
++             STATIC_DEFINE fstpdtscript_BUILT_AS_STATIC
++)
++target_compile_definitions(fstpdtscript PRIVATE fstpdtscript_EXPORTS)
++target_include_directories(fstpdtscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++  endif()
++  set_target_properties(fstpdtscript PROPERTIES 
++    SOVERSION "${SOVERSION}"
++  )
++
++  install(TARGETS fstpdtscript
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++  RUNTIME DESTINATION bin
++  )
++endif(HAVE_SCRIPT)
++
++if(HAVE_BIN)
++  function (add_executable2 _name)
++      add_executable(${ARGV})
++      if (TARGET ${_name})
++          target_link_libraries(${_name} fstpdtscript fstscript fst ${CMAKE_DL_LIBS})
++          
++      endif()
++      install(TARGETS ${_name} RUNTIME DESTINATION bin)
++  endfunction()
++
++  add_executable2(pdtcompose  pdtcompose.cc pdtcompose-main.cc)
++  add_executable2(pdtexpand  pdtexpand.cc pdtexpand-main.cc)
++  add_executable2(pdtinfo  pdtinfo.cc pdtinfo-main.cc)
++  add_executable2(pdtreplace  pdtreplace.cc pdtreplace-main.cc)
++  add_executable2(pdtreverse  pdtreverse.cc pdtreverse-main.cc)
++  add_executable2(pdtshortestpath  pdtshortestpath.cc pdtshortestpath-main.cc)
++endif(HAVE_BIN)
+\ No newline at end of file
+diff --git src/extensions/python/CMakeLists.txt src/extensions/python/CMakeLists.txt
+new file mode 100644
+index 0000000..83b9a7f
+--- /dev/null
++++ src/extensions/python/CMakeLists.txt
+@@ -0,0 +1,22 @@
++
++add_library(pywrapfst
++    pywrapfst.cpp
++)
++
++target_link_libraries(pywrapfst
++    fst
++    fstfarscript
++    fstfar
++    fstscript
++)
++
++set_target_properties(pywrapfst PROPERTIES
++  SOVERSION "${SOVERSION}"
++  FOLDER python
++)
++
++install(TARGETS pywrapfst 
++	LIBRARY DESTINATION lib
++	ARCHIVE DESTINATION lib
++	RUNTIME DESTINATION lib
++)
+\ No newline at end of file
+diff --git src/extensions/special/CMakeLists.txt src/extensions/special/CMakeLists.txt
+new file mode 100644
+index 0000000..42c72d1
+--- /dev/null
++++ src/extensions/special/CMakeLists.txt
+@@ -0,0 +1,47 @@
++
++
++add_library(fstspecial
++  phi-fst.cc
++  rho-fst.cc
++  sigma-fst.cc
++)
++GENERATE_EXPORT_HEADER( fstspecial
++             BASE_NAME fstspecial
++             EXPORT_MACRO_NAME fstspecial_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstspecial_Export.h
++             STATIC_DEFINE fstspecial_BUILT_AS_STATIC
++)
++target_compile_definitions(fstspecial PRIVATE fstspecial_EXPORTS)
++target_include_directories(fstspecial PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++
++set_target_properties(fstspecial PROPERTIES
++  SOVERSION "${SOVERSION}"
++)
++target_link_libraries(fstspecial
++  fst
++)
++
++if(HAVE_BIN)
++  add_executable(fstspecialconvert
++    ../../bin/fstconvert.cc 
++    ../../bin/fstconvert-main.cc
++  )
++
++  set_target_properties(fstspecialconvert PROPERTIES 
++    OUTPUT_NAME fstspecialconvert
++  )
++  target_link_libraries(fstspecialconvert
++  fstspecial
++    fstscript
++    fst
++    ${CMAKE_DL_LIBS}
++  )
++endif(HAVE_BIN)
++
++
++install(TARGETS fstspecial fstspecialconvert
++LIBRARY DESTINATION lib
++ARCHIVE DESTINATION lib
++RUNTIME DESTINATION bin
++)
+diff --git src/lib/CMakeLists.txt src/lib/CMakeLists.txt
+new file mode 100644
+index 0000000..5194802
+--- /dev/null
++++ src/lib/CMakeLists.txt
+@@ -0,0 +1,41 @@
++
++
++add_library(fst
++  SHARED
++  compat.cc
++  encode.cc
++  flags.cc
++  fst-types.cc
++  fst.cc
++  mapped-file.cc
++  properties.cc
++  symbol-table.cc
++  symbol-table-ops.cc
++  util.cc
++  weight.cc
++)
++if (MSVC)
++GENERATE_EXPORT_HEADER( fst
++             BASE_NAME fst
++             EXPORT_MACRO_NAME fst_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fst_Export.h
++             STATIC_DEFINE fst_BUILT_AS_STATIC
++)
++endif()
++set_target_properties(fst PROPERTIES
++  SOVERSION "${SOVERSION}"
++)
++target_include_directories(fst PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++target_include_directories(fst PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++target_link_libraries(fst ${CMAKE_DL_LIBS})
++target_compile_definitions(fst PRIVATE fst_EXPORTS)
++
++
++
++install(TARGETS fst
++LIBRARY DESTINATION lib
++ARCHIVE DESTINATION lib
++RUNTIME DESTINATION bin
++  )
+\ No newline at end of file
+diff --git src/script/CMakeLists.txt src/script/CMakeLists.txt
+new file mode 100644
+index 0000000..0aec3b9
+--- /dev/null
++++ src/script/CMakeLists.txt
+@@ -0,0 +1,75 @@
++
++    add_library(fstscript
++      arciterator-class.cc
++      stateiterator-class.cc
++      weight-class.cc
++      draw.cc
++      getters.cc
++      print.cc
++      text-io.cc
++      arcsort.cc
++      closure.cc
++      fst-class.cc
++      info.cc
++      info-impl.cc
++      verify.cc
++      map.cc
++      compile.cc
++      compose.cc
++      concat.cc
++      connect.cc
++      convert.cc
++      randequivalent.cc
++      randgen.cc
++      topsort.cc
++      union.cc
++      equal.cc
++      equivalent.cc
++      intersect.cc
++      invert.cc
++      encode.cc
++      decode.cc
++      encodemapper-class.cc
++      determinize.cc
++      difference.cc
++      disambiguate.cc
++      epsnormalize.cc
++      isomorphic.cc
++      minimize.cc
++      project.cc
++      prune.cc
++      push.cc
++      relabel.cc
++      replace.cc
++      reverse.cc
++      reweight.cc
++      rmepsilon.cc
++      shortest-distance.cc
++      shortest-path.cc
++      synchronize.cc
++    )
++
++if (MSVC) # Fix for too many exported symbols in fstscript
++  
++GENERATE_EXPORT_HEADER( fstscript
++             BASE_NAME fstscript
++             EXPORT_MACRO_NAME fstscript_EXPORT
++             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstscript_Export.h
++             STATIC_DEFINE fstscript_BUILT_AS_STATIC
++)
++target_include_directories(fstscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++target_compile_definitions(fstscript PRIVATE fstscript_EXPORTS)
++    else()
++
++endif()
++    target_link_libraries(fstscript PUBLIC fst)
++target_include_directories(fstscript PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
++                           $<INSTALL_INTERFACE:include>)
++set_target_properties(fstscript PROPERTIES
++  SOVERSION "${SOVERSION}"
++)
++install(TARGETS fstscript
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++  RUNTIME DESTINATION bin)
+\ No newline at end of file
+diff --git src/test/CMakeLists.txt src/test/CMakeLists.txt
+new file mode 100644
+index 0000000..9502ae3
+--- /dev/null
++++ src/test/CMakeLists.txt
+@@ -0,0 +1,185 @@
++
++add_executable(fst_test
++        fst_test.cc
++        ../include/fst/test/compactors.h
++        ../include/fst/test/fst_test.h
++        )
++
++target_link_libraries(fst_test fst)
++if (MSVC)
++        set_target_properties(fst_test 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "TMPDIR=${CMAKE_BINARY_DIR}/tmp"
++        )
++elseif (APPLE)
++        set_target_properties(fst_test 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(fst_test 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
++add_test(NAME fst_test_test COMMAND fst_test --tmpdir=${CMAKE_BINARY_DIR}/tmp WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
++
++add_executable(weight_test
++        weight_test.cc
++        ../include/fst/test/weight-tester.h
++        )
++target_link_libraries(weight_test fst ${CMAKE_DL_LIBS})
++if (MSVC)
++        set_target_properties(weight_test 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "PATH=${test_dll_path}"
++        )
++elseif (APPLE)
++        set_target_properties(weight_test
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(weight_test
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
++add_test(NAME weight_test_test COMMAND weight_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
++
++
++add_executable(algo_test_log algo_test.cc ../include/fst/test/algo_test.h ../include/fst/test/rand-fst.h)
++target_link_libraries(algo_test_log fst ${CMAKE_DL_LIBS})
++target_compile_definitions(algo_test_log
++        PRIVATE TEST_LOG=1)
++if (MSVC)
++        set_target_properties(algo_test_log 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "PATH=${test_dll_path}"
++        )
++elseif (APPLE)
++        set_target_properties(algo_test_log
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(algo_test_log
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
++add_test(NAME algo_test_log_test COMMAND algo_test_log WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
++
++
++add_executable(algo_test_tropical algo_test.cc ../include/fst/test/algo_test.h ../include/fst/test/rand-fst.h)
++target_link_libraries(algo_test_tropical fst ${CMAKE_DL_LIBS})
++target_compile_definitions(algo_test_tropical
++        PRIVATE TEST_TROPICAL=1)
++
++if (MSVC)
++        set_target_properties(algo_test_tropical 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "PATH=${test_dll_path}"
++        )
++elseif (APPLE)
++        set_target_properties(algo_test_tropical
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(algo_test_tropical
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
++add_test(NAME algo_test_tropical_test COMMAND algo_test_tropical WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
++
++
++add_executable(algo_test_minmax algo_test.cc ../include/fst/test/algo_test.h ../include/fst/test/rand-fst.h)
++target_link_libraries(algo_test_minmax fst ${CMAKE_DL_LIBS})
++target_compile_definitions(algo_test_minmax
++        PRIVATE TEST_MINMAX=1)
++if (MSVC)
++        set_target_properties(algo_test_minmax 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "PATH=${test_dll_path}"
++        )
++elseif (APPLE)
++        set_target_properties(algo_test_minmax
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(algo_test_minmax
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
++add_test(NAME algo_test_minmax_test COMMAND algo_test_minmax WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
++
++
++add_executable(algo_test_lexicographic algo_test.cc ../include/fst/test/algo_test.h ../include/fst/test/rand-fst.h)
++target_link_libraries(algo_test_lexicographic fst ${CMAKE_DL_LIBS})
++target_compile_definitions(algo_test_lexicographic
++        PRIVATE TEST_LEXICOGRAPHIC=1)
++if (MSVC)
++        set_target_properties(algo_test_lexicographic 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "PATH=${test_dll_path}"
++        )
++elseif (APPLE)
++        set_target_properties(algo_test_lexicographic
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(algo_test_lexicographic
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
++add_test(NAME algo_test_lexicographic_test COMMAND algo_test_lexicographic WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
++
++
++add_executable(algo_test_power algo_test.cc ../include/fst/test/algo_test.h ../include/fst/test/rand-fst.h)
++target_link_libraries(algo_test_power fst ${CMAKE_DL_LIBS})
++target_compile_definitions(algo_test_power
++        PRIVATE TEST_POWER=1)
++if (MSVC)
++        set_target_properties(algo_test_power 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "PATH=${test_dll_path}"
++        )
++elseif (APPLE)
++        set_target_properties(algo_test_power
++                PROPERTIES  
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(algo_test_power
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
++add_test(NAME algo_test_power_test COMMAND algo_test_power WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
+\ No newline at end of file
+-- 
+2.33.0.windows.1
+

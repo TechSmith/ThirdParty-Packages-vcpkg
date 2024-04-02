@@ -1,0 +1,4435 @@
+From 90b68e4f10d82a328e76372e6845e6a4f0594381 Mon Sep 17 00:00:00 2001
+From: Michael McAuliffe <michael.e.mcauliffe@gmail.com>
+Date: Fri, 19 Jan 2024 12:54:02 -0800
+Subject: [PATCH] Windows compatibility
+
+---
+ src/bin/fstcompile-main.cc                    |  2 +-
+ src/bin/fstdraw-main.cc                       |  2 +-
+ src/bin/fstprint-main.cc                      |  2 +-
+ src/extensions/compress/CMakeLists.txt        | 15 ++---
+ src/extensions/far/CMakeLists.txt             |  2 -
+ src/extensions/far/compile-strings.cc         |  2 +-
+ src/extensions/far/farcompilestrings-main.cc  |  2 +-
+ src/extensions/far/sttable.cc                 |  2 +-
+ src/extensions/linear/CMakeLists.txt          |  2 +-
+ src/extensions/linear/linearscript.cc         |  2 +-
+ src/extensions/ngram/CMakeLists.txt           |  6 +-
+ src/extensions/pdt/CMakeLists.txt             |  7 +--
+ src/extensions/python/CMakeLists.txt          |  1 +
+ src/extensions/special/CMakeLists.txt         |  7 ++-
+ src/include/fst/cache.h                       |  6 +-
+ src/include/fst/compat.h                      | 37 +++++++-----
+ src/include/fst/encode.h                      |  2 +-
+ src/include/fst/expanded-fst.h                | 11 ++++
+ src/include/fst/exports/exports.h             | 33 +++++++++++
+ src/include/fst/exports/fst_Export.h          | 42 +++++++++++++
+ src/include/fst/exports/fstcompact_Export.h   | 42 +++++++++++++
+ .../fst/exports/fstcompressscript_Export.h    | 42 +++++++++++++
+ src/include/fst/exports/fstconst_Export.h     | 42 +++++++++++++
+ src/include/fst/exports/fstfar_Export.h       | 42 +++++++++++++
+ src/include/fst/exports/fstfarscript_Export.h | 42 +++++++++++++
+ .../fst/exports/fstlinearscript_Export.h      | 42 +++++++++++++
+ .../fst/exports/fstmpdtscript_Export.h        | 42 +++++++++++++
+ src/include/fst/exports/fstngram_Export.h     | 42 +++++++++++++
+ src/include/fst/exports/fstpdtscript_Export.h | 42 +++++++++++++
+ src/include/fst/exports/fstscript_Export.h    | 42 +++++++++++++
+ src/include/fst/exports/fstspecial_Export.h   | 42 +++++++++++++
+ .../fst/extensions/compress/compress.h        | 11 ++++
+ .../fst/extensions/compress/compressscript.h  |  5 +-
+ .../fst/extensions/far/compile-strings.h      | 17 +++++-
+ src/include/fst/extensions/far/create.h       |  2 +
+ src/include/fst/extensions/far/far-class.h    |  9 +--
+ src/include/fst/extensions/far/far.h          | 31 ++++++++--
+ src/include/fst/extensions/far/farscript.h    | 29 ++++-----
+ src/include/fst/extensions/far/getters.h      |  9 +--
+ .../fst/extensions/far/print-strings.h        |  5 +-
+ src/include/fst/extensions/far/script-impl.h  |  6 +-
+ src/include/fst/extensions/far/stlist.h       | 11 +++-
+ src/include/fst/extensions/far/sttable.h      |  3 +-
+ .../fst/extensions/linear/linear-fst.h        | 17 ++++++
+ .../fst/extensions/linear/linearscript.h      | 29 ++++-----
+ src/include/fst/extensions/mpdt/mpdt.h        |  3 +-
+ src/include/fst/extensions/mpdt/mpdtscript.h  |  9 +--
+ .../fst/extensions/mpdt/read_write_utils.h    |  4 +-
+ .../fst/extensions/ngram/bitmap-index.h       |  3 +-
+ src/include/fst/extensions/ngram/ngram-fst.h  |  8 +++
+ src/include/fst/extensions/ngram/nthbit.h     |  3 +-
+ src/include/fst/extensions/pdt/getters.h      |  5 +-
+ src/include/fst/extensions/pdt/pdtscript.h    | 19 +++---
+ src/include/fst/extensions/special/phi-fst.h  |  7 ++-
+ src/include/fst/extensions/special/rho-fst.h  |  5 +-
+ .../fst/extensions/special/sigma-fst.h        |  5 +-
+ src/include/fst/flags.h                       | 59 +++++++++++++++++--
+ src/include/fst/fst.h                         | 20 +++++--
+ src/include/fst/generic-register.h            | 43 +++++++++++++-
+ src/include/fst/log.h                         |  2 +-
+ src/include/fst/lookahead-matcher.h           |  4 +-
+ src/include/fst/mapped-file.h                 |  2 +-
+ src/include/fst/mutable-fst.h                 |  8 +++
+ src/include/fst/properties.h                  | 36 +++++------
+ src/include/fst/register.h                    | 10 +++-
+ src/include/fst/script/arc-class.h            |  3 +-
+ src/include/fst/script/arcfilter-impl.h       |  3 +-
+ src/include/fst/script/arciterator-class.h    |  8 +--
+ src/include/fst/script/arcsort.h              |  4 +-
+ src/include/fst/script/closure.h              |  3 +-
+ src/include/fst/script/compile-impl.h         |  2 -
+ src/include/fst/script/compile.h              |  7 ++-
+ src/include/fst/script/compose.h              |  3 +-
+ src/include/fst/script/concat.h               |  7 ++-
+ src/include/fst/script/connect.h              |  3 +-
+ src/include/fst/script/convert.h              |  3 +-
+ src/include/fst/script/decode.h               |  3 +-
+ src/include/fst/script/determinize.h          |  5 +-
+ src/include/fst/script/difference.h           |  3 +-
+ src/include/fst/script/disambiguate.h         |  5 +-
+ src/include/fst/script/draw.h                 |  5 +-
+ src/include/fst/script/encode.h               |  3 +-
+ src/include/fst/script/encodemapper-class.h   | 15 ++++-
+ src/include/fst/script/epsnormalize.h         |  3 +-
+ src/include/fst/script/equal.h                |  3 +-
+ src/include/fst/script/equivalent.h           |  3 +-
+ src/include/fst/script/fst-class.h            | 19 ++++--
+ src/include/fst/script/getters.h              | 33 ++++++-----
+ src/include/fst/script/info-impl.h            |  7 ++-
+ src/include/fst/script/info.h                 |  3 +-
+ src/include/fst/script/intersect.h            |  3 +-
+ src/include/fst/script/invert.h               |  3 +-
+ src/include/fst/script/isomorphic.h           |  3 +-
+ src/include/fst/script/map.h                  |  5 +-
+ src/include/fst/script/minimize.h             |  3 +-
+ src/include/fst/script/print.h                |  9 ++-
+ src/include/fst/script/project.h              |  3 +-
+ src/include/fst/script/prune.h                |  5 +-
+ src/include/fst/script/push.h                 |  5 +-
+ src/include/fst/script/randequivalent.h       |  3 +-
+ src/include/fst/script/randgen.h              |  3 +-
+ src/include/fst/script/relabel.h              |  5 +-
+ src/include/fst/script/replace.h              |  5 +-
+ src/include/fst/script/reverse.h              |  3 +-
+ src/include/fst/script/reweight.h             |  3 +-
+ src/include/fst/script/rmepsilon.h            |  5 +-
+ src/include/fst/script/script-impl.h          | 13 +++-
+ src/include/fst/script/shortest-distance.h    |  9 +--
+ src/include/fst/script/shortest-path.h        |  5 +-
+ src/include/fst/script/stateiterator-class.h  |  5 +-
+ src/include/fst/script/synchronize.h          |  3 +-
+ src/include/fst/script/text-io.h              |  5 +-
+ src/include/fst/script/topsort.h              |  3 +-
+ src/include/fst/script/union.h                |  5 +-
+ src/include/fst/script/verify.h               |  3 +-
+ src/include/fst/script/weight-class.h         | 40 ++++++++-----
+ src/include/fst/string.h                      |  2 +-
+ src/include/fst/symbol-table-ops.h            |  8 +--
+ src/include/fst/symbol-table.h                | 12 ++--
+ src/include/fst/test-properties.h             |  2 -
+ src/include/fst/test/fst_test.h               |  8 +--
+ src/include/fst/util.h                        | 16 ++---
+ src/include/fst/vector-fst.h                  |  4 +-
+ src/include/fst/weight.h                      | 10 ++--
+ src/lib/CMakeLists.txt                        |  4 +-
+ src/lib/flags.cc                              |  7 +++
+ src/lib/fst-types.cc                          |  7 +++
+ src/lib/fst.cc                                |  3 +
+ src/lib/symbol-table.cc                       |  4 +-
+ src/script/CMakeLists.txt                     |  8 +--
+ src/script/text-io.cc                         |  4 +-
+ 131 files changed, 1173 insertions(+), 325 deletions(-)
+ create mode 100644 src/include/fst/exports/exports.h
+ create mode 100644 src/include/fst/exports/fst_Export.h
+ create mode 100644 src/include/fst/exports/fstcompact_Export.h
+ create mode 100644 src/include/fst/exports/fstcompressscript_Export.h
+ create mode 100644 src/include/fst/exports/fstconst_Export.h
+ create mode 100644 src/include/fst/exports/fstfar_Export.h
+ create mode 100644 src/include/fst/exports/fstfarscript_Export.h
+ create mode 100644 src/include/fst/exports/fstlinearscript_Export.h
+ create mode 100644 src/include/fst/exports/fstmpdtscript_Export.h
+ create mode 100644 src/include/fst/exports/fstngram_Export.h
+ create mode 100644 src/include/fst/exports/fstpdtscript_Export.h
+ create mode 100644 src/include/fst/exports/fstscript_Export.h
+ create mode 100644 src/include/fst/exports/fstspecial_Export.h
+
+diff --git src/bin/fstcompile-main.cc src/bin/fstcompile-main.cc
+index 6b47536..6bcb0da 100644
+--- src/bin/fstcompile-main.cc
++++ src/bin/fstcompile-main.cc
+@@ -57,7 +57,7 @@ int fstcompile_main(int argc, char **argv) {
+   std::string source = "standard input";
+   std::ifstream fstrm;
+   if (argc > 1 && strcmp(argv[1], "-") != 0) {
+-    fstrm.open(argv[1]);
++    fstrm.open(argv[1], std::ios_base::in | std::ios_base::binary);
+     if (!fstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[1];
+       return 1;
+diff --git src/bin/fstdraw-main.cc src/bin/fstdraw-main.cc
+index 494ad86..e0ee692 100644
+--- src/bin/fstdraw-main.cc
++++ src/bin/fstdraw-main.cc
+@@ -72,7 +72,7 @@ int fstdraw_main(int argc, char **argv) {
+       argc > 2 && strcmp(argv[2], "-") != 0 ? argv[2] : "";
+   std::ofstream fstrm;
+   if (!out_name.empty()) {
+-    fstrm.open(out_name);
++    fstrm.open(out_name, std::ios_base::out | std::ios_base::binary);
+     if (!fstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << out_name;
+       return 1;
+diff --git src/bin/fstprint-main.cc src/bin/fstprint-main.cc
+index 4edc16d..d173fd5 100644
+--- src/bin/fstprint-main.cc
++++ src/bin/fstprint-main.cc
+@@ -67,7 +67,7 @@ int fstprint_main(int argc, char **argv) {
+   std::string dest = "standard output";
+   std::ofstream fstrm;
+   if (argc == 3) {
+-    fstrm.open(argv[2]);
++    fstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!fstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
+       return 1;
+diff --git src/extensions/compress/CMakeLists.txt src/extensions/compress/CMakeLists.txt
+index 028cd76..3a1ac2e 100644
+--- src/extensions/compress/CMakeLists.txt
++++ src/extensions/compress/CMakeLists.txt
+@@ -2,11 +2,10 @@
+ add_library(fstcompressscript
+   compressscript.cc
+  )
+-if (MSVC)
+-  target_link_libraries(fstcompressscript
+-    fstscript
+-    fst
+-  )
++ target_link_libraries(fstcompressscript
++   fstscript
++   fst
++ )
+ GENERATE_EXPORT_HEADER( fstcompressscript
+              BASE_NAME fstcompressscript
+              EXPORT_MACRO_NAME fstcompressscript_EXPORT
+@@ -16,12 +15,6 @@ GENERATE_EXPORT_HEADER( fstcompressscript
+ target_compile_definitions(fstcompressscript PRIVATE fstcompressscript_EXPORTS)
+ target_include_directories(fstcompressscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+-else()
+-  target_link_libraries(fstcompressscript
+-    fstscript
+-    fst
+-  )
+-endif()
+ set_target_properties(fstcompressscript PROPERTIES
+   SOVERSION "${SOVERSION}"
+ )
+diff --git src/extensions/far/CMakeLists.txt src/extensions/far/CMakeLists.txt
+index e37ce8f..d5573e3 100644
+--- src/extensions/far/CMakeLists.txt
++++ src/extensions/far/CMakeLists.txt
+@@ -32,7 +32,6 @@ if(HAVE_SCRIPT)
+     getters.cc 
+     script-impl.cc
+   )
+-  if (MSVC)
+ GENERATE_EXPORT_HEADER( fstfarscript
+              BASE_NAME fstfarscript
+              EXPORT_MACRO_NAME fstfarscript_EXPORT
+@@ -42,7 +41,6 @@ GENERATE_EXPORT_HEADER( fstfarscript
+ target_compile_definitions(fstfarscript PRIVATE fstfarscript_EXPORTS)
+ target_include_directories(fstfarscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+-  endif()
+     target_link_libraries(fstfarscript fstfar fstscript fst ${CMAKE_DL_LIBS})
+   set_target_properties(fstfarscript PROPERTIES 
+     SOVERSION "${SOVERSION}"
+diff --git src/extensions/far/compile-strings.cc src/extensions/far/compile-strings.cc
+index 5f6923e..29f2f2f 100644
+--- src/extensions/far/compile-strings.cc
++++ src/extensions/far/compile-strings.cc
+@@ -36,7 +36,7 @@ namespace internal {
+ // number, or zero if the number of lines could not be determined because the
+ // file was not seekable.
+ int KeySize(std::string_view source) {
+-  std::ifstream istrm(std::string{source});
++  std::ifstream istrm(std::string{source}, std::ios_base::in | std::ios_base::binary);
+   istrm.seekg(0);
+   // TODO(jrosenstock): Change this to is_regular_file when <filesystem> is
+   // no longer banned.
+diff --git src/extensions/far/farcompilestrings-main.cc src/extensions/far/farcompilestrings-main.cc
+index bab4948..c6aae62 100644
+--- src/extensions/far/farcompilestrings-main.cc
++++ src/extensions/far/farcompilestrings-main.cc
+@@ -63,7 +63,7 @@ int farcompilestrings_main(int argc, char **argv) {
+   std::vector<std::string> sources;
+   if (FST_FLAGS_file_list_input) {
+     for (int i = 1; i < argc - 1; ++i) {
+-      std::ifstream istrm(argv[i]);
++      std::ifstream istrm(argv[i], std::ios_base::in | std::ios_base::binary);
+       std::string str;
+       while (std::getline(istrm, str)) sources.push_back(str);
+     }
+diff --git src/extensions/far/sttable.cc src/extensions/far/sttable.cc
+index c3f925a..a1d897f 100644
+--- src/extensions/far/sttable.cc
++++ src/extensions/far/sttable.cc
+@@ -27,7 +27,7 @@
+ namespace fst {
+ 
+ bool IsSTTable(std::string_view source) {
+-  std::ifstream strm((std::string(source)));
++  std::ifstream strm((std::string(source)), std::ios_base::in | std::ios_base::binary);
+   if (!strm.good()) return false;
+ 
+   int32_t magic_number = 0;
+diff --git src/extensions/linear/CMakeLists.txt src/extensions/linear/CMakeLists.txt
+index 6a5ecfd..139fb15 100644
+--- src/extensions/linear/CMakeLists.txt
++++ src/extensions/linear/CMakeLists.txt
+@@ -11,7 +11,6 @@ if(HAVE_SCRIPT)
+       fstscript
+       fst
+     )
+-  if (MSVC)
+ GENERATE_EXPORT_HEADER( fstlinearscript
+              BASE_NAME fstlinearscript
+              EXPORT_MACRO_NAME fstlinearscript_EXPORT
+@@ -21,6 +20,7 @@ GENERATE_EXPORT_HEADER( fstlinearscript
+ target_compile_definitions(fstlinearscript PRIVATE fstlinearscript_EXPORTS)
+ target_include_directories(fstlinearscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
++  if (MSVC)
+     install(TARGETS fstlinearscript
+     LIBRARY DESTINATION bin
+     ARCHIVE DESTINATION lib
+diff --git src/extensions/linear/linearscript.cc src/extensions/linear/linearscript.cc
+index 84397b9..a099340 100644
+--- src/extensions/linear/linearscript.cc
++++ src/extensions/linear/linearscript.cc
+@@ -82,7 +82,7 @@ REGISTER_FST_OPERATION_3ARCS(LinearCompileTpl, LinearCompileArgs);
+ 
+ void SplitByWhitespace(const std::string &str, std::vector<std::string> *out) {
+   out->clear();
+-  std::istringstream strm(str);
++  std::istringstream strm(str, std::ios_base::in | std::ios_base::binary);
+   std::string buf;
+   while (strm >> buf) out->push_back(buf);
+ }
+diff --git src/extensions/ngram/CMakeLists.txt src/extensions/ngram/CMakeLists.txt
+index 206f3c9..cf176d2 100644
+--- src/extensions/ngram/CMakeLists.txt
++++ src/extensions/ngram/CMakeLists.txt
+@@ -11,11 +11,11 @@ target_link_libraries(fstngram
+ GENERATE_EXPORT_HEADER( fstngram
+              BASE_NAME fstngram
+              EXPORT_MACRO_NAME fstngram_EXPORT
+-             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstngram_Export.h
++             EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/include/fst/exports/fstngram_Export.h
+              STATIC_DEFINE fstngram_BUILT_AS_STATIC
+ )
+ target_compile_definitions(fstngram PRIVATE fstngram_EXPORTS)
+-target_include_directories(fstngram PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++target_include_directories(fstngram PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+ 
+ set_target_properties(fstngram PROPERTIES
+@@ -38,7 +38,7 @@ target_link_libraries(ngram_fst
+     fst
+ )
+ target_compile_definitions(ngram_fst PRIVATE fstngram_EXPORTS)
+-target_include_directories(ngram_fst PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++target_include_directories(ngram_fst PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+ 
+ if (MSVC)
+diff --git src/extensions/pdt/CMakeLists.txt src/extensions/pdt/CMakeLists.txt
+index 10c5907..c996882 100644
+--- src/extensions/pdt/CMakeLists.txt
++++ src/extensions/pdt/CMakeLists.txt
+@@ -3,17 +3,16 @@
+ if(HAVE_SCRIPT)
+   add_library(fstpdtscript getters.cc pdtscript.cc)
+     target_link_libraries(fstpdtscript fstscript fst)
+-  if (MSVC)
++
+ GENERATE_EXPORT_HEADER( fstpdtscript
+              BASE_NAME fstpdtscript
+              EXPORT_MACRO_NAME fstpdtscript_EXPORT
+-             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstpdtscript_Export.h
++             EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/include/fst/exports/fstpdtscript_Export.h
+              STATIC_DEFINE fstpdtscript_BUILT_AS_STATIC
+ )
+ target_compile_definitions(fstpdtscript PRIVATE fstpdtscript_EXPORTS)
+-target_include_directories(fstpdtscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++target_include_directories(fstpdtscript PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+-  endif()
+   set_target_properties(fstpdtscript PROPERTIES 
+     SOVERSION "${SOVERSION}"
+   )
+diff --git src/extensions/python/CMakeLists.txt src/extensions/python/CMakeLists.txt
+index 83b9a7f..c0c43d7 100644
+--- src/extensions/python/CMakeLists.txt
++++ src/extensions/python/CMakeLists.txt
+@@ -1,5 +1,6 @@
+ 
+ add_library(pywrapfst
++  SHARED
+     pywrapfst.cpp
+ )
+ 
+diff --git src/extensions/special/CMakeLists.txt src/extensions/special/CMakeLists.txt
+index 42c72d1..c715b28 100644
+--- src/extensions/special/CMakeLists.txt
++++ src/extensions/special/CMakeLists.txt
+@@ -1,18 +1,21 @@
+ 
+ 
+ add_library(fstspecial
++  SHARED
+   phi-fst.cc
+   rho-fst.cc
+   sigma-fst.cc
+ )
++if (MSCV)
+ GENERATE_EXPORT_HEADER( fstspecial
+              BASE_NAME fstspecial
+              EXPORT_MACRO_NAME fstspecial_EXPORT
+-             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstspecial_Export.h
++             EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/include/fst/exports/fstspecial_Export.h
+              STATIC_DEFINE fstspecial_BUILT_AS_STATIC
+ )
+ target_compile_definitions(fstspecial PRIVATE fstspecial_EXPORTS)
+-target_include_directories(fstspecial PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
++endif()
++target_include_directories(fstspecial PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+ 
+ set_target_properties(fstspecial PROPERTIES
+diff --git src/include/fst/cache.h src/include/fst/cache.h
+index 4a7c22c..4044642 100644
+--- src/include/fst/cache.h
++++ src/include/fst/cache.h
+@@ -41,13 +41,13 @@
+ #include <unordered_map>
+ #include <functional>
+ 
+-DECLARE_bool(fst_default_cache_gc);
+-DECLARE_int64(fst_default_cache_gc_limit);
++DECLARE_export_bool(fst_default_cache_gc, fst_EXPORT);
++DECLARE_export_int64(fst_default_cache_gc_limit, fst_EXPORT);
+ 
+ namespace fst {
+ 
+ // Options for controlling caching behavior; higher level than CacheImplOptions.
+-struct CacheOptions {
++struct fst_EXPORT CacheOptions {
+   bool gc;          // Enables GC.
+   size_t gc_limit;  // Number of bytes allowed before GC.
+ 
+diff --git src/include/fst/compat.h src/include/fst/compat.h
+index 381b4c1..b878f15 100644
+--- src/include/fst/compat.h
++++ src/include/fst/compat.h
+@@ -33,6 +33,13 @@
+ #include <type_traits>
+ #include <utility>
+ #include <vector>
++#include <fst/exports/exports.h>
++
++#ifdef _MSC_VER
++#  include <intrin.h>
++#  define __builtin_popcountll __popcnt64
++#  define __builtin_ctzll _tzcnt_u64
++#endif
+ 
+ #if defined(__GNUC__) || defined(__clang__)
+ #define OPENFST_DEPRECATED(message) __attribute__((deprecated(message)))
+@@ -92,7 +99,7 @@ constexpr To implicit_cast(typename internal::type_identity_t<To> to) {
+ }
+ 
+ // Checksums.
+-class CheckSummer {
++class fst_EXPORT CheckSummer {
+  public:
+   CheckSummer();
+ 
+@@ -215,7 +222,7 @@ struct ByAnyChar {
+ 
+ namespace internal {
+ 
+-class StringSplitter {
++class fst_EXPORT StringSplitter {
+  public:
+   using const_iterator = std::vector<std::string_view>::const_iterator;
+   using value_type = std::string_view;
+@@ -255,17 +262,17 @@ class StringSplitter {
+ // `StrSplit` replacements. Only support splitting on `char` or
+ // `ByAnyChar` (notable not on a multi-char string delimiter), and with or
+ // without `SkipEmpty`.
+-internal::StringSplitter StrSplit(std::string_view full, ByAnyChar delim);
+-internal::StringSplitter StrSplit(std::string_view full, char delim);
+-internal::StringSplitter StrSplit(std::string_view full, ByAnyChar delim,
++internal::StringSplitter fst_EXPORT StrSplit(std::string_view full, ByAnyChar delim);
++internal::StringSplitter fst_EXPORT StrSplit(std::string_view full, char delim);
++internal::StringSplitter fst_EXPORT StrSplit(std::string_view full, ByAnyChar delim,
+                                   SkipEmpty);
+-internal::StringSplitter StrSplit(std::string_view full, char delim, SkipEmpty);
++internal::StringSplitter fst_EXPORT StrSplit(std::string_view full, char delim, SkipEmpty);
+ 
+-void StripTrailingAsciiWhitespace(std::string *full);
++void fst_EXPORT StripTrailingAsciiWhitespace(std::string *full);
+ 
+-std::string_view StripTrailingAsciiWhitespace(std::string_view full);
++std::string_view fst_EXPORT StripTrailingAsciiWhitespace(std::string_view full);
+ 
+-class StringOrInt {
++class fst_EXPORT StringOrInt {
+  public:
+   template <typename T, typename = std::enable_if_t<
+                             std::is_convertible_v<T, std::string_view>>>
+@@ -283,21 +290,21 @@ class StringOrInt {
+ 
+ // TODO(kbg): Make this work with variadic template, maybe.
+ 
+-inline std::string StrCat(const StringOrInt &s1, const StringOrInt &s2) {
++inline std::string fst_EXPORT StrCat(const StringOrInt &s1, const StringOrInt &s2) {
+   return s1.Get() + s2.Get();
+ }
+ 
+-inline std::string StrCat(const StringOrInt &s1, const StringOrInt &s2,
++inline std::string fst_EXPORT StrCat(const StringOrInt &s1, const StringOrInt &s2,
+                           const StringOrInt &s3) {
+   return s1.Get() + StrCat(s2, s3);
+ }
+ 
+-inline std::string StrCat(const StringOrInt &s1, const StringOrInt &s2,
++inline std::string fst_EXPORT StrCat(const StringOrInt &s1, const StringOrInt &s2,
+                           const StringOrInt &s3, const StringOrInt &s4) {
+   return s1.Get() + StrCat(s2, s3, s4);
+ }
+ 
+-inline std::string StrCat(const StringOrInt &s1, const StringOrInt &s2,
++inline std::string fst_EXPORT StrCat(const StringOrInt &s1, const StringOrInt &s2,
+                           const StringOrInt &s3, const StringOrInt &s4,
+                           const StringOrInt &s5) {
+   return s1.Get() + StrCat(s2, s3, s4, s5);
+@@ -305,13 +312,13 @@ inline std::string StrCat(const StringOrInt &s1, const StringOrInt &s2,
+ 
+ // TODO(agutkin): Remove this once we migrate to C++20, where `starts_with`
+ // is available.
+-inline bool StartsWith(std::string_view text, std::string_view prefix) {
++inline bool fst_EXPORT StartsWith(std::string_view text, std::string_view prefix) {
+   return prefix.empty() ||
+          (text.size() >= prefix.size() &&
+           memcmp(text.data(), prefix.data(), prefix.size()) == 0);
+ }
+ 
+-inline bool ConsumePrefix(std::string_view *s, std::string_view expected) {
++inline bool fst_EXPORT ConsumePrefix(std::string_view *s, std::string_view expected) {
+   if (!StartsWith(*s, expected)) return false;
+   s->remove_prefix(expected.size());
+   return true;
+diff --git src/include/fst/encode.h src/include/fst/encode.h
+index f5d2c2d..c27f827 100644
+--- src/include/fst/encode.h
++++ src/include/fst/encode.h
+@@ -71,7 +71,7 @@ inline constexpr int32_t kEncodeDeprecatedMagicNumber = 2129983209;
+ }  // namespace internal
+ 
+ // Header for the encoder table.
+-class EncodeTableHeader {
++class fst_EXPORT EncodeTableHeader {
+  public:
+   EncodeTableHeader() = default;
+ 
+diff --git src/include/fst/expanded-fst.h src/include/fst/expanded-fst.h
+index 2674e66..8d30058 100644
+--- src/include/fst/expanded-fst.h
++++ src/include/fst/expanded-fst.h
+@@ -39,6 +39,11 @@
+ #include <fst/properties.h>
+ #include <fst/register.h>
+ 
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
++
+ namespace fst {
+ 
+ // A generic FST plus state count.
+@@ -95,6 +100,9 @@ class ExpandedFst : public Fst<A> {
+       }
+       return Read(strm, FstReadOptions(source));
+     } else {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+       return Read(std::cin, FstReadOptions("standard input"));
+     }
+   }
+@@ -168,6 +176,9 @@ class ImplToExpandedFst : public ImplToFst<Impl, FST> {
+       }
+       return Impl::Read(strm, FstReadOptions(source));
+     } else {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+       return Impl::Read(std::cin, FstReadOptions("standard input"));
+     }
+   }
+diff --git src/include/fst/exports/exports.h src/include/fst/exports/exports.h
+new file mode 100644
+index 0000000..84f836a
+--- /dev/null
++++ src/include/fst/exports/exports.h
+@@ -0,0 +1,33 @@
++
++#ifndef exports_H
++#define exports_H
++
++#ifdef _WIN32
++    #include <fst/exports/fst_Export.h>
++    #include <fst/exports/fstcompact_Export.h>
++    #include <fst/exports/fstcompressscript_Export.h>
++    #include <fst/exports/fstconst_Export.h>
++    #include <fst/exports/fstfarscript_Export.h>
++    #include <fst/exports/fstfar_Export.h>
++    #include <fst/exports/fstlinearscript_Export.h>
++    #include <fst/exports/fstmpdtscript_Export.h>
++    #include <fst/exports/fstngram_Export.h>
++    #include <fst/exports/fstpdtscript_Export.h>
++    #include <fst/exports/fstscript_Export.h>
++    #include <fst/exports/fstspecial_Export.h>
++#else
++
++    #define fst_EXPORT
++    #define fstcompact_EXPORT
++    #define fstcompressscript_EXPORT
++    #define fstconst_EXPORT
++    #define fstfar_EXPORT
++    #define fstfarscript_EXPORT
++    #define fstlinearscript_EXPORT
++    #define fstmpdtscript_EXPORT
++    #define fstngram_EXPORT
++    #define fstpdtscript_EXPORT
++    #define fstscript_EXPORT
++    #define fstspecial_EXPORT
++#endif // _WIN32
++#endif
+\ No newline at end of file
+diff --git src/include/fst/exports/fst_Export.h src/include/fst/exports/fst_Export.h
+new file mode 100644
+index 0000000..c1cc62d
+--- /dev/null
++++ src/include/fst/exports/fst_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fst_EXPORT_H
++#define fst_EXPORT_H
++
++#ifdef fst_BUILT_AS_STATIC
++#  define fst_EXPORT
++#  define FST_NO_EXPORT
++#else
++#  ifndef fst_EXPORT
++#    ifdef fst_EXPORTS
++        /* We are building this library */
++#      define fst_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fst_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FST_NO_EXPORT
++#    define FST_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FST_DEPRECATED
++#  define FST_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FST_DEPRECATED_EXPORT
++#  define FST_DEPRECATED_EXPORT fst_EXPORT FST_DEPRECATED
++#endif
++
++#ifndef FST_DEPRECATED_NO_EXPORT
++#  define FST_DEPRECATED_NO_EXPORT FST_NO_EXPORT FST_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FST_NO_DEPRECATED
++#    define FST_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fst_EXPORT_H */
+diff --git src/include/fst/exports/fstcompact_Export.h src/include/fst/exports/fstcompact_Export.h
+new file mode 100644
+index 0000000..89e9e68
+--- /dev/null
++++ src/include/fst/exports/fstcompact_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstcompact_EXPORT_H
++#define fstcompact_EXPORT_H
++
++#ifdef fstcompact_BUILT_AS_STATIC
++#  define fstcompact_EXPORT
++#  define FSTCOMPACT_NO_EXPORT
++#else
++#  ifndef fstcompact_EXPORT
++#    ifdef fstcompact_EXPORTS
++        /* We are building this library */
++#      define fstcompact_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstcompact_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTCOMPACT_NO_EXPORT
++#    define FSTCOMPACT_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTCOMPACT_DEPRECATED
++#  define FSTCOMPACT_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTCOMPACT_DEPRECATED_EXPORT
++#  define FSTCOMPACT_DEPRECATED_EXPORT fstcompact_EXPORT FSTCOMPACT_DEPRECATED
++#endif
++
++#ifndef FSTCOMPACT_DEPRECATED_NO_EXPORT
++#  define FSTCOMPACT_DEPRECATED_NO_EXPORT FSTCOMPACT_NO_EXPORT FSTCOMPACT_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTCOMPACT_NO_DEPRECATED
++#    define FSTCOMPACT_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstcompact_EXPORT_H */
+diff --git src/include/fst/exports/fstcompressscript_Export.h src/include/fst/exports/fstcompressscript_Export.h
+new file mode 100644
+index 0000000..693e000
+--- /dev/null
++++ src/include/fst/exports/fstcompressscript_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstcompressscript_EXPORT_H
++#define fstcompressscript_EXPORT_H
++
++#ifdef fstcompressscript_BUILT_AS_STATIC
++#  define fstcompressscript_EXPORT
++#  define FSTCOMPRESSSCRIPT_NO_EXPORT
++#else
++#  ifndef fstcompressscript_EXPORT
++#    ifdef fstcompressscript_EXPORTS
++        /* We are building this library */
++#      define fstcompressscript_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstcompressscript_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTCOMPRESSSCRIPT_NO_EXPORT
++#    define FSTCOMPRESSSCRIPT_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTCOMPRESSSCRIPT_DEPRECATED
++#  define FSTCOMPRESSSCRIPT_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTCOMPRESSSCRIPT_DEPRECATED_EXPORT
++#  define FSTCOMPRESSSCRIPT_DEPRECATED_EXPORT fstcompressscript_EXPORT FSTCOMPRESSSCRIPT_DEPRECATED
++#endif
++
++#ifndef FSTCOMPRESSSCRIPT_DEPRECATED_NO_EXPORT
++#  define FSTCOMPRESSSCRIPT_DEPRECATED_NO_EXPORT FSTCOMPRESSSCRIPT_NO_EXPORT FSTCOMPRESSSCRIPT_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTCOMPRESSSCRIPT_NO_DEPRECATED
++#    define FSTCOMPRESSSCRIPT_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstcompressscript_EXPORT_H */
+diff --git src/include/fst/exports/fstconst_Export.h src/include/fst/exports/fstconst_Export.h
+new file mode 100644
+index 0000000..6d634c9
+--- /dev/null
++++ src/include/fst/exports/fstconst_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstconst_EXPORT_H
++#define fstconst_EXPORT_H
++
++#ifdef fstconst_BUILT_AS_STATIC
++#  define fstconst_EXPORT
++#  define FSTCONST_NO_EXPORT
++#else
++#  ifndef fstconst_EXPORT
++#    ifdef fstconst_EXPORTS
++        /* We are building this library */
++#      define fstconst_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstconst_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTCONST_NO_EXPORT
++#    define FSTCONST_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTCONST_DEPRECATED
++#  define FSTCONST_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTCONST_DEPRECATED_EXPORT
++#  define FSTCONST_DEPRECATED_EXPORT fstconst_EXPORT FSTCONST_DEPRECATED
++#endif
++
++#ifndef FSTCONST_DEPRECATED_NO_EXPORT
++#  define FSTCONST_DEPRECATED_NO_EXPORT FSTCONST_NO_EXPORT FSTCONST_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTCONST_NO_DEPRECATED
++#    define FSTCONST_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstconst_EXPORT_H */
+diff --git src/include/fst/exports/fstfar_Export.h src/include/fst/exports/fstfar_Export.h
+new file mode 100644
+index 0000000..e3bf966
+--- /dev/null
++++ src/include/fst/exports/fstfar_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstfar_EXPORT_H
++#define fstfar_EXPORT_H
++
++#ifdef fstfar_BUILT_AS_STATIC
++#  define fstfar_EXPORT
++#  define FSTFAR_NO_EXPORT
++#else
++#  ifndef fstfar_EXPORT
++#    ifdef fstfar_EXPORTS
++        /* We are building this library */
++#      define fstfar_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstfar_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTFAR_NO_EXPORT
++#    define FSTFAR_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTFAR_DEPRECATED
++#  define FSTFAR_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTFAR_DEPRECATED_EXPORT
++#  define FSTFAR_DEPRECATED_EXPORT fstfar_EXPORT FSTFAR_DEPRECATED
++#endif
++
++#ifndef FSTFAR_DEPRECATED_NO_EXPORT
++#  define FSTFAR_DEPRECATED_NO_EXPORT FSTFAR_NO_EXPORT FSTFAR_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTFAR_NO_DEPRECATED
++#    define FSTFAR_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstfar_EXPORT_H */
+diff --git src/include/fst/exports/fstfarscript_Export.h src/include/fst/exports/fstfarscript_Export.h
+new file mode 100644
+index 0000000..4c6d29a
+--- /dev/null
++++ src/include/fst/exports/fstfarscript_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstfarscript_EXPORT_H
++#define fstfarscript_EXPORT_H
++
++#ifdef fstfar_BUILT_AS_STATIC
++#  define fstfarscript_EXPORT
++#  define FSTFARSCRIPT_NO_EXPORT
++#else
++#  ifndef fstfarscript_EXPORT
++#    ifdef fstfarscript_EXPORTS
++        /* We are building this library */
++#      define fstfarscript_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstfarscript_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTFARSCRIPT_NO_EXPORT
++#    define FSTFARSCRIPT_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTFARSCRIPT_DEPRECATED
++#  define FSTFARSCRIPT_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTFARSCRIPT_DEPRECATED_EXPORT
++#  define FSTFARSCRIPT_DEPRECATED_EXPORT fstfarscript_EXPORT FSTFARSCRIPT_DEPRECATED
++#endif
++
++#ifndef FSTFARSCRIPT_DEPRECATED_NO_EXPORT
++#  define FSTFARSCRIPT_DEPRECATED_NO_EXPORT FSTFARSCRIPT_NO_EXPORT FSTFARSCRIPT_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTFARSCRIPT_NO_DEPRECATED
++#    define FSTFARSCRIPT_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstfarscript_EXPORT_H */
+diff --git src/include/fst/exports/fstlinearscript_Export.h src/include/fst/exports/fstlinearscript_Export.h
+new file mode 100644
+index 0000000..a809cc7
+--- /dev/null
++++ src/include/fst/exports/fstlinearscript_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstlinearscript_EXPORT_H
++#define fstlinearscript_EXPORT_H
++
++#ifdef fstlinearscript_BUILT_AS_STATIC
++#  define fstlinearscript_EXPORT
++#  define FSTLINEARSCRIPT_NO_EXPORT
++#else
++#  ifndef fstlinearscript_EXPORT
++#    ifdef fstlinearscript_EXPORTS
++        /* We are building this library */
++#      define fstlinearscript_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstlinearscript_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTLINEARSCRIPT_NO_EXPORT
++#    define FSTLINEARSCRIPT_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTLINEARSCRIPT_DEPRECATED
++#  define FSTLINEARSCRIPT_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTLINEARSCRIPT_DEPRECATED_EXPORT
++#  define FSTLINEARSCRIPT_DEPRECATED_EXPORT fstlinearscript_EXPORT FSTLINEARSCRIPT_DEPRECATED
++#endif
++
++#ifndef FSTLINEARSCRIPT_DEPRECATED_NO_EXPORT
++#  define FSTLINEARSCRIPT_DEPRECATED_NO_EXPORT FSTLINEARSCRIPT_NO_EXPORT FSTLINEARSCRIPT_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTLINEARSCRIPT_NO_DEPRECATED
++#    define FSTLINEARSCRIPT_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstlinearscript_EXPORT_H */
+diff --git src/include/fst/exports/fstmpdtscript_Export.h src/include/fst/exports/fstmpdtscript_Export.h
+new file mode 100644
+index 0000000..68aac12
+--- /dev/null
++++ src/include/fst/exports/fstmpdtscript_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstmpdtscript_EXPORT_H
++#define fstmpdtscript_EXPORT_H
++
++#ifdef fstmpdtscript_BUILT_AS_STATIC
++#  define fstmpdtscript_EXPORT
++#  define FSTMPDTSCRIPT_NO_EXPORT
++#else
++#  ifndef fstmpdtscript_EXPORT
++#    ifdef fstmpdtscript_EXPORTS
++        /* We are building this library */
++#      define fstmpdtscript_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstmpdtscript_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTMPDTSCRIPT_NO_EXPORT
++#    define FSTMPDTSCRIPT_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTMPDTSCRIPT_DEPRECATED
++#  define FSTMPDTSCRIPT_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTMPDTSCRIPT_DEPRECATED_EXPORT
++#  define FSTMPDTSCRIPT_DEPRECATED_EXPORT fstmpdtscript_EXPORT FSTMPDTSCRIPT_DEPRECATED
++#endif
++
++#ifndef FSTMPDTSCRIPT_DEPRECATED_NO_EXPORT
++#  define FSTMPDTSCRIPT_DEPRECATED_NO_EXPORT FSTMPDTSCRIPT_NO_EXPORT FSTMPDTSCRIPT_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTMPDTSCRIPT_NO_DEPRECATED
++#    define FSTMPDTSCRIPT_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstmpdtscript_EXPORT_H */
+diff --git src/include/fst/exports/fstngram_Export.h src/include/fst/exports/fstngram_Export.h
+new file mode 100644
+index 0000000..15bc06a
+--- /dev/null
++++ src/include/fst/exports/fstngram_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstngram_EXPORT_H
++#define fstngram_EXPORT_H
++
++#ifdef fstngram_BUILT_AS_STATIC
++#  define fstngram_EXPORT
++#  define FSTNGRAM_NO_EXPORT
++#else
++#  ifndef fstngram_EXPORT
++#    ifdef fstngram_EXPORTS
++        /* We are building this library */
++#      define fstngram_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstngram_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTNGRAM_NO_EXPORT
++#    define FSTNGRAM_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTNGRAM_DEPRECATED
++#  define FSTNGRAM_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTNGRAM_DEPRECATED_EXPORT
++#  define FSTNGRAM_DEPRECATED_EXPORT fstngram_EXPORT FSTNGRAM_DEPRECATED
++#endif
++
++#ifndef FSTNGRAM_DEPRECATED_NO_EXPORT
++#  define FSTNGRAM_DEPRECATED_NO_EXPORT FSTNGRAM_NO_EXPORT FSTNGRAM_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTNGRAM_NO_DEPRECATED
++#    define FSTNGRAM_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstngram_EXPORT_H */
+diff --git src/include/fst/exports/fstpdtscript_Export.h src/include/fst/exports/fstpdtscript_Export.h
+new file mode 100644
+index 0000000..c4995b3
+--- /dev/null
++++ src/include/fst/exports/fstpdtscript_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstpdtscript_EXPORT_H
++#define fstpdtscript_EXPORT_H
++
++#ifdef fstpdtscript_BUILT_AS_STATIC
++#  define fstpdtscript_EXPORT
++#  define FSTPDTSCRIPT_NO_EXPORT
++#else
++#  ifndef fstpdtscript_EXPORT
++#    ifdef fstpdtscript_EXPORTS
++        /* We are building this library */
++#      define fstpdtscript_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstpdtscript_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTPDTSCRIPT_NO_EXPORT
++#    define FSTPDTSCRIPT_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTPDTSCRIPT_DEPRECATED
++#  define FSTPDTSCRIPT_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTPDTSCRIPT_DEPRECATED_EXPORT
++#  define FSTPDTSCRIPT_DEPRECATED_EXPORT fstpdtscript_EXPORT FSTPDTSCRIPT_DEPRECATED
++#endif
++
++#ifndef FSTPDTSCRIPT_DEPRECATED_NO_EXPORT
++#  define FSTPDTSCRIPT_DEPRECATED_NO_EXPORT FSTPDTSCRIPT_NO_EXPORT FSTPDTSCRIPT_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTPDTSCRIPT_NO_DEPRECATED
++#    define FSTPDTSCRIPT_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstpdtscript_EXPORT_H */
+diff --git src/include/fst/exports/fstscript_Export.h src/include/fst/exports/fstscript_Export.h
+new file mode 100644
+index 0000000..4f4407e
+--- /dev/null
++++ src/include/fst/exports/fstscript_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstscript_EXPORT_H
++#define fstscript_EXPORT_H
++
++#ifdef fstscript_BUILT_AS_STATIC
++#  define fstscript_EXPORT
++#  define FSTSCRIPT_NO_EXPORT
++#else
++#  ifndef fstscript_EXPORT
++#    ifdef fstscript_EXPORTS
++        /* We are building this library */
++#      define fstscript_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstscript_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTSCRIPT_NO_EXPORT
++#    define FSTSCRIPT_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTSCRIPT_DEPRECATED
++#  define FSTSCRIPT_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTSCRIPT_DEPRECATED_EXPORT
++#  define FSTSCRIPT_DEPRECATED_EXPORT fstscript_EXPORT FSTSCRIPT_DEPRECATED
++#endif
++
++#ifndef FSTSCRIPT_DEPRECATED_NO_EXPORT
++#  define FSTSCRIPT_DEPRECATED_NO_EXPORT FSTSCRIPT_NO_EXPORT FSTSCRIPT_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTSCRIPT_NO_DEPRECATED
++#    define FSTSCRIPT_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstscript_EXPORT_H */
+diff --git src/include/fst/exports/fstspecial_Export.h src/include/fst/exports/fstspecial_Export.h
+new file mode 100644
+index 0000000..56010fb
+--- /dev/null
++++ src/include/fst/exports/fstspecial_Export.h
+@@ -0,0 +1,42 @@
++
++#ifndef fstspecial_EXPORT_H
++#define fstspecial_EXPORT_H
++
++#ifdef fstspecial_BUILT_AS_STATIC
++#  define fstspecial_EXPORT
++#  define FSTSPECIAL_NO_EXPORT
++#else
++#  ifndef fstspecial_EXPORT
++#    ifdef fstspecial_EXPORTS
++        /* We are building this library */
++#      define fstspecial_EXPORT __declspec(dllexport)
++#    else
++        /* We are using this library */
++#      define fstspecial_EXPORT __declspec(dllimport)
++#    endif
++#  endif
++
++#  ifndef FSTSPECIAL_NO_EXPORT
++#    define FSTSPECIAL_NO_EXPORT 
++#  endif
++#endif
++
++#ifndef FSTSPECIAL_DEPRECATED
++#  define FSTSPECIAL_DEPRECATED __declspec(deprecated)
++#endif
++
++#ifndef FSTSPECIAL_DEPRECATED_EXPORT
++#  define FSTSPECIAL_DEPRECATED_EXPORT fstspecial_EXPORT FSTSPECIAL_DEPRECATED
++#endif
++
++#ifndef FSTSPECIAL_DEPRECATED_NO_EXPORT
++#  define FSTSPECIAL_DEPRECATED_NO_EXPORT FSTSPECIAL_NO_EXPORT FSTSPECIAL_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef FSTSPECIAL_NO_DEPRECATED
++#    define FSTSPECIAL_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* fstspecial_EXPORT_H */
+diff --git src/include/fst/extensions/compress/compress.h src/include/fst/extensions/compress/compress.h
+index dd4ea9d..f002e02 100644
+--- src/include/fst/extensions/compress/compress.h
++++ src/include/fst/extensions/compress/compress.h
+@@ -52,6 +52,11 @@
+ #include <fst/visit.h>
+ #include <string_view>
+ 
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
++
+ namespace fst {
+ 
+ // Identifies stream data as a vanilla compressed FST.
+@@ -791,6 +796,12 @@ template <class Arc>
+       return false;
+     }
+   }
++  
++  #ifdef _WIN32
++  if (!fstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
++  #endif
+   std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
+   if (!Decompress(istrm, source.empty() ? "standard input" : source, fst)) {
+     return false;
+diff --git src/include/fst/extensions/compress/compressscript.h src/include/fst/extensions/compress/compressscript.h
+index 827557d..c24ea5a 100644
+--- src/include/fst/extensions/compress/compressscript.h
++++ src/include/fst/extensions/compress/compressscript.h
+@@ -26,6 +26,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -41,7 +42,7 @@ void Compress(CompressArgs *args) {
+   args->retval = Compress(fst, source);
+ }
+ 
+-bool Compress(const FstClass &fst, const std::string &source);
++bool fstcompressscript_EXPORT Compress(const FstClass &fst, const std::string &source);
+ 
+ using DecompressInnerArgs = std::tuple<const std::string &, MutableFstClass *>;
+ 
+@@ -54,7 +55,7 @@ void Decompress(DecompressArgs *args) {
+   args->retval = Decompress(source, fst);
+ }
+ 
+-bool Decompress(const std::string &source, MutableFstClass *fst);
++bool fstcompressscript_EXPORT Decompress(const std::string &source, MutableFstClass *fst);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/extensions/far/compile-strings.h src/include/fst/extensions/far/compile-strings.h
+index 8f4bd95..e86ab31 100644
+--- src/include/fst/extensions/far/compile-strings.h
++++ src/include/fst/extensions/far/compile-strings.h
+@@ -18,7 +18,9 @@
+ #ifndef FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
+ #define FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
+ 
++#ifndef _WIN32
+ #include <libgen.h>
++#endif
+ 
+ #include <cstddef>
+ #include <cstdint>
+@@ -42,6 +44,11 @@
+ #include <fst/vector-fst.h>
+ #include <string_view>
+ 
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
++
+ namespace fst {
+ namespace internal {
+ 
+@@ -146,7 +153,7 @@ class StringReader {
+ 
+ // Computes the minimal length required to encode each line number as a decimal
+ // number, or zero if the file is not seekable.
+-int KeySize(std::string_view source);
++int fstfarscript_EXPORT KeySize(std::string_view source);
+ 
+ }  // namespace internal
+ 
+@@ -205,12 +212,18 @@ void CompileStrings(const std::vector<std::string> &sources,
+     }
+     std::ifstream fstrm;
+     if (!in_source.empty()) {
+-      fstrm.open(in_source);
++      fstrm.open(in_source, std::ios_base::in | std::ios_base::binary);
+       if (!fstrm) {
+         FSTERROR() << "CompileStrings: Can't open file: " << in_source;
+         return;
+       }
+     }
++    
++    #ifdef _WIN32
++    if (!fstrm.is_open()) {
++        _setmode(_fileno(stdin), _O_BINARY);
++    }
++    #endif
+     std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
+     bool keep_syms = keep_symbols;
+     for (internal::StringReader<Arc> reader(
+diff --git src/include/fst/extensions/far/create.h src/include/fst/extensions/far/create.h
+index d84b565..24ea213 100644
+--- src/include/fst/extensions/far/create.h
++++ src/include/fst/extensions/far/create.h
+@@ -20,7 +20,9 @@
+ #ifndef FST_EXTENSIONS_FAR_CREATE_H_
+ #define FST_EXTENSIONS_FAR_CREATE_H_
+ 
++#ifndef _WIN32
+ #include <libgen.h>
++#endif
+ 
+ #include <cstddef>
+ #include <cstdint>
+diff --git src/include/fst/extensions/far/far-class.h src/include/fst/extensions/far/far-class.h
+index d78e464..3ee1e52 100644
+--- src/include/fst/extensions/far/far-class.h
++++ src/include/fst/extensions/far/far-class.h
+@@ -32,6 +32,7 @@
+ #include <fst/script/fst-class.h>
+ #include <fst/script/fstscript.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -40,7 +41,7 @@ namespace script {
+ 
+ // Virtual interface implemented by each concrete FarReaderImpl<A>.
+ // See the FarReader interface in far.h for the exact semantics.
+-class FarReaderImplBase {
++class fstfarscript_EXPORT FarReaderImplBase {
+  public:
+   virtual const std::string &ArcType() const = 0;
+   virtual bool Done() const = 0;
+@@ -94,7 +95,7 @@ class FarReaderClassImpl : public FarReaderImplBase {
+   mutable std::unique_ptr<FstClass> fstc_;
+ };
+ 
+-class FarReaderClass;
++class fstfarscript_EXPORT FarReaderClass;
+ 
+ using OpenFarReaderClassArgs =
+     WithReturnValue<std::unique_ptr<FarReaderClass>,
+@@ -175,7 +176,7 @@ void OpenFarReaderClass(OpenFarReaderClassArgs *args) {
+ // FarWriter API.
+ 
+ // Virtual interface implemented by each concrete FarWriterImpl<A>.
+-class FarWriterImplBase {
++class fstfarscript_EXPORT FarWriterImplBase {
+  public:
+   // Unlike the lower-level library, this returns a boolean to signal failure
+   // due to non-conformant arc types.
+@@ -218,7 +219,7 @@ class FarWriterClassImpl : public FarWriterImplBase {
+   std::unique_ptr<FarWriter<Arc>> writer_;
+ };
+ 
+-class FarWriterClass;
++class fstfarscript_EXPORT FarWriterClass;
+ 
+ using CreateFarWriterClassInnerArgs = std::pair<const std::string &, FarType>;
+ 
+diff --git src/include/fst/extensions/far/far.h src/include/fst/extensions/far/far.h
+index 9f1c830..bcf52e5 100644
+--- src/include/fst/extensions/far/far.h
++++ src/include/fst/extensions/far/far.h
+@@ -43,12 +43,23 @@
+ #include <fst/util.h>
+ #include <fst/vector-fst.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
++
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++
++inline std::string fstfarscript_EXPORT basename(std::string const & path)
++{
++  return path.substr(path.find_last_of("/\\") + 1);
++}
++#endif
+ 
+ namespace fst {
+ 
+-enum class FarEntryType { LINE, FILE };
++enum class fstfarscript_EXPORT FarEntryType { LINE, FILE };
+ 
+-enum class FarType {
++enum class fstfarscript_EXPORT FarType {
+   DEFAULT = 0,
+   STTABLE = 1,
+   STLIST = 2,
+@@ -58,7 +69,7 @@ enum class FarType {
+ // Checks for FST magic number in an input stream (to be opened given the source
+ // name), to indicate to the caller function that the stream content is an FST
+ // header.
+-inline bool IsFst(std::string_view source) {
++inline bool fstfarscript_EXPORT IsFst(std::string_view source) {
+   std::ifstream strm(std::string(source),
+                           std::ios_base::in | std::ios_base::binary);
+   if (!strm) return false;
+@@ -69,7 +80,7 @@ inline bool IsFst(std::string_view source) {
+ }
+ 
+ // FST archive header class
+-class FarHeader {
++class fstfarscript_EXPORT FarHeader {
+  public:
+   const std::string &ArcType() const { return arctype_; }
+ 
+@@ -271,6 +282,11 @@ class FstFarWriter final : public FarWriter<A> {
+ 
+ template <class Arc>
+ FarWriter<Arc> *FarWriter<Arc>::Create(std::string_view source, FarType type) {
++  #ifdef _WIN32
++  if(source.empty()){
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
++  #endif
+   switch (type) {
+     case FarType::DEFAULT:
+       if (source.empty()) return STListFarWriter<Arc>::Create(source);
+@@ -404,6 +420,10 @@ class FstFarReader final : public FarReader<A> {
+     for (size_t i = 0; i < keys_.size(); ++i) {
+       if (keys_[i].empty()) {
+         if (!has_stdin_) {
++          
++          #ifdef _WIN32
++            _setmode(_fileno(stdin), _O_BINARY);
++          #endif
+           streams_[i] = &std::cin;
+           has_stdin_ = true;
+         } else {
+@@ -467,6 +487,9 @@ class FstFarReader final : public FarReader<A> {
+ 
+   ~FstFarReader() final {
+     for (size_t i = 0; i < keys_.size(); ++i) {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+       if (streams_[i] != &std::cin) {
+         delete streams_[i];
+       }
+diff --git src/include/fst/extensions/far/farscript.h src/include/fst/extensions/far/farscript.h
+index 3992e58..e6bc92a 100644
+--- src/include/fst/extensions/far/farscript.h
++++ src/include/fst/extensions/far/farscript.h
+@@ -45,6 +45,7 @@
+ #include <fst/script/encodemapper-class.h>
+ #include <fst/script/script-impl.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -52,7 +53,7 @@ namespace script {
+ // Note: it is safe to pass these strings as references because this struct is
+ // only used to pass them deeper in the call graph. Be sure you understand why
+ // this is so before using this struct for anything else!
+-struct FarCompileStringsArgs {
++struct fstfarscript_EXPORT FarCompileStringsArgs {
+   const std::vector<std::string> &sources;
+   FarWriterClass &writer;
+   std::string_view fst_type;
+@@ -76,7 +77,7 @@ void CompileStrings(FarCompileStringsArgs *args) {
+       args->initial_symbols, args->key_prefix, args->key_suffix);
+ }
+ 
+-void CompileStrings(const std::vector<std::string> &sources,
++void fstfarscript_EXPORT CompileStrings(const std::vector<std::string> &sources,
+                     FarWriterClass &writer, std::string_view fst_type,
+                     int32_t generate_keys, FarEntryType fet, TokenType tt,
+                     const std::string &symbols_source,
+@@ -94,13 +95,13 @@ void Convert(FarConvertArgs *args) {
+   ::fst::Convert<Arc>(reader, writer, std::get<2>(*args));
+ }
+ 
+-void Convert(FarReaderClass &reader, FarWriterClass &writer,
++void fstfarscript_EXPORT Convert(FarReaderClass &reader, FarWriterClass &writer,
+              std::string_view fst_type);
+ 
+ // Note: it is safe to pass these strings as references because this struct is
+ // only used to pass them deeper in the call graph. Be sure you understand why
+ // this is so before using this struct for anything else!
+-struct FarCreateArgs {
++struct fstfarscript_EXPORT FarCreateArgs {
+   const std::vector<std::string> &sources;
+   FarWriterClass &writer;
+   const int32_t generate_keys;
+@@ -115,7 +116,7 @@ void Create(FarCreateArgs *args) {
+                          args->key_prefix, args->key_suffix);
+ }
+ 
+-void Create(const std::vector<std::string> &sources, FarWriterClass &writer,
++void fstfarscript_EXPORT Create(const std::vector<std::string> &sources, FarWriterClass &writer,
+             int32_t generate_keys, const std::string &key_prefix,
+             const std::string &key_suffix);
+ 
+@@ -130,7 +131,7 @@ void Decode(FarDecodeArgs *args) {
+   Decode(reader, writer, mapper);
+ }
+ 
+-void Decode(FarReaderClass &reader, FarWriterClass &writer,
++void fstfarscript_EXPORT Decode(FarReaderClass &reader, FarWriterClass &writer,
+             const EncodeMapperClass &encoder);
+ 
+ using FarEncodeArgs =
+@@ -144,7 +145,7 @@ void Encode(FarEncodeArgs *args) {
+   Encode(reader, writer, mapper);
+ }
+ 
+-void Encode(FarReaderClass &reader, FarWriterClass &writer,
++void fstfarscript_EXPORT Encode(FarReaderClass &reader, FarWriterClass &writer,
+             EncodeMapperClass *encoder);
+ 
+ using FarEqualInnerArgs = std::tuple<FarReaderClass &, FarReaderClass &, float,
+@@ -161,7 +162,7 @@ void Equal(FarEqualArgs *args) {
+                             std::get<3>(args->args), std::get<4>(args->args));
+ }
+ 
+-bool Equal(FarReaderClass &reader1, FarReaderClass &reader2,
++bool fstfarscript_EXPORT Equal(FarReaderClass &reader1, FarReaderClass &reader2,
+            float delta = kDelta, std::string_view begin_key = "",
+            std::string_view end_key = "");
+ 
+@@ -178,7 +179,7 @@ void Extract(FarExtractArgs *args) {
+                           std::get<5>(*args), std::get<6>(*args));
+ }
+ 
+-void Extract(FarReaderClass &reader, int32_t generate_sources,
++void fstfarscript_EXPORT Extract(FarReaderClass &reader, int32_t generate_sources,
+              const std::string &keys, const std::string &key_separator,
+              const std::string &range_delimiter,
+              const std::string &source_prefix,
+@@ -194,7 +195,7 @@ void Info(FarInfoArgs *args) {
+                        std::get<2>(*args), std::get<3>(*args));
+ }
+ 
+-void Info(const std::vector<std::string> &sources, const std::string &arc_type,
++void fstfarscript_EXPORT Info(const std::vector<std::string> &sources, const std::string &arc_type,
+           const std::string &begin_key, const std::string &end_key,
+           const bool list_fsts);
+ 
+@@ -209,7 +210,7 @@ void GetInfo(FarGetInfoArgs *args) {
+                           std::get<4>(*args));
+ }
+ 
+-void GetInfo(const std::vector<std::string> &sources,
++void fstfarscript_EXPORT GetInfo(const std::vector<std::string> &sources,
+              const std::string &arc_type, const std::string &begin_key,
+              const std::string &end_key, const bool list_fsts, FarInfoData *);
+ 
+@@ -228,11 +229,11 @@ void Isomorphic(FarIsomorphicArgs *args) {
+       std::get<4>(args->args));
+ }
+ 
+-bool Isomorphic(FarReaderClass &reader1, FarReaderClass &reader2,
++bool fstfarscript_EXPORT Isomorphic(FarReaderClass &reader1, FarReaderClass &reader2,
+                 float delta = kDelta, std::string_view begin_key = "",
+                 std::string_view end_key = "");
+ 
+-struct FarPrintStringsArgs {
++struct fstfarscript_EXPORT FarPrintStringsArgs {
+   FarReaderClass &reader;
+   const FarEntryType entry_type;
+   const TokenType token_type;
+@@ -257,7 +258,7 @@ void PrintStrings(FarPrintStringsArgs *args) {
+                                args->source_prefix, args->source_suffix);
+ }
+ 
+-void PrintStrings(FarReaderClass &reader, const FarEntryType entry_type,
++void fstfarscript_EXPORT PrintStrings(FarReaderClass &reader, const FarEntryType entry_type,
+                   const TokenType token_type, const std::string &begin_key,
+                   const std::string &end_key, const bool print_key,
+                   const bool print_weight, const std::string &symbols_source,
+diff --git src/include/fst/extensions/far/getters.h src/include/fst/extensions/far/getters.h
+index 458083e..c9db194 100644
+--- src/include/fst/extensions/far/getters.h
++++ src/include/fst/extensions/far/getters.h
+@@ -27,19 +27,20 @@
+ #include <fst/extensions/far/far.h>
+ #include <fst/string.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-bool GetFarType(std::string_view str, FarType *far_type);
++bool fstfarscript_EXPORT GetFarType(std::string_view str, FarType *far_type);
+ 
+-bool GetFarEntryType(std::string_view str, FarEntryType *entry_type);
++bool fstfarscript_EXPORT GetFarEntryType(std::string_view str, FarEntryType *entry_type);
+ 
+-void ExpandArgs(int argc, char **argv, int *argcp, char ***argvp);
++void fstfarscript_EXPORT ExpandArgs(int argc, char **argv, int *argcp, char ***argvp);
+ 
+ }  // namespace script
+ 
+-std::string GetFarTypeString(FarType far_type);
++std::string fstfarscript_EXPORT GetFarTypeString(FarType far_type);
+ 
+ }  // namespace fst
+ 
+diff --git src/include/fst/extensions/far/print-strings.h src/include/fst/extensions/far/print-strings.h
+index 638baad..bf957f5 100644
+--- src/include/fst/extensions/far/print-strings.h
++++ src/include/fst/extensions/far/print-strings.h
+@@ -37,8 +37,9 @@
+ #include <fst/shortest-distance.h>
+ #include <fst/string.h>
+ #include <fst/symbol-table.h>
++#include <fst/exports/exports.h>
+ 
+-DECLARE_string(far_field_separator);
++DECLARE_export_string(far_field_separator, fstfarscript_EXPORT);
+ 
+ namespace fst {
+ 
+@@ -101,7 +102,7 @@ void PrintStrings(FarReader<Arc> &reader, FarEntryType entry_type,
+       }
+       std::string source;
+       source = source_prefix + sstrm.str() + source_suffix;
+-      std::ofstream ostrm(source);
++      std::ofstream ostrm(source, std::ios_base::out | std::ios_base::binary);
+       if (!ostrm) {
+         LOG(ERROR) << "PrintStrings: Can't open file: " << source;
+         return;
+diff --git src/include/fst/extensions/far/script-impl.h src/include/fst/extensions/far/script-impl.h
+index 15c5bdc..d0ee8c8 100644
+--- src/include/fst/extensions/far/script-impl.h
++++ src/include/fst/extensions/far/script-impl.h
+@@ -24,12 +24,14 @@
+ #include <string>
+ 
+ #include <fst/compat.h>
++#include <fst/exports/exports.h>
++
+ namespace fst {
+ namespace script {
+ 
+-std::string LoadArcTypeFromFar(const std::string &far_source);
++std::string fstfarscript_EXPORT LoadArcTypeFromFar(const std::string &far_source);
+ 
+-std::string LoadArcTypeFromFst(const std::string &fst_source);
++std::string fstfarscript_EXPORT LoadArcTypeFromFst(const std::string &fst_source);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/extensions/far/stlist.h src/include/fst/extensions/far/stlist.h
+index b736c91..b2d8cc8 100644
+--- src/include/fst/extensions/far/stlist.h
++++ src/include/fst/extensions/far/stlist.h
+@@ -41,6 +41,12 @@
+ #include <fstream>
+ #include <fst/util.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
++
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
+ 
+ namespace fst {
+ 
+@@ -124,6 +130,9 @@ class STListReader {
+     for (size_t i = 0; i < sources.size(); ++i) {
+       if (sources[i].empty()) {
+         if (!has_stdin) {
++          #ifdef _WIN32
++            _setmode(_fileno(stdin), _O_BINARY);
++          #endif
+           streams_[i] = &std::cin;
+           sources_[i] = "stdin";
+           has_stdin = true;
+@@ -300,7 +309,7 @@ bool ReadSTListHeader(const std::string &source, Header *header) {
+   return true;
+ }
+ 
+-bool IsSTList(std::string_view source);
++bool fstfar_EXPORT IsSTList(std::string_view source);
+ 
+ }  // namespace fst
+ 
+diff --git src/include/fst/extensions/far/sttable.h src/include/fst/extensions/far/sttable.h
+index cdcc441..6c3d3c4 100644
+--- src/include/fst/extensions/far/sttable.h
++++ src/include/fst/extensions/far/sttable.h
+@@ -37,6 +37,7 @@
+ #include <fstream>
+ #include <fst/util.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ 
+@@ -378,7 +379,7 @@ bool ReadSTTableHeader(const std::string &source, Header *header) {
+   return true;
+ }
+ 
+-bool IsSTTable(std::string_view source);
++bool fstfar_EXPORT IsSTTable(std::string_view source);
+ 
+ }  // namespace fst
+ 
+diff --git src/include/fst/extensions/linear/linear-fst.h src/include/fst/extensions/linear/linear-fst.h
+index c164d76..96fa8c5 100644
+--- src/include/fst/extensions/linear/linear-fst.h
++++ src/include/fst/extensions/linear/linear-fst.h
+@@ -50,6 +50,11 @@
+ #include <fst/symbol-table.h>
+ #include <fst/util.h>
+ 
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
++
+ namespace fst {
+ 
+ // Forward declaration of the specialized matcher for both
+@@ -525,6 +530,9 @@ class LinearTaggerFst : public ImplToFst<internal::LinearTaggerFstImpl<A>> {
+       }
+       return Read(strm, FstReadOptions(source));
+     } else {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+       return Read(std::cin, FstReadOptions("standard input"));
+     }
+   }
+@@ -545,6 +553,9 @@ class LinearTaggerFst : public ImplToFst<internal::LinearTaggerFstImpl<A>> {
+       }
+       return Write(strm, FstWriteOptions(source));
+     } else {
++      #ifdef _WIN32
++        _setmode(_fileno(stdout), _O_BINARY);
++      #endif
+       return Write(std::cout, FstWriteOptions("standard output"));
+     }
+   }
+@@ -976,6 +987,9 @@ class LinearClassifierFst
+       }
+       return Read(strm, FstReadOptions(source));
+     } else {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+       return Read(std::cin, FstReadOptions("standard input"));
+     }
+   }
+@@ -997,6 +1011,9 @@ class LinearClassifierFst
+       }
+       return Write(strm, FstWriteOptions(source));
+     } else {
++      #ifdef _WIN32
++        _setmode(_fileno(stdout), _O_BINARY);
++      #endif
+       return Write(std::cout, FstWriteOptions("standard output"));
+     }
+   }
+diff --git src/include/fst/extensions/linear/linearscript.h src/include/fst/extensions/linear/linearscript.h
+index 1436ba1..0d8ebb9 100644
+--- src/include/fst/extensions/linear/linearscript.h
++++ src/include/fst/extensions/linear/linearscript.h
+@@ -36,12 +36,13 @@
+ #include <fst/util.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/script-impl.h>
++#include <fst/exports/exports.h>
+ 
+-DECLARE_string(delimiter);
+-DECLARE_string(empty_symbol);
+-DECLARE_string(start_symbol);
+-DECLARE_string(end_symbol);
+-DECLARE_bool(classifier);
++DECLARE_export_string(delimiter, fstlinearscript_EXPORT);
++DECLARE_export_string(empty_symbol, fstlinearscript_EXPORT);
++DECLARE_export_string(start_symbol, fstlinearscript_EXPORT);
++DECLARE_export_string(end_symbol, fstlinearscript_EXPORT);
++DECLARE_export_bool(classifier, fstlinearscript_EXPORT);
+ 
+ namespace fst {
+ namespace script {
+@@ -51,9 +52,9 @@ using LinearCompileArgs =
+                char **, int, const std::string &, const std::string &,
+                const std::string &, const std::string &>;
+ 
+-bool ValidateDelimiter();
++bool fstlinearscript_EXPORT ValidateDelimiter();
+ 
+-bool ValidateEmptySymbol();
++bool fstlinearscript_EXPORT ValidateEmptySymbol();
+ 
+ // Returns the proper label given the symbol. For symbols other than
+ // `FST_FLAGS_start_symbol` or `FST_FLAGS_end_symbol`, looks up the symbol
+@@ -130,7 +131,7 @@ bool GetModelRecord(const std::string &model, std::istream &strm,
+ template <class Arc>
+ void AddVocab(const std::string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
+               SymbolTable *osyms, LinearFstDataBuilder<Arc> *builder) {
+-  std::ifstream in(vocab);
++  std::ifstream in(vocab, std::ios_base::in | std::ios_base::binary);
+   if (!in) LOG(FATAL) << "Can't open file: " << vocab;
+   size_t num_line = 0, num_added = 0;
+   std::vector<std::string> fields;
+@@ -156,7 +157,7 @@ template <class Arc>
+ void AddVocab(const std::string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
+               SymbolTable *osyms,
+               LinearClassifierFstDataBuilder<Arc> *builder) {
+-  std::ifstream in(vocab);
++  std::ifstream in(vocab, std::ios_base::in | std::ios_base::binary);
+   if (!in) LOG(FATAL) << "Can't open file: " << vocab;
+   size_t num_line = 0, num_added = 0;
+   std::vector<std::string> fields;
+@@ -192,7 +193,7 @@ void AddVocab(const std::string &vocab, SymbolTable *isyms, SymbolTable *fsyms,
+ template <class Arc>
+ void AddModel(const std::string &model, SymbolTable *fsyms, SymbolTable *osyms,
+               LinearFstDataBuilder<Arc> *builder) {
+-  std::ifstream in(model);
++  std::ifstream in(model, std::ios_base::in | std::ios_base::binary);
+   if (!in) LOG(FATAL) << "Can't open file: " << model;
+   std::string line;
+   std::getline(in, line);
+@@ -246,7 +247,7 @@ void AddModel(const std::string &model, SymbolTable *fsyms, SymbolTable *osyms,
+ template <class Arc>
+ void AddModel(const std::string &model, SymbolTable *fsyms, SymbolTable *osyms,
+               LinearClassifierFstDataBuilder<Arc> *builder) {
+-  std::ifstream in(model);
++  std::ifstream in(model, std::ios_base::in | std::ios_base::binary);
+   if (!in) LOG(FATAL) << "Can't open file: " << model;
+   std::string line;
+   std::getline(in, line);
+@@ -295,8 +296,8 @@ void AddModel(const std::string &model, SymbolTable *fsyms, SymbolTable *osyms,
+           << num_line << " lines.";
+ }
+ 
+-void SplitByWhitespace(const std::string &str, std::vector<std::string> *out);
+-int ScanNumClasses(char **models, int models_length);
++void fstlinearscript_EXPORT SplitByWhitespace(const std::string &str, std::vector<std::string> *out);
++int fstlinearscript_EXPORT ScanNumClasses(char **models, int models_length);
+ 
+ template <class Arc>
+ void LinearCompileTpl(LinearCompileArgs *args) {
+@@ -348,7 +349,7 @@ void LinearCompileTpl(LinearCompileArgs *args) {
+   if (!save_osymbols.empty()) osyms.WriteText(save_osymbols);
+ }
+ 
+-void LinearCompile(const std::string &arc_type,
++void fstlinearscript_EXPORT LinearCompile(const std::string &arc_type,
+                    const std::string &epsilon_symbol,
+                    const std::string &unknown_symbol, const std::string &vocab,
+                    char **models, int models_len, const std::string &out,
+diff --git src/include/fst/extensions/mpdt/mpdt.h src/include/fst/extensions/mpdt/mpdt.h
+index a3e3bdc..a399f71 100644
+--- src/include/fst/extensions/mpdt/mpdt.h
++++ src/include/fst/extensions/mpdt/mpdt.h
+@@ -39,10 +39,11 @@
+ #include <fst/util.h>
+ #include <unordered_map>
+ #include <optional>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ 
+-enum class MPdtType : uint8_t {
++enum class fstmpdtscript_EXPORT MPdtType : uint8_t {
+   READ_RESTRICT,   // Can only read from first empty stack
+   WRITE_RESTRICT,  // Can only write to first empty stack
+   NO_RESTRICT,     // No read-write restrictions
+diff --git src/include/fst/extensions/mpdt/mpdtscript.h src/include/fst/extensions/mpdt/mpdtscript.h
+index 553807e..7880020 100644
+--- src/include/fst/extensions/mpdt/mpdtscript.h
++++ src/include/fst/extensions/mpdt/mpdtscript.h
+@@ -40,6 +40,7 @@
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/shortest-path.h>
++#include <fst/exports/exports.h>
+ // FstClassPair, and to detect
+ // any collisions.
+ 
+@@ -74,7 +75,7 @@ void Compose(MPdtComposeArgs *args) {
+   }
+ }
+ 
+-void Compose(const FstClass &ifst1, const FstClass &ifst2,
++void fstmpdtscript_EXPORT Compose(const FstClass &ifst1, const FstClass &ifst2,
+              const std::vector<std::pair<int64_t, int64_t>> &parens,
+              const std::vector<int64_t> &assignments, MutableFstClass *ofst,
+              const MPdtComposeOptions &copts, bool left_pdt);
+@@ -103,7 +104,7 @@ void Expand(MPdtExpandArgs *args) {
+                            std::get<4>(*args).keep_parentheses));
+ }
+ 
+-void Expand(const FstClass &ifst,
++void fstmpdtscript_EXPORT Expand(const FstClass &ifst,
+             const std::vector<std::pair<int64_t, int64_t>> &parens,
+             const std::vector<int64_t> &assignments, MutableFstClass *ofst,
+             const MPdtExpandOptions &opts);
+@@ -134,7 +135,7 @@ void Reverse(MPdtReverseArgs *args) {
+             std::get<2>(*args)->begin());
+ }
+ 
+-void Reverse(const FstClass &ifst,
++void fstmpdtscript_EXPORT Reverse(const FstClass &ifst,
+              const std::vector<std::pair<int64_t, int64_t>> &parens,
+              std::vector<int64_t> *assignments, MutableFstClass *ofst);
+ 
+@@ -161,7 +162,7 @@ void Info(MPdtInfoArgs *args) {
+   mpdtinfo.Print();
+ }
+ 
+-void Info(const FstClass &ifst,
++void fstmpdtscript_EXPORT Info(const FstClass &ifst,
+           const std::vector<std::pair<int64_t, int64_t>> &parens,
+           const std::vector<int64_t> &assignments);
+ 
+diff --git src/include/fst/extensions/mpdt/read_write_utils.h src/include/fst/extensions/mpdt/read_write_utils.h
+index f47bd61..b4c77a6 100644
+--- src/include/fst/extensions/mpdt/read_write_utils.h
++++ src/include/fst/extensions/mpdt/read_write_utils.h
+@@ -39,7 +39,7 @@ template <typename Label>
+ bool ReadLabelTriples(const std::string &source,
+                       std::vector<std::pair<Label, Label>> *pairs,
+                       std::vector<Label> *assignments) {
+-  std::ifstream fstrm(source);
++  std::ifstream fstrm(source, std::ios_base::in | std::ios_base::binary);
+   if (!fstrm) {
+     LOG(ERROR) << "ReadIntTriples: Can't open file: " << source;
+     return false;
+@@ -82,7 +82,7 @@ bool WriteLabelTriples(const std::string &source,
+     LOG(ERROR) << "WriteLabelTriples: Pairs and assignments of different sizes";
+     return false;
+   }
+-  std::ofstream fstrm(source);
++  std::ofstream fstrm(source, std::ios_base::out | std::ios_base::binary);
+   if (!fstrm) {
+     LOG(ERROR) << "WriteLabelTriples: Can't open file: " << source;
+     return false;
+diff --git src/include/fst/extensions/ngram/bitmap-index.h src/include/fst/extensions/ngram/bitmap-index.h
+index af23176..083927b 100644
+--- src/include/fst/extensions/ngram/bitmap-index.h
++++ src/include/fst/extensions/ngram/bitmap-index.h
+@@ -25,6 +25,7 @@
+ 
+ #include <fst/compat.h>
+ #include <fst/log.h>
++#include <fst/exports/exports.h>
+ 
+ // This class is a bitstring storage class with an index that allows
+ // seeking to the Nth set or clear bit in time O(Log(N)) (or
+@@ -89,7 +90,7 @@
+ 
+ namespace fst {
+ 
+-class BitmapIndex {
++class fstngram_EXPORT BitmapIndex {
+  public:
+   static size_t StorageSize(size_t num_bits) {
+     return ((num_bits + kStorageBlockMask) >> kStorageLogBitSize);
+diff --git src/include/fst/extensions/ngram/ngram-fst.h src/include/fst/extensions/ngram/ngram-fst.h
+index d024947..ebd96ef 100644
+--- src/include/fst/extensions/ngram/ngram-fst.h
++++ src/include/fst/extensions/ngram/ngram-fst.h
+@@ -52,6 +52,11 @@
+ #include <fst/util.h>
+ #include <fst/vector-fst.h>
+ 
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
++
+ namespace fst {
+ template <class A>
+ class NGramFst;
+@@ -417,6 +422,9 @@ class NGramFst : public ImplToExpandedFst<internal::NGramFstImpl<A>> {
+       }
+       return Read(strm, FstReadOptions(source));
+     } else {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+       return Read(std::cin, FstReadOptions("standard input"));
+     }
+   }
+diff --git src/include/fst/extensions/ngram/nthbit.h src/include/fst/extensions/ngram/nthbit.h
+index d33e05e..b18a23b 100644
+--- src/include/fst/extensions/ngram/nthbit.h
++++ src/include/fst/extensions/ngram/nthbit.h
+@@ -26,6 +26,7 @@
+ #endif
+ 
+ #include <fst/log.h>
++#include <fst/compat.h>
+ 
+ #if defined(__BMI2__)  // Intel Bit Manipulation Instruction Set 2
+ // PDEP requires BMI2; this is present starting with Haswell.
+@@ -83,7 +84,7 @@ extern const uint8_t kSelectInByte[2048];
+ // Rank/Select Queries" by Sebastiano Vigna, p. 5, Algorithm 2, with
+ // improvements from "Optimized Succinct Data Structures for Massive Data"
+ // by Gog & Petri, 2014.
+-inline int nth_bit(const uint64_t v, const uint32_t r) {
++inline int fstngram_EXPORT nth_bit(const uint64_t v, const uint32_t r) {
+   constexpr uint64_t kOnesStep8 = 0x0101010101010101;
+   constexpr uint64_t kMSBsStep8 = 0x80 * kOnesStep8;
+ 
+diff --git src/include/fst/extensions/pdt/getters.h src/include/fst/extensions/pdt/getters.h
+index 294511a..99c8ffa 100644
+--- src/include/fst/extensions/pdt/getters.h
++++ src/include/fst/extensions/pdt/getters.h
+@@ -23,13 +23,14 @@
+ #include <fst/extensions/pdt/compose.h>
+ #include <fst/extensions/pdt/replace.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-bool GetPdtComposeFilter(std::string_view str, PdtComposeFilter *cf);
++bool fstpdtscript_EXPORT GetPdtComposeFilter(std::string_view str, PdtComposeFilter *cf);
+ 
+-bool GetPdtParserType(std::string_view str, PdtParserType *pt);
++bool fstpdtscript_EXPORT GetPdtParserType(std::string_view str, PdtParserType *pt);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/extensions/pdt/pdtscript.h src/include/fst/extensions/pdt/pdtscript.h
+index ce2e6f9..0c9b885 100644
+--- src/include/fst/extensions/pdt/pdtscript.h
++++ src/include/fst/extensions/pdt/pdtscript.h
+@@ -47,6 +47,7 @@
+ #include <fst/script/script-impl.h>
+ #include <fst/script/shortest-path.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -75,12 +76,12 @@ void Compose(PdtComposeArgs *args) {
+   }
+ }
+ 
+-void Compose(const FstClass &ifst1, const FstClass &ifst2,
++void fstpdtscript_EXPORT Compose(const FstClass &ifst1, const FstClass &ifst2,
+              const std::vector<std::pair<int64_t, int64_t>> &parens,
+              MutableFstClass *ofst, const PdtComposeOptions &opts,
+              bool left_pdt);
+ 
+-struct PdtExpandOptions {
++struct fstpdtscript_EXPORT PdtExpandOptions {
+   bool connect;
+   bool keep_parentheses;
+   const WeightClass &weight_threshold;
+@@ -112,11 +113,11 @@ void Expand(PdtExpandArgs *args) {
+                    .weight_threshold.GetWeight<typename Arc::Weight>())));
+ }
+ 
+-void Expand(const FstClass &ifst,
++void fstpdtscript_EXPORT Expand(const FstClass &ifst,
+             const std::vector<std::pair<int64_t, int64_t>> &parens,
+             MutableFstClass *ofst, const PdtExpandOptions &opts);
+ 
+-void Expand(const FstClass &ifst,
++void fstpdtscript_EXPORT Expand(const FstClass &ifst,
+             const std::vector<std::pair<int64_t, int64_t>> &parens,
+             MutableFstClass *ofst, bool connect, bool keep_parentheses,
+             const WeightClass &weight_threshold);
+@@ -149,7 +150,7 @@ void Replace(PdtReplaceArgs *args) {
+             std::get<2>(*args)->begin());
+ }
+ 
+-void Replace(const std::vector<std::pair<int64_t, const FstClass *>> &pairs,
++void fstpdtscript_EXPORT Replace(const std::vector<std::pair<int64_t, const FstClass *>> &pairs,
+              MutableFstClass *ofst,
+              std::vector<std::pair<int64_t, int64_t>> *parens, int64_t root,
+              PdtParserType parser_type = PdtParserType::LEFT,
+@@ -176,13 +177,13 @@ void Reverse(PdtReverseArgs *args) {
+   Reverse(fst, typed_parens, ofst);
+ }
+ 
+-void Reverse(const FstClass &ifst,
++void fstpdtscript_EXPORT Reverse(const FstClass &ifst,
+              const std::vector<std::pair<int64_t, int64_t>> &,
+              MutableFstClass *ofst);
+ 
+ // PDT SHORTESTPATH
+ 
+-struct PdtShortestPathOptions {
++struct fstpdtscript_EXPORT PdtShortestPathOptions {
+   QueueType queue_type;
+   bool keep_parentheses;
+   bool path_gc;
+@@ -237,7 +238,7 @@ void ShortestPath(PdtShortestPathArgs *args) {
+   }
+ }
+ 
+-void ShortestPath(
++void fstpdtscript_EXPORT ShortestPath(
+     const FstClass &ifst,
+     const std::vector<std::pair<int64_t, int64_t>> &parens,
+     MutableFstClass *ofst,
+@@ -262,7 +263,7 @@ void Info(PdtInfoArgs *args) {
+   pdtinfo.Print();
+ }
+ 
+-void Info(const FstClass &ifst,
++void fstpdtscript_EXPORT Info(const FstClass &ifst,
+           const std::vector<std::pair<int64_t, int64_t>> &parens);
+ 
+ }  // namespace script
+diff --git src/include/fst/extensions/special/phi-fst.h src/include/fst/extensions/special/phi-fst.h
+index 8749ac2..ba56fba 100644
+--- src/include/fst/extensions/special/phi-fst.h
++++ src/include/fst/extensions/special/phi-fst.h
+@@ -31,10 +31,11 @@
+ #include <fst/matcher-fst.h>
+ #include <fst/matcher.h>
+ #include <fst/util.h>
++#include <fst/exports/exports.h>
+ 
+-DECLARE_int64(phi_fst_phi_label);
+-DECLARE_bool(phi_fst_phi_loop);
+-DECLARE_string(phi_fst_rewrite_mode);
++DECLARE_export_int64(phi_fst_phi_label,  fstspecial_EXPORT);
++DECLARE_export_bool(phi_fst_phi_loop, fstspecial_EXPORT);
++DECLARE_export_string(phi_fst_rewrite_mode, fstspecial_EXPORT);
+ 
+ namespace fst {
+ namespace internal {
+diff --git src/include/fst/extensions/special/rho-fst.h src/include/fst/extensions/special/rho-fst.h
+index 6dd2889..49e5a62 100644
+--- src/include/fst/extensions/special/rho-fst.h
++++ src/include/fst/extensions/special/rho-fst.h
+@@ -31,9 +31,10 @@
+ #include <fst/matcher-fst.h>
+ #include <fst/matcher.h>
+ #include <fst/util.h>
++#include <fst/exports/exports.h>
+ 
+-DECLARE_int64(rho_fst_rho_label);
+-DECLARE_string(rho_fst_rewrite_mode);
++DECLARE_export_int64(rho_fst_rho_label, fstspecial_EXPORT);
++DECLARE_export_string(rho_fst_rewrite_mode, fstspecial_EXPORT);
+ 
+ namespace fst {
+ namespace internal {
+diff --git src/include/fst/extensions/special/sigma-fst.h src/include/fst/extensions/special/sigma-fst.h
+index 44b0b7a..b9bb8f7 100644
+--- src/include/fst/extensions/special/sigma-fst.h
++++ src/include/fst/extensions/special/sigma-fst.h
+@@ -31,9 +31,10 @@
+ #include <fst/matcher-fst.h>
+ #include <fst/matcher.h>
+ #include <fst/util.h>
++#include <fst/exports/exports.h>
+ 
+-DECLARE_int64(sigma_fst_sigma_label);
+-DECLARE_string(sigma_fst_rewrite_mode);
++DECLARE_export_int64(sigma_fst_sigma_label, fstspecial_EXPORT);
++DECLARE_export_string(sigma_fst_rewrite_mode, fstspecial_EXPORT);
+ 
+ namespace fst {
+ namespace internal {
+diff --git src/include/fst/flags.h src/include/fst/flags.h
+index 761ad35..9bcd091 100644
+--- src/include/fst/flags.h
++++ src/include/fst/flags.h
+@@ -32,6 +32,8 @@
+ 
+ #include <fst/lock.h>
+ 
++#include <fst/exports/exports.h>
++
+ // FLAGS USAGE:
+ //
+ // Definition example:
+@@ -56,6 +58,13 @@
+ #define DECLARE_uint64(name) extern uint64_t FST_FLAGS_##name
+ #define DECLARE_double(name) extern double FST_FLAGS_ ## name
+ 
++#define DECLARE_export_bool(name, export_macro) extern bool export_macro FST_FLAGS_##name
++#define DECLARE_export_string(name, export_macro) extern std::string export_macro FST_FLAGS_##name
++#define DECLARE_export_int32(name, export_macro) extern int32_t export_macro FST_FLAGS_##name
++#define DECLARE_export_int64(name, export_macro) extern int64_t export_macro FST_FLAGS_##name
++#define DECLARE_export_uint64(name, export_macro) extern uint64_t export_macro FST_FLAGS_##name
++#define DECLARE_export_double(name, export_macro) extern double export_macro FST_FLAGS_##name
++
+ template <typename T>
+ struct FlagDescription {
+   FlagDescription(T *addr, std::string_view doc, std::string_view type,
+@@ -73,12 +82,46 @@ struct FlagDescription {
+   const T default_value;
+ };
+ 
++
++
++#if defined(_WIN32) || defined(__APPLE__)
++class FlagRegisterBase { };
++
++class FlagSingleton {
++public:
++
++    template <class RegisterType>
++    std::shared_ptr<RegisterType> GetRegister() {
++
++        std::string type_name = typeid(RegisterType).name();
++        if (registry.find(type_name) == registry.end()) {
++            std::shared_ptr<RegisterType> r = std::make_shared<RegisterType>();
++            registry[type_name] = std::static_pointer_cast <FlagRegisterBase>(r);
++        }
++        return  std::static_pointer_cast <RegisterType>(registry[type_name]);
++    }
++private:
++    std::map<std::string, std::shared_ptr<FlagRegisterBase>> registry;
++};
++
++fst_EXPORT FlagSingleton& GetFlagSingleton();
++
++#endif // _WIN32
++
+ template <typename T>
++#if defined(_WIN32) || defined(__APPLE__)
++class FlagRegister: public FlagRegisterBase {
++#else
+ class FlagRegister {
++#endif
+  public:
+   static FlagRegister<T> *GetRegister() {
+-    static auto reg = new FlagRegister<T>;
+-    return reg;
++    #if defined(_WIN32) || defined(__APPLE__)
++      return GetFlagSingleton().GetRegister<FlagRegister<T>>().get();
++    #else
++      static auto reg = new FlagRegister<T>;
++      return reg;
++    #endif
+   }
+ 
+   const FlagDescription<T> &GetFlagDescription(const std::string &name) const {
+@@ -181,8 +224,12 @@ template <typename T>
+ class FlagRegisterer {
+  public:
+   FlagRegisterer(const std::string &name, const FlagDescription<T> &desc) {
++    #if defined(_WIN32) || defined(__APPLE__)
++    GetFlagSingleton().GetRegister<FlagRegister<T>>()->SetDescription(name, desc);
++    #else
+     auto registr = FlagRegister<T>::GetRegister();
+     registr->SetDescription(name, desc);
++    #endif
+   }
+ 
+  private:
+@@ -210,9 +257,9 @@ class FlagRegisterer {
+ 
+ 
+ // Temporary directory.
+-DECLARE_string(tmpdir);
++DECLARE_export_string(tmpdir, fst_EXPORT);
+ 
+-void SetFlags(const char *usage, int *argc, char ***argv, bool remove_flags,
++void fst_EXPORT SetFlags(const char *usage, int *argc, char ***argv, bool remove_flags,
+               const char *src = "");
+ 
+ // This is an unpleasant hack around SetFlag API.
+@@ -221,7 +268,7 @@ void SetFlag(Type *flag, Value value) {
+   *flag = Type(value);
+ }
+ 
+-void FailedNewHandler();
++void fst_EXPORT FailedNewHandler();
+ 
+ #define SET_FLAGS(usage, argc, argv, rmflags) \
+ std::set_new_handler(FailedNewHandler); \
+@@ -232,6 +279,6 @@ inline void InitFst(const char *usage, int *argc, char ***argv, bool rmflags) {
+   return SetFlags(usage, argc, argv, rmflags);
+ }
+ 
+-void ShowUsage(bool long_usage = true);
++void fst_EXPORT ShowUsage(bool long_usage = true);
+ 
+ #endif  // FST_FLAGS_H_
+diff --git src/include/fst/fst.h src/include/fst/fst.h
+index f48eff6..24609d7 100644
+--- src/include/fst/fst.h
++++ src/include/fst/fst.h
+@@ -49,14 +49,20 @@
+ #include <fst/util.h>
+ #include <string_view>
+ 
+-DECLARE_bool(fst_align);
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
++
++DECLARE_export_bool(fst_align, fst_EXPORT);
++DECLARE_export_bool(fst_verify_properties, fst_EXPORT);
+ 
+ namespace fst {
+ 
+ // Identifies stream data as an FST (and its endianity).
+ inline constexpr int32_t kFstMagicNumber = 2125659606;
+ 
+-class FstHeader;
++class fst_EXPORT FstHeader;
+ template <class Arc>
+ class MatcherBase;
+ template <class Arc>
+@@ -64,7 +70,7 @@ struct ArcIteratorData;
+ template <class Arc>
+ struct StateIteratorData;
+ 
+-struct FstReadOptions {
++struct fst_EXPORT FstReadOptions {
+   // FileReadMode(s) are advisory, there are many conditions than prevent a
+   // file from being mapped, READ mode will be selected in these cases with
+   // a warning indicating why it was chosen.
+@@ -98,7 +104,7 @@ struct FstReadOptions {
+   std::string DebugString() const;
+ };
+ 
+-struct FstWriteOptions {
++struct fst_EXPORT FstWriteOptions {
+   std::string source;   // Where you're writing to.
+   bool write_header;    // Write the header?
+   bool write_isymbols;  // Write input symbols?
+@@ -285,6 +291,9 @@ class Fst {
+       }
+       return Read(strm, FstReadOptions(source));
+     } else {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+       return Read(std::cin, FstReadOptions("standard input"));
+     }
+   }
+@@ -343,6 +352,9 @@ class Fst {
+       }
+       return true;
+     } else {
++      #ifdef _WIN32
++        _setmode(_fileno(stdout), _O_BINARY);
++      #endif
+       return Write(std::cout, FstWriteOptions("standard output"));
+     }
+   }
+diff --git src/include/fst/generic-register.h src/include/fst/generic-register.h
+index d95d095..ee513c1 100644
+--- src/include/fst/generic-register.h
++++ src/include/fst/generic-register.h
+@@ -58,16 +58,51 @@ struct KeyLookupReferenceType<std::string> {
+ };
+ }  // namespace internal
+ 
++
++
++#if defined(_WIN32) || defined(__APPLE__)
++
++class RegisterBase { };
++
++class Singleton {
++public:
++
++    template <class RegisterType>
++    std::shared_ptr<RegisterType> GetRegister() {
++
++        std::string type_name = typeid(RegisterType).name();
++        if (registry.find(type_name) == registry.end()) {
++            std::shared_ptr<RegisterType> r = std::make_shared<RegisterType>();
++            registry[type_name] = std::static_pointer_cast <RegisterBase>(r);
++        }
++        return  std::static_pointer_cast <RegisterType>(registry[type_name]);
++    }
++private:
++    std::map<std::string, std::shared_ptr<RegisterBase>> registry;
++};
++
++fst_EXPORT Singleton& GetSingleton();
++
++#endif
++
+ template <class KeyType, class EntryType, class RegisterType>
++#if defined(_WIN32) || defined(__APPLE__)
++class GenericRegister : public RegisterBase {
++#else
+ class GenericRegister {
++#endif
+  public:
+   using Key = KeyType;
+   using KeyLookupRef = typename internal::KeyLookupReferenceType<KeyType>::type;
+   using Entry = EntryType;
+ 
+   static RegisterType *GetRegister() {
+-    static auto reg = new RegisterType;
+-    return reg;
++    #if defined(_WIN32) || defined(__APPLE__)
++      return GetSingleton().GetRegister<RegisterType>().get();
++    #else
++      static auto reg = new RegisterType;
++      return reg;
++    #endif
+   }
+ 
+   void SetEntry(const KeyType &key, const EntryType &entry) {
+@@ -145,7 +180,11 @@ class GenericRegisterer {
+   using Entry = typename RegisterType::Entry;
+ 
+   GenericRegisterer(Key key, Entry entry) {
++    #if defined(_WIN32) || defined(__APPLE__)
++      GetSingleton().GetRegister<RegisterType>()->SetEntry(key, entry);
++    #else
+     RegisterType::GetRegister()->SetEntry(key, entry);
++    #endif
+   }
+ };
+ 
+diff --git src/include/fst/log.h src/include/fst/log.h
+index 76820ea..086ff0d 100644
+--- src/include/fst/log.h
++++ src/include/fst/log.h
+@@ -31,7 +31,7 @@
+ class LogMessage;
+ class LogMessage;
+ 
+-DECLARE_int32(v);
++DECLARE_export_int32(v, fst_EXPORT);
+ 
+ class LogMessage {
+  public:
+diff --git src/include/fst/lookahead-matcher.h src/include/fst/lookahead-matcher.h
+index 45e774d..d0d3580 100644
+--- src/include/fst/lookahead-matcher.h
++++ src/include/fst/lookahead-matcher.h
+@@ -43,8 +43,8 @@
+ #include <fst/vector-fst.h>
+ #include <string_view>
+ 
+-DECLARE_string(save_relabel_ipairs);
+-DECLARE_string(save_relabel_opairs);
++DECLARE_export_string(save_relabel_ipairs, fst_EXPORT);
++DECLARE_export_string(save_relabel_opairs, fst_EXPORT);
+ 
+ namespace fst {
+ 
+diff --git src/include/fst/mapped-file.h src/include/fst/mapped-file.h
+index ede768b..83dd5cd 100644
+--- src/include/fst/mapped-file.h
++++ src/include/fst/mapped-file.h
+@@ -48,7 +48,7 @@ struct MemoryRegion {
+ #endif
+ };
+ 
+-class MappedFile {
++class fst_EXPORT MappedFile {
+  public:
+   ~MappedFile();
+ 
+diff --git src/include/fst/mutable-fst.h src/include/fst/mutable-fst.h
+index 297db60..32317d3 100644
+--- src/include/fst/mutable-fst.h
++++ src/include/fst/mutable-fst.h
+@@ -43,6 +43,11 @@
+ #include <fst/symbol-table.h>
+ #include <string_view>
+ 
++#ifdef _WIN32
++#include <fcntl.h>
++#include <io.h>
++#endif
++
+ namespace fst {
+ 
+ template <class Arc>
+@@ -166,6 +171,9 @@ class MutableFst : public ExpandedFst<A> {
+         }
+         return Read(strm, FstReadOptions(source));
+       } else {
++        #ifdef _WIN32
++          _setmode(_fileno(stdin), _O_BINARY);
++        #endif
+         return Read(std::cin, FstReadOptions("standard input"));
+       }
+     } else {  // Converts to 'convert_type' if not mutable.
+diff --git src/include/fst/properties.h src/include/fst/properties.h
+index 897621a..f9f1b39 100644
+--- src/include/fst/properties.h
++++ src/include/fst/properties.h
+@@ -349,46 +349,46 @@ inline uint64_t DeleteAllStatesProperties(uint64_t inprops,
+ 
+ inline uint64_t DeleteArcsProperties(uint64_t inprops);
+ 
+-uint64_t ClosureProperties(uint64_t inprops, bool star, bool delayed = false);
++uint64_t fst_EXPORT ClosureProperties(uint64_t inprops, bool star, bool delayed = false);
+ 
+-uint64_t ComplementProperties(uint64_t inprops);
++uint64_t fst_EXPORT ComplementProperties(uint64_t inprops);
+ 
+-uint64_t ComposeProperties(uint64_t inprops1, uint64_t inprops2);
++uint64_t fst_EXPORT ComposeProperties(uint64_t inprops1, uint64_t inprops2);
+ 
+-uint64_t ConcatProperties(uint64_t inprops1, uint64_t inprops2,
++uint64_t fst_EXPORT ConcatProperties(uint64_t inprops1, uint64_t inprops2,
+                           bool delayed = false);
+ 
+-uint64_t DeterminizeProperties(uint64_t inprops, bool has_subsequential_label,
++uint64_t fst_EXPORT DeterminizeProperties(uint64_t inprops, bool has_subsequential_label,
+                                bool distinct_psubsequential_labels);
+ 
+-uint64_t FactorWeightProperties(uint64_t inprops);
++uint64_t fst_EXPORT FactorWeightProperties(uint64_t inprops);
+ 
+-uint64_t InvertProperties(uint64_t inprops);
++uint64_t fst_EXPORT InvertProperties(uint64_t inprops);
+ 
+-uint64_t ProjectProperties(uint64_t inprops, bool project_input);
++uint64_t fst_EXPORT ProjectProperties(uint64_t inprops, bool project_input);
+ 
+-uint64_t RandGenProperties(uint64_t inprops, bool weighted);
++uint64_t fst_EXPORT RandGenProperties(uint64_t inprops, bool weighted);
+ 
+-uint64_t RelabelProperties(uint64_t inprops);
++uint64_t fst_EXPORT RelabelProperties(uint64_t inprops);
+ 
+-uint64_t ReplaceProperties(const std::vector<uint64_t> &inprops, size_t root,
++uint64_t fst_EXPORT ReplaceProperties(const std::vector<uint64_t> &inprops, size_t root,
+                            bool epsilon_on_call, bool epsilon_on_return,
+                            bool out_epsilon_on_call, bool out_epsilon_on_return,
+                            bool replace_transducer, bool no_empty_fst,
+                            bool all_ilabel_sorted, bool all_olabel_sorted,
+                            bool all_negative_or_dense);
+ 
+-uint64_t ReverseProperties(uint64_t inprops, bool has_superinitial);
++uint64_t fst_EXPORT ReverseProperties(uint64_t inprops, bool has_superinitial);
+ 
+-uint64_t ReweightProperties(uint64_t inprops, bool added_start_epsilon);
++uint64_t fst_EXPORT ReweightProperties(uint64_t inprops, bool added_start_epsilon);
+ 
+-uint64_t RmEpsilonProperties(uint64_t inprops, bool delayed = false);
++uint64_t fst_EXPORT RmEpsilonProperties(uint64_t inprops, bool delayed = false);
+ 
+-uint64_t ShortestPathProperties(uint64_t props, bool tree = false);
++uint64_t fst_EXPORT ShortestPathProperties(uint64_t props, bool tree = false);
+ 
+-uint64_t SynchronizeProperties(uint64_t inprops);
++uint64_t fst_EXPORT SynchronizeProperties(uint64_t inprops);
+ 
+-uint64_t UnionProperties(uint64_t inprops1, uint64_t inprops2,
++uint64_t fst_EXPORT UnionProperties(uint64_t inprops1, uint64_t inprops2,
+                          bool delayed = false);
+ 
+ // Definitions of inlined functions.
+@@ -492,7 +492,7 @@ uint64_t AddArcProperties(uint64_t inprops, typename Arc::StateId s,
+ 
+ namespace internal {
+ 
+-extern const std::string_view PropertyNames[];
++extern const std::string_view fst_EXPORT PropertyNames[];
+ 
+ // For a binary property, the bit is always returned set. For a trinary (i.e.,
+ // two-bit) property, both bits are returned set iff either corresponding input
+diff --git src/include/fst/register.h src/include/fst/register.h
+index ecd24ae..e8d07bb 100644
+--- src/include/fst/register.h
++++ src/include/fst/register.h
+@@ -75,7 +75,15 @@ class FstRegister : public GenericRegister<std::string, FstRegisterEntry<Arc>,
+   std::string ConvertKeyToSoFilename(std::string_view key) const override {
+     std::string legal_type(key);
+     ConvertToLegalCSymbol(&legal_type);
+-    legal_type.append("-fst.so");
++    legal_type.append("-fst");
++    #ifdef _WIN32
++        legal_type.append(".dll");
++    #elif defined __APPLE__
++        legal_type.append(".dylib");
++    #else
++        legal_type.append(".so");
++
++    #endif // _WIN32
+     return legal_type;
+   }
+ };
+diff --git src/include/fst/script/arc-class.h src/include/fst/script/arc-class.h
+index eadddfa..7933c46 100644
+--- src/include/fst/script/arc-class.h
++++ src/include/fst/script/arc-class.h
+@@ -21,6 +21,7 @@
+ #include <cstdint>
+ 
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -28,7 +29,7 @@ namespace script {
+ // A struct representing an arc while ignoring arc type. It is passed as an
+ // argument to AddArc.
+ 
+-struct ArcClass {
++struct fstscript_EXPORT ArcClass {
+   template <class Arc>
+   explicit ArcClass(const Arc &arc)
+       : ilabel(arc.ilabel),
+diff --git src/include/fst/script/arcfilter-impl.h src/include/fst/script/arcfilter-impl.h
+index 1a29fa9..8c0e722 100644
+--- src/include/fst/script/arcfilter-impl.h
++++ src/include/fst/script/arcfilter-impl.h
+@@ -19,10 +19,11 @@
+ #define FST_SCRIPT_ARCFILTER_IMPL_H_
+ 
+ #include <cstdint>
++#include <fst/exports/exports.h>
+ 
+ namespace fst::script {
+ 
+-enum class ArcFilterType : uint8_t {
++enum class fstscript_EXPORT ArcFilterType : uint8_t {
+   ANY,
+   EPSILON,
+   INPUT_EPSILON,
+diff --git src/include/fst/script/arciterator-class.h src/include/fst/script/arciterator-class.h
+index fe0d78d..61693de 100644
+--- src/include/fst/script/arciterator-class.h
++++ src/include/fst/script/arciterator-class.h
+@@ -41,7 +41,7 @@ namespace script {
+ // Non-mutable arc iterators.
+ 
+ // Virtual interface implemented by each concrete ArcIteratorImpl<F>.
+-class ArcIteratorImplBase {
++class fstscript_EXPORT ArcIteratorImplBase {
+  public:
+   virtual bool Done() const = 0;
+   virtual uint8_t Flags() const = 0;
+@@ -87,7 +87,7 @@ class ArcIteratorClassImpl : public ArcIteratorImplBase {
+   ArcIterator<Fst<Arc>> aiter_;
+ };
+ 
+-class ArcIteratorClass;
++class fstscript_EXPORT ArcIteratorClass;
+ 
+ using InitArcIteratorClassArgs =
+     std::tuple<const FstClass &, int64_t, ArcIteratorClass *>;
+@@ -134,7 +134,7 @@ void InitArcIteratorClass(InitArcIteratorClassArgs *args) {
+ // Mutable arc iterators.
+ 
+ // Virtual interface implemented by each concrete MutableArcIteratorImpl<F>.
+-class MutableArcIteratorImplBase : public ArcIteratorImplBase {
++class fstscript_EXPORT MutableArcIteratorImplBase : public ArcIteratorImplBase {
+  public:
+   virtual void SetValue(const ArcClass &) = 0;
+ 
+@@ -178,7 +178,7 @@ class MutableArcIteratorClassImpl : public MutableArcIteratorImplBase {
+   MutableArcIterator<MutableFst<Arc>> aiter_;
+ };
+ 
+-class MutableArcIteratorClass;
++class fstscript_EXPORT MutableArcIteratorClass;
+ 
+ using InitMutableArcIteratorClassArgs =
+     std::tuple<MutableFstClass *, int64_t, MutableArcIteratorClass *>;
+diff --git src/include/fst/script/arcsort.h src/include/fst/script/arcsort.h
+index 82053f2..38969ef 100644
+--- src/include/fst/script/arcsort.h
++++ src/include/fst/script/arcsort.h
+@@ -28,7 +28,7 @@
+ namespace fst {
+ namespace script {
+ 
+-enum class ArcSortType : uint8_t { ILABEL, OLABEL };
++enum class fstscript_EXPORT ArcSortType : uint8_t { ILABEL, OLABEL };
+ 
+ using FstArcSortArgs = std::pair<MutableFstClass *, ArcSortType>;
+ 
+@@ -49,7 +49,7 @@ void ArcSort(FstArcSortArgs *args) {
+   }
+ }
+ 
+-void ArcSort(MutableFstClass *ofst, ArcSortType);
++void fstscript_EXPORT ArcSort(MutableFstClass *ofst, ArcSortType);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/closure.h src/include/fst/script/closure.h
+index 964fecc..d6b9334 100644
+--- src/include/fst/script/closure.h
++++ src/include/fst/script/closure.h
+@@ -24,6 +24,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/rational.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -36,7 +37,7 @@ void Closure(FstClosureArgs *args) {
+   Closure(fst, std::get<1>(*args));
+ }
+ 
+-void Closure(MutableFstClass *ofst, ClosureType closure_type);
++void fstscript_EXPORT Closure(MutableFstClass *ofst, ClosureType closure_type);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/compile-impl.h src/include/fst/script/compile-impl.h
+index b947a2d..72ebf63 100644
+--- src/include/fst/script/compile-impl.h
++++ src/include/fst/script/compile-impl.h
+@@ -38,8 +38,6 @@
+ #include <unordered_map>
+ #include <string_view>
+ 
+-DECLARE_string(fst_field_separator);
+-
+ namespace fst {
+ 
+ // Compile a binary FST from textual input, helper class for fstcompile.cc.
+diff --git src/include/fst/script/compile.h src/include/fst/script/compile.h
+index a0c4f66..a0c79a6 100644
+--- src/include/fst/script/compile.h
++++ src/include/fst/script/compile.h
+@@ -31,6 +31,7 @@
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/compile-impl.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -44,7 +45,7 @@ namespace script {
+ // this struct is only used to pass them deeper in the call graph.
+ // Be sure you understand why this is so before using this struct
+ // for anything else!
+-struct FstCompileInnerArgs {
++struct fstscript_EXPORT FstCompileInnerArgs {
+   std::istream &istrm;
+   const std::string &source;
+   const std::string &fst_type;
+@@ -84,13 +85,13 @@ void CompileInternal(FstCompileArgs *args) {
+   args->retval = fst ? std::make_unique<FstClass>(std::move(fst)) : nullptr;
+ }
+ 
+-void Compile(std::istream &istrm, const std::string &source,
++void fstscript_EXPORT Compile(std::istream &istrm, const std::string &source,
+              const std::string &dest, const std::string &fst_type,
+              const std::string &arc_type, const SymbolTable *isyms,
+              const SymbolTable *osyms, const SymbolTable *ssyms, bool accep,
+              bool ikeep, bool okeep, bool nkeep);
+ 
+-std::unique_ptr<FstClass> CompileInternal(
++std::unique_ptr<FstClass> fstscript_EXPORT CompileInternal(
+     std::istream &istrm, const std::string &source, const std::string &fst_type,
+     const std::string &arc_type, const SymbolTable *isyms,
+     const SymbolTable *osyms, const SymbolTable *ssyms, bool accep, bool ikeep,
+diff --git src/include/fst/script/compose.h src/include/fst/script/compose.h
+index 5bbe91f..c026e3a 100644
+--- src/include/fst/script/compose.h
++++ src/include/fst/script/compose.h
+@@ -24,6 +24,7 @@
+ #include <fst/fst.h>
+ #include <fst/mutable-fst.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -40,7 +41,7 @@ void Compose(FstComposeArgs *args) {
+   Compose(ifst1, ifst2, ofst, opts);
+ }
+ 
+-void Compose(const FstClass &ifst1, const FstClass &ifst2,
++void fstscript_EXPORT Compose(const FstClass &ifst1, const FstClass &ifst2,
+              MutableFstClass *ofst,
+              const ComposeOptions &opts = ComposeOptions());
+ 
+diff --git src/include/fst/script/concat.h src/include/fst/script/concat.h
+index 3450176..e55b160 100644
+--- src/include/fst/script/concat.h
++++ src/include/fst/script/concat.h
+@@ -25,6 +25,7 @@
+ #include <fst/fst.h>
+ #include <fst/mutable-fst.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -62,11 +63,11 @@ void Concat(FstConcatArgs3 *args) {
+   Concat(typed_fsts1, fst2);
+ }
+ 
+-void Concat(MutableFstClass *fst1, const FstClass &fst2);
++void fstscript_EXPORT Concat(MutableFstClass *fst1, const FstClass &fst2);
+ 
+-void Concat(const FstClass &fst1, MutableFstClass *fst2);
++void fstscript_EXPORT Concat(const FstClass &fst1, MutableFstClass *fst2);
+ 
+-void Concat(const std::vector<FstClass *> &fsts1, MutableFstClass *fst2);
++void fstscript_EXPORT Concat(const std::vector<FstClass *> &fsts1, MutableFstClass *fst2);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/connect.h src/include/fst/script/connect.h
+index 496a51d..84043a4 100644
+--- src/include/fst/script/connect.h
++++ src/include/fst/script/connect.h
+@@ -20,6 +20,7 @@
+ 
+ #include <fst/connect.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -29,7 +30,7 @@ void Connect(MutableFstClass *fst) {
+   Connect(fst->GetMutableFst<Arc>());
+ }
+ 
+-void Connect(MutableFstClass *fst);
++void fstscript_EXPORT Connect(MutableFstClass *fst);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/convert.h src/include/fst/script/convert.h
+index a06ee31..2e9a280 100644
+--- src/include/fst/script/convert.h
++++ src/include/fst/script/convert.h
+@@ -26,6 +26,7 @@
+ #include <fst/register.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -44,7 +45,7 @@ void Convert(FstConvertArgs *args) {
+       result ? std::make_unique<FstClass>(std::move(result)) : nullptr;
+ }
+ 
+-std::unique_ptr<FstClass> Convert(const FstClass &fst,
++std::unique_ptr<FstClass> fstscript_EXPORT Convert(const FstClass &fst,
+                                   const std::string &new_type);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/decode.h src/include/fst/script/decode.h
+index 1facd5b..d053512 100644
+--- src/include/fst/script/decode.h
++++ src/include/fst/script/decode.h
+@@ -25,6 +25,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/script/encodemapper-class.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -38,7 +39,7 @@ void Decode(FstDecodeArgs *args) {
+   Decode(fst, mapper);
+ }
+ 
+-void Decode(MutableFstClass *fst, const EncodeMapperClass &encoder);
++void fstscript_EXPORT Decode(MutableFstClass *fst, const EncodeMapperClass &encoder);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/determinize.h src/include/fst/script/determinize.h
+index f8d8d99..367af3f 100644
+--- src/include/fst/script/determinize.h
++++ src/include/fst/script/determinize.h
+@@ -26,11 +26,12 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-struct DeterminizeOptions {
++struct fstscript_EXPORT DeterminizeOptions {
+   const float delta;
+   const WeightClass &weight_threshold;
+   const int64_t state_threshold;
+@@ -68,7 +69,7 @@ void Determinize(FstDeterminizeArgs *args) {
+   Determinize(ifst, ofst, detargs);
+ }
+ 
+-void Determinize(const FstClass &ifst, MutableFstClass *ofst,
++void fstscript_EXPORT Determinize(const FstClass &ifst, MutableFstClass *ofst,
+                  const DeterminizeOptions &opts);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/difference.h src/include/fst/script/difference.h
+index cc964da..75f0c3f 100644
+--- src/include/fst/script/difference.h
++++ src/include/fst/script/difference.h
+@@ -26,6 +26,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/script/compose.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -42,7 +43,7 @@ void Difference(FstDifferenceArgs *args) {
+   Difference(ifst1, ifst2, ofst, opts);
+ }
+ 
+-void Difference(const FstClass &ifst1, const FstClass &ifst2,
++void fstscript_EXPORT Difference(const FstClass &ifst1, const FstClass &ifst2,
+                 MutableFstClass *ofst,
+                 const ComposeOptions &opts = ComposeOptions());
+ 
+diff --git src/include/fst/script/disambiguate.h src/include/fst/script/disambiguate.h
+index 010ae55..05ff9d9 100644
+--- src/include/fst/script/disambiguate.h
++++ src/include/fst/script/disambiguate.h
+@@ -27,11 +27,12 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-struct DisambiguateOptions {
++struct fstscript_EXPORT DisambiguateOptions {
+   const float delta;
+   const WeightClass &weight_threshold;
+   const int64_t state_threshold;
+@@ -62,7 +63,7 @@ void Disambiguate(FstDisambiguateArgs *args) {
+   Disambiguate(ifst, ofst, disargs);
+ }
+ 
+-void Disambiguate(const FstClass &ifst, MutableFstClass *ofst,
++void fstscript_EXPORT Disambiguate(const FstClass &ifst, MutableFstClass *ofst,
+                   const DisambiguateOptions &opts);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/draw.h src/include/fst/script/draw.h
+index 79dfe5f..b24e0c2 100644
+--- src/include/fst/script/draw.h
++++ src/include/fst/script/draw.h
+@@ -25,6 +25,7 @@
+ #include <fst/symbol-table.h>
+ #include <fst/script/draw-impl.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -32,7 +33,7 @@ namespace script {
+ // Note: it is safe to pass these strings as references because this struct is
+ // only used to pass them deeper in the call graph. Be sure you understand why
+ // this is so before using this struct for anything else!
+-struct FstDrawArgs {
++struct fstscript_EXPORT FstDrawArgs {
+   const FstClass &fst;
+   const SymbolTable *isyms;
+   const SymbolTable *osyms;
+@@ -64,7 +65,7 @@ void Draw(FstDrawArgs *args) {
+   fstdrawer.Draw(args->ostrm, args->dest);
+ }
+ 
+-void Draw(const FstClass &fst, const SymbolTable *isyms,
++void fstscript_EXPORT Draw(const FstClass &fst, const SymbolTable *isyms,
+           const SymbolTable *osyms, const SymbolTable *ssyms, bool accep,
+           const std::string &title, float width, float height, bool portrait,
+           bool vertical, float ranksep, float nodesep, int fontsize,
+diff --git src/include/fst/script/encode.h src/include/fst/script/encode.h
+index 290fd9a..514e014 100644
+--- src/include/fst/script/encode.h
++++ src/include/fst/script/encode.h
+@@ -25,6 +25,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/script/encodemapper-class.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -38,7 +39,7 @@ void Encode(FstEncodeArgs *args) {
+   Encode(fst, mapper);
+ }
+ 
+-void Encode(MutableFstClass *fst, EncodeMapperClass *mapper);
++void fstscript_EXPORT Encode(MutableFstClass *fst, EncodeMapperClass *mapper);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/encodemapper-class.h src/include/fst/script/encodemapper-class.h
+index cb8bad3..4aa071d 100644
+--- src/include/fst/script/encodemapper-class.h
++++ src/include/fst/script/encodemapper-class.h
+@@ -33,6 +33,7 @@
+ #include <fst/script/arc-class.h>
+ #include <fst/script/fst-class.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ // Scripting API support for EncodeMapper.
+ 
+@@ -40,7 +41,7 @@ namespace fst {
+ namespace script {
+ 
+ // Virtual interface implemented by each concrete EncodeMapperClassImpl<Arc>.
+-class EncodeMapperImplBase {
++class fstscript_EXPORT EncodeMapperImplBase {
+  public:
+   // Returns an encoded ArcClass.
+   virtual ArcClass operator()(const ArcClass &) = 0;
+@@ -125,7 +126,7 @@ inline ArcClass EncodeMapperClassImpl<Arc>::operator()(const ArcClass &a) {
+   return ArcClass(mapper_(arc));
+ }
+ 
+-class EncodeMapperClass {
++class fstscript_EXPORT EncodeMapperClass {
+  public:
+   EncodeMapperClass() : impl_(nullptr) {}
+ 
+@@ -264,7 +265,15 @@ class EncodeMapperClassIORegister
+   std::string ConvertKeyToSoFilename(std::string_view key) const final {
+     std::string legal_type(key);
+     ConvertToLegalCSymbol(&legal_type);
+-    legal_type.append("-arc.so");
++    legal_type.append("-arc");
++    #ifdef _WIN32
++        legal_type.append(".dll");
++    #elif defined __APPLE__
++        legal_type.append(".dylib");
++    #else
++        legal_type.append(".so");
++
++    #endif // _WIN32
+     return legal_type;
+   }
+ };
+diff --git src/include/fst/script/epsnormalize.h src/include/fst/script/epsnormalize.h
+index f1d81d2..17892ed 100644
+--- src/include/fst/script/epsnormalize.h
++++ src/include/fst/script/epsnormalize.h
+@@ -24,6 +24,7 @@
+ #include <fst/fst.h>
+ #include <fst/mutable-fst.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -38,7 +39,7 @@ void EpsNormalize(FstEpsNormalizeArgs *args) {
+   EpsNormalize(ifst, ofst, std::get<2>(*args));
+ }
+ 
+-void EpsNormalize(const FstClass &ifst, MutableFstClass *ofst,
++void fstscript_EXPORT EpsNormalize(const FstClass &ifst, MutableFstClass *ofst,
+                   EpsNormalizeType norm_type = EPS_NORM_INPUT);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/equal.h src/include/fst/script/equal.h
+index f318a83..f38ddb7 100644
+--- src/include/fst/script/equal.h
++++ src/include/fst/script/equal.h
+@@ -25,6 +25,7 @@
+ #include <fst/weight.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -40,7 +41,7 @@ void Equal(FstEqualArgs *args) {
+   args->retval = Equal(fst1, fst2, std::get<2>(args->args));
+ }
+ 
+-bool Equal(const FstClass &fst1, const FstClass &fst2, float delta = kDelta);
++bool fstscript_EXPORT Equal(const FstClass &fst1, const FstClass &fst2, float delta = kDelta);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/equivalent.h src/include/fst/script/equivalent.h
+index 01b4f1c..189be0f 100644
+--- src/include/fst/script/equivalent.h
++++ src/include/fst/script/equivalent.h
+@@ -25,6 +25,7 @@
+ #include <fst/weight.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -42,7 +43,7 @@ void Equivalent(FstEquivalentArgs *args) {
+       Equivalent(fst1, fst2, std::get<2>(args->args), std::get<3>(args->args));
+ }
+ 
+-bool Equivalent(const FstClass &fst1, const FstClass &fst2,
++bool fstscript_EXPORT Equivalent(const FstClass &fst1, const FstClass &fst2,
+                 float delta = kDelta, bool *error = nullptr);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/fst-class.h src/include/fst/script/fst-class.h
+index 38a3012..633b42d 100644
+--- src/include/fst/script/fst-class.h
++++ src/include/fst/script/fst-class.h
+@@ -42,6 +42,7 @@
+ #include <fst/script/arc-class.h>
+ #include <fst/script/weight-class.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ // Classes to support "boxing" all existing types of FST arcs in a single
+ // FstClass which hides the arc types. This allows clients to load
+@@ -57,7 +58,7 @@ namespace script {
+ // hierarchy bifurcates; FstClassImplBase serves as the base class for all
+ // implementations (of which FstClassImpl is currently the only one) and
+ // FstClass serves as the base class for all interfaces.
+-class FstClassBase {
++class fstscript_EXPORT FstClassBase {
+  public:
+   virtual const std::string &ArcType() const = 0;
+   virtual WeightClass Final(int64_t) const = 0;
+@@ -302,9 +303,9 @@ class FstClassImpl : public FstClassImplBase {
+ 
+ // BASE CLASS DEFINITIONS
+ 
+-class MutableFstClass;
++class fstscript_EXPORT MutableFstClass;
+ 
+-class FstClass : public FstClassBase {
++class fstscript_EXPORT FstClass : public FstClassBase {
+  public:
+   FstClass() : impl_(nullptr) {}
+ 
+@@ -549,7 +550,7 @@ class MutableFstClass : public FstClass {
+       : FstClass(std::move(impl)) {}
+ };
+ 
+-class VectorFstClass : public MutableFstClass {
++class fstscript_EXPORT VectorFstClass : public MutableFstClass {
+  public:
+   explicit VectorFstClass(std::unique_ptr<FstClassImplBase> impl)
+       : MutableFstClass(std::move(impl)) {}
+@@ -630,7 +631,15 @@ class FstClassIORegister
+   std::string ConvertKeyToSoFilename(std::string_view key) const final {
+     std::string legal_type(key);
+     ConvertToLegalCSymbol(&legal_type);
+-    legal_type.append("-arc.so");
++    legal_type.append("-arc");
++    #ifdef _WIN32
++        legal_type.append(".dll");
++    #elif defined __APPLE__
++        legal_type.append(".dylib");
++    #else
++        legal_type.append(".so");
++
++    #endif // _WIN32
+     return legal_type;
+   }
+ };
+diff --git src/include/fst/script/getters.h src/include/fst/script/getters.h
+index 3084e22..d29fa48 100644
+--- src/include/fst/script/getters.h
++++ src/include/fst/script/getters.h
+@@ -42,35 +42,36 @@
+ #include <fst/script/map.h>             // For MapType.
+ #include <fst/script/script-impl.h>     // For RandArcSelection.
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+ inline constexpr uint64_t kDefaultSeed = std::numeric_limits<uint64_t>::max();
+ 
+-bool GetArcFilterType(std::string_view str, ArcFilterType *arc_filter_type);
++bool fstscript_EXPORT GetArcFilterType(std::string_view str, ArcFilterType *arc_filter_type);
+ 
+-bool GetArcSortType(std::string_view str, ArcSortType *sort_type);
++bool fstscript_EXPORT GetArcSortType(std::string_view str, ArcSortType *sort_type);
+ 
+-bool GetClosureType(std::string_view str, ClosureType *closure_type);
++bool fstscript_EXPORT GetClosureType(std::string_view str, ClosureType *closure_type);
+ 
+-bool GetComposeFilter(std::string_view str, ComposeFilter *compose_filter);
++bool fstscript_EXPORT GetComposeFilter(std::string_view str, ComposeFilter *compose_filter);
+ 
+-bool GetDeterminizeType(std::string_view str, DeterminizeType *det_type);
++bool fstscript_EXPORT GetDeterminizeType(std::string_view str, DeterminizeType *det_type);
+ 
+-inline uint8_t GetEncodeFlags(bool encode_labels, bool encode_weights) {
++inline uint8_t fstscript_EXPORT GetEncodeFlags(bool encode_labels, bool encode_weights) {
+   return (encode_labels ? kEncodeLabels : 0) |
+          (encode_weights ? kEncodeWeights : 0);
+ }
+ 
+-bool GetEpsNormalizeType(std::string_view str,
++bool fstscript_EXPORT GetEpsNormalizeType(std::string_view str,
+                          EpsNormalizeType *eps_norm_type);
+ 
+-bool GetMapType(std::string_view str, MapType *map_type);
++bool fstscript_EXPORT GetMapType(std::string_view str, MapType *map_type);
+ 
+-bool GetProjectType(std::string_view str, ProjectType *project_type);
++bool fstscript_EXPORT GetProjectType(std::string_view str, ProjectType *project_type);
+ 
+-inline uint8_t GetPushFlags(bool push_weights, bool push_labels,
++inline uint8_t fstscript_EXPORT GetPushFlags(bool push_weights, bool push_labels,
+                             bool remove_total_weight,
+                             bool remove_common_affix) {
+   return ((push_weights ? kPushWeights : 0) | (push_labels ? kPushLabels : 0) |
+@@ -78,18 +79,18 @@ inline uint8_t GetPushFlags(bool push_weights, bool push_labels,
+           (remove_common_affix ? kPushRemoveCommonAffix : 0));
+ }
+ 
+-bool GetQueueType(std::string_view str, QueueType *queue_type);
++bool fstscript_EXPORT GetQueueType(std::string_view str, QueueType *queue_type);
+ 
+-bool GetRandArcSelection(std::string_view str, RandArcSelection *ras);
++bool fstscript_EXPORT GetRandArcSelection(std::string_view str, RandArcSelection *ras);
+ 
+-bool GetReplaceLabelType(std::string_view str, bool epsilon_on_replace,
++bool fstscript_EXPORT GetReplaceLabelType(std::string_view str, bool epsilon_on_replace,
+                          ReplaceLabelType *rlt);
+ 
+-bool GetReweightType(std::string_view str, ReweightType *reweight_type);
++bool fstscript_EXPORT GetReweightType(std::string_view str, ReweightType *reweight_type);
+ 
+-uint64_t GetSeed(uint64_t seed);
++uint64_t fstscript_EXPORT GetSeed(uint64_t seed);
+ 
+-bool GetTokenType(std::string_view str, TokenType *token_type);
++bool fstscript_EXPORT GetTokenType(std::string_view str, TokenType *token_type);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/info-impl.h src/include/fst/script/info-impl.h
+index 238edbd..88af4f4 100644
+--- src/include/fst/script/info-impl.h
++++ src/include/fst/script/info-impl.h
+@@ -42,6 +42,7 @@
+ #include <fst/visit.h>
+ #include <fst/script/arcfilter-impl.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ 
+@@ -49,7 +50,7 @@ namespace fst {
+ // WARNING: Stand-alone use of this class is not recommended, most code
+ // should call directly the relevant library functions: Fst<Arc>::NumStates,
+ // Fst<Arc>::NumArcs, TestProperties, etc.
+-class FstInfo {
++class fstscript_EXPORT FstInfo {
+  public:
+   // When info_type is "short" (or "auto" and not an ExpandedFst) then only
+   // minimal info is computed and can be requested.
+@@ -342,10 +343,10 @@ class FstInfo {
+ };
+ 
+ // Prints `properties` to `ostrm` in a user-friendly multi-line format.
+-void PrintProperties(std::ostream &ostrm, uint64_t properties);
++void fstscript_EXPORT PrintProperties(std::ostream &ostrm, uint64_t properties);
+ 
+ // Prints `header` to `ostrm` in a user-friendly multi-line format.
+-void PrintHeader(std::ostream &ostrm, const FstHeader &header);
++void fstscript_EXPORT PrintHeader(std::ostream &ostrm, const FstHeader &header);
+ 
+ }  // namespace fst
+ 
+diff --git src/include/fst/script/info.h src/include/fst/script/info.h
+index 69ba3e8..1fdd8df 100644
+--- src/include/fst/script/info.h
++++ src/include/fst/script/info.h
+@@ -26,6 +26,7 @@
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/info-impl.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -41,7 +42,7 @@ void Info(FstInfoArgs *args) {
+   info.Info();
+ }
+ 
+-void Info(const FstClass &fst, bool test_properties, ArcFilterType arc_filter,
++void fstscript_EXPORT Info(const FstClass &fst, bool test_properties, ArcFilterType arc_filter,
+           const std::string &info_type, bool verify);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/intersect.h src/include/fst/script/intersect.h
+index fdc1176..2dd2080 100644
+--- src/include/fst/script/intersect.h
++++ src/include/fst/script/intersect.h
+@@ -26,6 +26,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/script/compose.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -42,7 +43,7 @@ void Intersect(FstIntersectArgs *args) {
+   Intersect(ifst1, ifst2, ofst, opts);
+ }
+ 
+-void Intersect(const FstClass &ifst, const FstClass &ifst2,
++void fstscript_EXPORT Intersect(const FstClass &ifst, const FstClass &ifst2,
+                MutableFstClass *ofst,
+                const ComposeOptions &opts = ComposeOptions());
+ 
+diff --git src/include/fst/script/invert.h src/include/fst/script/invert.h
+index 94ba482..7ee4c4e 100644
+--- src/include/fst/script/invert.h
++++ src/include/fst/script/invert.h
+@@ -20,6 +20,7 @@
+ 
+ #include <fst/invert.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -29,7 +30,7 @@ void Invert(MutableFstClass *fst) {
+   Invert(fst->GetMutableFst<Arc>());
+ }
+ 
+-void Invert(MutableFstClass *fst);
++void fstscript_EXPORT Invert(MutableFstClass *fst);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/isomorphic.h src/include/fst/script/isomorphic.h
+index 21dc24f..589bbb5 100644
+--- src/include/fst/script/isomorphic.h
++++ src/include/fst/script/isomorphic.h
+@@ -25,6 +25,7 @@
+ #include <fst/weight.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -41,7 +42,7 @@ void Isomorphic(FstIsomorphicArgs *args) {
+   args->retval = Isomorphic(fst1, fst2, std::get<2>(args->args));
+ }
+ 
+-bool Isomorphic(const FstClass &fst1, const FstClass &fst2,
++bool fstscript_EXPORT Isomorphic(const FstClass &fst1, const FstClass &fst2,
+                 float delta = kDelta);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/map.h src/include/fst/script/map.h
+index 50e9aaa..7751fc5 100644
+--- src/include/fst/script/map.h
++++ src/include/fst/script/map.h
+@@ -31,6 +31,7 @@
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -53,7 +54,7 @@ std::unique_ptr<Fst<typename M::ToArc>> StateMap(
+   return ofst;
+ }
+ 
+-enum class MapType : uint8_t {
++enum class fstscript_EXPORT MapType : uint8_t {
+   ARC_SUM,
+   ARC_UNIQUE,
+   IDENTITY,
+@@ -164,7 +165,7 @@ void Map(FstMapArgs *args) {
+   }
+ }
+ 
+-std::unique_ptr<FstClass> Map(const FstClass &ifst,
++std::unique_ptr<FstClass> fstscript_EXPORT Map(const FstClass &ifst,
+                                               MapType map_type, float delta,
+                                               double power,
+                                               const WeightClass &weight);
+diff --git src/include/fst/script/minimize.h src/include/fst/script/minimize.h
+index 4b8d061..f8edfbc 100644
+--- src/include/fst/script/minimize.h
++++ src/include/fst/script/minimize.h
+@@ -24,6 +24,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/shortest-distance.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -39,7 +40,7 @@ void Minimize(FstMinimizeArgs *args) {
+   Minimize(ofst1, ofst2, std::get<2>(*args), std::get<3>(*args));
+ }
+ 
+-void Minimize(MutableFstClass *ofst1,
++void fstscript_EXPORT Minimize(MutableFstClass *ofst1,
+               MutableFstClass * ofst2 = nullptr,
+               float delta = kShortestDelta, bool allow_nondet = false);
+ 
+diff --git src/include/fst/script/print.h src/include/fst/script/print.h
+index a8064df..a896e66 100644
+--- src/include/fst/script/print.h
++++ src/include/fst/script/print.h
+@@ -27,8 +27,7 @@
+ #include <fst/script/fst-class.h>
+ #include <fst/script/print-impl.h>
+ #include <string_view>
+-
+-DECLARE_string(fst_field_separator);
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -36,7 +35,7 @@ namespace script {
+ // Note: it is safe to pass these strings as references because this struct is
+ // only used to pass them deeper in the call graph. Be sure you understand why
+ // this is so before using this struct for anything else!
+-struct FstPrintArgs {
++struct fstscript_EXPORT FstPrintArgs {
+   const FstClass &fst;
+   const SymbolTable *isyms;
+   const SymbolTable *osyms;
+@@ -58,14 +57,14 @@ void Print(FstPrintArgs *args) {
+   fstprinter.Print(args->ostrm, args->dest);
+ }
+ 
+-void Print(const FstClass &fst, std::ostream &ostrm, const std::string &dest,
++void fstscript_EXPORT Print(const FstClass &fst, std::ostream &ostrm, const std::string &dest,
+            const SymbolTable *isyms = nullptr,
+            const SymbolTable *osyms = nullptr,
+            const SymbolTable *ssyms = nullptr, bool accept = true,
+            bool show_weight_one = true, const std::string &missing_sym = "");
+ 
+ // TODO(kbg,2019-09-01): Deprecated.
+-void PrintFst(const FstClass &fst, std::ostream &ostrm, const std::string &dest,
++void fstscript_EXPORT PrintFst(const FstClass &fst, std::ostream &ostrm, const std::string &dest,
+               const SymbolTable *isyms, const SymbolTable *osyms,
+               const SymbolTable *ssyms, bool accept, bool show_weight_one,
+               const std::string &missing_sym = "");
+diff --git src/include/fst/script/project.h src/include/fst/script/project.h
+index d5c131e..6863926 100644
+--- src/include/fst/script/project.h
++++ src/include/fst/script/project.h
+@@ -23,6 +23,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/project.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -35,7 +36,7 @@ void Project(FstProjectArgs *args) {
+   Project(fst, std::get<1>(*args));
+ }
+ 
+-void Project(MutableFstClass *fst, ProjectType project_type);
++void fstscript_EXPORT Project(MutableFstClass *fst, ProjectType project_type);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/prune.h src/include/fst/script/prune.h
+index 32f2259..89935db 100644
+--- src/include/fst/script/prune.h
++++ src/include/fst/script/prune.h
+@@ -31,6 +31,7 @@
+ #include <fst/weight.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -68,11 +69,11 @@ void Prune(FstPruneArgs2 *args) {
+   }
+ }
+ 
+-void Prune(const FstClass &ifst, MutableFstClass *ofst,
++void fstscript_EXPORT Prune(const FstClass &ifst, MutableFstClass *ofst,
+            const WeightClass &weight_threshold,
+            int64_t state_threshold = kNoStateId, float delta = kDelta);
+ 
+-void Prune(MutableFstClass *fst, const WeightClass &weight_threshold,
++void fstscript_EXPORT Prune(MutableFstClass *fst, const WeightClass &weight_threshold,
+            int64_t state_threshold = kNoStateId, float delta = kDelta);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/push.h src/include/fst/script/push.h
+index b7671ec..6a30dd6 100644
+--- src/include/fst/script/push.h
++++ src/include/fst/script/push.h
+@@ -27,6 +27,7 @@
+ #include <fst/reweight.h>
+ #include <fst/shortest-distance.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -60,10 +61,10 @@ void Push(FstPushArgs2 *args) {
+   }
+ }
+ 
+-void Push(MutableFstClass *fst, ReweightType type = REWEIGHT_TO_INITIAL,
++void fstscript_EXPORT Push(MutableFstClass *fst, ReweightType type = REWEIGHT_TO_INITIAL,
+           float delta = kShortestDelta, bool remove_total_weight = false);
+ 
+-void Push(const FstClass &ifst, MutableFstClass *ofst, uint8_t flags,
++void fstscript_EXPORT Push(const FstClass &ifst, MutableFstClass *ofst, uint8_t flags,
+           ReweightType rew_type, float delta = kShortestDelta);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/randequivalent.h src/include/fst/script/randequivalent.h
+index fc47f1e..b700122 100644
+--- src/include/fst/script/randequivalent.h
++++ src/include/fst/script/randequivalent.h
+@@ -29,6 +29,7 @@
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/script-impl.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -72,7 +73,7 @@ void RandEquivalent(FstRandEquivalentArgs *args) {
+   }
+ }
+ 
+-bool RandEquivalent(
++bool fstscript_EXPORT RandEquivalent(
+     const FstClass &fst1, const FstClass &fst2, int32_t npath = 1,
+     const RandGenOptions<RandArcSelection> &opts =
+         RandGenOptions<RandArcSelection>(RandArcSelection::UNIFORM),
+diff --git src/include/fst/script/randgen.h src/include/fst/script/randgen.h
+index 6405597..8e246ea 100644
+--- src/include/fst/script/randgen.h
++++ src/include/fst/script/randgen.h
+@@ -27,6 +27,7 @@
+ #include <fst/randgen.h>
+ #include <fst/script/fst-class.h>
+ #include <fst/script/script-impl.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -69,7 +70,7 @@ void RandGen(FstRandGenArgs *args) {
+   }
+ }
+ 
+-void RandGen(const FstClass &ifst, MutableFstClass *ofst,
++void fstscript_EXPORT RandGen(const FstClass &ifst, MutableFstClass *ofst,
+              const RandGenOptions<RandArcSelection> &opts =
+                  RandGenOptions<RandArcSelection>(RandArcSelection::UNIFORM),
+              uint64_t seed = std::random_device()());
+diff --git src/include/fst/script/relabel.h src/include/fst/script/relabel.h
+index 2aa962a..3849386 100644
+--- src/include/fst/script/relabel.h
++++ src/include/fst/script/relabel.h
+@@ -29,6 +29,7 @@
+ #include <fst/relabel.h>
+ #include <fst/symbol-table.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -66,13 +67,13 @@ void Relabel(FstRelabelArgs2 *args) {
+   Relabel(ofst, typed_ipairs, typed_opairs);
+ }
+ 
+-void Relabel(MutableFstClass *ofst, const SymbolTable *old_isymbols,
++void fstscript_EXPORT Relabel(MutableFstClass *ofst, const SymbolTable *old_isymbols,
+              const SymbolTable *new_isymbols,
+              const std::string &unknown_isymbol, bool attach_new_isymbols,
+              const SymbolTable *old_osymbols, const SymbolTable *new_osymbols,
+              const std::string &unknown_osymbol, bool attach_new_osymbols);
+ 
+-void Relabel(MutableFstClass *ofst,
++void fstscript_EXPORT Relabel(MutableFstClass *ofst,
+              const std::vector<std::pair<int64_t, int64_t>> &ipairs,
+              const std::vector<std::pair<int64_t, int64_t>> &opairs);
+ 
+diff --git src/include/fst/script/replace.h src/include/fst/script/replace.h
+index 34d63e8..67229d5 100644
+--- src/include/fst/script/replace.h
++++ src/include/fst/script/replace.h
+@@ -31,11 +31,12 @@
+ #include <fst/replace.h>
+ #include <fst/util.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-struct ReplaceOptions {
++struct fstscript_EXPORT ReplaceOptions {
+   const int64_t root;                        // Root rule for expansion.
+   const ReplaceLabelType call_label_type;    // How to label call arc.
+   const ReplaceLabelType return_label_type;  // How to label return arc.
+@@ -82,7 +83,7 @@ void Replace(FstReplaceArgs *args) {
+   *ofst = rfst;
+ }
+ 
+-void Replace(const std::vector<std::pair<int64_t, const FstClass *>> &pairs,
++void fstscript_EXPORT Replace(const std::vector<std::pair<int64_t, const FstClass *>> &pairs,
+              MutableFstClass *ofst, const ReplaceOptions &opts);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/reverse.h src/include/fst/script/reverse.h
+index c0e91b3..e2244bd 100644
+--- src/include/fst/script/reverse.h
++++ src/include/fst/script/reverse.h
+@@ -24,6 +24,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/reverse.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -37,7 +38,7 @@ void Reverse(FstReverseArgs *args) {
+   Reverse(ifst, ofst, std::get<2>(*args));
+ }
+ 
+-void Reverse(const FstClass &ifst, MutableFstClass *ofst,
++void fstscript_EXPORT Reverse(const FstClass &ifst, MutableFstClass *ofst,
+              bool require_superinitial = true);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/reweight.h src/include/fst/script/reweight.h
+index 8a64db1..810771e 100644
+--- src/include/fst/script/reweight.h
++++ src/include/fst/script/reweight.h
+@@ -26,6 +26,7 @@
+ #include <fst/script/fst-class.h>
+ #include <fst/script/script-impl.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -44,7 +45,7 @@ void Reweight(FstReweightArgs *args) {
+   Reweight(fst, typed_potentials, std::get<2>(*args));
+ }
+ 
+-void Reweight(MutableFstClass *fst, const std::vector<WeightClass> &potentials,
++void fstscript_EXPORT Reweight(MutableFstClass *fst, const std::vector<WeightClass> &potentials,
+               ReweightType reweight_type);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/rmepsilon.h src/include/fst/script/rmepsilon.h
+index 36c7dc2..3235989 100644
+--- src/include/fst/script/rmepsilon.h
++++ src/include/fst/script/rmepsilon.h
+@@ -35,11 +35,12 @@
+ #include <fst/script/fst-class.h>
+ #include <fst/script/shortest-distance.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-struct RmEpsilonOptions : public ShortestDistanceOptions {
++struct fstscript_EXPORT RmEpsilonOptions : public ShortestDistanceOptions {
+   const bool connect;
+   const WeightClass &weight_threshold;
+   const int64_t state_threshold;
+@@ -130,7 +131,7 @@ void RmEpsilon(FstRmEpsilonArgs *args) {
+   internal::RmEpsilon(fst, opts);
+ }
+ 
+-void RmEpsilon(MutableFstClass *fst, const RmEpsilonOptions &opts);
++void fstscript_EXPORT RmEpsilon(MutableFstClass *fst, const RmEpsilonOptions &opts);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/script-impl.h src/include/fst/script/script-impl.h
+index d20a413..d016605 100644
+--- src/include/fst/script/script-impl.h
++++ src/include/fst/script/script-impl.h
+@@ -108,11 +108,12 @@
+ #include <fst/script/fst-class.h>
+ #include <fst/script/weight-class.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-enum class RandArcSelection : uint8_t { UNIFORM, LOG_PROB, FAST_LOG_PROB };
++enum class fstscript_EXPORT RandArcSelection : uint8_t { UNIFORM, LOG_PROB, FAST_LOG_PROB };
+ 
+ // A generic register for operations with various kinds of signatures.
+ // Needed since every function signature requires a new registration class.
+@@ -136,7 +137,15 @@ class GenericOperationRegister
+     // Uses the old-style FST for now.
+     std::string legal_type(key.second);  // The arc type.
+     ConvertToLegalCSymbol(&legal_type);
+-    legal_type.append("-arc.so");
++    legal_type.append("-arc");
++    #ifdef _WIN32
++        legal_type.append(".dll");
++    #elif defined __APPLE__
++        legal_type.append(".dylib");
++    #else
++        legal_type.append(".so");
++
++    #endif // _WIN32
+     return legal_type;
+   }
+ };
+diff --git src/include/fst/script/shortest-distance.h src/include/fst/script/shortest-distance.h
+index c78ba3d..1c218de 100644
+--- src/include/fst/script/shortest-distance.h
++++ src/include/fst/script/shortest-distance.h
+@@ -37,11 +37,12 @@
+ #include <fst/script/prune.h>
+ #include <fst/script/script-impl.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-struct ShortestDistanceOptions {
++struct fstscript_EXPORT ShortestDistanceOptions {
+   const QueueType queue_type;
+   const ArcFilterType arc_filter_type;
+   const int64_t source;
+@@ -237,14 +238,14 @@ void ShortestDistance(FstShortestDistanceArgs3 *args) {
+   args->retval = WeightClass(ShortestDistance(fst, std::get<1>(args->args)));
+ }
+ 
+-void ShortestDistance(const FstClass &fst, std::vector<WeightClass> *distance,
++void fstscript_EXPORT ShortestDistance(const FstClass &fst, std::vector<WeightClass> *distance,
+                       const ShortestDistanceOptions &opts);
+ 
+-void ShortestDistance(const FstClass &ifst, std::vector<WeightClass> *distance,
++void fstscript_EXPORT ShortestDistance(const FstClass &ifst, std::vector<WeightClass> *distance,
+                       bool reverse = false,
+                       double delta = fst::kShortestDelta);
+ 
+-WeightClass ShortestDistance(const FstClass &ifst,
++WeightClass fstscript_EXPORT ShortestDistance(const FstClass &ifst,
+                              double delta = fst::kShortestDelta);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/shortest-path.h src/include/fst/script/shortest-path.h
+index 4f19f98..d72ea0f 100644
+--- src/include/fst/script/shortest-path.h
++++ src/include/fst/script/shortest-path.h
+@@ -36,13 +36,14 @@
+ #include <fst/script/fst-class.h>
+ #include <fst/script/shortest-distance.h>
+ #include <fst/script/weight-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+ // Slightly simplified interface: `has_distance` and `first_path` are disabled.
+ 
+-struct ShortestPathOptions : public ShortestDistanceOptions {
++struct fstscript_EXPORT ShortestPathOptions : public ShortestDistanceOptions {
+   const int32_t nshortest;
+   const bool unique;
+   const WeightClass &weight_threshold;
+@@ -143,7 +144,7 @@ void ShortestPath(FstShortestPathArgs *args) {
+   internal::ShortestPath(ifst, ofst, opts);
+ }
+ 
+-void ShortestPath(const FstClass &ifst, MutableFstClass *ofst,
++void fstscript_EXPORT ShortestPath(const FstClass &ifst, MutableFstClass *ofst,
+                   const ShortestPathOptions &opts);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/stateiterator-class.h src/include/fst/script/stateiterator-class.h
+index a7cac23..699ec66 100644
+--- src/include/fst/script/stateiterator-class.h
++++ src/include/fst/script/stateiterator-class.h
+@@ -25,6 +25,7 @@
+ #include <fst/fst.h>
+ #include <fst/fstlib.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ // Scripting API support for StateIterator.
+ 
+@@ -32,7 +33,7 @@ namespace fst {
+ namespace script {
+ 
+ // Virtual interface implemented by each concrete StateIteratorImpl<F>.
+-class StateIteratorImplBase {
++class fstscript_EXPORT StateIteratorImplBase {
+  public:
+   virtual bool Done() const = 0;
+   virtual int64_t Value() const = 0;
+@@ -61,7 +62,7 @@ class StateIteratorClassImpl : public StateIteratorImplBase {
+   StateIterator<Fst<Arc>> siter_;
+ };
+ 
+-class StateIteratorClass;
++class fstscript_EXPORT StateIteratorClass;
+ 
+ using InitStateIteratorClassArgs =
+     std::pair<const FstClass &, StateIteratorClass *>;
+diff --git src/include/fst/script/synchronize.h src/include/fst/script/synchronize.h
+index 4abe729..6bdb10e 100644
+--- src/include/fst/script/synchronize.h
++++ src/include/fst/script/synchronize.h
+@@ -24,6 +24,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/synchronize.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -37,7 +38,7 @@ void Synchronize(FstSynchronizeArgs *args) {
+   Synchronize(ifst, ofst);
+ }
+ 
+-void Synchronize(const FstClass &ifst, MutableFstClass *ofst);
++void fstscript_EXPORT Synchronize(const FstClass &ifst, MutableFstClass *ofst);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/text-io.h src/include/fst/script/text-io.h
+index 75e504d..067adc4 100644
+--- src/include/fst/script/text-io.h
++++ src/include/fst/script/text-io.h
+@@ -27,14 +27,15 @@
+ 
+ #include <fst/script/weight-class.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-bool ReadPotentials(std::string_view weight_type, const std::string &source,
++bool fstscript_EXPORT ReadPotentials(std::string_view weight_type, const std::string &source,
+                     std::vector<WeightClass> *potentials);
+ 
+-bool WritePotentials(const std::string &source,
++bool fstscript_EXPORT WritePotentials(const std::string &source,
+                      const std::vector<WeightClass> &potentials);
+ 
+ }  // namespace script
+diff --git src/include/fst/script/topsort.h src/include/fst/script/topsort.h
+index 06adb06..d478515 100644
+--- src/include/fst/script/topsort.h
++++ src/include/fst/script/topsort.h
+@@ -21,6 +21,7 @@
+ #include <fst/topsort.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -32,7 +33,7 @@ void TopSort(FstTopSortArgs *args) {
+   args->retval = TopSort(args->args->GetMutableFst<Arc>());
+ }
+ 
+-bool TopSort(MutableFstClass *fst);
++bool fstscript_EXPORT TopSort(MutableFstClass *fst);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/union.h src/include/fst/script/union.h
+index f953dc8..8dd9d60 100644
+--- src/include/fst/script/union.h
++++ src/include/fst/script/union.h
+@@ -26,6 +26,7 @@
+ #include <fst/mutable-fst.h>
+ #include <fst/union.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -54,9 +55,9 @@ void Union(FstUnionArgs2 *args) {
+   Union(fst1, typed_fsts2);
+ }
+ 
+-void Union(MutableFstClass *fst1, const FstClass &fst2);
++void fstscript_EXPORT Union(MutableFstClass *fst1, const FstClass &fst2);
+ 
+-void Union(MutableFstClass *fst1, const std::vector<const FstClass *> &fsts2);
++void fstscript_EXPORT Union(MutableFstClass *fst1, const std::vector<const FstClass *> &fsts2);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/verify.h src/include/fst/script/verify.h
+index 76591a3..719bcac 100644
+--- src/include/fst/script/verify.h
++++ src/include/fst/script/verify.h
+@@ -22,6 +22,7 @@
+ #include <fst/verify.h>
+ #include <fst/script/arg-packs.h>
+ #include <fst/script/fst-class.h>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+@@ -34,7 +35,7 @@ void Verify(FstVerifyArgs *args) {
+   args->retval = Verify(fst);
+ }
+ 
+-bool Verify(const FstClass &fst);
++bool fstscript_EXPORT Verify(const FstClass &fst);
+ 
+ }  // namespace script
+ }  // namespace fst
+diff --git src/include/fst/script/weight-class.h src/include/fst/script/weight-class.h
+index 2d7915b..ccebf83 100644
+--- src/include/fst/script/weight-class.h
++++ src/include/fst/script/weight-class.h
+@@ -31,11 +31,12 @@
+ #include <fst/util.h>
+ #include <fst/weight.h>
+ #include <string_view>
++#include <fst/exports/exports.h>
+ 
+ namespace fst {
+ namespace script {
+ 
+-class WeightImplBase {
++class fstscript_EXPORT WeightImplBase {
+  public:
+   virtual WeightImplBase *Copy() const = 0;
+   virtual void Print(std::ostream *o) const = 0;
+@@ -108,7 +109,7 @@ class WeightClassImpl : public WeightImplBase {
+   W weight_;
+ };
+ 
+-class WeightClass {
++class fstscript_EXPORT WeightClass {
+  public:
+   WeightClass() = default;
+ 
+@@ -163,15 +164,15 @@ class WeightClass {
+   static bool WeightTypesMatch(const WeightClass &lhs, const WeightClass &rhs,
+                                std::string_view op_name);
+ 
+-  friend bool operator==(const WeightClass &lhs, const WeightClass &rhs);
++  friend bool fstscript_EXPORT operator==(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-  friend WeightClass Plus(const WeightClass &lhs, const WeightClass &rhs);
++  friend WeightClass fstscript_EXPORT Plus(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-  friend WeightClass Times(const WeightClass &lhs, const WeightClass &rhs);
++  friend WeightClass fstscript_EXPORT Times(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-  friend WeightClass Divide(const WeightClass &lhs, const WeightClass &rhs);
++  friend WeightClass fstscript_EXPORT Divide(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-  friend WeightClass Power(const WeightClass &w, size_t n);
++  friend WeightClass fstscript_EXPORT Power(const WeightClass &w, size_t n);
+ 
+  private:
+   const WeightImplBase *GetImpl() const { return impl_.get(); }
+@@ -180,22 +181,22 @@ class WeightClass {
+ 
+   std::unique_ptr<WeightImplBase> impl_;
+ 
+-  friend std::ostream &operator<<(std::ostream &o, const WeightClass &c);
++  friend std::ostream fstscript_EXPORT &operator<<(std::ostream &o, const WeightClass &c);
+ };
+ 
+-bool operator==(const WeightClass &lhs, const WeightClass &rhs);
++bool fstscript_EXPORT operator==(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-bool operator!=(const WeightClass &lhs, const WeightClass &rhs);
++bool fstscript_EXPORT operator!=(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-WeightClass Plus(const WeightClass &lhs, const WeightClass &rhs);
++WeightClass fstscript_EXPORT Plus(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-WeightClass Times(const WeightClass &lhs, const WeightClass &rhs);
++WeightClass fstscript_EXPORT Times(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-WeightClass Divide(const WeightClass &lhs, const WeightClass &rhs);
++WeightClass fstscript_EXPORT Divide(const WeightClass &lhs, const WeightClass &rhs);
+ 
+-WeightClass Power(const WeightClass &w, size_t n);
++WeightClass fstscript_EXPORT Power(const WeightClass &w, size_t n);
+ 
+-std::ostream &operator<<(std::ostream &o, const WeightClass &c);
++std::ostream fstscript_EXPORT &operator<<(std::ostream &o, const WeightClass &c);
+ 
+ // Registration for generic weight types.
+ 
+@@ -221,7 +222,14 @@ class WeightClassRegister
+   std::string ConvertKeyToSoFilename(std::string_view key) const final {
+     std::string legal_type(key);
+     ConvertToLegalCSymbol(&legal_type);
+-    legal_type.append(".so");
++    #ifdef _WIN32
++        legal_type.append(".dll");
++    #elif defined __APPLE__
++        legal_type.append(".dylib");
++    #else
++        legal_type.append(".so");
++
++    #endif // _WIN32
+     return legal_type;
+   }
+ };
+diff --git src/include/fst/string.h src/include/fst/string.h
+index 7bb953f..5ec40d4 100644
+--- src/include/fst/string.h
++++ src/include/fst/string.h
+@@ -42,7 +42,7 @@
+ #include <fst/compat.h>
+ #include <string_view>
+ 
+-DECLARE_string(fst_field_separator);
++DECLARE_export_string(fst_field_separator, fst_EXPORT);
+ 
+ namespace fst {
+ 
+diff --git src/include/fst/symbol-table-ops.h src/include/fst/symbol-table-ops.h
+index 89c1da8..2ca036c 100644
+--- src/include/fst/symbol-table-ops.h
++++ src/include/fst/symbol-table-ops.h
+@@ -53,7 +53,7 @@ SymbolTable *PruneSymbolTable(const Fst<Arc> &fst, const SymbolTable &syms,
+ }
+ 
+ // Relabels a symbol table to make it a contiguous mapping.
+-SymbolTable *CompactSymbolTable(const SymbolTable &syms);
++SymbolTable fst_EXPORT *CompactSymbolTable(const SymbolTable &syms);
+ 
+ // Merges two SymbolTables, all symbols from left will be merged into right
+ // with the same IDs. Symbols in right that have conflicting IDs with those
+@@ -72,19 +72,19 @@ SymbolTable *CompactSymbolTable(const SymbolTable &syms);
+ //                                     b.InputSymbols(), &relabel);
+ //   if (relabel) Relabel(b, bnew.get(), nullptr);
+ //   b.SetInputSymbols(bnew);
+-SymbolTable *MergeSymbolTable(const SymbolTable &left, const SymbolTable &right,
++SymbolTable fst_EXPORT *MergeSymbolTable(const SymbolTable &left, const SymbolTable &right,
+                               bool *right_relabel_output = nullptr);
+ 
+ // Read the symbol table from any Fst::Read()able file, without loading the
+ // corresponding FST. Returns nullptr if the FST does not contain a symbol
+ // table or the symbol table cannot be read.
+-SymbolTable * FstReadSymbols(const std::string &source,
++SymbolTable fst_EXPORT * FstReadSymbols(const std::string &source,
+                                              bool input);
+ 
+ // Adds a contiguous range of symbols to a symbol table using a simple prefix
+ // for the string, returning false if the inserted symbol string clashes with
+ // any currently present.
+-bool AddAuxiliarySymbols(const std::string &prefix, int64_t start_label,
++bool fst_EXPORT AddAuxiliarySymbols(const std::string &prefix, int64_t start_label,
+                          int64_t nlabels, SymbolTable *syms);
+ 
+ }  // namespace fst
+diff --git src/include/fst/symbol-table.h src/include/fst/symbol-table.h
+index ba45c8e..f5c2b51 100644
+--- src/include/fst/symbol-table.h
++++ src/include/fst/symbol-table.h
+@@ -47,14 +47,14 @@
+ #include <string_view>
+ #include <fst/lock.h>
+ 
+-DECLARE_bool(fst_compat_symbols);
+-DECLARE_string(fst_field_separator);
++DECLARE_export_bool(fst_compat_symbols, fst_EXPORT);
++DECLARE_export_string(fst_field_separator, fst_EXPORT);
+ 
+ namespace fst {
+ 
+ inline constexpr int64_t kNoSymbol = -1;
+ 
+-class SymbolTable;
++class fst_EXPORT SymbolTable;
+ 
+ namespace internal {
+ 
+@@ -583,14 +583,14 @@ SymbolTable *RelabelSymbolTable(
+ 
+ // Returns true if the two symbol tables have equal checksums. Passing in
+ // nullptr for either table always returns true.
+-bool CompatSymbols(const SymbolTable *syms1, const SymbolTable *syms2,
++bool fst_EXPORT CompatSymbols(const SymbolTable *syms1, const SymbolTable *syms2,
+                    bool warning = true);
+ 
+ // Symbol table serialization.
+ 
+-void SymbolTableToString(const SymbolTable *table, std::string *result);
++void fst_EXPORT SymbolTableToString(const SymbolTable *table, std::string *result);
+ 
+-SymbolTable *StringToSymbolTable(const std::string &str);
++SymbolTable fst_EXPORT *StringToSymbolTable(const std::string &str);
+ 
+ }  // namespace fst
+ 
+diff --git src/include/fst/test-properties.h src/include/fst/test-properties.h
+index 8e651ee..a647668 100644
+--- src/include/fst/test-properties.h
++++ src/include/fst/test-properties.h
+@@ -33,8 +33,6 @@
+ #include <fst/util.h>
+ #include <unordered_set>
+ 
+-DECLARE_bool(fst_verify_properties);
+-
+ namespace fst {
+ namespace internal {
+ 
+diff --git src/include/fst/test/fst_test.h src/include/fst/test/fst_test.h
+index f31044d..8ad26c9 100644
+--- src/include/fst/test/fst_test.h
++++ src/include/fst/test/fst_test.h
+@@ -240,13 +240,13 @@ class FstTester {
+     {
+       // check mmaping by first writing the file with the aligned attribute set
+       {
+-        std::ofstream ostr(aligned);
++        std::ofstream ostr(aligned, std::ios_base::binary);
+         FstWriteOptions opts;
+         opts.source = aligned;
+         opts.align = true;
+         CHECK(fst.Write(ostr, opts));
+       }
+-      std::ifstream istr(aligned);
++      std::ifstream istr(aligned, std::ios_base::binary);
+       FstReadOptions opts;
+       opts.mode = FstReadOptions::ReadMode("map");
+       opts.source = aligned;
+@@ -258,13 +258,13 @@ class FstTester {
+     // check mmaping of unaligned files to make sure it does not fail.
+     {
+       {
+-        std::ofstream ostr(aligned);
++        std::ofstream ostr(aligned, std::ios_base::binary);
+         FstWriteOptions opts;
+         opts.source = aligned;
+         opts.align = false;
+         CHECK(fst.Write(ostr, opts));
+       }
+-      std::ifstream istr(aligned);
++      std::ifstream istr(aligned, std::ios_base::binary);
+       FstReadOptions opts;
+       opts.mode = FstReadOptions::ReadMode("map");
+       opts.source = aligned;
+diff --git src/include/fst/util.h src/include/fst/util.h
+index 5cb6721..4650023 100644
+--- src/include/fst/util.h
++++ src/include/fst/util.h
+@@ -51,7 +51,7 @@
+ 
+ // Utility for error handling.
+ 
+-DECLARE_bool(fst_error_fatal);
++DECLARE_export_bool(fst_error_fatal, fst_EXPORT);
+ 
+ #define FSTERROR()                                                     \
+   (FST_FLAGS_fst_error_fatal ? LOG(FATAL) : LOG(ERROR))
+@@ -338,9 +338,9 @@ std::ostream &WriteType(std::ostream &strm, const std::unordered_set<T...> &c) {
+ // string should consist only of digits (no prefixes such as "0x") and an
+ // optionally preceding minus. Returns a value iff the entirety of the string is
+ // consumed during integer parsing, otherwise returns `std::nullopt`.
+-std::optional<int64_t> ParseInt64(std::string_view s, int base = 10);
++std::optional<int64_t> fst_EXPORT ParseInt64(std::string_view s, int base = 10);
+ 
+-int64_t StrToInt64(std::string_view s, std::string_view source, size_t nline,
++int64_t fst_EXPORT StrToInt64(std::string_view s, std::string_view source, size_t nline,
+                    bool * error = nullptr);
+ 
+ template <typename Weight>
+@@ -368,7 +368,7 @@ std::string WeightToStr(Weight w) {
+ template <typename I>
+ bool ReadIntPairs(std::string_view source,
+                   std::vector<std::pair<I, I>> *pairs) {
+-  std::ifstream strm(std::string(source), std::ios_base::in);
++  std::ifstream strm(std::string(source), std::ios_base::in | std::ios_base::binary);
+   if (!strm) {
+     LOG(ERROR) << "ReadIntPairs: Can't open file: " << source;
+     return false;
+@@ -403,7 +403,7 @@ bool WriteIntPairs(std::string_view source,
+                    const std::vector<std::pair<I, I>> &pairs) {
+   std::ofstream fstrm;
+   if (!source.empty()) {
+-    fstrm.open(std::string(source));
++    fstrm.open(std::string(source), std::ios_base::out | std::ios_base::binary);
+     if (!fstrm) {
+       LOG(ERROR) << "WriteIntPairs: Can't open file: " << source;
+       return false;
+@@ -432,12 +432,12 @@ bool WriteLabelPairs(std::string_view source,
+ 
+ // Utilities for converting a type name to a legal C symbol.
+ 
+-void ConvertToLegalCSymbol(std::string *s);
++void fst_EXPORT ConvertToLegalCSymbol(std::string *s);
+ 
+ // Utilities for stream I/O.
+ 
+-bool AlignInput(std::istream &strm, size_t align = MappedFile::kArchAlignment);
+-bool AlignOutput(std::ostream &strm, size_t align = MappedFile::kArchAlignment);
++bool fst_EXPORT AlignInput(std::istream &strm, size_t align = MappedFile::kArchAlignment);
++bool fst_EXPORT AlignOutput(std::ostream &strm, size_t align = MappedFile::kArchAlignment);
+ 
+ // An associative container for which testing membership is faster than an STL
+ // set if members are restricted to an interval that excludes most non-members.
+diff --git src/include/fst/vector-fst.h src/include/fst/vector-fst.h
+index f01e7f0..3477993 100644
+--- src/include/fst/vector-fst.h
++++ src/include/fst/vector-fst.h
+@@ -491,7 +491,7 @@ VectorFstImpl<S> *VectorFstImpl<S>::Read(std::istream &strm,
+     int64_t narcs;
+     ReadType(strm, &narcs);
+     if (!strm) {
+-      LOG(ERROR) << "VectorFst::Read: Read failed: " << opts.source;
++      LOG(ERROR) << "VectorFst::Read: State read failed: " << opts.source;
+       return nullptr;
+     }
+     impl->ReserveArcs(state, narcs);
+@@ -502,7 +502,7 @@ VectorFstImpl<S> *VectorFstImpl<S>::Read(std::istream &strm,
+       arc.weight.Read(strm);
+       ReadType(strm, &arc.nextstate);
+       if (!strm) {
+-        LOG(ERROR) << "VectorFst::Read: Read failed: " << opts.source;
++        LOG(ERROR) << "VectorFst::Read: Arc read failed: " << opts.source;
+         return nullptr;
+       }
+       impl->BaseImpl::AddArc(state, std::move(arc));
+diff --git src/include/fst/weight.h src/include/fst/weight.h
+index 0159f95..681e624 100644
+--- src/include/fst/weight.h
++++ src/include/fst/weight.h
+@@ -37,8 +37,8 @@
+ #include <fst/log.h>
+ #include <fst/util.h>
+ 
+-DECLARE_string(fst_weight_parentheses);
+-DECLARE_string(fst_weight_separator);
++DECLARE_export_string(fst_weight_parentheses, fst_EXPORT);
++DECLARE_export_string(fst_weight_separator, fst_EXPORT);
+ 
+ namespace fst {
+ 
+@@ -271,7 +271,7 @@ struct WeightGenerate {
+ 
+ namespace internal {
+ 
+-class CompositeWeightIO {
++class fst_EXPORT CompositeWeightIO {
+  public:
+   CompositeWeightIO();
+   CompositeWeightIO(char separator, std::pair<char, char> parentheses);
+@@ -295,7 +295,7 @@ class CompositeWeightIO {
+ }  // namespace internal
+ 
+ // Helper class for writing textual composite weights.
+-class CompositeWeightWriter : public internal::CompositeWeightIO {
++class fst_EXPORT CompositeWeightWriter : public internal::CompositeWeightIO {
+  public:
+   // Uses configuration from flags (FST_FLAGS_fst_weight_separator,
+   // FST_FLAGS_fst_weight_parentheses).
+@@ -331,7 +331,7 @@ class CompositeWeightWriter : public internal::CompositeWeightIO {
+ // a separator character. There must be at least one element per textual
+ // representation. Parentheses characters should be set if the composite
+ // weights themselves contain composite weights to ensure proper parsing.
+-class CompositeWeightReader : public internal::CompositeWeightIO {
++class fst_EXPORT CompositeWeightReader : public internal::CompositeWeightIO {
+  public:
+   // Uses configuration from flags (FST_FLAGS_fst_weight_separator,
+   // FST_FLAGS_fst_weight_parentheses).
+diff --git src/lib/CMakeLists.txt src/lib/CMakeLists.txt
+index 5194802..c8fe9ea 100644
+--- src/lib/CMakeLists.txt
++++ src/lib/CMakeLists.txt
+@@ -18,7 +18,7 @@ if (MSVC)
+ GENERATE_EXPORT_HEADER( fst
+              BASE_NAME fst
+              EXPORT_MACRO_NAME fst_EXPORT
+-             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fst_Export.h
++             EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/include/fst/exports/fst_Export.h
+              STATIC_DEFINE fst_BUILT_AS_STATIC
+ )
+ endif()
+@@ -27,8 +27,6 @@ set_target_properties(fst PROPERTIES
+ )
+ target_include_directories(fst PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+-target_include_directories(fst PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+-                           $<INSTALL_INTERFACE:include>)
+ target_link_libraries(fst ${CMAKE_DL_LIBS})
+ target_compile_definitions(fst PRIVATE fst_EXPORTS)
+ 
+diff --git src/lib/flags.cc src/lib/flags.cc
+index b32460d..7f1036d 100644
+--- src/lib/flags.cc
++++ src/lib/flags.cc
+@@ -28,6 +28,13 @@
+ 
+ #include <fst/log.h>
+ 
++#if defined(_WIN32) || defined(__APPLE__)
++FlagSingleton& GetFlagSingleton() {
++    static FlagSingleton _instance;
++    return _instance;
++};
++#endif
++
+ static const char *private_tmpdir = getenv("TMPDIR");
+ 
+ DEFINE_int32(v, 0, "verbosity level");
+diff --git src/lib/fst-types.cc src/lib/fst-types.cc
+index dd4e164..dad1e88 100644
+--- src/lib/fst-types.cc
++++ src/lib/fst-types.cc
+@@ -28,6 +28,13 @@
+ 
+ namespace fst {
+ 
++#if defined(_WIN32) || defined(__APPLE__)
++Singleton& GetSingleton() {
++    static Singleton _instance;
++    return _instance;
++};
++#endif
++
+ REGISTER_FST(VectorFst, StdArc);
+ REGISTER_FST(VectorFst, LogArc);
+ REGISTER_FST(VectorFst, Log64Arc);
+diff --git src/lib/fst.cc src/lib/fst.cc
+index 7532034..93db80e 100644
+--- src/lib/fst.cc
++++ src/lib/fst.cc
+@@ -31,6 +31,9 @@
+ #include <fst/util.h>
+ #include <string_view>
+ 
++#include <fst/cache.h>
++#include <fst/lookahead-matcher.h>
++
+ // FST flag definitions.
+ 
+ DEFINE_bool(fst_verify_properties, false,
+diff --git src/lib/symbol-table.cc src/lib/symbol-table.cc
+index 93dc753..0563e03 100644
+--- src/lib/symbol-table.cc
++++ src/lib/symbol-table.cc
+@@ -345,7 +345,7 @@ void SymbolTableImpl::ShrinkToFit() { symbols_.ShrinkToFit(); }
+ 
+ SymbolTable * SymbolTable::ReadText(const std::string &source,
+                                                     const std::string &sep) {
+-  std::ifstream strm(source, std::ios_base::in);
++  std::ifstream strm(source, std::ios_base::in | std::ios_base::binary);
+   if (!strm.good()) {
+     LOG(ERROR) << "SymbolTable::ReadText: Can't open file: " << source;
+     return nullptr;
+@@ -383,7 +383,7 @@ bool SymbolTable::WriteText(std::ostream &strm, const std::string &sep) const {
+ bool SymbolTable::WriteText(const std::string &sink,
+                             const std::string &sep) const {
+   if (!sink.empty()) {
+-    std::ofstream strm(sink);
++    std::ofstream strm(sink, std::ios_base::out | std::ios_base::binary);
+     if (!strm) {
+       LOG(ERROR) << "SymbolTable::WriteText: Can't open file: " << sink;
+       return false;
+diff --git src/script/CMakeLists.txt src/script/CMakeLists.txt
+index 0aec3b9..c590666 100644
+--- src/script/CMakeLists.txt
++++ src/script/CMakeLists.txt
+@@ -49,20 +49,16 @@
+       synchronize.cc
+     )
+ 
+-if (MSVC) # Fix for too many exported symbols in fstscript
++# Fix for too many exported symbols in fstscript
+   
+ GENERATE_EXPORT_HEADER( fstscript
+              BASE_NAME fstscript
+              EXPORT_MACRO_NAME fstscript_EXPORT
+-             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/fst/exports/fstscript_Export.h
++             EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/include/fst/exports/fstscript_Export.h
+              STATIC_DEFINE fstscript_BUILT_AS_STATIC
+ )
+-target_include_directories(fstscript PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+-                           $<INSTALL_INTERFACE:include>)
+ target_compile_definitions(fstscript PRIVATE fstscript_EXPORTS)
+-    else()
+ 
+-endif()
+     target_link_libraries(fstscript PUBLIC fst)
+ target_include_directories(fstscript PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                            $<INSTALL_INTERFACE:include>)
+diff --git src/script/text-io.cc src/script/text-io.cc
+index ebfbd8b..e1a3d6e 100644
+--- src/script/text-io.cc
++++ src/script/text-io.cc
+@@ -37,7 +37,7 @@ namespace script {
+ // Reads vector of weights; returns true on success.
+ bool ReadPotentials(std::string_view weight_type, const std::string &source,
+                     std::vector<WeightClass> *potentials) {
+-  std::ifstream istrm(source);
++  std::ifstream istrm(source, std::ios_base::in | std::ios_base::binary);
+   if (!istrm) {
+     LOG(ERROR) << "ReadPotentials: Can't open file: " << source;
+     return false;
+@@ -71,7 +71,7 @@ bool WritePotentials(const std::string &source,
+                      const std::vector<WeightClass> &potentials) {
+   std::ofstream ostrm;
+   if (!source.empty()) {
+-    ostrm.open(source);
++    ostrm.open(source, std::ios_base::out | std::ios_base::binary);
+     if (!ostrm) {
+       LOG(ERROR) << "WritePotentials: Can't open file: " << source;
+       return false;
+-- 
+2.33.0.windows.1
+
