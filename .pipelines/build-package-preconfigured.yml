@@ -31,10 +31,16 @@ parameters:
   type: boolean
   default: true
 
+- name: appendStringToGitHubRelease
+  displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
+  type: string
+  default: ' '
+
 stages:
 - template: templates/build.yml
   parameters:
     packageName: ${{ parameters.packageName }}
     publishToPipelineArtifacts: true
     publishToGitHubRelease: ${{ parameters.publishToGitHubRelease }}
+    appendStringToGitHubRelease: ${{parameters.appendStringToGitHubRelease}}
     isPreconfiguredBuild: true
