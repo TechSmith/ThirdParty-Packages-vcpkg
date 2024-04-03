@@ -17,6 +17,8 @@ vcpkg_from_github(
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
+    OPTIONS    
+        -DKALDI_VERSION=${VERSION}
 )
 
 vcpkg_install_cmake()

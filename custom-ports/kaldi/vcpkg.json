@@ -1,6 +1,6 @@
 {
   "name": "kaldi",
-  "version": "2024.2.23",
+  "version": "5.5",
   "port-version": 1,
   "description": "Kaldi Speech Recognition Toolkit",
   "homepage": "https://github.com/kaldi-asr/kaldi",
