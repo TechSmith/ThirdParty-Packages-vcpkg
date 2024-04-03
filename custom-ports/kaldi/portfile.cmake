@@ -1,4 +1,5 @@
 # kaldi
+# Patches originally from: https://github.com/conda-forge/kaldi-feedstock/tree/main/recipe/patches
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO kaldi-asr/kaldi
