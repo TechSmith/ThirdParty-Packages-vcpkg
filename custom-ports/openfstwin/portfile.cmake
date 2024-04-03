@@ -21,6 +21,7 @@ vcpkg_configure_cmake(
     PREFER_NINJA
 )
 
+set(VCPKG_POLICY_DLLS_WITHOUT_EXPORTS enabled)
 vcpkg_install_cmake()
 vcpkg_copy_pdbs()
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")
