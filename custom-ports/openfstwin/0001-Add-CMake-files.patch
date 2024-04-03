@@ -4,49 +4,49 @@ Date: Fri, 19 Jan 2024 12:53:40 -0800
 Subject: [PATCH] Add CMake files
 
 ---
- CMakeLists.txt                          |  55 +++++++
- src/CMakeLists.txt                      |  20 +++
- src/bin/CMakeLists.txt                  |  85 +++++++++++
- src/extensions/CMakeLists.txt           |  43 ++++++
- src/extensions/compact/CMakeLists.txt   | 103 +++++++++++++
- src/extensions/compress/CMakeLists.txt  |  59 ++++++++
- src/extensions/const/CMakeLists.txt     |  49 +++++++
- src/extensions/far/CMakeLists.txt       |  77 ++++++++++
- src/extensions/linear/CMakeLists.txt    |  88 +++++++++++
- src/extensions/lookahead/CMakeLists.txt |  43 ++++++
- src/extensions/mpdt/CMakeLists.txt      |  38 +++++
- src/extensions/ngram/CMakeLists.txt     |  54 +++++++
- src/extensions/pdt/CMakeLists.txt       |  44 ++++++
- src/extensions/python/CMakeLists.txt    |  22 +++
- src/extensions/special/CMakeLists.txt   |  47 ++++++
- src/lib/CMakeLists.txt                  |  41 ++++++
- src/script/CMakeLists.txt               |  75 ++++++++++
- src/test/CMakeLists.txt                 | 185 ++++++++++++++++++++++++
+ b/CMakeLists.txt                          |  55 +++++++
+ b/src/CMakeLists.txt                      |  20 +++
+ b/src/bin/CMakeLists.txt                  |  85 +++++++++++
+ b/src/extensions/CMakeLists.txt           |  43 ++++++
+ b/src/extensions/compact/CMakeLists.txt   | 103 +++++++++++++
+ b/src/extensions/compress/CMakeLists.txt  |  59 ++++++++
+ b/src/extensions/const/CMakeLists.txt     |  49 +++++++
+ b/src/extensions/far/CMakeLists.txt       |  77 ++++++++++
+ b/src/extensions/linear/CMakeLists.txt    |  88 +++++++++++
+ b/src/extensions/lookahead/CMakeLists.txt |  43 ++++++
+ b/src/extensions/mpdt/CMakeLists.txt      |  38 +++++
+ b/src/extensions/ngram/CMakeLists.txt     |  54 +++++++
+ b/src/extensions/pdt/CMakeLists.txt       |  44 ++++++
+ b/src/extensions/python/CMakeLists.txt    |  22 +++
+ b/src/extensions/special/CMakeLists.txt   |  47 ++++++
+ b/src/lib/CMakeLists.txt                  |  41 ++++++
+ b/src/script/CMakeLists.txt               |  75 ++++++++++
+ b/src/test/CMakeLists.txt                 | 185 ++++++++++++++++++++++++
  18 files changed, 1128 insertions(+)
- create mode 100644 CMakeLists.txt
- create mode 100644 src/CMakeLists.txt
- create mode 100644 src/bin/CMakeLists.txt
- create mode 100644 src/extensions/CMakeLists.txt
- create mode 100644 src/extensions/compact/CMakeLists.txt
- create mode 100644 src/extensions/compress/CMakeLists.txt
- create mode 100644 src/extensions/const/CMakeLists.txt
- create mode 100644 src/extensions/far/CMakeLists.txt
- create mode 100644 src/extensions/linear/CMakeLists.txt
- create mode 100644 src/extensions/lookahead/CMakeLists.txt
- create mode 100644 src/extensions/mpdt/CMakeLists.txt
- create mode 100644 src/extensions/ngram/CMakeLists.txt
- create mode 100644 src/extensions/pdt/CMakeLists.txt
- create mode 100644 src/extensions/python/CMakeLists.txt
- create mode 100644 src/extensions/special/CMakeLists.txt
- create mode 100644 src/lib/CMakeLists.txt
- create mode 100644 src/script/CMakeLists.txt
- create mode 100644 src/test/CMakeLists.txt
+ create mode 100644 b/CMakeLists.txt
+ create mode 100644 b/src/CMakeLists.txt
+ create mode 100644 b/src/bin/CMakeLists.txt
+ create mode 100644 b/src/extensions/CMakeLists.txt
+ create mode 100644 b/src/extensions/compact/CMakeLists.txt
+ create mode 100644 b/src/extensions/compress/CMakeLists.txt
+ create mode 100644 b/src/extensions/const/CMakeLists.txt
+ create mode 100644 b/src/extensions/far/CMakeLists.txt
+ create mode 100644 b/src/extensions/linear/CMakeLists.txt
+ create mode 100644 b/src/extensions/lookahead/CMakeLists.txt
+ create mode 100644 b/src/extensions/mpdt/CMakeLists.txt
+ create mode 100644 b/src/extensions/ngram/CMakeLists.txt
+ create mode 100644 b/src/extensions/pdt/CMakeLists.txt
+ create mode 100644 b/src/extensions/python/CMakeLists.txt
+ create mode 100644 b/src/extensions/special/CMakeLists.txt
+ create mode 100644 b/src/lib/CMakeLists.txt
+ create mode 100644 b/src/script/CMakeLists.txt
+ create mode 100644 b/src/test/CMakeLists.txt
 
-diff --git CMakeLists.txt CMakeLists.txt
+diff --git a/CMakeLists.txt CMakeLists.txt
 new file mode 100644
 index 0000000..21e4c5c
 --- /dev/null
-+++ CMakeLists.txt
++++ b/CMakeLists.txt
 @@ -0,0 +1,55 @@
 +
 +cmake_minimum_required(VERSION 3.20)
@@ -103,11 +103,11 @@ index 0000000..21e4c5c
 +endif()
 +
 +add_subdirectory(src)
-diff --git src/CMakeLists.txt src/CMakeLists.txt
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 new file mode 100644
 index 0000000..0bdd55d
 --- /dev/null
-+++ src/CMakeLists.txt
++++ b/src/CMakeLists.txt
 @@ -0,0 +1,20 @@
 +#-DHAVE_CONFIG_H -I./../include -fno-exceptions -funsigned-char -std=c++11 -MT symbol-table.lo -MD -MP -MF .deps/symbol-table.Tpo -c symbol-table.cc  -fno-common -DPIC -o .libs/symbol-table.o
 +
@@ -130,11 +130,11 @@ index 0000000..0bdd55d
 +add_subdirectory(test)
 +endif()
 \ No newline at end of file
-diff --git src/bin/CMakeLists.txt src/bin/CMakeLists.txt
+diff --git a/src/bin/CMakeLists.txt b/src/bin/CMakeLists.txt
 new file mode 100644
 index 0000000..2d02c25
 --- /dev/null
-+++ src/bin/CMakeLists.txt
++++ b/src/bin/CMakeLists.txt
 @@ -0,0 +1,85 @@
 +function (add_executable2 _name)
 +    add_executable(${ARGV})
@@ -222,11 +222,11 @@ index 0000000..2d02c25
 +
 +add_executable2(fstunion fstunion-main.cc fstunion.cc)
 \ No newline at end of file
-diff --git src/extensions/CMakeLists.txt src/extensions/CMakeLists.txt
+diff --git a/src/extensions/CMakeLists.txt b/src/extensions/CMakeLists.txt
 new file mode 100644
 index 0000000..094ab74
 --- /dev/null
-+++ src/extensions/CMakeLists.txt
++++ b/src/extensions/CMakeLists.txt
 @@ -0,0 +1,43 @@
 +if(HAVE_COMPACT)
 +  add_subdirectory(compact)
@@ -272,11 +272,11 @@ index 0000000..094ab74
 +  add_subdirectory(special)
 +endif(HAVE_SPECIAL)
 \ No newline at end of file
-diff --git src/extensions/compact/CMakeLists.txt src/extensions/compact/CMakeLists.txt
+diff --git a/src/extensions/compact/CMakeLists.txt b/src/extensions/compact/CMakeLists.txt
 new file mode 100644
 index 0000000..cb8a2b1
 --- /dev/null
-+++ src/extensions/compact/CMakeLists.txt
++++ b/src/extensions/compact/CMakeLists.txt
 @@ -0,0 +1,103 @@
 +add_library(fstcompact
 +  compact8_acceptor-fst.cc 
@@ -381,11 +381,11 @@ index 0000000..cb8a2b1
 +add_module(compact64_weighted_string-fst MODULE
 +  compact64_weighted_string-fst.cc)
 +
-diff --git src/extensions/compress/CMakeLists.txt src/extensions/compress/CMakeLists.txt
+diff --git a/src/extensions/compress/CMakeLists.txt b/src/extensions/compress/CMakeLists.txt
 new file mode 100644
 index 0000000..028cd76
 --- /dev/null
-+++ src/extensions/compress/CMakeLists.txt
++++ b/src/extensions/compress/CMakeLists.txt
 @@ -0,0 +1,59 @@
 +
 +add_library(fstcompressscript
@@ -447,11 +447,11 @@ index 0000000..028cd76
 +		)
 +endif(HAVE_BIN)
 \ No newline at end of file
-diff --git src/extensions/const/CMakeLists.txt src/extensions/const/CMakeLists.txt
+diff --git a/src/extensions/const/CMakeLists.txt b/src/extensions/const/CMakeLists.txt
 new file mode 100644
 index 0000000..1f041b2
 --- /dev/null
-+++ src/extensions/const/CMakeLists.txt
++++ b/src/extensions/const/CMakeLists.txt
 @@ -0,0 +1,49 @@
 +function (add_module _name)
 +    add_library(${ARGV})
@@ -503,11 +503,11 @@ index 0000000..1f041b2
 +  RUNTIME DESTINATION bin
 + )
 \ No newline at end of file
-diff --git src/extensions/far/CMakeLists.txt src/extensions/far/CMakeLists.txt
+diff --git a/src/extensions/far/CMakeLists.txt b/src/extensions/far/CMakeLists.txt
 new file mode 100644
 index 0000000..e37ce8f
 --- /dev/null
-+++ src/extensions/far/CMakeLists.txt
++++ b/src/extensions/far/CMakeLists.txt
 @@ -0,0 +1,77 @@
 +
 +add_library(fstfar
@@ -586,11 +586,11 @@ index 0000000..e37ce8f
 +  add_executable2(farprintstrings  farprintstrings.cc farprintstrings-main.cc)
 +endif(HAVE_BIN)
 +
-diff --git src/extensions/linear/CMakeLists.txt src/extensions/linear/CMakeLists.txt
+diff --git a/src/extensions/linear/CMakeLists.txt b/src/extensions/linear/CMakeLists.txt
 new file mode 100644
 index 0000000..6a5ecfd
 --- /dev/null
-+++ src/extensions/linear/CMakeLists.txt
++++ b/src/extensions/linear/CMakeLists.txt
 @@ -0,0 +1,88 @@
 +
 +
@@ -680,11 +680,11 @@ index 0000000..6a5ecfd
 +
 +add_module(linear-classifier-fst MODULE
 +  linear-classifier-fst.cc)
-diff --git src/extensions/lookahead/CMakeLists.txt src/extensions/lookahead/CMakeLists.txt
+diff --git a/src/extensions/lookahead/CMakeLists.txt b/src/extensions/lookahead/CMakeLists.txt
 new file mode 100644
 index 0000000..e265acc
 --- /dev/null
-+++ src/extensions/lookahead/CMakeLists.txt
++++ b/src/extensions/lookahead/CMakeLists.txt
 @@ -0,0 +1,43 @@
 +add_library(fstlookahead
 +  arc_lookahead-fst.cc 
@@ -730,11 +730,11 @@ index 0000000..e265acc
 +add_module(olabel_lookahead-fst MODULE
 +  olabel_lookahead-fst.cc)
 \ No newline at end of file
-diff --git src/extensions/mpdt/CMakeLists.txt src/extensions/mpdt/CMakeLists.txt
+diff --git a/src/extensions/mpdt/CMakeLists.txt b/src/extensions/mpdt/CMakeLists.txt
 new file mode 100644
 index 0000000..ef89f17
 --- /dev/null
-+++ src/extensions/mpdt/CMakeLists.txt
++++ b/src/extensions/mpdt/CMakeLists.txt
 @@ -0,0 +1,38 @@
 +
 +if(HAVE_SCRIPT)
@@ -775,11 +775,11 @@ index 0000000..ef89f17
 +  add_executable2(mpdtreverse  mpdtreverse.cc mpdtreverse-main.cc)
 +endif(HAVE_BIN)
 \ No newline at end of file
-diff --git src/extensions/ngram/CMakeLists.txt src/extensions/ngram/CMakeLists.txt
+diff --git a/src/extensions/ngram/CMakeLists.txt b/src/extensions/ngram/CMakeLists.txt
 new file mode 100644
 index 0000000..206f3c9
 --- /dev/null
-+++ src/extensions/ngram/CMakeLists.txt
++++ b/src/extensions/ngram/CMakeLists.txt
 @@ -0,0 +1,54 @@
 +
 +add_library(fstngram
@@ -836,11 +836,11 @@ index 0000000..206f3c9
 +        RUNTIME DESTINATION bin)
 +endif()
 \ No newline at end of file
-diff --git src/extensions/pdt/CMakeLists.txt src/extensions/pdt/CMakeLists.txt
+diff --git a/src/extensions/pdt/CMakeLists.txt b/src/extensions/pdt/CMakeLists.txt
 new file mode 100644
 index 0000000..10c5907
 --- /dev/null
-+++ src/extensions/pdt/CMakeLists.txt
++++ b/src/extensions/pdt/CMakeLists.txt
 @@ -0,0 +1,44 @@
 +
 +
@@ -887,11 +887,11 @@ index 0000000..10c5907
 +  add_executable2(pdtshortestpath  pdtshortestpath.cc pdtshortestpath-main.cc)
 +endif(HAVE_BIN)
 \ No newline at end of file
-diff --git src/extensions/python/CMakeLists.txt src/extensions/python/CMakeLists.txt
+diff --git a/src/extensions/python/CMakeLists.txt b/src/extensions/python/CMakeLists.txt
 new file mode 100644
 index 0000000..83b9a7f
 --- /dev/null
-+++ src/extensions/python/CMakeLists.txt
++++ b/src/extensions/python/CMakeLists.txt
 @@ -0,0 +1,22 @@
 +
 +add_library(pywrapfst
@@ -916,11 +916,11 @@ index 0000000..83b9a7f
 +	RUNTIME DESTINATION lib
 +)
 \ No newline at end of file
-diff --git src/extensions/special/CMakeLists.txt src/extensions/special/CMakeLists.txt
+diff --git a/src/extensions/special/CMakeLists.txt b/src/extensions/special/CMakeLists.txt
 new file mode 100644
 index 0000000..42c72d1
 --- /dev/null
-+++ src/extensions/special/CMakeLists.txt
++++ b/src/extensions/special/CMakeLists.txt
 @@ -0,0 +1,47 @@
 +
 +
@@ -969,11 +969,11 @@ index 0000000..42c72d1
 +ARCHIVE DESTINATION lib
 +RUNTIME DESTINATION bin
 +)
-diff --git src/lib/CMakeLists.txt src/lib/CMakeLists.txt
+diff --git a/src/lib/CMakeLists.txt b/src/lib/CMakeLists.txt
 new file mode 100644
 index 0000000..5194802
 --- /dev/null
-+++ src/lib/CMakeLists.txt
++++ b/src/lib/CMakeLists.txt
 @@ -0,0 +1,41 @@
 +
 +
@@ -1017,11 +1017,11 @@ index 0000000..5194802
 +RUNTIME DESTINATION bin
 +  )
 \ No newline at end of file
-diff --git src/script/CMakeLists.txt src/script/CMakeLists.txt
+diff --git a/src/script/CMakeLists.txt b/src/script/CMakeLists.txt
 new file mode 100644
 index 0000000..0aec3b9
 --- /dev/null
-+++ src/script/CMakeLists.txt
++++ b/src/script/CMakeLists.txt
 @@ -0,0 +1,75 @@
 +
 +    add_library(fstscript
@@ -1099,11 +1099,11 @@ index 0000000..0aec3b9
 +  ARCHIVE DESTINATION lib
 +  RUNTIME DESTINATION bin)
 \ No newline at end of file
-diff --git src/test/CMakeLists.txt src/test/CMakeLists.txt
+diff --git a/src/test/CMakeLists.txt b/src/test/CMakeLists.txt
 new file mode 100644
 index 0000000..9502ae3
 --- /dev/null
-+++ src/test/CMakeLists.txt
++++ b/src/test/CMakeLists.txt
 @@ -0,0 +1,185 @@
 +
 +add_executable(fst_test

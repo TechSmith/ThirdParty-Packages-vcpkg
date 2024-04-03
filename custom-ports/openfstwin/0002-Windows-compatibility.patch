@@ -4,156 +4,156 @@ Date: Fri, 19 Jan 2024 12:54:02 -0800
 Subject: [PATCH] Windows compatibility
 
 ---
- src/bin/fstcompile-main.cc                    |  2 +-
- src/bin/fstdraw-main.cc                       |  2 +-
- src/bin/fstprint-main.cc                      |  2 +-
- src/extensions/compress/CMakeLists.txt        | 15 ++---
- src/extensions/far/CMakeLists.txt             |  2 -
- src/extensions/far/compile-strings.cc         |  2 +-
- src/extensions/far/farcompilestrings-main.cc  |  2 +-
- src/extensions/far/sttable.cc                 |  2 +-
- src/extensions/linear/CMakeLists.txt          |  2 +-
- src/extensions/linear/linearscript.cc         |  2 +-
- src/extensions/ngram/CMakeLists.txt           |  6 +-
- src/extensions/pdt/CMakeLists.txt             |  7 +--
- src/extensions/python/CMakeLists.txt          |  1 +
- src/extensions/special/CMakeLists.txt         |  7 ++-
- src/include/fst/cache.h                       |  6 +-
- src/include/fst/compat.h                      | 37 +++++++-----
- src/include/fst/encode.h                      |  2 +-
- src/include/fst/expanded-fst.h                | 11 ++++
- src/include/fst/exports/exports.h             | 33 +++++++++++
- src/include/fst/exports/fst_Export.h          | 42 +++++++++++++
- src/include/fst/exports/fstcompact_Export.h   | 42 +++++++++++++
- .../fst/exports/fstcompressscript_Export.h    | 42 +++++++++++++
- src/include/fst/exports/fstconst_Export.h     | 42 +++++++++++++
- src/include/fst/exports/fstfar_Export.h       | 42 +++++++++++++
- src/include/fst/exports/fstfarscript_Export.h | 42 +++++++++++++
- .../fst/exports/fstlinearscript_Export.h      | 42 +++++++++++++
- .../fst/exports/fstmpdtscript_Export.h        | 42 +++++++++++++
- src/include/fst/exports/fstngram_Export.h     | 42 +++++++++++++
- src/include/fst/exports/fstpdtscript_Export.h | 42 +++++++++++++
- src/include/fst/exports/fstscript_Export.h    | 42 +++++++++++++
- src/include/fst/exports/fstspecial_Export.h   | 42 +++++++++++++
- .../fst/extensions/compress/compress.h        | 11 ++++
- .../fst/extensions/compress/compressscript.h  |  5 +-
- .../fst/extensions/far/compile-strings.h      | 17 +++++-
- src/include/fst/extensions/far/create.h       |  2 +
- src/include/fst/extensions/far/far-class.h    |  9 +--
- src/include/fst/extensions/far/far.h          | 31 ++++++++--
- src/include/fst/extensions/far/farscript.h    | 29 ++++-----
- src/include/fst/extensions/far/getters.h      |  9 +--
- .../fst/extensions/far/print-strings.h        |  5 +-
- src/include/fst/extensions/far/script-impl.h  |  6 +-
- src/include/fst/extensions/far/stlist.h       | 11 +++-
- src/include/fst/extensions/far/sttable.h      |  3 +-
- .../fst/extensions/linear/linear-fst.h        | 17 ++++++
- .../fst/extensions/linear/linearscript.h      | 29 ++++-----
- src/include/fst/extensions/mpdt/mpdt.h        |  3 +-
- src/include/fst/extensions/mpdt/mpdtscript.h  |  9 +--
- .../fst/extensions/mpdt/read_write_utils.h    |  4 +-
- .../fst/extensions/ngram/bitmap-index.h       |  3 +-
- src/include/fst/extensions/ngram/ngram-fst.h  |  8 +++
- src/include/fst/extensions/ngram/nthbit.h     |  3 +-
- src/include/fst/extensions/pdt/getters.h      |  5 +-
- src/include/fst/extensions/pdt/pdtscript.h    | 19 +++---
- src/include/fst/extensions/special/phi-fst.h  |  7 ++-
- src/include/fst/extensions/special/rho-fst.h  |  5 +-
- .../fst/extensions/special/sigma-fst.h        |  5 +-
- src/include/fst/flags.h                       | 59 +++++++++++++++++--
- src/include/fst/fst.h                         | 20 +++++--
- src/include/fst/generic-register.h            | 43 +++++++++++++-
- src/include/fst/log.h                         |  2 +-
- src/include/fst/lookahead-matcher.h           |  4 +-
- src/include/fst/mapped-file.h                 |  2 +-
- src/include/fst/mutable-fst.h                 |  8 +++
- src/include/fst/properties.h                  | 36 +++++------
- src/include/fst/register.h                    | 10 +++-
- src/include/fst/script/arc-class.h            |  3 +-
- src/include/fst/script/arcfilter-impl.h       |  3 +-
- src/include/fst/script/arciterator-class.h    |  8 +--
- src/include/fst/script/arcsort.h              |  4 +-
- src/include/fst/script/closure.h              |  3 +-
- src/include/fst/script/compile-impl.h         |  2 -
- src/include/fst/script/compile.h              |  7 ++-
- src/include/fst/script/compose.h              |  3 +-
- src/include/fst/script/concat.h               |  7 ++-
- src/include/fst/script/connect.h              |  3 +-
- src/include/fst/script/convert.h              |  3 +-
- src/include/fst/script/decode.h               |  3 +-
- src/include/fst/script/determinize.h          |  5 +-
- src/include/fst/script/difference.h           |  3 +-
- src/include/fst/script/disambiguate.h         |  5 +-
- src/include/fst/script/draw.h                 |  5 +-
- src/include/fst/script/encode.h               |  3 +-
- src/include/fst/script/encodemapper-class.h   | 15 ++++-
- src/include/fst/script/epsnormalize.h         |  3 +-
- src/include/fst/script/equal.h                |  3 +-
- src/include/fst/script/equivalent.h           |  3 +-
- src/include/fst/script/fst-class.h            | 19 ++++--
- src/include/fst/script/getters.h              | 33 ++++++-----
- src/include/fst/script/info-impl.h            |  7 ++-
- src/include/fst/script/info.h                 |  3 +-
- src/include/fst/script/intersect.h            |  3 +-
- src/include/fst/script/invert.h               |  3 +-
- src/include/fst/script/isomorphic.h           |  3 +-
- src/include/fst/script/map.h                  |  5 +-
- src/include/fst/script/minimize.h             |  3 +-
- src/include/fst/script/print.h                |  9 ++-
- src/include/fst/script/project.h              |  3 +-
- src/include/fst/script/prune.h                |  5 +-
- src/include/fst/script/push.h                 |  5 +-
- src/include/fst/script/randequivalent.h       |  3 +-
- src/include/fst/script/randgen.h              |  3 +-
- src/include/fst/script/relabel.h              |  5 +-
- src/include/fst/script/replace.h              |  5 +-
- src/include/fst/script/reverse.h              |  3 +-
- src/include/fst/script/reweight.h             |  3 +-
- src/include/fst/script/rmepsilon.h            |  5 +-
- src/include/fst/script/script-impl.h          | 13 +++-
- src/include/fst/script/shortest-distance.h    |  9 +--
- src/include/fst/script/shortest-path.h        |  5 +-
- src/include/fst/script/stateiterator-class.h  |  5 +-
- src/include/fst/script/synchronize.h          |  3 +-
- src/include/fst/script/text-io.h              |  5 +-
- src/include/fst/script/topsort.h              |  3 +-
- src/include/fst/script/union.h                |  5 +-
- src/include/fst/script/verify.h               |  3 +-
- src/include/fst/script/weight-class.h         | 40 ++++++++-----
- src/include/fst/string.h                      |  2 +-
- src/include/fst/symbol-table-ops.h            |  8 +--
- src/include/fst/symbol-table.h                | 12 ++--
- src/include/fst/test-properties.h             |  2 -
- src/include/fst/test/fst_test.h               |  8 +--
- src/include/fst/util.h                        | 16 ++---
- src/include/fst/vector-fst.h                  |  4 +-
- src/include/fst/weight.h                      | 10 ++--
- src/lib/CMakeLists.txt                        |  4 +-
- src/lib/flags.cc                              |  7 +++
- src/lib/fst-types.cc                          |  7 +++
- src/lib/fst.cc                                |  3 +
- src/lib/symbol-table.cc                       |  4 +-
- src/script/CMakeLists.txt                     |  8 +--
- src/script/text-io.cc                         |  4 +-
+ b/src/bin/fstcompile-main.cc                    |  2 +-
+ b/src/bin/fstdraw-main.cc                       |  2 +-
+ b/src/bin/fstprint-main.cc                      |  2 +-
+ b/src/extensions/compress/CMakeLists.txt        | 15 ++---
+ b/src/extensions/far/CMakeLists.txt             |  2 -
+ b/src/extensions/far/compile-strings.cc         |  2 +-
+ b/src/extensions/far/farcompilestrings-main.cc  |  2 +-
+ b/src/extensions/far/sttable.cc                 |  2 +-
+ b/src/extensions/linear/CMakeLists.txt          |  2 +-
+ b/src/extensions/linear/linearscript.cc         |  2 +-
+ b/src/extensions/ngram/CMakeLists.txt           |  6 +-
+ b/src/extensions/pdt/CMakeLists.txt             |  7 +--
+ b/src/extensions/python/CMakeLists.txt          |  1 +
+ b/src/extensions/special/CMakeLists.txt         |  7 ++-
+ b/src/include/fst/cache.h                       |  6 +-
+ b/src/include/fst/compat.h                      | 37 +++++++-----
+ b/src/include/fst/encode.h                      |  2 +-
+ b/src/include/fst/expanded-fst.h                | 11 ++++
+ b/src/include/fst/exports/exports.h             | 33 +++++++++++
+ b/src/include/fst/exports/fst_Export.h          | 42 +++++++++++++
+ b/src/include/fst/exports/fstcompact_Export.h   | 42 +++++++++++++
+ b/.../fst/exports/fstcompressscript_Export.h    | 42 +++++++++++++
+ b/src/include/fst/exports/fstconst_Export.h     | 42 +++++++++++++
+ b/src/include/fst/exports/fstfar_Export.h       | 42 +++++++++++++
+ b/src/include/fst/exports/fstfarscript_Export.h | 42 +++++++++++++
+ b/.../fst/exports/fstlinearscript_Export.h      | 42 +++++++++++++
+ b/.../fst/exports/fstmpdtscript_Export.h        | 42 +++++++++++++
+ b/src/include/fst/exports/fstngram_Export.h     | 42 +++++++++++++
+ b/src/include/fst/exports/fstpdtscript_Export.h | 42 +++++++++++++
+ b/src/include/fst/exports/fstscript_Export.h    | 42 +++++++++++++
+ b/src/include/fst/exports/fstspecial_Export.h   | 42 +++++++++++++
+ b/.../fst/extensions/compress/compress.h        | 11 ++++
+ b/.../fst/extensions/compress/compressscript.h  |  5 +-
+ b/.../fst/extensions/far/compile-strings.h      | 17 +++++-
+ b/src/include/fst/extensions/far/create.h       |  2 +
+ b/src/include/fst/extensions/far/far-class.h    |  9 +--
+ b/src/include/fst/extensions/far/far.h          | 31 ++++++++--
+ b/src/include/fst/extensions/far/farscript.h    | 29 ++++-----
+ b/src/include/fst/extensions/far/getters.h      |  9 +--
+ b/.../fst/extensions/far/print-strings.h        |  5 +-
+ b/src/include/fst/extensions/far/script-impl.h  |  6 +-
+ b/src/include/fst/extensions/far/stlist.h       | 11 +++-
+ b/src/include/fst/extensions/far/sttable.h      |  3 +-
+ b/.../fst/extensions/linear/linear-fst.h        | 17 ++++++
+ b/.../fst/extensions/linear/linearscript.h      | 29 ++++-----
+ b/src/include/fst/extensions/mpdt/mpdt.h        |  3 +-
+ b/src/include/fst/extensions/mpdt/mpdtscript.h  |  9 +--
+ b/.../fst/extensions/mpdt/read_write_utils.h    |  4 +-
+ b/.../fst/extensions/ngram/bitmap-index.h       |  3 +-
+ b/src/include/fst/extensions/ngram/ngram-fst.h  |  8 +++
+ b/src/include/fst/extensions/ngram/nthbit.h     |  3 +-
+ b/src/include/fst/extensions/pdt/getters.h      |  5 +-
+ b/src/include/fst/extensions/pdt/pdtscript.h    | 19 +++---
+ b/src/include/fst/extensions/special/phi-fst.h  |  7 ++-
+ b/src/include/fst/extensions/special/rho-fst.h  |  5 +-
+ b/.../fst/extensions/special/sigma-fst.h        |  5 +-
+ b/src/include/fst/flags.h                       | 59 +++++++++++++++++--
+ b/src/include/fst/fst.h                         | 20 +++++--
+ b/src/include/fst/generic-register.h            | 43 +++++++++++++-
+ b/src/include/fst/log.h                         |  2 +-
+ b/src/include/fst/lookahead-matcher.h           |  4 +-
+ b/src/include/fst/mapped-file.h                 |  2 +-
+ b/src/include/fst/mutable-fst.h                 |  8 +++
+ b/src/include/fst/properties.h                  | 36 +++++------
+ b/src/include/fst/register.h                    | 10 +++-
+ b/src/include/fst/script/arc-class.h            |  3 +-
+ b/src/include/fst/script/arcfilter-impl.h       |  3 +-
+ b/src/include/fst/script/arciterator-class.h    |  8 +--
+ b/src/include/fst/script/arcsort.h              |  4 +-
+ b/src/include/fst/script/closure.h              |  3 +-
+ b/src/include/fst/script/compile-impl.h         |  2 -
+ b/src/include/fst/script/compile.h              |  7 ++-
+ b/src/include/fst/script/compose.h              |  3 +-
+ b/src/include/fst/script/concat.h               |  7 ++-
+ b/src/include/fst/script/connect.h              |  3 +-
+ b/src/include/fst/script/convert.h              |  3 +-
+ b/src/include/fst/script/decode.h               |  3 +-
+ b/src/include/fst/script/determinize.h          |  5 +-
+ b/src/include/fst/script/difference.h           |  3 +-
+ b/src/include/fst/script/disambiguate.h         |  5 +-
+ b/src/include/fst/script/draw.h                 |  5 +-
+ b/src/include/fst/script/encode.h               |  3 +-
+ b/src/include/fst/script/encodemapper-class.h   | 15 ++++-
+ b/src/include/fst/script/epsnormalize.h         |  3 +-
+ b/src/include/fst/script/equal.h                |  3 +-
+ b/src/include/fst/script/equivalent.h           |  3 +-
+ b/src/include/fst/script/fst-class.h            | 19 ++++--
+ b/src/include/fst/script/getters.h              | 33 ++++++-----
+ b/src/include/fst/script/info-impl.h            |  7 ++-
+ b/src/include/fst/script/info.h                 |  3 +-
+ b/src/include/fst/script/intersect.h            |  3 +-
+ b/src/include/fst/script/invert.h               |  3 +-
+ b/src/include/fst/script/isomorphic.h           |  3 +-
+ b/src/include/fst/script/map.h                  |  5 +-
+ b/src/include/fst/script/minimize.h             |  3 +-
+ b/src/include/fst/script/print.h                |  9 ++-
+ b/src/include/fst/script/project.h              |  3 +-
+ b/src/include/fst/script/prune.h                |  5 +-
+ b/src/include/fst/script/push.h                 |  5 +-
+ b/src/include/fst/script/randequivalent.h       |  3 +-
+ b/src/include/fst/script/randgen.h              |  3 +-
+ b/src/include/fst/script/relabel.h              |  5 +-
+ b/src/include/fst/script/replace.h              |  5 +-
+ b/src/include/fst/script/reverse.h              |  3 +-
+ b/src/include/fst/script/reweight.h             |  3 +-
+ b/src/include/fst/script/rmepsilon.h            |  5 +-
+ b/src/include/fst/script/script-impl.h          | 13 +++-
+ b/src/include/fst/script/shortest-distance.h    |  9 +--
+ b/src/include/fst/script/shortest-path.h        |  5 +-
+ b/src/include/fst/script/stateiterator-class.h  |  5 +-
+ b/src/include/fst/script/synchronize.h          |  3 +-
+ b/src/include/fst/script/text-io.h              |  5 +-
+ b/src/include/fst/script/topsort.h              |  3 +-
+ b/src/include/fst/script/union.h                |  5 +-
+ b/src/include/fst/script/verify.h               |  3 +-
+ b/src/include/fst/script/weight-class.h         | 40 ++++++++-----
+ b/src/include/fst/string.h                      |  2 +-
+ b/src/include/fst/symbol-table-ops.h            |  8 +--
+ b/src/include/fst/symbol-table.h                | 12 ++--
+ b/src/include/fst/test-properties.h             |  2 -
+ b/src/include/fst/test/fst_test.h               |  8 +--
+ b/src/include/fst/util.h                        | 16 ++---
+ b/src/include/fst/vector-fst.h                  |  4 +-
+ b/src/include/fst/weight.h                      | 10 ++--
+ b/src/lib/CMakeLists.txt                        |  4 +-
+ b/src/lib/flags.cc                              |  7 +++
+ b/src/lib/fst-types.cc                          |  7 +++
+ b/src/lib/fst.cc                                |  3 +
+ b/src/lib/symbol-table.cc                       |  4 +-
+ b/src/script/CMakeLists.txt                     |  8 +--
+ b/src/script/text-io.cc                         |  4 +-
  131 files changed, 1173 insertions(+), 325 deletions(-)
- create mode 100644 src/include/fst/exports/exports.h
- create mode 100644 src/include/fst/exports/fst_Export.h
- create mode 100644 src/include/fst/exports/fstcompact_Export.h
- create mode 100644 src/include/fst/exports/fstcompressscript_Export.h
- create mode 100644 src/include/fst/exports/fstconst_Export.h
- create mode 100644 src/include/fst/exports/fstfar_Export.h
- create mode 100644 src/include/fst/exports/fstfarscript_Export.h
- create mode 100644 src/include/fst/exports/fstlinearscript_Export.h
- create mode 100644 src/include/fst/exports/fstmpdtscript_Export.h
- create mode 100644 src/include/fst/exports/fstngram_Export.h
- create mode 100644 src/include/fst/exports/fstpdtscript_Export.h
- create mode 100644 src/include/fst/exports/fstscript_Export.h
- create mode 100644 src/include/fst/exports/fstspecial_Export.h
+ create mode 100644 b/src/include/fst/exports/exports.h
+ create mode 100644 b/src/include/fst/exports/fst_Export.h
+ create mode 100644 b/src/include/fst/exports/fstcompact_Export.h
+ create mode 100644 b/src/include/fst/exports/fstcompressscript_Export.h
+ create mode 100644 b/src/include/fst/exports/fstconst_Export.h
+ create mode 100644 b/src/include/fst/exports/fstfar_Export.h
+ create mode 100644 b/src/include/fst/exports/fstfarscript_Export.h
+ create mode 100644 b/src/include/fst/exports/fstlinearscript_Export.h
+ create mode 100644 b/src/include/fst/exports/fstmpdtscript_Export.h
+ create mode 100644 b/src/include/fst/exports/fstngram_Export.h
+ create mode 100644 b/src/include/fst/exports/fstpdtscript_Export.h
+ create mode 100644 b/src/include/fst/exports/fstscript_Export.h
+ create mode 100644 b/src/include/fst/exports/fstspecial_Export.h
 
-diff --git src/bin/fstcompile-main.cc src/bin/fstcompile-main.cc
+diff --git a/src/bin/fstcompile-main.cc b/src/bin/fstcompile-main.cc
 index 6b47536..6bcb0da 100644
---- src/bin/fstcompile-main.cc
-+++ src/bin/fstcompile-main.cc
+--- a/src/bin/fstcompile-main.cc
++++ b/src/bin/fstcompile-main.cc
 @@ -57,7 +57,7 @@ int fstcompile_main(int argc, char **argv) {
    std::string source = "standard input";
    std::ifstream fstrm;
@@ -163,10 +163,10 @@ index 6b47536..6bcb0da 100644
      if (!fstrm) {
        LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[1];
        return 1;
-diff --git src/bin/fstdraw-main.cc src/bin/fstdraw-main.cc
+diff --git a/src/bin/fstdraw-main.cc b/src/bin/fstdraw-main.cc
 index 494ad86..e0ee692 100644
---- src/bin/fstdraw-main.cc
-+++ src/bin/fstdraw-main.cc
+--- a/src/bin/fstdraw-main.cc
++++ b/src/bin/fstdraw-main.cc
 @@ -72,7 +72,7 @@ int fstdraw_main(int argc, char **argv) {
        argc > 2 && strcmp(argv[2], "-") != 0 ? argv[2] : "";
    std::ofstream fstrm;
@@ -176,10 +176,10 @@ index 494ad86..e0ee692 100644
      if (!fstrm) {
        LOG(ERROR) << argv[0] << ": Open failed, file = " << out_name;
        return 1;
-diff --git src/bin/fstprint-main.cc src/bin/fstprint-main.cc
+diff --git a/src/bin/fstprint-main.cc b/src/bin/fstprint-main.cc
 index 4edc16d..d173fd5 100644
---- src/bin/fstprint-main.cc
-+++ src/bin/fstprint-main.cc
+--- a/src/bin/fstprint-main.cc
++++ b/src/bin/fstprint-main.cc
 @@ -67,7 +67,7 @@ int fstprint_main(int argc, char **argv) {
    std::string dest = "standard output";
    std::ofstream fstrm;
@@ -189,10 +189,10 @@ index 4edc16d..d173fd5 100644
      if (!fstrm) {
        LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
        return 1;
-diff --git src/extensions/compress/CMakeLists.txt src/extensions/compress/CMakeLists.txt
+diff --git a/src/extensions/compress/CMakeLists.txt b/src/extensions/compress/CMakeLists.txt
 index 028cd76..3a1ac2e 100644
---- src/extensions/compress/CMakeLists.txt
-+++ src/extensions/compress/CMakeLists.txt
+--- a/src/extensions/compress/CMakeLists.txt
++++ b/src/extensions/compress/CMakeLists.txt
 @@ -2,11 +2,10 @@
  add_library(fstcompressscript
    compressscript.cc
@@ -222,10 +222,10 @@ index 028cd76..3a1ac2e 100644
  set_target_properties(fstcompressscript PROPERTIES
    SOVERSION "${SOVERSION}"
  )
-diff --git src/extensions/far/CMakeLists.txt src/extensions/far/CMakeLists.txt
+diff --git a/src/extensions/far/CMakeLists.txt b/src/extensions/far/CMakeLists.txt
 index e37ce8f..d5573e3 100644
---- src/extensions/far/CMakeLists.txt
-+++ src/extensions/far/CMakeLists.txt
+--- a/src/extensions/far/CMakeLists.txt
++++ b/src/extensions/far/CMakeLists.txt
 @@ -32,7 +32,6 @@ if(HAVE_SCRIPT)
      getters.cc 
      script-impl.cc
@@ -242,10 +242,10 @@ index e37ce8f..d5573e3 100644
      target_link_libraries(fstfarscript fstfar fstscript fst ${CMAKE_DL_LIBS})
    set_target_properties(fstfarscript PROPERTIES 
      SOVERSION "${SOVERSION}"
-diff --git src/extensions/far/compile-strings.cc src/extensions/far/compile-strings.cc
+diff --git a/src/extensions/far/compile-strings.cc b/src/extensions/far/compile-strings.cc
 index 5f6923e..29f2f2f 100644
---- src/extensions/far/compile-strings.cc
-+++ src/extensions/far/compile-strings.cc
+--- a/src/extensions/far/compile-strings.cc
++++ b/src/extensions/far/compile-strings.cc
 @@ -36,7 +36,7 @@ namespace internal {
  // number, or zero if the number of lines could not be determined because the
  // file was not seekable.
@@ -255,10 +255,10 @@ index 5f6923e..29f2f2f 100644
    istrm.seekg(0);
    // TODO(jrosenstock): Change this to is_regular_file when <filesystem> is
    // no longer banned.
-diff --git src/extensions/far/farcompilestrings-main.cc src/extensions/far/farcompilestrings-main.cc
+diff --git a/src/extensions/far/farcompilestrings-main.cc b/src/extensions/far/farcompilestrings-main.cc
 index bab4948..c6aae62 100644
---- src/extensions/far/farcompilestrings-main.cc
-+++ src/extensions/far/farcompilestrings-main.cc
+--- a/src/extensions/far/farcompilestrings-main.cc
++++ b/src/extensions/far/farcompilestrings-main.cc
 @@ -63,7 +63,7 @@ int farcompilestrings_main(int argc, char **argv) {
    std::vector<std::string> sources;
    if (FST_FLAGS_file_list_input) {
@@ -268,10 +268,10 @@ index bab4948..c6aae62 100644
        std::string str;
        while (std::getline(istrm, str)) sources.push_back(str);
      }
-diff --git src/extensions/far/sttable.cc src/extensions/far/sttable.cc
+diff --git a/src/extensions/far/sttable.cc b/src/extensions/far/sttable.cc
 index c3f925a..a1d897f 100644
---- src/extensions/far/sttable.cc
-+++ src/extensions/far/sttable.cc
+--- a/src/extensions/far/sttable.cc
++++ b/src/extensions/far/sttable.cc
 @@ -27,7 +27,7 @@
  namespace fst {
  
@@ -281,10 +281,10 @@ index c3f925a..a1d897f 100644
    if (!strm.good()) return false;
  
    int32_t magic_number = 0;
-diff --git src/extensions/linear/CMakeLists.txt src/extensions/linear/CMakeLists.txt
+diff --git a/src/extensions/linear/CMakeLists.txt b/src/extensions/linear/CMakeLists.txt
 index 6a5ecfd..139fb15 100644
---- src/extensions/linear/CMakeLists.txt
-+++ src/extensions/linear/CMakeLists.txt
+--- a/src/extensions/linear/CMakeLists.txt
++++ b/src/extensions/linear/CMakeLists.txt
 @@ -11,7 +11,6 @@ if(HAVE_SCRIPT)
        fstscript
        fst
@@ -301,10 +301,10 @@ index 6a5ecfd..139fb15 100644
      install(TARGETS fstlinearscript
      LIBRARY DESTINATION bin
      ARCHIVE DESTINATION lib
-diff --git src/extensions/linear/linearscript.cc src/extensions/linear/linearscript.cc
+diff --git a/src/extensions/linear/linearscript.cc b/src/extensions/linear/linearscript.cc
 index 84397b9..a099340 100644
---- src/extensions/linear/linearscript.cc
-+++ src/extensions/linear/linearscript.cc
+--- a/src/extensions/linear/linearscript.cc
++++ b/src/extensions/linear/linearscript.cc
 @@ -82,7 +82,7 @@ REGISTER_FST_OPERATION_3ARCS(LinearCompileTpl, LinearCompileArgs);
  
  void SplitByWhitespace(const std::string &str, std::vector<std::string> *out) {
@@ -314,10 +314,10 @@ index 84397b9..a099340 100644
    std::string buf;
    while (strm >> buf) out->push_back(buf);
  }
-diff --git src/extensions/ngram/CMakeLists.txt src/extensions/ngram/CMakeLists.txt
+diff --git a/src/extensions/ngram/CMakeLists.txt b/src/extensions/ngram/CMakeLists.txt
 index 206f3c9..cf176d2 100644
---- src/extensions/ngram/CMakeLists.txt
-+++ src/extensions/ngram/CMakeLists.txt
+--- a/src/extensions/ngram/CMakeLists.txt
++++ b/src/extensions/ngram/CMakeLists.txt
 @@ -11,11 +11,11 @@ target_link_libraries(fstngram
  GENERATE_EXPORT_HEADER( fstngram
               BASE_NAME fstngram
@@ -341,10 +341,10 @@ index 206f3c9..cf176d2 100644
                             $<INSTALL_INTERFACE:include>)
  
  if (MSVC)
-diff --git src/extensions/pdt/CMakeLists.txt src/extensions/pdt/CMakeLists.txt
+diff --git a/src/extensions/pdt/CMakeLists.txt b/src/extensions/pdt/CMakeLists.txt
 index 10c5907..c996882 100644
---- src/extensions/pdt/CMakeLists.txt
-+++ src/extensions/pdt/CMakeLists.txt
+--- a/src/extensions/pdt/CMakeLists.txt
++++ b/src/extensions/pdt/CMakeLists.txt
 @@ -3,17 +3,16 @@
  if(HAVE_SCRIPT)
    add_library(fstpdtscript getters.cc pdtscript.cc)
@@ -366,10 +366,10 @@ index 10c5907..c996882 100644
    set_target_properties(fstpdtscript PROPERTIES 
      SOVERSION "${SOVERSION}"
    )
-diff --git src/extensions/python/CMakeLists.txt src/extensions/python/CMakeLists.txt
+diff --git a/src/extensions/python/CMakeLists.txt b/src/extensions/python/CMakeLists.txt
 index 83b9a7f..c0c43d7 100644
---- src/extensions/python/CMakeLists.txt
-+++ src/extensions/python/CMakeLists.txt
+--- a/src/extensions/python/CMakeLists.txt
++++ b/src/extensions/python/CMakeLists.txt
 @@ -1,5 +1,6 @@
  
  add_library(pywrapfst
@@ -377,10 +377,10 @@ index 83b9a7f..c0c43d7 100644
      pywrapfst.cpp
  )
  
-diff --git src/extensions/special/CMakeLists.txt src/extensions/special/CMakeLists.txt
+diff --git a/src/extensions/special/CMakeLists.txt b/src/extensions/special/CMakeLists.txt
 index 42c72d1..c715b28 100644
---- src/extensions/special/CMakeLists.txt
-+++ src/extensions/special/CMakeLists.txt
+--- a/src/extensions/special/CMakeLists.txt
++++ b/src/extensions/special/CMakeLists.txt
 @@ -1,18 +1,21 @@
  
  
@@ -405,10 +405,10 @@ index 42c72d1..c715b28 100644
                             $<INSTALL_INTERFACE:include>)
  
  set_target_properties(fstspecial PROPERTIES
-diff --git src/include/fst/cache.h src/include/fst/cache.h
+diff --git a/src/include/fst/cache.h b/src/include/fst/cache.h
 index 4a7c22c..4044642 100644
---- src/include/fst/cache.h
-+++ src/include/fst/cache.h
+--- a/src/include/fst/cache.h
++++ b/src/include/fst/cache.h
 @@ -41,13 +41,13 @@
  #include <unordered_map>
  #include <functional>
@@ -426,10 +426,10 @@ index 4a7c22c..4044642 100644
    bool gc;          // Enables GC.
    size_t gc_limit;  // Number of bytes allowed before GC.
  
-diff --git src/include/fst/compat.h src/include/fst/compat.h
+diff --git a/src/include/fst/compat.h b/src/include/fst/compat.h
 index 381b4c1..b878f15 100644
---- src/include/fst/compat.h
-+++ src/include/fst/compat.h
+--- a/src/include/fst/compat.h
++++ b/src/include/fst/compat.h
 @@ -33,6 +33,13 @@
  #include <type_traits>
  #include <utility>
@@ -529,10 +529,10 @@ index 381b4c1..b878f15 100644
    if (!StartsWith(*s, expected)) return false;
    s->remove_prefix(expected.size());
    return true;
-diff --git src/include/fst/encode.h src/include/fst/encode.h
+diff --git a/src/include/fst/encode.h b/src/include/fst/encode.h
 index f5d2c2d..c27f827 100644
---- src/include/fst/encode.h
-+++ src/include/fst/encode.h
+--- a/src/include/fst/encode.h
++++ b/src/include/fst/encode.h
 @@ -71,7 +71,7 @@ inline constexpr int32_t kEncodeDeprecatedMagicNumber = 2129983209;
  }  // namespace internal
  
@@ -542,10 +542,10 @@ index f5d2c2d..c27f827 100644
   public:
    EncodeTableHeader() = default;
  
-diff --git src/include/fst/expanded-fst.h src/include/fst/expanded-fst.h
+diff --git a/src/include/fst/expanded-fst.h b/src/include/fst/expanded-fst.h
 index 2674e66..8d30058 100644
---- src/include/fst/expanded-fst.h
-+++ src/include/fst/expanded-fst.h
+--- a/src/include/fst/expanded-fst.h
++++ b/src/include/fst/expanded-fst.h
 @@ -39,6 +39,11 @@
  #include <fst/properties.h>
  #include <fst/register.h>
@@ -578,11 +578,11 @@ index 2674e66..8d30058 100644
        return Impl::Read(std::cin, FstReadOptions("standard input"));
      }
    }
-diff --git src/include/fst/exports/exports.h src/include/fst/exports/exports.h
+diff --git a/src/include/fst/exports/exports.h b/src/include/fst/exports/exports.h
 new file mode 100644
 index 0000000..84f836a
 --- /dev/null
-+++ src/include/fst/exports/exports.h
++++ b/src/include/fst/exports/exports.h
 @@ -0,0 +1,33 @@
 +
 +#ifndef exports_H
@@ -618,11 +618,11 @@ index 0000000..84f836a
 +#endif // _WIN32
 +#endif
 \ No newline at end of file
-diff --git src/include/fst/exports/fst_Export.h src/include/fst/exports/fst_Export.h
+diff --git a/src/include/fst/exports/fst_Export.h b/src/include/fst/exports/fst_Export.h
 new file mode 100644
 index 0000000..c1cc62d
 --- /dev/null
-+++ src/include/fst/exports/fst_Export.h
++++ b/src/include/fst/exports/fst_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fst_EXPORT_H
@@ -666,11 +666,11 @@ index 0000000..c1cc62d
 +#endif
 +
 +#endif /* fst_EXPORT_H */
-diff --git src/include/fst/exports/fstcompact_Export.h src/include/fst/exports/fstcompact_Export.h
+diff --git a/src/include/fst/exports/fstcompact_Export.h b/src/include/fst/exports/fstcompact_Export.h
 new file mode 100644
 index 0000000..89e9e68
 --- /dev/null
-+++ src/include/fst/exports/fstcompact_Export.h
++++ b/src/include/fst/exports/fstcompact_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstcompact_EXPORT_H
@@ -714,11 +714,11 @@ index 0000000..89e9e68
 +#endif
 +
 +#endif /* fstcompact_EXPORT_H */
-diff --git src/include/fst/exports/fstcompressscript_Export.h src/include/fst/exports/fstcompressscript_Export.h
+diff --git a/src/include/fst/exports/fstcompressscript_Export.h b/src/include/fst/exports/fstcompressscript_Export.h
 new file mode 100644
 index 0000000..693e000
 --- /dev/null
-+++ src/include/fst/exports/fstcompressscript_Export.h
++++ b/src/include/fst/exports/fstcompressscript_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstcompressscript_EXPORT_H
@@ -762,11 +762,11 @@ index 0000000..693e000
 +#endif
 +
 +#endif /* fstcompressscript_EXPORT_H */
-diff --git src/include/fst/exports/fstconst_Export.h src/include/fst/exports/fstconst_Export.h
+diff --git a/src/include/fst/exports/fstconst_Export.h b/src/include/fst/exports/fstconst_Export.h
 new file mode 100644
 index 0000000..6d634c9
 --- /dev/null
-+++ src/include/fst/exports/fstconst_Export.h
++++ b/src/include/fst/exports/fstconst_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstconst_EXPORT_H
@@ -810,11 +810,11 @@ index 0000000..6d634c9
 +#endif
 +
 +#endif /* fstconst_EXPORT_H */
-diff --git src/include/fst/exports/fstfar_Export.h src/include/fst/exports/fstfar_Export.h
+diff --git a/src/include/fst/exports/fstfar_Export.h b/src/include/fst/exports/fstfar_Export.h
 new file mode 100644
 index 0000000..e3bf966
 --- /dev/null
-+++ src/include/fst/exports/fstfar_Export.h
++++ b/src/include/fst/exports/fstfar_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstfar_EXPORT_H
@@ -858,11 +858,11 @@ index 0000000..e3bf966
 +#endif
 +
 +#endif /* fstfar_EXPORT_H */
-diff --git src/include/fst/exports/fstfarscript_Export.h src/include/fst/exports/fstfarscript_Export.h
+diff --git a/src/include/fst/exports/fstfarscript_Export.h b/src/include/fst/exports/fstfarscript_Export.h
 new file mode 100644
 index 0000000..4c6d29a
 --- /dev/null
-+++ src/include/fst/exports/fstfarscript_Export.h
++++ b/src/include/fst/exports/fstfarscript_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstfarscript_EXPORT_H
@@ -906,11 +906,11 @@ index 0000000..4c6d29a
 +#endif
 +
 +#endif /* fstfarscript_EXPORT_H */
-diff --git src/include/fst/exports/fstlinearscript_Export.h src/include/fst/exports/fstlinearscript_Export.h
+diff --git a/src/include/fst/exports/fstlinearscript_Export.h b/src/include/fst/exports/fstlinearscript_Export.h
 new file mode 100644
 index 0000000..a809cc7
 --- /dev/null
-+++ src/include/fst/exports/fstlinearscript_Export.h
++++ b/src/include/fst/exports/fstlinearscript_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstlinearscript_EXPORT_H
@@ -954,11 +954,11 @@ index 0000000..a809cc7
 +#endif
 +
 +#endif /* fstlinearscript_EXPORT_H */
-diff --git src/include/fst/exports/fstmpdtscript_Export.h src/include/fst/exports/fstmpdtscript_Export.h
+diff --git a/src/include/fst/exports/fstmpdtscript_Export.h b/src/include/fst/exports/fstmpdtscript_Export.h
 new file mode 100644
 index 0000000..68aac12
 --- /dev/null
-+++ src/include/fst/exports/fstmpdtscript_Export.h
++++ b/src/include/fst/exports/fstmpdtscript_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstmpdtscript_EXPORT_H
@@ -1002,11 +1002,11 @@ index 0000000..68aac12
 +#endif
 +
 +#endif /* fstmpdtscript_EXPORT_H */
-diff --git src/include/fst/exports/fstngram_Export.h src/include/fst/exports/fstngram_Export.h
+diff --git a/src/include/fst/exports/fstngram_Export.h b/src/include/fst/exports/fstngram_Export.h
 new file mode 100644
 index 0000000..15bc06a
 --- /dev/null
-+++ src/include/fst/exports/fstngram_Export.h
++++ b/src/include/fst/exports/fstngram_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstngram_EXPORT_H
@@ -1050,11 +1050,11 @@ index 0000000..15bc06a
 +#endif
 +
 +#endif /* fstngram_EXPORT_H */
-diff --git src/include/fst/exports/fstpdtscript_Export.h src/include/fst/exports/fstpdtscript_Export.h
+diff --git a/src/include/fst/exports/fstpdtscript_Export.h b/src/include/fst/exports/fstpdtscript_Export.h
 new file mode 100644
 index 0000000..c4995b3
 --- /dev/null
-+++ src/include/fst/exports/fstpdtscript_Export.h
++++ b/src/include/fst/exports/fstpdtscript_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstpdtscript_EXPORT_H
@@ -1098,11 +1098,11 @@ index 0000000..c4995b3
 +#endif
 +
 +#endif /* fstpdtscript_EXPORT_H */
-diff --git src/include/fst/exports/fstscript_Export.h src/include/fst/exports/fstscript_Export.h
+diff --git a/src/include/fst/exports/fstscript_Export.h b/src/include/fst/exports/fstscript_Export.h
 new file mode 100644
 index 0000000..4f4407e
 --- /dev/null
-+++ src/include/fst/exports/fstscript_Export.h
++++ b/src/include/fst/exports/fstscript_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstscript_EXPORT_H
@@ -1146,11 +1146,11 @@ index 0000000..4f4407e
 +#endif
 +
 +#endif /* fstscript_EXPORT_H */
-diff --git src/include/fst/exports/fstspecial_Export.h src/include/fst/exports/fstspecial_Export.h
+diff --git a/src/include/fst/exports/fstspecial_Export.h b/src/include/fst/exports/fstspecial_Export.h
 new file mode 100644
 index 0000000..56010fb
 --- /dev/null
-+++ src/include/fst/exports/fstspecial_Export.h
++++ b/src/include/fst/exports/fstspecial_Export.h
 @@ -0,0 +1,42 @@
 +
 +#ifndef fstspecial_EXPORT_H
@@ -1194,10 +1194,10 @@ index 0000000..56010fb
 +#endif
 +
 +#endif /* fstspecial_EXPORT_H */
-diff --git src/include/fst/extensions/compress/compress.h src/include/fst/extensions/compress/compress.h
+diff --git a/src/include/fst/extensions/compress/compress.h b/src/include/fst/extensions/compress/compress.h
 index dd4ea9d..f002e02 100644
---- src/include/fst/extensions/compress/compress.h
-+++ src/include/fst/extensions/compress/compress.h
+--- a/src/include/fst/extensions/compress/compress.h
++++ b/src/include/fst/extensions/compress/compress.h
 @@ -52,6 +52,11 @@
  #include <fst/visit.h>
  #include <string_view>
@@ -1223,10 +1223,10 @@ index dd4ea9d..f002e02 100644
    std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
    if (!Decompress(istrm, source.empty() ? "standard input" : source, fst)) {
      return false;
-diff --git src/include/fst/extensions/compress/compressscript.h src/include/fst/extensions/compress/compressscript.h
+diff --git a/src/include/fst/extensions/compress/compressscript.h b/src/include/fst/extensions/compress/compressscript.h
 index 827557d..c24ea5a 100644
---- src/include/fst/extensions/compress/compressscript.h
-+++ src/include/fst/extensions/compress/compressscript.h
+--- a/src/include/fst/extensions/compress/compressscript.h
++++ b/src/include/fst/extensions/compress/compressscript.h
 @@ -26,6 +26,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/script/arg-packs.h>
@@ -1253,10 +1253,10 @@ index 827557d..c24ea5a 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/extensions/far/compile-strings.h src/include/fst/extensions/far/compile-strings.h
+diff --git a/src/include/fst/extensions/far/compile-strings.h b/src/include/fst/extensions/far/compile-strings.h
 index 8f4bd95..e86ab31 100644
---- src/include/fst/extensions/far/compile-strings.h
-+++ src/include/fst/extensions/far/compile-strings.h
+--- a/src/include/fst/extensions/far/compile-strings.h
++++ b/src/include/fst/extensions/far/compile-strings.h
 @@ -18,7 +18,9 @@
  #ifndef FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
  #define FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
@@ -1308,10 +1308,10 @@ index 8f4bd95..e86ab31 100644
      std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
      bool keep_syms = keep_symbols;
      for (internal::StringReader<Arc> reader(
-diff --git src/include/fst/extensions/far/create.h src/include/fst/extensions/far/create.h
+diff --git a/src/include/fst/extensions/far/create.h b/src/include/fst/extensions/far/create.h
 index d84b565..24ea213 100644
---- src/include/fst/extensions/far/create.h
-+++ src/include/fst/extensions/far/create.h
+--- a/src/include/fst/extensions/far/create.h
++++ b/src/include/fst/extensions/far/create.h
 @@ -20,7 +20,9 @@
  #ifndef FST_EXTENSIONS_FAR_CREATE_H_
  #define FST_EXTENSIONS_FAR_CREATE_H_
@@ -1322,10 +1322,10 @@ index d84b565..24ea213 100644
  
  #include <cstddef>
  #include <cstdint>
-diff --git src/include/fst/extensions/far/far-class.h src/include/fst/extensions/far/far-class.h
+diff --git a/src/include/fst/extensions/far/far-class.h b/src/include/fst/extensions/far/far-class.h
 index d78e464..3ee1e52 100644
---- src/include/fst/extensions/far/far-class.h
-+++ src/include/fst/extensions/far/far-class.h
+--- a/src/include/fst/extensions/far/far-class.h
++++ b/src/include/fst/extensions/far/far-class.h
 @@ -32,6 +32,7 @@
  #include <fst/script/fst-class.h>
  #include <fst/script/fstscript.h>
@@ -1370,10 +1370,10 @@ index d78e464..3ee1e52 100644
  
  using CreateFarWriterClassInnerArgs = std::pair<const std::string &, FarType>;
  
-diff --git src/include/fst/extensions/far/far.h src/include/fst/extensions/far/far.h
+diff --git a/src/include/fst/extensions/far/far.h b/src/include/fst/extensions/far/far.h
 index 9f1c830..bcf52e5 100644
---- src/include/fst/extensions/far/far.h
-+++ src/include/fst/extensions/far/far.h
+--- a/src/include/fst/extensions/far/far.h
++++ b/src/include/fst/extensions/far/far.h
 @@ -43,12 +43,23 @@
  #include <fst/util.h>
  #include <fst/vector-fst.h>
@@ -1451,10 +1451,10 @@ index 9f1c830..bcf52e5 100644
        if (streams_[i] != &std::cin) {
          delete streams_[i];
        }
-diff --git src/include/fst/extensions/far/farscript.h src/include/fst/extensions/far/farscript.h
+diff --git a/src/include/fst/extensions/far/farscript.h b/src/include/fst/extensions/far/farscript.h
 index 3992e58..e6bc92a 100644
---- src/include/fst/extensions/far/farscript.h
-+++ src/include/fst/extensions/far/farscript.h
+--- a/src/include/fst/extensions/far/farscript.h
++++ b/src/include/fst/extensions/far/farscript.h
 @@ -45,6 +45,7 @@
  #include <fst/script/encodemapper-class.h>
  #include <fst/script/script-impl.h>
@@ -1583,10 +1583,10 @@ index 3992e58..e6bc92a 100644
                    const TokenType token_type, const std::string &begin_key,
                    const std::string &end_key, const bool print_key,
                    const bool print_weight, const std::string &symbols_source,
-diff --git src/include/fst/extensions/far/getters.h src/include/fst/extensions/far/getters.h
+diff --git a/src/include/fst/extensions/far/getters.h b/src/include/fst/extensions/far/getters.h
 index 458083e..c9db194 100644
---- src/include/fst/extensions/far/getters.h
-+++ src/include/fst/extensions/far/getters.h
+--- a/src/include/fst/extensions/far/getters.h
++++ b/src/include/fst/extensions/far/getters.h
 @@ -27,19 +27,20 @@
  #include <fst/extensions/far/far.h>
  #include <fst/string.h>
@@ -1612,10 +1612,10 @@ index 458083e..c9db194 100644
  
  }  // namespace fst
  
-diff --git src/include/fst/extensions/far/print-strings.h src/include/fst/extensions/far/print-strings.h
+diff --git a/src/include/fst/extensions/far/print-strings.h b/src/include/fst/extensions/far/print-strings.h
 index 638baad..bf957f5 100644
---- src/include/fst/extensions/far/print-strings.h
-+++ src/include/fst/extensions/far/print-strings.h
+--- a/src/include/fst/extensions/far/print-strings.h
++++ b/src/include/fst/extensions/far/print-strings.h
 @@ -37,8 +37,9 @@
  #include <fst/shortest-distance.h>
  #include <fst/string.h>
@@ -1636,10 +1636,10 @@ index 638baad..bf957f5 100644
        if (!ostrm) {
          LOG(ERROR) << "PrintStrings: Can't open file: " << source;
          return;
-diff --git src/include/fst/extensions/far/script-impl.h src/include/fst/extensions/far/script-impl.h
+diff --git a/src/include/fst/extensions/far/script-impl.h b/src/include/fst/extensions/far/script-impl.h
 index 15c5bdc..d0ee8c8 100644
---- src/include/fst/extensions/far/script-impl.h
-+++ src/include/fst/extensions/far/script-impl.h
+--- a/src/include/fst/extensions/far/script-impl.h
++++ b/src/include/fst/extensions/far/script-impl.h
 @@ -24,12 +24,14 @@
  #include <string>
  
@@ -1657,10 +1657,10 @@ index 15c5bdc..d0ee8c8 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/extensions/far/stlist.h src/include/fst/extensions/far/stlist.h
+diff --git a/src/include/fst/extensions/far/stlist.h b/src/include/fst/extensions/far/stlist.h
 index b736c91..b2d8cc8 100644
---- src/include/fst/extensions/far/stlist.h
-+++ src/include/fst/extensions/far/stlist.h
+--- a/src/include/fst/extensions/far/stlist.h
++++ b/src/include/fst/extensions/far/stlist.h
 @@ -41,6 +41,12 @@
  #include <fstream>
  #include <fst/util.h>
@@ -1693,10 +1693,10 @@ index b736c91..b2d8cc8 100644
  
  }  // namespace fst
  
-diff --git src/include/fst/extensions/far/sttable.h src/include/fst/extensions/far/sttable.h
+diff --git a/src/include/fst/extensions/far/sttable.h b/src/include/fst/extensions/far/sttable.h
 index cdcc441..6c3d3c4 100644
---- src/include/fst/extensions/far/sttable.h
-+++ src/include/fst/extensions/far/sttable.h
+--- a/src/include/fst/extensions/far/sttable.h
++++ b/src/include/fst/extensions/far/sttable.h
 @@ -37,6 +37,7 @@
  #include <fstream>
  #include <fst/util.h>
@@ -1714,10 +1714,10 @@ index cdcc441..6c3d3c4 100644
  
  }  // namespace fst
  
-diff --git src/include/fst/extensions/linear/linear-fst.h src/include/fst/extensions/linear/linear-fst.h
+diff --git a/src/include/fst/extensions/linear/linear-fst.h b/src/include/fst/extensions/linear/linear-fst.h
 index c164d76..96fa8c5 100644
---- src/include/fst/extensions/linear/linear-fst.h
-+++ src/include/fst/extensions/linear/linear-fst.h
+--- a/src/include/fst/extensions/linear/linear-fst.h
++++ b/src/include/fst/extensions/linear/linear-fst.h
 @@ -50,6 +50,11 @@
  #include <fst/symbol-table.h>
  #include <fst/util.h>
@@ -1770,10 +1770,10 @@ index c164d76..96fa8c5 100644
        return Write(std::cout, FstWriteOptions("standard output"));
      }
    }
-diff --git src/include/fst/extensions/linear/linearscript.h src/include/fst/extensions/linear/linearscript.h
+diff --git a/src/include/fst/extensions/linear/linearscript.h b/src/include/fst/extensions/linear/linearscript.h
 index 1436ba1..0d8ebb9 100644
---- src/include/fst/extensions/linear/linearscript.h
-+++ src/include/fst/extensions/linear/linearscript.h
+--- a/src/include/fst/extensions/linear/linearscript.h
++++ b/src/include/fst/extensions/linear/linearscript.h
 @@ -36,12 +36,13 @@
  #include <fst/util.h>
  #include <fst/script/arg-packs.h>
@@ -1861,10 +1861,10 @@ index 1436ba1..0d8ebb9 100644
                     const std::string &epsilon_symbol,
                     const std::string &unknown_symbol, const std::string &vocab,
                     char **models, int models_len, const std::string &out,
-diff --git src/include/fst/extensions/mpdt/mpdt.h src/include/fst/extensions/mpdt/mpdt.h
+diff --git a/src/include/fst/extensions/mpdt/mpdt.h b/src/include/fst/extensions/mpdt/mpdt.h
 index a3e3bdc..a399f71 100644
---- src/include/fst/extensions/mpdt/mpdt.h
-+++ src/include/fst/extensions/mpdt/mpdt.h
+--- a/src/include/fst/extensions/mpdt/mpdt.h
++++ b/src/include/fst/extensions/mpdt/mpdt.h
 @@ -39,10 +39,11 @@
  #include <fst/util.h>
  #include <unordered_map>
@@ -1878,10 +1878,10 @@ index a3e3bdc..a399f71 100644
    READ_RESTRICT,   // Can only read from first empty stack
    WRITE_RESTRICT,  // Can only write to first empty stack
    NO_RESTRICT,     // No read-write restrictions
-diff --git src/include/fst/extensions/mpdt/mpdtscript.h src/include/fst/extensions/mpdt/mpdtscript.h
+diff --git a/src/include/fst/extensions/mpdt/mpdtscript.h b/src/include/fst/extensions/mpdt/mpdtscript.h
 index 553807e..7880020 100644
---- src/include/fst/extensions/mpdt/mpdtscript.h
-+++ src/include/fst/extensions/mpdt/mpdtscript.h
+--- a/src/include/fst/extensions/mpdt/mpdtscript.h
++++ b/src/include/fst/extensions/mpdt/mpdtscript.h
 @@ -40,6 +40,7 @@
  #include <fst/script/arg-packs.h>
  #include <fst/script/fst-class.h>
@@ -1926,10 +1926,10 @@ index 553807e..7880020 100644
            const std::vector<std::pair<int64_t, int64_t>> &parens,
            const std::vector<int64_t> &assignments);
  
-diff --git src/include/fst/extensions/mpdt/read_write_utils.h src/include/fst/extensions/mpdt/read_write_utils.h
+diff --git a/src/include/fst/extensions/mpdt/read_write_utils.h b/src/include/fst/extensions/mpdt/read_write_utils.h
 index f47bd61..b4c77a6 100644
---- src/include/fst/extensions/mpdt/read_write_utils.h
-+++ src/include/fst/extensions/mpdt/read_write_utils.h
+--- a/src/include/fst/extensions/mpdt/read_write_utils.h
++++ b/src/include/fst/extensions/mpdt/read_write_utils.h
 @@ -39,7 +39,7 @@ template <typename Label>
  bool ReadLabelTriples(const std::string &source,
                        std::vector<std::pair<Label, Label>> *pairs,
@@ -1948,10 +1948,10 @@ index f47bd61..b4c77a6 100644
    if (!fstrm) {
      LOG(ERROR) << "WriteLabelTriples: Can't open file: " << source;
      return false;
-diff --git src/include/fst/extensions/ngram/bitmap-index.h src/include/fst/extensions/ngram/bitmap-index.h
+diff --git a/src/include/fst/extensions/ngram/bitmap-index.h b/src/include/fst/extensions/ngram/bitmap-index.h
 index af23176..083927b 100644
---- src/include/fst/extensions/ngram/bitmap-index.h
-+++ src/include/fst/extensions/ngram/bitmap-index.h
+--- a/src/include/fst/extensions/ngram/bitmap-index.h
++++ b/src/include/fst/extensions/ngram/bitmap-index.h
 @@ -25,6 +25,7 @@
  
  #include <fst/compat.h>
@@ -1969,10 +1969,10 @@ index af23176..083927b 100644
   public:
    static size_t StorageSize(size_t num_bits) {
      return ((num_bits + kStorageBlockMask) >> kStorageLogBitSize);
-diff --git src/include/fst/extensions/ngram/ngram-fst.h src/include/fst/extensions/ngram/ngram-fst.h
+diff --git a/src/include/fst/extensions/ngram/ngram-fst.h b/src/include/fst/extensions/ngram/ngram-fst.h
 index d024947..ebd96ef 100644
---- src/include/fst/extensions/ngram/ngram-fst.h
-+++ src/include/fst/extensions/ngram/ngram-fst.h
+--- a/src/include/fst/extensions/ngram/ngram-fst.h
++++ b/src/include/fst/extensions/ngram/ngram-fst.h
 @@ -52,6 +52,11 @@
  #include <fst/util.h>
  #include <fst/vector-fst.h>
@@ -1995,10 +1995,10 @@ index d024947..ebd96ef 100644
        return Read(std::cin, FstReadOptions("standard input"));
      }
    }
-diff --git src/include/fst/extensions/ngram/nthbit.h src/include/fst/extensions/ngram/nthbit.h
+diff --git a/src/include/fst/extensions/ngram/nthbit.h b/src/include/fst/extensions/ngram/nthbit.h
 index d33e05e..b18a23b 100644
---- src/include/fst/extensions/ngram/nthbit.h
-+++ src/include/fst/extensions/ngram/nthbit.h
+--- a/src/include/fst/extensions/ngram/nthbit.h
++++ b/src/include/fst/extensions/ngram/nthbit.h
 @@ -26,6 +26,7 @@
  #endif
  
@@ -2016,10 +2016,10 @@ index d33e05e..b18a23b 100644
    constexpr uint64_t kOnesStep8 = 0x0101010101010101;
    constexpr uint64_t kMSBsStep8 = 0x80 * kOnesStep8;
  
-diff --git src/include/fst/extensions/pdt/getters.h src/include/fst/extensions/pdt/getters.h
+diff --git a/src/include/fst/extensions/pdt/getters.h b/src/include/fst/extensions/pdt/getters.h
 index 294511a..99c8ffa 100644
---- src/include/fst/extensions/pdt/getters.h
-+++ src/include/fst/extensions/pdt/getters.h
+--- a/src/include/fst/extensions/pdt/getters.h
++++ b/src/include/fst/extensions/pdt/getters.h
 @@ -23,13 +23,14 @@
  #include <fst/extensions/pdt/compose.h>
  #include <fst/extensions/pdt/replace.h>
@@ -2037,10 +2037,10 @@ index 294511a..99c8ffa 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/extensions/pdt/pdtscript.h src/include/fst/extensions/pdt/pdtscript.h
+diff --git a/src/include/fst/extensions/pdt/pdtscript.h b/src/include/fst/extensions/pdt/pdtscript.h
 index ce2e6f9..0c9b885 100644
---- src/include/fst/extensions/pdt/pdtscript.h
-+++ src/include/fst/extensions/pdt/pdtscript.h
+--- a/src/include/fst/extensions/pdt/pdtscript.h
++++ b/src/include/fst/extensions/pdt/pdtscript.h
 @@ -47,6 +47,7 @@
  #include <fst/script/script-impl.h>
  #include <fst/script/shortest-path.h>
@@ -2121,10 +2121,10 @@ index ce2e6f9..0c9b885 100644
            const std::vector<std::pair<int64_t, int64_t>> &parens);
  
  }  // namespace script
-diff --git src/include/fst/extensions/special/phi-fst.h src/include/fst/extensions/special/phi-fst.h
+diff --git a/src/include/fst/extensions/special/phi-fst.h b/src/include/fst/extensions/special/phi-fst.h
 index 8749ac2..ba56fba 100644
---- src/include/fst/extensions/special/phi-fst.h
-+++ src/include/fst/extensions/special/phi-fst.h
+--- a/src/include/fst/extensions/special/phi-fst.h
++++ b/src/include/fst/extensions/special/phi-fst.h
 @@ -31,10 +31,11 @@
  #include <fst/matcher-fst.h>
  #include <fst/matcher.h>
@@ -2140,10 +2140,10 @@ index 8749ac2..ba56fba 100644
  
  namespace fst {
  namespace internal {
-diff --git src/include/fst/extensions/special/rho-fst.h src/include/fst/extensions/special/rho-fst.h
+diff --git a/src/include/fst/extensions/special/rho-fst.h b/src/include/fst/extensions/special/rho-fst.h
 index 6dd2889..49e5a62 100644
---- src/include/fst/extensions/special/rho-fst.h
-+++ src/include/fst/extensions/special/rho-fst.h
+--- a/src/include/fst/extensions/special/rho-fst.h
++++ b/src/include/fst/extensions/special/rho-fst.h
 @@ -31,9 +31,10 @@
  #include <fst/matcher-fst.h>
  #include <fst/matcher.h>
@@ -2157,10 +2157,10 @@ index 6dd2889..49e5a62 100644
  
  namespace fst {
  namespace internal {
-diff --git src/include/fst/extensions/special/sigma-fst.h src/include/fst/extensions/special/sigma-fst.h
+diff --git a/src/include/fst/extensions/special/sigma-fst.h b/src/include/fst/extensions/special/sigma-fst.h
 index 44b0b7a..b9bb8f7 100644
---- src/include/fst/extensions/special/sigma-fst.h
-+++ src/include/fst/extensions/special/sigma-fst.h
+--- a/src/include/fst/extensions/special/sigma-fst.h
++++ b/src/include/fst/extensions/special/sigma-fst.h
 @@ -31,9 +31,10 @@
  #include <fst/matcher-fst.h>
  #include <fst/matcher.h>
@@ -2174,10 +2174,10 @@ index 44b0b7a..b9bb8f7 100644
  
  namespace fst {
  namespace internal {
-diff --git src/include/fst/flags.h src/include/fst/flags.h
+diff --git a/src/include/fst/flags.h b/src/include/fst/flags.h
 index 761ad35..9bcd091 100644
---- src/include/fst/flags.h
-+++ src/include/fst/flags.h
+--- a/src/include/fst/flags.h
++++ b/src/include/fst/flags.h
 @@ -32,6 +32,8 @@
  
  #include <fst/lock.h>
@@ -2292,10 +2292,10 @@ index 761ad35..9bcd091 100644
 +void fst_EXPORT ShowUsage(bool long_usage = true);
  
  #endif  // FST_FLAGS_H_
-diff --git src/include/fst/fst.h src/include/fst/fst.h
+diff --git a/src/include/fst/fst.h b/src/include/fst/fst.h
 index f48eff6..24609d7 100644
---- src/include/fst/fst.h
-+++ src/include/fst/fst.h
+--- a/src/include/fst/fst.h
++++ b/src/include/fst/fst.h
 @@ -49,14 +49,20 @@
  #include <fst/util.h>
  #include <string_view>
@@ -2357,10 +2357,10 @@ index f48eff6..24609d7 100644
        return Write(std::cout, FstWriteOptions("standard output"));
      }
    }
-diff --git src/include/fst/generic-register.h src/include/fst/generic-register.h
+diff --git a/src/include/fst/generic-register.h b/src/include/fst/generic-register.h
 index d95d095..ee513c1 100644
---- src/include/fst/generic-register.h
-+++ src/include/fst/generic-register.h
+--- a/src/include/fst/generic-register.h
++++ b/src/include/fst/generic-register.h
 @@ -58,16 +58,51 @@ struct KeyLookupReferenceType<std::string> {
  };
  }  // namespace internal
@@ -2427,10 +2427,10 @@ index d95d095..ee513c1 100644
    }
  };
  
-diff --git src/include/fst/log.h src/include/fst/log.h
+diff --git a/src/include/fst/log.h b/src/include/fst/log.h
 index 76820ea..086ff0d 100644
---- src/include/fst/log.h
-+++ src/include/fst/log.h
+--- a/src/include/fst/log.h
++++ b/src/include/fst/log.h
 @@ -31,7 +31,7 @@
  class LogMessage;
  class LogMessage;
@@ -2440,10 +2440,10 @@ index 76820ea..086ff0d 100644
  
  class LogMessage {
   public:
-diff --git src/include/fst/lookahead-matcher.h src/include/fst/lookahead-matcher.h
+diff --git a/src/include/fst/lookahead-matcher.h b/src/include/fst/lookahead-matcher.h
 index 45e774d..d0d3580 100644
---- src/include/fst/lookahead-matcher.h
-+++ src/include/fst/lookahead-matcher.h
+--- a/src/include/fst/lookahead-matcher.h
++++ b/src/include/fst/lookahead-matcher.h
 @@ -43,8 +43,8 @@
  #include <fst/vector-fst.h>
  #include <string_view>
@@ -2455,10 +2455,10 @@ index 45e774d..d0d3580 100644
  
  namespace fst {
  
-diff --git src/include/fst/mapped-file.h src/include/fst/mapped-file.h
+diff --git a/src/include/fst/mapped-file.h b/src/include/fst/mapped-file.h
 index ede768b..83dd5cd 100644
---- src/include/fst/mapped-file.h
-+++ src/include/fst/mapped-file.h
+--- a/src/include/fst/mapped-file.h
++++ b/src/include/fst/mapped-file.h
 @@ -48,7 +48,7 @@ struct MemoryRegion {
  #endif
  };
@@ -2468,10 +2468,10 @@ index ede768b..83dd5cd 100644
   public:
    ~MappedFile();
  
-diff --git src/include/fst/mutable-fst.h src/include/fst/mutable-fst.h
+diff --git a/src/include/fst/mutable-fst.h b/src/include/fst/mutable-fst.h
 index 297db60..32317d3 100644
---- src/include/fst/mutable-fst.h
-+++ src/include/fst/mutable-fst.h
+--- a/src/include/fst/mutable-fst.h
++++ b/src/include/fst/mutable-fst.h
 @@ -43,6 +43,11 @@
  #include <fst/symbol-table.h>
  #include <string_view>
@@ -2494,10 +2494,10 @@ index 297db60..32317d3 100644
          return Read(std::cin, FstReadOptions("standard input"));
        }
      } else {  // Converts to 'convert_type' if not mutable.
-diff --git src/include/fst/properties.h src/include/fst/properties.h
+diff --git a/src/include/fst/properties.h b/src/include/fst/properties.h
 index 897621a..f9f1b39 100644
---- src/include/fst/properties.h
-+++ src/include/fst/properties.h
+--- a/src/include/fst/properties.h
++++ b/src/include/fst/properties.h
 @@ -349,46 +349,46 @@ inline uint64_t DeleteAllStatesProperties(uint64_t inprops,
  
  inline uint64_t DeleteArcsProperties(uint64_t inprops);
@@ -2571,10 +2571,10 @@ index 897621a..f9f1b39 100644
  
  // For a binary property, the bit is always returned set. For a trinary (i.e.,
  // two-bit) property, both bits are returned set iff either corresponding input
-diff --git src/include/fst/register.h src/include/fst/register.h
+diff --git a/src/include/fst/register.h b/src/include/fst/register.h
 index ecd24ae..e8d07bb 100644
---- src/include/fst/register.h
-+++ src/include/fst/register.h
+--- a/src/include/fst/register.h
++++ b/src/include/fst/register.h
 @@ -75,7 +75,15 @@ class FstRegister : public GenericRegister<std::string, FstRegisterEntry<Arc>,
    std::string ConvertKeyToSoFilename(std::string_view key) const override {
      std::string legal_type(key);
@@ -2592,10 +2592,10 @@ index ecd24ae..e8d07bb 100644
      return legal_type;
    }
  };
-diff --git src/include/fst/script/arc-class.h src/include/fst/script/arc-class.h
+diff --git a/src/include/fst/script/arc-class.h b/src/include/fst/script/arc-class.h
 index eadddfa..7933c46 100644
---- src/include/fst/script/arc-class.h
-+++ src/include/fst/script/arc-class.h
+--- a/src/include/fst/script/arc-class.h
++++ b/src/include/fst/script/arc-class.h
 @@ -21,6 +21,7 @@
  #include <cstdint>
  
@@ -2613,10 +2613,10 @@ index eadddfa..7933c46 100644
    template <class Arc>
    explicit ArcClass(const Arc &arc)
        : ilabel(arc.ilabel),
-diff --git src/include/fst/script/arcfilter-impl.h src/include/fst/script/arcfilter-impl.h
+diff --git a/src/include/fst/script/arcfilter-impl.h b/src/include/fst/script/arcfilter-impl.h
 index 1a29fa9..8c0e722 100644
---- src/include/fst/script/arcfilter-impl.h
-+++ src/include/fst/script/arcfilter-impl.h
+--- a/src/include/fst/script/arcfilter-impl.h
++++ b/src/include/fst/script/arcfilter-impl.h
 @@ -19,10 +19,11 @@
  #define FST_SCRIPT_ARCFILTER_IMPL_H_
  
@@ -2630,10 +2630,10 @@ index 1a29fa9..8c0e722 100644
    ANY,
    EPSILON,
    INPUT_EPSILON,
-diff --git src/include/fst/script/arciterator-class.h src/include/fst/script/arciterator-class.h
+diff --git a/src/include/fst/script/arciterator-class.h b/src/include/fst/script/arciterator-class.h
 index fe0d78d..61693de 100644
---- src/include/fst/script/arciterator-class.h
-+++ src/include/fst/script/arciterator-class.h
+--- a/src/include/fst/script/arciterator-class.h
++++ b/src/include/fst/script/arciterator-class.h
 @@ -41,7 +41,7 @@ namespace script {
  // Non-mutable arc iterators.
  
@@ -2670,10 +2670,10 @@ index fe0d78d..61693de 100644
  
  using InitMutableArcIteratorClassArgs =
      std::tuple<MutableFstClass *, int64_t, MutableArcIteratorClass *>;
-diff --git src/include/fst/script/arcsort.h src/include/fst/script/arcsort.h
+diff --git a/src/include/fst/script/arcsort.h b/src/include/fst/script/arcsort.h
 index 82053f2..38969ef 100644
---- src/include/fst/script/arcsort.h
-+++ src/include/fst/script/arcsort.h
+--- a/src/include/fst/script/arcsort.h
++++ b/src/include/fst/script/arcsort.h
 @@ -28,7 +28,7 @@
  namespace fst {
  namespace script {
@@ -2692,10 +2692,10 @@ index 82053f2..38969ef 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/closure.h src/include/fst/script/closure.h
+diff --git a/src/include/fst/script/closure.h b/src/include/fst/script/closure.h
 index 964fecc..d6b9334 100644
---- src/include/fst/script/closure.h
-+++ src/include/fst/script/closure.h
+--- a/src/include/fst/script/closure.h
++++ b/src/include/fst/script/closure.h
 @@ -24,6 +24,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/rational.h>
@@ -2713,10 +2713,10 @@ index 964fecc..d6b9334 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/compile-impl.h src/include/fst/script/compile-impl.h
+diff --git a/src/include/fst/script/compile-impl.h b/src/include/fst/script/compile-impl.h
 index b947a2d..72ebf63 100644
---- src/include/fst/script/compile-impl.h
-+++ src/include/fst/script/compile-impl.h
+--- a/src/include/fst/script/compile-impl.h
++++ b/src/include/fst/script/compile-impl.h
 @@ -38,8 +38,6 @@
  #include <unordered_map>
  #include <string_view>
@@ -2726,10 +2726,10 @@ index b947a2d..72ebf63 100644
  namespace fst {
  
  // Compile a binary FST from textual input, helper class for fstcompile.cc.
-diff --git src/include/fst/script/compile.h src/include/fst/script/compile.h
+diff --git a/src/include/fst/script/compile.h b/src/include/fst/script/compile.h
 index a0c4f66..a0c79a6 100644
---- src/include/fst/script/compile.h
-+++ src/include/fst/script/compile.h
+--- a/src/include/fst/script/compile.h
++++ b/src/include/fst/script/compile.h
 @@ -31,6 +31,7 @@
  #include <fst/script/arg-packs.h>
  #include <fst/script/compile-impl.h>
@@ -2763,10 +2763,10 @@ index a0c4f66..a0c79a6 100644
      std::istream &istrm, const std::string &source, const std::string &fst_type,
      const std::string &arc_type, const SymbolTable *isyms,
      const SymbolTable *osyms, const SymbolTable *ssyms, bool accep, bool ikeep,
-diff --git src/include/fst/script/compose.h src/include/fst/script/compose.h
+diff --git a/src/include/fst/script/compose.h b/src/include/fst/script/compose.h
 index 5bbe91f..c026e3a 100644
---- src/include/fst/script/compose.h
-+++ src/include/fst/script/compose.h
+--- a/src/include/fst/script/compose.h
++++ b/src/include/fst/script/compose.h
 @@ -24,6 +24,7 @@
  #include <fst/fst.h>
  #include <fst/mutable-fst.h>
@@ -2784,10 +2784,10 @@ index 5bbe91f..c026e3a 100644
               MutableFstClass *ofst,
               const ComposeOptions &opts = ComposeOptions());
  
-diff --git src/include/fst/script/concat.h src/include/fst/script/concat.h
+diff --git a/src/include/fst/script/concat.h b/src/include/fst/script/concat.h
 index 3450176..e55b160 100644
---- src/include/fst/script/concat.h
-+++ src/include/fst/script/concat.h
+--- a/src/include/fst/script/concat.h
++++ b/src/include/fst/script/concat.h
 @@ -25,6 +25,7 @@
  #include <fst/fst.h>
  #include <fst/mutable-fst.h>
@@ -2811,10 +2811,10 @@ index 3450176..e55b160 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/connect.h src/include/fst/script/connect.h
+diff --git a/src/include/fst/script/connect.h b/src/include/fst/script/connect.h
 index 496a51d..84043a4 100644
---- src/include/fst/script/connect.h
-+++ src/include/fst/script/connect.h
+--- a/src/include/fst/script/connect.h
++++ b/src/include/fst/script/connect.h
 @@ -20,6 +20,7 @@
  
  #include <fst/connect.h>
@@ -2832,10 +2832,10 @@ index 496a51d..84043a4 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/convert.h src/include/fst/script/convert.h
+diff --git a/src/include/fst/script/convert.h b/src/include/fst/script/convert.h
 index a06ee31..2e9a280 100644
---- src/include/fst/script/convert.h
-+++ src/include/fst/script/convert.h
+--- a/src/include/fst/script/convert.h
++++ b/src/include/fst/script/convert.h
 @@ -26,6 +26,7 @@
  #include <fst/register.h>
  #include <fst/script/arg-packs.h>
@@ -2853,10 +2853,10 @@ index a06ee31..2e9a280 100644
                                    const std::string &new_type);
  
  }  // namespace script
-diff --git src/include/fst/script/decode.h src/include/fst/script/decode.h
+diff --git a/src/include/fst/script/decode.h b/src/include/fst/script/decode.h
 index 1facd5b..d053512 100644
---- src/include/fst/script/decode.h
-+++ src/include/fst/script/decode.h
+--- a/src/include/fst/script/decode.h
++++ b/src/include/fst/script/decode.h
 @@ -25,6 +25,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/script/encodemapper-class.h>
@@ -2874,10 +2874,10 @@ index 1facd5b..d053512 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/determinize.h src/include/fst/script/determinize.h
+diff --git a/src/include/fst/script/determinize.h b/src/include/fst/script/determinize.h
 index f8d8d99..367af3f 100644
---- src/include/fst/script/determinize.h
-+++ src/include/fst/script/determinize.h
+--- a/src/include/fst/script/determinize.h
++++ b/src/include/fst/script/determinize.h
 @@ -26,11 +26,12 @@
  #include <fst/mutable-fst.h>
  #include <fst/script/fst-class.h>
@@ -2901,10 +2901,10 @@ index f8d8d99..367af3f 100644
                   const DeterminizeOptions &opts);
  
  }  // namespace script
-diff --git src/include/fst/script/difference.h src/include/fst/script/difference.h
+diff --git a/src/include/fst/script/difference.h b/src/include/fst/script/difference.h
 index cc964da..75f0c3f 100644
---- src/include/fst/script/difference.h
-+++ src/include/fst/script/difference.h
+--- a/src/include/fst/script/difference.h
++++ b/src/include/fst/script/difference.h
 @@ -26,6 +26,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/script/compose.h>
@@ -2922,10 +2922,10 @@ index cc964da..75f0c3f 100644
                  MutableFstClass *ofst,
                  const ComposeOptions &opts = ComposeOptions());
  
-diff --git src/include/fst/script/disambiguate.h src/include/fst/script/disambiguate.h
+diff --git a/src/include/fst/script/disambiguate.h b/src/include/fst/script/disambiguate.h
 index 010ae55..05ff9d9 100644
---- src/include/fst/script/disambiguate.h
-+++ src/include/fst/script/disambiguate.h
+--- a/src/include/fst/script/disambiguate.h
++++ b/src/include/fst/script/disambiguate.h
 @@ -27,11 +27,12 @@
  #include <fst/mutable-fst.h>
  #include <fst/script/fst-class.h>
@@ -2949,10 +2949,10 @@ index 010ae55..05ff9d9 100644
                    const DisambiguateOptions &opts);
  
  }  // namespace script
-diff --git src/include/fst/script/draw.h src/include/fst/script/draw.h
+diff --git a/src/include/fst/script/draw.h b/src/include/fst/script/draw.h
 index 79dfe5f..b24e0c2 100644
---- src/include/fst/script/draw.h
-+++ src/include/fst/script/draw.h
+--- a/src/include/fst/script/draw.h
++++ b/src/include/fst/script/draw.h
 @@ -25,6 +25,7 @@
  #include <fst/symbol-table.h>
  #include <fst/script/draw-impl.h>
@@ -2979,10 +2979,10 @@ index 79dfe5f..b24e0c2 100644
            const SymbolTable *osyms, const SymbolTable *ssyms, bool accep,
            const std::string &title, float width, float height, bool portrait,
            bool vertical, float ranksep, float nodesep, int fontsize,
-diff --git src/include/fst/script/encode.h src/include/fst/script/encode.h
+diff --git a/src/include/fst/script/encode.h b/src/include/fst/script/encode.h
 index 290fd9a..514e014 100644
---- src/include/fst/script/encode.h
-+++ src/include/fst/script/encode.h
+--- a/src/include/fst/script/encode.h
++++ b/src/include/fst/script/encode.h
 @@ -25,6 +25,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/script/encodemapper-class.h>
@@ -3000,10 +3000,10 @@ index 290fd9a..514e014 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/encodemapper-class.h src/include/fst/script/encodemapper-class.h
+diff --git a/src/include/fst/script/encodemapper-class.h b/src/include/fst/script/encodemapper-class.h
 index cb8bad3..4aa071d 100644
---- src/include/fst/script/encodemapper-class.h
-+++ src/include/fst/script/encodemapper-class.h
+--- a/src/include/fst/script/encodemapper-class.h
++++ b/src/include/fst/script/encodemapper-class.h
 @@ -33,6 +33,7 @@
  #include <fst/script/arc-class.h>
  #include <fst/script/fst-class.h>
@@ -3047,10 +3047,10 @@ index cb8bad3..4aa071d 100644
      return legal_type;
    }
  };
-diff --git src/include/fst/script/epsnormalize.h src/include/fst/script/epsnormalize.h
+diff --git a/src/include/fst/script/epsnormalize.h b/src/include/fst/script/epsnormalize.h
 index f1d81d2..17892ed 100644
---- src/include/fst/script/epsnormalize.h
-+++ src/include/fst/script/epsnormalize.h
+--- a/src/include/fst/script/epsnormalize.h
++++ b/src/include/fst/script/epsnormalize.h
 @@ -24,6 +24,7 @@
  #include <fst/fst.h>
  #include <fst/mutable-fst.h>
@@ -3068,10 +3068,10 @@ index f1d81d2..17892ed 100644
                    EpsNormalizeType norm_type = EPS_NORM_INPUT);
  
  }  // namespace script
-diff --git src/include/fst/script/equal.h src/include/fst/script/equal.h
+diff --git a/src/include/fst/script/equal.h b/src/include/fst/script/equal.h
 index f318a83..f38ddb7 100644
---- src/include/fst/script/equal.h
-+++ src/include/fst/script/equal.h
+--- a/src/include/fst/script/equal.h
++++ b/src/include/fst/script/equal.h
 @@ -25,6 +25,7 @@
  #include <fst/weight.h>
  #include <fst/script/arg-packs.h>
@@ -3089,10 +3089,10 @@ index f318a83..f38ddb7 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/equivalent.h src/include/fst/script/equivalent.h
+diff --git a/src/include/fst/script/equivalent.h b/src/include/fst/script/equivalent.h
 index 01b4f1c..189be0f 100644
---- src/include/fst/script/equivalent.h
-+++ src/include/fst/script/equivalent.h
+--- a/src/include/fst/script/equivalent.h
++++ b/src/include/fst/script/equivalent.h
 @@ -25,6 +25,7 @@
  #include <fst/weight.h>
  #include <fst/script/arg-packs.h>
@@ -3110,10 +3110,10 @@ index 01b4f1c..189be0f 100644
                  float delta = kDelta, bool *error = nullptr);
  
  }  // namespace script
-diff --git src/include/fst/script/fst-class.h src/include/fst/script/fst-class.h
+diff --git a/src/include/fst/script/fst-class.h b/src/include/fst/script/fst-class.h
 index 38a3012..633b42d 100644
---- src/include/fst/script/fst-class.h
-+++ src/include/fst/script/fst-class.h
+--- a/src/include/fst/script/fst-class.h
++++ b/src/include/fst/script/fst-class.h
 @@ -42,6 +42,7 @@
  #include <fst/script/arc-class.h>
  #include <fst/script/weight-class.h>
@@ -3169,10 +3169,10 @@ index 38a3012..633b42d 100644
      return legal_type;
    }
  };
-diff --git src/include/fst/script/getters.h src/include/fst/script/getters.h
+diff --git a/src/include/fst/script/getters.h b/src/include/fst/script/getters.h
 index 3084e22..d29fa48 100644
---- src/include/fst/script/getters.h
-+++ src/include/fst/script/getters.h
+--- a/src/include/fst/script/getters.h
++++ b/src/include/fst/script/getters.h
 @@ -42,35 +42,36 @@
  #include <fst/script/map.h>             // For MapType.
  #include <fst/script/script-impl.h>     // For RandArcSelection.
@@ -3245,10 +3245,10 @@ index 3084e22..d29fa48 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/info-impl.h src/include/fst/script/info-impl.h
+diff --git a/src/include/fst/script/info-impl.h b/src/include/fst/script/info-impl.h
 index 238edbd..88af4f4 100644
---- src/include/fst/script/info-impl.h
-+++ src/include/fst/script/info-impl.h
+--- a/src/include/fst/script/info-impl.h
++++ b/src/include/fst/script/info-impl.h
 @@ -42,6 +42,7 @@
  #include <fst/visit.h>
  #include <fst/script/arcfilter-impl.h>
@@ -3279,10 +3279,10 @@ index 238edbd..88af4f4 100644
  
  }  // namespace fst
  
-diff --git src/include/fst/script/info.h src/include/fst/script/info.h
+diff --git a/src/include/fst/script/info.h b/src/include/fst/script/info.h
 index 69ba3e8..1fdd8df 100644
---- src/include/fst/script/info.h
-+++ src/include/fst/script/info.h
+--- a/src/include/fst/script/info.h
++++ b/src/include/fst/script/info.h
 @@ -26,6 +26,7 @@
  #include <fst/script/arg-packs.h>
  #include <fst/script/fst-class.h>
@@ -3300,10 +3300,10 @@ index 69ba3e8..1fdd8df 100644
            const std::string &info_type, bool verify);
  
  }  // namespace script
-diff --git src/include/fst/script/intersect.h src/include/fst/script/intersect.h
+diff --git a/src/include/fst/script/intersect.h b/src/include/fst/script/intersect.h
 index fdc1176..2dd2080 100644
---- src/include/fst/script/intersect.h
-+++ src/include/fst/script/intersect.h
+--- a/src/include/fst/script/intersect.h
++++ b/src/include/fst/script/intersect.h
 @@ -26,6 +26,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/script/compose.h>
@@ -3321,10 +3321,10 @@ index fdc1176..2dd2080 100644
                 MutableFstClass *ofst,
                 const ComposeOptions &opts = ComposeOptions());
  
-diff --git src/include/fst/script/invert.h src/include/fst/script/invert.h
+diff --git a/src/include/fst/script/invert.h b/src/include/fst/script/invert.h
 index 94ba482..7ee4c4e 100644
---- src/include/fst/script/invert.h
-+++ src/include/fst/script/invert.h
+--- a/src/include/fst/script/invert.h
++++ b/src/include/fst/script/invert.h
 @@ -20,6 +20,7 @@
  
  #include <fst/invert.h>
@@ -3342,10 +3342,10 @@ index 94ba482..7ee4c4e 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/isomorphic.h src/include/fst/script/isomorphic.h
+diff --git a/src/include/fst/script/isomorphic.h b/src/include/fst/script/isomorphic.h
 index 21dc24f..589bbb5 100644
---- src/include/fst/script/isomorphic.h
-+++ src/include/fst/script/isomorphic.h
+--- a/src/include/fst/script/isomorphic.h
++++ b/src/include/fst/script/isomorphic.h
 @@ -25,6 +25,7 @@
  #include <fst/weight.h>
  #include <fst/script/arg-packs.h>
@@ -3363,10 +3363,10 @@ index 21dc24f..589bbb5 100644
                  float delta = kDelta);
  
  }  // namespace script
-diff --git src/include/fst/script/map.h src/include/fst/script/map.h
+diff --git a/src/include/fst/script/map.h b/src/include/fst/script/map.h
 index 50e9aaa..7751fc5 100644
---- src/include/fst/script/map.h
-+++ src/include/fst/script/map.h
+--- a/src/include/fst/script/map.h
++++ b/src/include/fst/script/map.h
 @@ -31,6 +31,7 @@
  #include <fst/script/arg-packs.h>
  #include <fst/script/fst-class.h>
@@ -3393,10 +3393,10 @@ index 50e9aaa..7751fc5 100644
                                                MapType map_type, float delta,
                                                double power,
                                                const WeightClass &weight);
-diff --git src/include/fst/script/minimize.h src/include/fst/script/minimize.h
+diff --git a/src/include/fst/script/minimize.h b/src/include/fst/script/minimize.h
 index 4b8d061..f8edfbc 100644
---- src/include/fst/script/minimize.h
-+++ src/include/fst/script/minimize.h
+--- a/src/include/fst/script/minimize.h
++++ b/src/include/fst/script/minimize.h
 @@ -24,6 +24,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/shortest-distance.h>
@@ -3414,10 +3414,10 @@ index 4b8d061..f8edfbc 100644
                MutableFstClass * ofst2 = nullptr,
                float delta = kShortestDelta, bool allow_nondet = false);
  
-diff --git src/include/fst/script/print.h src/include/fst/script/print.h
+diff --git a/src/include/fst/script/print.h b/src/include/fst/script/print.h
 index a8064df..a896e66 100644
---- src/include/fst/script/print.h
-+++ src/include/fst/script/print.h
+--- a/src/include/fst/script/print.h
++++ b/src/include/fst/script/print.h
 @@ -27,8 +27,7 @@
  #include <fst/script/fst-class.h>
  #include <fst/script/print-impl.h>
@@ -3454,10 +3454,10 @@ index a8064df..a896e66 100644
                const SymbolTable *isyms, const SymbolTable *osyms,
                const SymbolTable *ssyms, bool accept, bool show_weight_one,
                const std::string &missing_sym = "");
-diff --git src/include/fst/script/project.h src/include/fst/script/project.h
+diff --git a/src/include/fst/script/project.h b/src/include/fst/script/project.h
 index d5c131e..6863926 100644
---- src/include/fst/script/project.h
-+++ src/include/fst/script/project.h
+--- a/src/include/fst/script/project.h
++++ b/src/include/fst/script/project.h
 @@ -23,6 +23,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/project.h>
@@ -3475,10 +3475,10 @@ index d5c131e..6863926 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/prune.h src/include/fst/script/prune.h
+diff --git a/src/include/fst/script/prune.h b/src/include/fst/script/prune.h
 index 32f2259..89935db 100644
---- src/include/fst/script/prune.h
-+++ src/include/fst/script/prune.h
+--- a/src/include/fst/script/prune.h
++++ b/src/include/fst/script/prune.h
 @@ -31,6 +31,7 @@
  #include <fst/weight.h>
  #include <fst/script/fst-class.h>
@@ -3501,10 +3501,10 @@ index 32f2259..89935db 100644
             int64_t state_threshold = kNoStateId, float delta = kDelta);
  
  }  // namespace script
-diff --git src/include/fst/script/push.h src/include/fst/script/push.h
+diff --git a/src/include/fst/script/push.h b/src/include/fst/script/push.h
 index b7671ec..6a30dd6 100644
---- src/include/fst/script/push.h
-+++ src/include/fst/script/push.h
+--- a/src/include/fst/script/push.h
++++ b/src/include/fst/script/push.h
 @@ -27,6 +27,7 @@
  #include <fst/reweight.h>
  #include <fst/shortest-distance.h>
@@ -3526,10 +3526,10 @@ index b7671ec..6a30dd6 100644
            ReweightType rew_type, float delta = kShortestDelta);
  
  }  // namespace script
-diff --git src/include/fst/script/randequivalent.h src/include/fst/script/randequivalent.h
+diff --git a/src/include/fst/script/randequivalent.h b/src/include/fst/script/randequivalent.h
 index fc47f1e..b700122 100644
---- src/include/fst/script/randequivalent.h
-+++ src/include/fst/script/randequivalent.h
+--- a/src/include/fst/script/randequivalent.h
++++ b/src/include/fst/script/randequivalent.h
 @@ -29,6 +29,7 @@
  #include <fst/script/arg-packs.h>
  #include <fst/script/fst-class.h>
@@ -3547,10 +3547,10 @@ index fc47f1e..b700122 100644
      const FstClass &fst1, const FstClass &fst2, int32_t npath = 1,
      const RandGenOptions<RandArcSelection> &opts =
          RandGenOptions<RandArcSelection>(RandArcSelection::UNIFORM),
-diff --git src/include/fst/script/randgen.h src/include/fst/script/randgen.h
+diff --git a/src/include/fst/script/randgen.h b/src/include/fst/script/randgen.h
 index 6405597..8e246ea 100644
---- src/include/fst/script/randgen.h
-+++ src/include/fst/script/randgen.h
+--- a/src/include/fst/script/randgen.h
++++ b/src/include/fst/script/randgen.h
 @@ -27,6 +27,7 @@
  #include <fst/randgen.h>
  #include <fst/script/fst-class.h>
@@ -3568,10 +3568,10 @@ index 6405597..8e246ea 100644
               const RandGenOptions<RandArcSelection> &opts =
                   RandGenOptions<RandArcSelection>(RandArcSelection::UNIFORM),
               uint64_t seed = std::random_device()());
-diff --git src/include/fst/script/relabel.h src/include/fst/script/relabel.h
+diff --git a/src/include/fst/script/relabel.h b/src/include/fst/script/relabel.h
 index 2aa962a..3849386 100644
---- src/include/fst/script/relabel.h
-+++ src/include/fst/script/relabel.h
+--- a/src/include/fst/script/relabel.h
++++ b/src/include/fst/script/relabel.h
 @@ -29,6 +29,7 @@
  #include <fst/relabel.h>
  #include <fst/symbol-table.h>
@@ -3596,10 +3596,10 @@ index 2aa962a..3849386 100644
               const std::vector<std::pair<int64_t, int64_t>> &ipairs,
               const std::vector<std::pair<int64_t, int64_t>> &opairs);
  
-diff --git src/include/fst/script/replace.h src/include/fst/script/replace.h
+diff --git a/src/include/fst/script/replace.h b/src/include/fst/script/replace.h
 index 34d63e8..67229d5 100644
---- src/include/fst/script/replace.h
-+++ src/include/fst/script/replace.h
+--- a/src/include/fst/script/replace.h
++++ b/src/include/fst/script/replace.h
 @@ -31,11 +31,12 @@
  #include <fst/replace.h>
  #include <fst/util.h>
@@ -3623,10 +3623,10 @@ index 34d63e8..67229d5 100644
               MutableFstClass *ofst, const ReplaceOptions &opts);
  
  }  // namespace script
-diff --git src/include/fst/script/reverse.h src/include/fst/script/reverse.h
+diff --git a/src/include/fst/script/reverse.h b/src/include/fst/script/reverse.h
 index c0e91b3..e2244bd 100644
---- src/include/fst/script/reverse.h
-+++ src/include/fst/script/reverse.h
+--- a/src/include/fst/script/reverse.h
++++ b/src/include/fst/script/reverse.h
 @@ -24,6 +24,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/reverse.h>
@@ -3644,10 +3644,10 @@ index c0e91b3..e2244bd 100644
               bool require_superinitial = true);
  
  }  // namespace script
-diff --git src/include/fst/script/reweight.h src/include/fst/script/reweight.h
+diff --git a/src/include/fst/script/reweight.h b/src/include/fst/script/reweight.h
 index 8a64db1..810771e 100644
---- src/include/fst/script/reweight.h
-+++ src/include/fst/script/reweight.h
+--- a/src/include/fst/script/reweight.h
++++ b/src/include/fst/script/reweight.h
 @@ -26,6 +26,7 @@
  #include <fst/script/fst-class.h>
  #include <fst/script/script-impl.h>
@@ -3665,10 +3665,10 @@ index 8a64db1..810771e 100644
                ReweightType reweight_type);
  
  }  // namespace script
-diff --git src/include/fst/script/rmepsilon.h src/include/fst/script/rmepsilon.h
+diff --git a/src/include/fst/script/rmepsilon.h b/src/include/fst/script/rmepsilon.h
 index 36c7dc2..3235989 100644
---- src/include/fst/script/rmepsilon.h
-+++ src/include/fst/script/rmepsilon.h
+--- a/src/include/fst/script/rmepsilon.h
++++ b/src/include/fst/script/rmepsilon.h
 @@ -35,11 +35,12 @@
  #include <fst/script/fst-class.h>
  #include <fst/script/shortest-distance.h>
@@ -3692,10 +3692,10 @@ index 36c7dc2..3235989 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/script-impl.h src/include/fst/script/script-impl.h
+diff --git a/src/include/fst/script/script-impl.h b/src/include/fst/script/script-impl.h
 index d20a413..d016605 100644
---- src/include/fst/script/script-impl.h
-+++ src/include/fst/script/script-impl.h
+--- a/src/include/fst/script/script-impl.h
++++ b/src/include/fst/script/script-impl.h
 @@ -108,11 +108,12 @@
  #include <fst/script/fst-class.h>
  #include <fst/script/weight-class.h>
@@ -3727,10 +3727,10 @@ index d20a413..d016605 100644
      return legal_type;
    }
  };
-diff --git src/include/fst/script/shortest-distance.h src/include/fst/script/shortest-distance.h
+diff --git a/src/include/fst/script/shortest-distance.h b/src/include/fst/script/shortest-distance.h
 index c78ba3d..1c218de 100644
---- src/include/fst/script/shortest-distance.h
-+++ src/include/fst/script/shortest-distance.h
+--- a/src/include/fst/script/shortest-distance.h
++++ b/src/include/fst/script/shortest-distance.h
 @@ -37,11 +37,12 @@
  #include <fst/script/prune.h>
  #include <fst/script/script-impl.h>
@@ -3763,10 +3763,10 @@ index c78ba3d..1c218de 100644
                               double delta = fst::kShortestDelta);
  
  }  // namespace script
-diff --git src/include/fst/script/shortest-path.h src/include/fst/script/shortest-path.h
+diff --git a/src/include/fst/script/shortest-path.h b/src/include/fst/script/shortest-path.h
 index 4f19f98..d72ea0f 100644
---- src/include/fst/script/shortest-path.h
-+++ src/include/fst/script/shortest-path.h
+--- a/src/include/fst/script/shortest-path.h
++++ b/src/include/fst/script/shortest-path.h
 @@ -36,13 +36,14 @@
  #include <fst/script/fst-class.h>
  #include <fst/script/shortest-distance.h>
@@ -3792,10 +3792,10 @@ index 4f19f98..d72ea0f 100644
                    const ShortestPathOptions &opts);
  
  }  // namespace script
-diff --git src/include/fst/script/stateiterator-class.h src/include/fst/script/stateiterator-class.h
+diff --git a/src/include/fst/script/stateiterator-class.h b/src/include/fst/script/stateiterator-class.h
 index a7cac23..699ec66 100644
---- src/include/fst/script/stateiterator-class.h
-+++ src/include/fst/script/stateiterator-class.h
+--- a/src/include/fst/script/stateiterator-class.h
++++ b/src/include/fst/script/stateiterator-class.h
 @@ -25,6 +25,7 @@
  #include <fst/fst.h>
  #include <fst/fstlib.h>
@@ -3822,10 +3822,10 @@ index a7cac23..699ec66 100644
  
  using InitStateIteratorClassArgs =
      std::pair<const FstClass &, StateIteratorClass *>;
-diff --git src/include/fst/script/synchronize.h src/include/fst/script/synchronize.h
+diff --git a/src/include/fst/script/synchronize.h b/src/include/fst/script/synchronize.h
 index 4abe729..6bdb10e 100644
---- src/include/fst/script/synchronize.h
-+++ src/include/fst/script/synchronize.h
+--- a/src/include/fst/script/synchronize.h
++++ b/src/include/fst/script/synchronize.h
 @@ -24,6 +24,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/synchronize.h>
@@ -3843,10 +3843,10 @@ index 4abe729..6bdb10e 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/text-io.h src/include/fst/script/text-io.h
+diff --git a/src/include/fst/script/text-io.h b/src/include/fst/script/text-io.h
 index 75e504d..067adc4 100644
---- src/include/fst/script/text-io.h
-+++ src/include/fst/script/text-io.h
+--- a/src/include/fst/script/text-io.h
++++ b/src/include/fst/script/text-io.h
 @@ -27,14 +27,15 @@
  
  #include <fst/script/weight-class.h>
@@ -3865,10 +3865,10 @@ index 75e504d..067adc4 100644
                       const std::vector<WeightClass> &potentials);
  
  }  // namespace script
-diff --git src/include/fst/script/topsort.h src/include/fst/script/topsort.h
+diff --git a/src/include/fst/script/topsort.h b/src/include/fst/script/topsort.h
 index 06adb06..d478515 100644
---- src/include/fst/script/topsort.h
-+++ src/include/fst/script/topsort.h
+--- a/src/include/fst/script/topsort.h
++++ b/src/include/fst/script/topsort.h
 @@ -21,6 +21,7 @@
  #include <fst/topsort.h>
  #include <fst/script/arg-packs.h>
@@ -3886,10 +3886,10 @@ index 06adb06..d478515 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/union.h src/include/fst/script/union.h
+diff --git a/src/include/fst/script/union.h b/src/include/fst/script/union.h
 index f953dc8..8dd9d60 100644
---- src/include/fst/script/union.h
-+++ src/include/fst/script/union.h
+--- a/src/include/fst/script/union.h
++++ b/src/include/fst/script/union.h
 @@ -26,6 +26,7 @@
  #include <fst/mutable-fst.h>
  #include <fst/union.h>
@@ -3910,10 +3910,10 @@ index f953dc8..8dd9d60 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/verify.h src/include/fst/script/verify.h
+diff --git a/src/include/fst/script/verify.h b/src/include/fst/script/verify.h
 index 76591a3..719bcac 100644
---- src/include/fst/script/verify.h
-+++ src/include/fst/script/verify.h
+--- a/src/include/fst/script/verify.h
++++ b/src/include/fst/script/verify.h
 @@ -22,6 +22,7 @@
  #include <fst/verify.h>
  #include <fst/script/arg-packs.h>
@@ -3931,10 +3931,10 @@ index 76591a3..719bcac 100644
  
  }  // namespace script
  }  // namespace fst
-diff --git src/include/fst/script/weight-class.h src/include/fst/script/weight-class.h
+diff --git a/src/include/fst/script/weight-class.h b/src/include/fst/script/weight-class.h
 index 2d7915b..ccebf83 100644
---- src/include/fst/script/weight-class.h
-+++ src/include/fst/script/weight-class.h
+--- a/src/include/fst/script/weight-class.h
++++ b/src/include/fst/script/weight-class.h
 @@ -31,11 +31,12 @@
  #include <fst/util.h>
  #include <fst/weight.h>
@@ -4026,10 +4026,10 @@ index 2d7915b..ccebf83 100644
      return legal_type;
    }
  };
-diff --git src/include/fst/string.h src/include/fst/string.h
+diff --git a/src/include/fst/string.h b/src/include/fst/string.h
 index 7bb953f..5ec40d4 100644
---- src/include/fst/string.h
-+++ src/include/fst/string.h
+--- a/src/include/fst/string.h
++++ b/src/include/fst/string.h
 @@ -42,7 +42,7 @@
  #include <fst/compat.h>
  #include <string_view>
@@ -4039,10 +4039,10 @@ index 7bb953f..5ec40d4 100644
  
  namespace fst {
  
-diff --git src/include/fst/symbol-table-ops.h src/include/fst/symbol-table-ops.h
+diff --git a/src/include/fst/symbol-table-ops.h b/src/include/fst/symbol-table-ops.h
 index 89c1da8..2ca036c 100644
---- src/include/fst/symbol-table-ops.h
-+++ src/include/fst/symbol-table-ops.h
+--- a/src/include/fst/symbol-table-ops.h
++++ b/src/include/fst/symbol-table-ops.h
 @@ -53,7 +53,7 @@ SymbolTable *PruneSymbolTable(const Fst<Arc> &fst, const SymbolTable &syms,
  }
  
@@ -4075,10 +4075,10 @@ index 89c1da8..2ca036c 100644
                           int64_t nlabels, SymbolTable *syms);
  
  }  // namespace fst
-diff --git src/include/fst/symbol-table.h src/include/fst/symbol-table.h
+diff --git a/src/include/fst/symbol-table.h b/src/include/fst/symbol-table.h
 index ba45c8e..f5c2b51 100644
---- src/include/fst/symbol-table.h
-+++ src/include/fst/symbol-table.h
+--- a/src/include/fst/symbol-table.h
++++ b/src/include/fst/symbol-table.h
 @@ -47,14 +47,14 @@
  #include <string_view>
  #include <fst/lock.h>
@@ -4115,10 +4115,10 @@ index ba45c8e..f5c2b51 100644
  
  }  // namespace fst
  
-diff --git src/include/fst/test-properties.h src/include/fst/test-properties.h
+diff --git a/src/include/fst/test-properties.h b/src/include/fst/test-properties.h
 index 8e651ee..a647668 100644
---- src/include/fst/test-properties.h
-+++ src/include/fst/test-properties.h
+--- a/src/include/fst/test-properties.h
++++ b/src/include/fst/test-properties.h
 @@ -33,8 +33,6 @@
  #include <fst/util.h>
  #include <unordered_set>
@@ -4128,10 +4128,10 @@ index 8e651ee..a647668 100644
  namespace fst {
  namespace internal {
  
-diff --git src/include/fst/test/fst_test.h src/include/fst/test/fst_test.h
+diff --git a/src/include/fst/test/fst_test.h b/src/include/fst/test/fst_test.h
 index f31044d..8ad26c9 100644
---- src/include/fst/test/fst_test.h
-+++ src/include/fst/test/fst_test.h
+--- a/src/include/fst/test/fst_test.h
++++ b/src/include/fst/test/fst_test.h
 @@ -240,13 +240,13 @@ class FstTester {
      {
        // check mmaping by first writing the file with the aligned attribute set
@@ -4164,10 +4164,10 @@ index f31044d..8ad26c9 100644
        FstReadOptions opts;
        opts.mode = FstReadOptions::ReadMode("map");
        opts.source = aligned;
-diff --git src/include/fst/util.h src/include/fst/util.h
+diff --git a/src/include/fst/util.h b/src/include/fst/util.h
 index 5cb6721..4650023 100644
---- src/include/fst/util.h
-+++ src/include/fst/util.h
+--- a/src/include/fst/util.h
++++ b/src/include/fst/util.h
 @@ -51,7 +51,7 @@
  
  // Utility for error handling.
@@ -4223,10 +4223,10 @@ index 5cb6721..4650023 100644
  
  // An associative container for which testing membership is faster than an STL
  // set if members are restricted to an interval that excludes most non-members.
-diff --git src/include/fst/vector-fst.h src/include/fst/vector-fst.h
+diff --git a/src/include/fst/vector-fst.h b/src/include/fst/vector-fst.h
 index f01e7f0..3477993 100644
---- src/include/fst/vector-fst.h
-+++ src/include/fst/vector-fst.h
+--- a/src/include/fst/vector-fst.h
++++ b/src/include/fst/vector-fst.h
 @@ -491,7 +491,7 @@ VectorFstImpl<S> *VectorFstImpl<S>::Read(std::istream &strm,
      int64_t narcs;
      ReadType(strm, &narcs);
@@ -4245,10 +4245,10 @@ index f01e7f0..3477993 100644
          return nullptr;
        }
        impl->BaseImpl::AddArc(state, std::move(arc));
-diff --git src/include/fst/weight.h src/include/fst/weight.h
+diff --git a/src/include/fst/weight.h b/src/include/fst/weight.h
 index 0159f95..681e624 100644
---- src/include/fst/weight.h
-+++ src/include/fst/weight.h
+--- a/src/include/fst/weight.h
++++ b/src/include/fst/weight.h
 @@ -37,8 +37,8 @@
  #include <fst/log.h>
  #include <fst/util.h>
@@ -4287,10 +4287,10 @@ index 0159f95..681e624 100644
   public:
    // Uses configuration from flags (FST_FLAGS_fst_weight_separator,
    // FST_FLAGS_fst_weight_parentheses).
-diff --git src/lib/CMakeLists.txt src/lib/CMakeLists.txt
+diff --git a/src/lib/CMakeLists.txt b/src/lib/CMakeLists.txt
 index 5194802..c8fe9ea 100644
---- src/lib/CMakeLists.txt
-+++ src/lib/CMakeLists.txt
+--- a/src/lib/CMakeLists.txt
++++ b/src/lib/CMakeLists.txt
 @@ -18,7 +18,7 @@ if (MSVC)
  GENERATE_EXPORT_HEADER( fst
               BASE_NAME fst
@@ -4309,10 +4309,10 @@ index 5194802..c8fe9ea 100644
  target_link_libraries(fst ${CMAKE_DL_LIBS})
  target_compile_definitions(fst PRIVATE fst_EXPORTS)
  
-diff --git src/lib/flags.cc src/lib/flags.cc
+diff --git a/src/lib/flags.cc b/src/lib/flags.cc
 index b32460d..7f1036d 100644
---- src/lib/flags.cc
-+++ src/lib/flags.cc
+--- a/src/lib/flags.cc
++++ b/src/lib/flags.cc
 @@ -28,6 +28,13 @@
  
  #include <fst/log.h>
@@ -4327,10 +4327,10 @@ index b32460d..7f1036d 100644
  static const char *private_tmpdir = getenv("TMPDIR");
  
  DEFINE_int32(v, 0, "verbosity level");
-diff --git src/lib/fst-types.cc src/lib/fst-types.cc
+diff --git a/src/lib/fst-types.cc b/src/lib/fst-types.cc
 index dd4e164..dad1e88 100644
---- src/lib/fst-types.cc
-+++ src/lib/fst-types.cc
+--- a/src/lib/fst-types.cc
++++ b/src/lib/fst-types.cc
 @@ -28,6 +28,13 @@
  
  namespace fst {
@@ -4345,10 +4345,10 @@ index dd4e164..dad1e88 100644
  REGISTER_FST(VectorFst, StdArc);
  REGISTER_FST(VectorFst, LogArc);
  REGISTER_FST(VectorFst, Log64Arc);
-diff --git src/lib/fst.cc src/lib/fst.cc
+diff --git a/src/lib/fst.cc b/src/lib/fst.cc
 index 7532034..93db80e 100644
---- src/lib/fst.cc
-+++ src/lib/fst.cc
+--- a/src/lib/fst.cc
++++ b/src/lib/fst.cc
 @@ -31,6 +31,9 @@
  #include <fst/util.h>
  #include <string_view>
@@ -4359,10 +4359,10 @@ index 7532034..93db80e 100644
  // FST flag definitions.
  
  DEFINE_bool(fst_verify_properties, false,
-diff --git src/lib/symbol-table.cc src/lib/symbol-table.cc
+diff --git a/src/lib/symbol-table.cc b/src/lib/symbol-table.cc
 index 93dc753..0563e03 100644
---- src/lib/symbol-table.cc
-+++ src/lib/symbol-table.cc
+--- a/src/lib/symbol-table.cc
++++ b/src/lib/symbol-table.cc
 @@ -345,7 +345,7 @@ void SymbolTableImpl::ShrinkToFit() { symbols_.ShrinkToFit(); }
  
  SymbolTable * SymbolTable::ReadText(const std::string &source,
@@ -4381,10 +4381,10 @@ index 93dc753..0563e03 100644
      if (!strm) {
        LOG(ERROR) << "SymbolTable::WriteText: Can't open file: " << sink;
        return false;
-diff --git src/script/CMakeLists.txt src/script/CMakeLists.txt
+diff --git a/src/script/CMakeLists.txt b/src/script/CMakeLists.txt
 index 0aec3b9..c590666 100644
---- src/script/CMakeLists.txt
-+++ src/script/CMakeLists.txt
+--- a/src/script/CMakeLists.txt
++++ b/src/script/CMakeLists.txt
 @@ -49,20 +49,16 @@
        synchronize.cc
      )
@@ -4408,10 +4408,10 @@ index 0aec3b9..c590666 100644
      target_link_libraries(fstscript PUBLIC fst)
  target_include_directories(fstscript PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                             $<INSTALL_INTERFACE:include>)
-diff --git src/script/text-io.cc src/script/text-io.cc
+diff --git a/src/script/text-io.cc b/src/script/text-io.cc
 index ebfbd8b..e1a3d6e 100644
---- src/script/text-io.cc
-+++ src/script/text-io.cc
+--- a/src/script/text-io.cc
++++ b/src/script/text-io.cc
 @@ -37,7 +37,7 @@ namespace script {
  // Reads vector of weights; returns true on success.
  bool ReadPotentials(std::string_view weight_type, const std::string &source,
