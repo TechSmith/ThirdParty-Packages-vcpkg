@@ -260,6 +260,7 @@ function Remove-DylibSymlinks {
         if($oldFilename -eq $newFilename) {
             continue
         }
+        Write-Message "Consolidating Moving $oldFileFullName to $newFileFullName"
         Move-Item -Path $oldFileFullName -Destination $newFileFullName
     }
 
