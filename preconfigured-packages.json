@@ -6,13 +6,13 @@
         "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       },
       "win": {
         "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       }
     },
     {
@@ -101,13 +101,13 @@
         "package": "libzip[core]",
         "linkType": "static",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       },
       "win": {
         "package": "libzip[core]",
         "linkType": "static",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       }
     },
     {
@@ -116,13 +116,13 @@
         "package": "libzip[core]",
         "linkType": "dynamic",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       },
       "win": {
         "package": "libzip[core]",
         "linkType": "dynamic",
         "buildType": "release",
-		"vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+		    "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       }
     },
     {
