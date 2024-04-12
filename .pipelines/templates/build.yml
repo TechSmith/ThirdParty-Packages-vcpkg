@@ -72,12 +72,12 @@ stages:
     - template: steps/full-checkout.yml
 
     - powershell: |
-        ./build-and-stage-preconfigured.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
+        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 
     - powershell: |
-        ./build-and-stage.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
+        ./invoke-build.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
       displayName: 'Run: install & stage (custom)'
       condition: and(succeeded(), ${{ parameters.isCustomBuild }})
 
