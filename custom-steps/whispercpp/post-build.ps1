@@ -5,6 +5,9 @@ param (
     [Parameter(Mandatory=$false)][string]$BuildType
 )
 
-if ((Get-IsOnWindowsOS)) {
+if ((Get-IsOnMacOS)) {
+    Remove-DylibSymlinks -BuildArtifactsPath $BuildArtifactsPath
+}
+elseif((Get-IsOnWindowsOS)) {
     Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
 }
