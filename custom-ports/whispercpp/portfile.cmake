@@ -23,4 +23,10 @@ foreach(LIB_FILE ${LIB_FILES})
 endforeach()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/static")
 
+# Copy other files required in the bin dir for Mac
+if(APPLE)
+    file(COPY "${SOURCE_PATH}/ggml-metal.metal" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+    file(COPY "${SOURCE_PATH}/ggml-common.h" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+endif()
+
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
