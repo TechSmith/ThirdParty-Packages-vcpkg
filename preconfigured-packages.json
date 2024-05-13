@@ -243,6 +243,19 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "fribidi",
+      "mac": {
+        "package": "fribidi",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "fribidi",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
