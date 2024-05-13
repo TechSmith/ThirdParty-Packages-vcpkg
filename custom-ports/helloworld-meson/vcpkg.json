@@ -1,0 +1,14 @@
+{
+    "name": "helloworld-meson",
+    "version": "1.0.0",
+    "port-version": 1,
+    "description": "A library to test out building a hello world app using meson.",
+    "homepage": "",
+    "dependencies": [
+      {
+        "name": "vcpkg-tool-meson",
+        "host": true
+      }
+    ]
+  }
+  
