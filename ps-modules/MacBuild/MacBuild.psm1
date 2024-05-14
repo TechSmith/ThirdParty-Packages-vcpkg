@@ -63,6 +63,7 @@ function Create-FinalizedMacArtifacts {
     Remove-Item -Force -Recurse -Path $arm64LibDir
     Remove-Item -Force -Recurse -Path $x64LibDir
     Remove-DylibSymlinks -libDir $universalLibDir
+    Run-CreateDysmAndStripDebugSymbols -libDir $universalLibDir
 }
 
 function Update-LibraryPath {
@@ -264,5 +265,23 @@ function Remove-DylibSymlinks {
     Pop-Location
 }
 
-Export-ModuleMember -Function Create-FinalizedMacArtifacts, Remove-DylibSymlinks
+function Run-CreateDysmAndStripDebugSymbols {
+    param (
+        [Parameter(Mandatory=$true)][string]$libDir
+    )
+
+    Push-Location "$libDir"
+    $libraries = (Get-ChildItem -Path . -Filter "*.dylib")
+    foreach($library in $libraries) {
+        Write-Message "> Processing: $library..."
+        Write-Message ">> Running dsymutil"
+        $dsymFilename = $library.Name + ".dSYM"
+        dsymutil $library.Name -o $dsymFilename
+
+        Write-Message ">> Running strip"
+        strip -S $library.Name
+    }
+    Pop-Location
+}
+
 Export-ModuleMember -Function Create-FinalizedMacArtifacts
