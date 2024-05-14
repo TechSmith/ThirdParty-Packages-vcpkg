@@ -7,12 +7,8 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-vcpkg_configure_cmake(
-    SOURCE_PATH ${SOURCE_PATH}
-    PREFER_NINJA
-)
-
-vcpkg_install_cmake()
+vcpkg_cmake_configure(SOURCE_PATH ${SOURCE_PATH})
+vcpkg_cmake_install()
 vcpkg_copy_pdbs()
 
 # Store all .libs in the root lib directory.  For Windows SHARED builds, these will be import libraries (not static libs).
