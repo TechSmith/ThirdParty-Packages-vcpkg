@@ -62,6 +62,7 @@ function Create-FinalizedMacArtifacts {
     Copy-NonLibraryFiles -srcDir $arm64LibDir -destDir $universalLibDir
     Remove-Item -Force -Recurse -Path $arm64LibDir
     Remove-Item -Force -Recurse -Path $x64LibDir
+    Remove-DylibSymlinks -libDir $universalLibDir
 }
 
 function Update-LibraryPath {
@@ -205,11 +206,11 @@ function Get-SymlinkChains {
 
 function Remove-DylibSymlinks {
     param (
-        [Parameter(Mandatory=$true)][string]$BuildArtifactsPath
+        [Parameter(Mandatory=$true)][string]$libDir
     )
 
     Write-Message "Consolidating libraries and symlinks..."
-    Push-Location "$BuildArtifactsPath/lib"
+    Push-Location "$libDir"
 
     # Enumerate files
     $physicalFiles = @()
@@ -277,3 +278,4 @@ function Remove-DylibSymlinks {
 }
 
 Export-ModuleMember -Function Create-FinalizedMacArtifacts, Remove-DylibSymlinks
+Export-ModuleMember -Function Create-FinalizedMacArtifacts
