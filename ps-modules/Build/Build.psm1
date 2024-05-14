@@ -252,6 +252,7 @@ function Run-PostBuildStep {
       PackageAndFeatures = ($packageAndFeatures -replace ',', '`,')
       LinkType = "$linkType"
       BuildType = "$buildType"
+      ModulesRoot = "$PSScriptRoot/../../ps-modules"
    }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
 }

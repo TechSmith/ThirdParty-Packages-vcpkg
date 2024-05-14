@@ -4,8 +4,6 @@ trigger: none
 
 parameters:
 
-# We could map this parameter to a combination of default triplets for Mac and windows, as well as the default feature flags to pass to each
-# for example, ffmpeg might map to: ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib,dav1d]
 - name: package
   displayName: Package to install, plus any optional feature flags (ex. "somepackage" or "somepackage[feature1,feature2]")
   type: string

@@ -157,37 +157,47 @@ function Get-SymlinkChains {
         [Parameter(Mandatory=$true)][array]$files
     )
 
-    $dirFiles = @()
-    $dirSymlinks = @()
+    $filesInDir = @()
+    $symlinksInDir = @()
     foreach($file in $files) {
         if($file.Attributes -eq 'ReparsePoint') {
-            $dirSymlinks += $file
+            $symlinksInDir += $file
         }
         else {
-            $dirFiles += $file
+            $filesInDir += $file
         }
     }
 
     $symlinkChains = @()
-    foreach($file in $dirFiles)
+    foreach($file in $filesInDir)
     {
+        if(-not $symlinksInDir)
+        {
+            $symlinkChains += @{
+                PhysicalFilename = $file
+                TopOfChainFilename = $file
+                Symlinks = $null
+            }
+            continue
+        }
+
+        $symlink = $file
         $topOfChainFilename = $file
         $symlinks = @()
-        $symlink = $file
-        while($symlink) {
+        $maxSymlinkDepth = 10
+        for($depth = 0; $depth -lt $maxSymlinkDepth; $depth++) {
             $topOfChainFilename = $symlink
-            $symlink = Find-FirstSymlink -file $symlink -symlinks $dirSymlinks
+            $symlink = Find-FirstSymlink -file $symlink -symlinks $symlinksInDir
             if(-not $symlink) {
-                continue
+                break
             }
             $symlinks += $symlink
         }
-        $symlinkChain = @{
+        $symlinkChains += @{
             PhysicalFilename = $file
             TopOfChainFilename = $topOfChainFilename
             Symlinks = $symlinks
         }
-        $symlinkChains += $symlinkChain
     }
 
     return $symlinkChains
