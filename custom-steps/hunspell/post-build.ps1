@@ -11,9 +11,6 @@ if(-not (Get-Module -Name $moduleName)) {
     Import-Module "$ModulesRoot/$moduleName" -Force -DisableNameChecking
 }
 
-if ((Get-IsOnMacOS)) {
-    Remove-DylibSymlinks -BuildArtifactsPath $BuildArtifactsPath
-}
-elseif ((Get-IsOnWindowsOS)) {
+if((Get-IsOnWindowsOS)) {
     Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
 }
