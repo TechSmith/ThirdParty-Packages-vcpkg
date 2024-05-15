@@ -202,6 +202,32 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "helloworld-meson",
+      "mac": {
+        "package": "helloworld-meson",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "helloworld-meson",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "fribidi",
+      "mac": {
+        "package": "fribidi",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "fribidi",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
