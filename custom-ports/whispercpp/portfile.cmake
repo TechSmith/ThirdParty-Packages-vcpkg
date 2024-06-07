@@ -7,10 +7,18 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-vcpkg_configure_cmake(
-    SOURCE_PATH ${SOURCE_PATH}
-    PREFER_NINJA
-)
+if(APPLE)
+    vcpkg_cmake_configure(
+        SOURCE_PATH ${SOURCE_PATH}
+        OPTIONS
+            -DWHISPER_METAL_EMBED_LIBRARY=ON
+            -DWHISPER_METAL_NDEBUG=ON
+    )
+else()
+    vcpkg_cmake_configure(
+        SOURCE_PATH ${SOURCE_PATH}
+    )
+endif()
 
 vcpkg_install_cmake()
 vcpkg_copy_pdbs()
