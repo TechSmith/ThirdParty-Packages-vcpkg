@@ -1,6 +1,6 @@
 {
   "name": "whispercpp",
-  "version": "1.5.4",
+  "version": "1.6.2",
   "port-version": 1,
   "description": "A high-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.",
   "homepage": "https://github.com/ggerganov/whisper.cpp",

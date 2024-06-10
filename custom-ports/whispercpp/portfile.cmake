@@ -2,15 +2,23 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggerganov/whisper.cpp
-    REF e72e4158debb04126a0fabedf0452a5551780ea0
-    SHA512 67939e665542931a75a5ea05a873e5e0a73fc18b443720bcfeb340eb7e39818937c0078976320d9799f0643d8759a64adcb2da371e072f1053232802c1c107af
+    REF "v${VERSION}"
+    SHA512 17e0485fb93fdea1a89f584a64db35f05371e0b8710a539f0dffca30bd3a2fff44c72ea754556566ca3cc55415b1e8f2bb868665437f5c93b9ce666b4fe53fb3
     HEAD_REF master
 )
 
-vcpkg_configure_cmake(
-    SOURCE_PATH ${SOURCE_PATH}
-    PREFER_NINJA
-)
+if(APPLE)
+    vcpkg_cmake_configure(
+        SOURCE_PATH ${SOURCE_PATH}
+        OPTIONS
+            -DWHISPER_METAL_EMBED_LIBRARY=ON
+            -DWHISPER_METAL_NDEBUG=ON
+    )
+else()
+    vcpkg_cmake_configure(
+        SOURCE_PATH ${SOURCE_PATH}
+    )
+endif()
 
 vcpkg_install_cmake()
 vcpkg_copy_pdbs()
