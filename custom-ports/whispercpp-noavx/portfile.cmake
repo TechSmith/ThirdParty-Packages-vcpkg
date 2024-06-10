@@ -5,6 +5,8 @@ vcpkg_from_github(
     REF "v${VERSION}"
     SHA512 17e0485fb93fdea1a89f584a64db35f05371e0b8710a539f0dffca30bd3a2fff44c72ea754556566ca3cc55415b1e8f2bb868665437f5c93b9ce666b4fe53fb3
     HEAD_REF master
+    PATCHES
+        0001-UpdateTargetName.patch
 )
 
 if(APPLE)
