@@ -1,0 +1,16 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 82913aa..a77592a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -683,9 +683,10 @@ include_directories (
+     .
+ )
+ # Set the version numbers
+-set_target_properties(whisper PROPERTIES
++set_target_properties(${TARGET} PROPERTIES
+     VERSION ${PROJECT_VERSION}
+     SOVERSION ${SOVERSION}
++    OUTPUT_NAME "whisper-noavx"
+ )
+ 
+ include(DefaultTargetOptions)
