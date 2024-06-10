@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "filename": "bin/whisper.dll",
+      "fileDescription": "High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.  This dll is built without AVX support.",
+      "fileVersion": "1.6.2",
+      "productName": "WhisperCpp",
+      "productVersion": "1.6.2",
+      "copyright": "Copyright (c) 2023-2024 The ggml authors"
+    }
+  ]
+}
