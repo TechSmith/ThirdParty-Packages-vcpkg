@@ -24,7 +24,7 @@ parameters:
   - sqlite-modern-cpp
   - tinyxml
   - whispercpp
-  - whispercpp-noavx
+  - whispercpp-basic
 
 - name: publishToGitHubRelease
   displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")

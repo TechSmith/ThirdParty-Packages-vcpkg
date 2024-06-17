@@ -191,14 +191,14 @@
       }
     },
     {
-      "name": "whispercpp-noavx",
+      "name": "whispercpp-basic",
       "mac": {
-        "package": "whispercpp-noavx",
+        "package": "whispercpp-basic",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "whispercpp-noavx",
+        "package": "whispercpp-basic",
         "linkType": "dynamic",
         "buildType": "release"
       }

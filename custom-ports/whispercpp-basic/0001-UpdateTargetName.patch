@@ -10,7 +10,7 @@ index 82913aa..a77592a 100644
 +set_target_properties(${TARGET} PROPERTIES
      VERSION ${PROJECT_VERSION}
      SOVERSION ${SOVERSION}
-+    OUTPUT_NAME "whisper-noavx"
++    OUTPUT_NAME "whisper-basic"
  )
  
  include(DefaultTargetOptions)
