@@ -9,7 +9,7 @@ vcpkg_from_github(
         0001-UpdateTargetName.patch
 )
 
-if(APPLE)
+if(VCPKG_HOST_IS_OSX)
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
         OPTIONS
