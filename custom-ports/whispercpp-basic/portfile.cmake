@@ -1,10 +1,12 @@
-# whispercpp
+# whispercpp-noavx
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggerganov/whisper.cpp
     REF "v${VERSION}"
     SHA512 17e0485fb93fdea1a89f584a64db35f05371e0b8710a539f0dffca30bd3a2fff44c72ea754556566ca3cc55415b1e8f2bb868665437f5c93b9ce666b4fe53fb3
     HEAD_REF master
+    PATCHES
+        0001-UpdateTargetName.patch
 )
 
 if(VCPKG_HOST_IS_OSX)
@@ -17,6 +19,11 @@ if(VCPKG_HOST_IS_OSX)
 else()
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
+        OPTIONS
+            -DWHISPER_NO_AVX=ON
+            -DWHISPER_NO_AVX2=ON
+            -DWHISPER_NO_FMA=ON
+            -DWHISPER_NO_F16C=ON
     )
 endif()
 
