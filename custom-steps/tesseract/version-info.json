@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "filename": "bin/tesseract-5-4-1.dll",
+      "fileDescription": "libtesseract",
+      "fileVersion": "5.4.1",
+      "productName": "Tesseract Dynamic Link Library",
+      "productVersion": "5.4.1",
+      "copyright": "Copyright (c) 2024"
+    }
+  ]
+}

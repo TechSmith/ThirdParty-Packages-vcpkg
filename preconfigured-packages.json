@@ -1,6 +1,14 @@
 {
   "packages": [
     {
+      "name": "tesseract",
+      "win": {
+        "package": "tesseract",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "ffmpeg",
       "mac": {
         "package": "ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
