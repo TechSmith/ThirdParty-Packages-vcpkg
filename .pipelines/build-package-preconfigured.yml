@@ -10,6 +10,7 @@ parameters:
   displayName: Package to install (builds as a dynamic library, unless otherwise specified)
   type: string
   values:
+  - tesseract
   - ffmpeg
   - hunspell
   - hunspell-debug
