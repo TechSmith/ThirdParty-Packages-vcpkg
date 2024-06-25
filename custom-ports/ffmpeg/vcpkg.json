@@ -338,7 +338,6 @@
     },
     "dav1d": {
       "description": "AV1 decoding via libdav1d",
-      "supports": "!osx",
       "dependencies": [
         "dav1d"
       ]
@@ -510,7 +509,7 @@
           "name": "ffmpeg",
           "default-features": false,
           "features": [
-            "nonfree"
+            "version3"
           ]
         },
         "openssl"
