@@ -31,6 +31,18 @@ endif()
 
 set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
 
+# <Additional custom TechSmith options>
+string(APPEND OPTIONS "${OPTIONS} --disable-encoders --disable-decoders")
+if(VCPKG_TARGET_IS_WINDOWS)
+   string(APPEND OPTIONS "${OPTIONS} --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
+   string(APPEND OPTIONS "${OPTIONS} --enable-encoder=aac,libmp3lame --enable-decoder=aac,hevc,mp3*,pcm* --enable-muxer=aac,mp3 --enable-demuxer=aac,hevc,mov,mp3,mp4 --enable-hwaccel=hevc_d3d*")
+elseif(VCPKG_TARGET_IS_OSX)
+    string(APPEND OPTIONS "${OPTIONS} --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
+    string(APPEND OPTIONS "${OPTIONS} --enable-encoder=aac_at,h264_videotoolbox,h265_videotoolbox,libmp3lame --enable-decoder=aac_at,h264,h264_videotoolbox,h265_videotoolbox,mp3*,mpeg4,pcm*")
+endif()
+string(APPEND OPTIONS "${OPTIONS} --enable-protocol=file")
+# </Additional custom TechSmith options>
+
 if(VCPKG_HOST_IS_WINDOWS)
     vcpkg_acquire_msys(MSYS_ROOT PACKAGES automake1.16)
     set(SHELL "${MSYS_ROOT}/usr/bin/bash.exe")
