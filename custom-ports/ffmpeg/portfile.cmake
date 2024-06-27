@@ -29,7 +29,7 @@ if(NOT VCPKG_TARGET_ARCHITECTURE STREQUAL "wasm32")
     vcpkg_add_to_path("${NASM_EXE_PATH}")
 endif()
 
-set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
+set(OPTIONS " --enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
 
 # <Additional custom TechSmith options>
 string(APPEND OPTIONS "${OPTIONS} --disable-encoders --disable-decoders")
