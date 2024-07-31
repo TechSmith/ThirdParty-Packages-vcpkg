@@ -13,8 +13,11 @@ if(VCPKG_HOST_IS_OSX)
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
         OPTIONS
-            -DWHISPER_METAL_EMBED_LIBRARY=ON
-            -DWHISPER_METAL_NDEBUG=ON
+            -DWHISPER_NO_AVX=ON
+            -DWHISPER_NO_AVX2=ON
+            -DWHISPER_NO_FMA=ON
+            -DWHISPER_NO_F16C=ON
+            -DWHISPER_METAL=OFF
     )
 else()
     vcpkg_cmake_configure(
