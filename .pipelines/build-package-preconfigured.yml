@@ -11,6 +11,7 @@ parameters:
   type: string
   values:
   - helloworld-meson
+  - fontconfig
   - fribidi
   - ffmpeg
   - ffmpeg-debug

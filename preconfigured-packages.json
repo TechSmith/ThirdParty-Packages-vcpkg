@@ -256,6 +256,19 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "fontconfig",
+      "mac": {
+        "package": "fontconfig",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "fontconfig",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
