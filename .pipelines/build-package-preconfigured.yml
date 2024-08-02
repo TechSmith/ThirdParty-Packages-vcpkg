@@ -10,6 +10,8 @@ parameters:
   displayName: Package to install (builds as a dynamic library, unless otherwise specified)
   type: string
   values:
+  - helloworld-meson
+  - fribidi
   - ffmpeg
   - ffmpeg-debug
   - hunspell
