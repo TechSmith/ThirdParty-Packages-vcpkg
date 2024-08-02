@@ -73,13 +73,13 @@
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "fba75d09065fcc76a25dcf386b1d00d33f5175af"
+        "vcpkgHash": "1de2026f28ead93ff1773e6e680387643e914ea1"
       },
       "win": {
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "fba75d09065fcc76a25dcf386b1d00d33f5175af"
+        "vcpkgHash": "1de2026f28ead93ff1773e6e680387643e914ea1"
       }
     },
     {
@@ -212,6 +212,45 @@
       },
       "win": {
         "package": "minizip",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "helloworld-meson",
+      "mac": {
+        "package": "helloworld-meson",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "helloworld-meson",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "fribidi",
+      "mac": {
+        "package": "fribidi",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "fribidi",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "fontconfig",
+      "mac": {
+        "package": "fontconfig",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "fontconfig",
         "linkType": "dynamic",
         "buildType": "release"
       }
