@@ -13,7 +13,7 @@ vcpkg_extract_source_archive(SOURCE_PATH
         tsc-allow-threadpriority-to-fail-windows.patch 
 )
 
-if(APPLE)
+if(VCPKG_HOST_IS_OSX)
     list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DVCPKG_ENABLE_OBJC=1")
 endif()
 
