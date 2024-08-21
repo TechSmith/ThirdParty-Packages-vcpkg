@@ -302,8 +302,20 @@ function Run-StageArtifactsStep {
    Remove-Item -Path "$stagedArtifactsPath/$artifactName" -Recurse -Force
 }
 
+function Resolve-Symlink {
+   param (
+       [string]$path
+   )
+
+   $currentPath = Get-Item -Path $path
+   while ($currentPath.PSIsContainer -eq $false -and $null -ne $currentPath.LinkType) {
+       $currentPath = Get-Item -Path $currentPath.Target
+   }
+   return $currentPath.FullName
+}
+
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeArtifactsStep, Run-PostBuildStep, Run-StageArtifactsStep
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force
