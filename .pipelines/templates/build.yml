@@ -72,22 +72,51 @@ stages:
     - template: steps/full-checkout.yml
 
     - powershell: |
-        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
+        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 
     - powershell: |
-        ./invoke-build.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)"
+        ./invoke-build.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (custom)'
       condition: and(succeeded(), ${{ parameters.isCustomBuild }})
 
     - task: PublishBuildArtifacts@1
       displayName: Publish build artifacts
       inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)
+        pathToPublish: $(Build.ArtifactStagingDirectory)/package
         artifactName: $(osName)
       condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
-  
+
+    - powershell: |
+        $source = "vcpkg/buildtrees/"
+        $destination = "logs/"
+        Write-Host "Copying files: $source ==> $destination"
+        if (Test-Path $destination) {
+            Remove-Item -Recurse -Force $destination
+        }
+        Get-ChildItem -Path $source -Recurse -Filter *.log | ForEach-Object {
+          $destPath = $_.FullName -replace [regex]::Escape($source), $destination
+          New-Item -ItemType Directory -Path (Split-Path $destPath) -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path $_.FullName -Destination $destPath
+        }
+        $source = "logs"
+        $destination = "$(Build.ArtifactStagingDirectory)/logs"
+        Write-Host "Moving files: $source ==> $destination"
+        if (Test-Path $destination) {
+            Remove-Item -Recurse -Force $destination
+        }
+        Move-Item -Path $source -Destination $destination -Force
+      displayName: Stage logs for publish (if failed)
+      condition: failed()
+
+    - task: PublishBuildArtifacts@1
+      displayName: Publish logs (if failed)
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)/logs
+        artifactName: $(osName)-logs
+      condition: failed()
+
 - stage: PublishToGitHubRelease
   displayName: 'Publish to GitHub Release'
   dependsOn: Build
