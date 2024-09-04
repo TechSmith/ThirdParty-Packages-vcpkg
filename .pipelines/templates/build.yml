@@ -74,6 +74,11 @@ stages:
 
     - template: steps/full-checkout.yml
 
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: sudo apt-get install nasm
+
     - powershell: |
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (preconfigured)'
