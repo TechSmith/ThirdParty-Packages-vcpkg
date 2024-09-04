@@ -64,7 +64,7 @@ stages:
         Linux:
           imageName: ubuntu-latest
           osName: linux
-      maxParallel: 2
+      maxParallel: 3
 
     pool:
       vmImage: $(imageName)
