@@ -28,6 +28,8 @@ function Get-Triplets {
    )
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
+   } if (Get-IsOnLinux) {
+       return @("x64-linux-$linkType-$buildType")
    } elseif (Get-IsOnMacOS) {
        return @("x64-osx-$linkType-$buildType", "arm64-osx-$linkType-$buildType")
    }
@@ -41,7 +43,7 @@ function Get-PreStagePath {
 function Get-VcPkgExe {
    if ( (Get-IsOnWindowsOS) ) {
       return "./vcpkg/vcpkg.exe"
-   } elseif ( (Get-IsOnMacOS) ) {
+   } elseif ( (Get-IsOnMacOS) -or (Get-IsOnLinux) ) {
       return "./vcpkg/vcpkg"
    }
    throw [System.Exception]::new("Invalid OS")
@@ -63,6 +65,8 @@ function Get-ArtifactName {
       return "$packageName-windows-$buildType"
    } elseif ( (Get-IsOnMacOS) ) {
       return "$packageName-osx-$buildType"
+   } elseif ( (Get-IsOnLinux) ) {
+      return "$packageName-linux-$buildType"
    }
    throw [System.Exception]::new("Invalid OS")
 }
