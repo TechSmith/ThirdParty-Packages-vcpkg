@@ -55,12 +55,12 @@ stages:
     condition: succeeded()  
     strategy:
       matrix:
-        Windows:
-          imageName: windows-2022
-          osName: win
-        Mac:
-          imageName: macOS-12
-          osName: mac
+#        Windows:
+#          imageName: windows-2022
+#          osName: win
+#        Mac:
+#          imageName: macOS-12
+#          osName: mac
         Linux:
           imageName: ubuntu-latest
           osName: linux
