@@ -17,6 +17,7 @@ vcpkg_from_github(
         0040-ffmpeg-add-av_stream_get_first_dts-for-chromium.patch # Do not remove this patch. It is required by chromium
         0041-add-const-for-opengl-definition.patch
         0042-fix-arm64-linux.patch #https://github.com/FFmpeg/FFmpeg/commit/fcfd17dbb4a6cf270cdd82e91c21a5efdc878d12
+        1001-tsc-disable-non-aac-lc.patch # TechSmith patch
 )
 
 if(SOURCE_PATH MATCHES " ")
