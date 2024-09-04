@@ -29,7 +29,7 @@ function Get-Triplets {
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
    } if (Get-IsOnLinux) {
-       return @("x64-linux-$linkType-$buildType")
+       return @("x64-linux-$linkType") # vcpkg doesn't have a triplet for the buildType(debug vs release)
    } elseif (Get-IsOnMacOS) {
        return @("x64-osx-$linkType-$buildType", "arm64-osx-$linkType-$buildType")
    }
