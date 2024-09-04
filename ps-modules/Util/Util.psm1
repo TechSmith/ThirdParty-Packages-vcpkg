@@ -50,6 +50,10 @@ function Get-IsOnMacOS {
     return $false
 }
 
+function Get-IsOnLinux {
+    return $IsLinux
+}
+
 function Invoke-Powershell {
     param (
         [string]$FilePath,

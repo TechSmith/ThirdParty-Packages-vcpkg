@@ -120,7 +120,7 @@ function Run-SetupVcpkgStep {
    if ( (Get-IsOnWindowsOS) ) {
        $bootstrapScript = "./bootstrap-vcpkg.bat"
        $cacheDir = "$env:LocalAppData/vcpkg/archives"
-   } elseif ( (Get-IsOnMacOS) ) {
+   } elseif ( (Get-IsOnMacOS) -or (Get-IsOnLinux) ) {
        $bootstrapScript = "./bootstrap-vcpkg.sh"
        $cacheDir = "$HOME/.cache/vcpkg/archives"
    }
@@ -189,7 +189,7 @@ function Run-PrestageAndFinalizeArtifactsStep {
       $binDir = "debug/bin"
    }
 
-   if ((Get-IsOnWindowsOS))
+   if ((Get-IsOnWindowsOS) -or (Get-IsOnLinux))
    {  
       $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
