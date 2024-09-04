@@ -61,6 +61,9 @@ stages:
         Mac:
           imageName: macOS-12
           osName: mac
+        Linux:
+          imageName: ubuntu-latest
+          osName: linux
       maxParallel: 2
 
     pool:
