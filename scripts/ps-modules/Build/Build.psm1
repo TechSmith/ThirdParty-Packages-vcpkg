@@ -334,20 +334,12 @@ function Run-StageArtifactsStep {
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
    Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactsPath/$artifactName/$packageInfoFilename"
    
-   # TODO: Add info in this file on where each package was downloaded from
-   # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)
-   
    $preStagePath = (Get-PreStagePath)
-   Write-Message "Copying files: $preStagePath =`> $artifactName"
+   Write-Message "Moving files: $preStagePath =`> $artifactName"
    $excludedFolders = @("tools", "debug")
-   Copy-Item -Path "$preStagePath/*" -Destination $stagedArtifactsPath/$artifactName -Force -Recurse -Exclude $excludedFolders
-#   if( $buildType -eq "debug" ) {
-#      # This will only run for Windows, which does not have a separate pre-stage path
-#      # TODO: Consider change for Windows so that it also has a separate pre-stage path, for consistency
-#      if (Test-Path "$preStagePath/debug" -PathType Container -ErrorAction SilentlyContinue) {
-#         Copy-Item -Path "$preStagePath/debug/bin", "$preStagePath/debug/lib" -Destination "$stagedArtifactsPath/$artifactName/" -Force -Recurse
-#      }
-#   }
+   Get-ChildItem -Path "$preStagePath" -Directory -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactsPath/$artifactName" }
+   Remove-Item -Path $preStagePath | Out-Null
+
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""
    tar -czf "$stagedArtifactsPath/$artifactArchive" -C "$stagedArtifactsPath/$artifactName" .
