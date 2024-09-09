@@ -9,7 +9,7 @@ param(
 )
 
 $global:showDebug = $ShowDebug
-Import-Module "$PSScriptRoot/ps-modules/Build" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot/scripts/ps-modules/Build" -Force -DisableNameChecking
 Run-WriteParamsStep -packageAndFeatures $PackageAndFeatures -scriptArgs $PSBoundParameters
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
