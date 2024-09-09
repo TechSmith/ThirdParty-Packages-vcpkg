@@ -71,12 +71,12 @@ stages:
 
     - template: steps/full-checkout.yml
 
-    - powershell: |
+    - pwsh: |
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 
-    - powershell: |
+    - pwsh: |
         ./invoke-build.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (custom)'
       condition: and(succeeded(), ${{ parameters.isCustomBuild }})
@@ -88,7 +88,7 @@ stages:
         artifactName: $(osName)
       condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
 
-    - powershell: |
+    - pwsh: |
         $source = "vcpkg/buildtrees/"
         $destination = "logs/"
         Write-Host "Copying files: $source ==> $destination"
@@ -140,6 +140,7 @@ stages:
     - task: PowerShell@2
       displayName: 'Prepare artifacts for staging'
       inputs:
+        pwsh: true
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
@@ -158,6 +159,7 @@ stages:
     - task: PowerShell@2
       displayName: 'Getting info for GitHub release'
       inputs:
+        pwsh: true
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
