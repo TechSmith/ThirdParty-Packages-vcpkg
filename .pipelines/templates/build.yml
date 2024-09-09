@@ -89,24 +89,7 @@ stages:
       condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
 
     - pwsh: |
-        $source = "vcpkg/buildtrees/"
-        $destination = "logs/"
-        Write-Host "Copying files: $source ==> $destination"
-        if (Test-Path $destination) {
-            Remove-Item -Recurse -Force $destination
-        }
-        Get-ChildItem -Path $source -Recurse -Filter *.log | ForEach-Object {
-          $destPath = $_.FullName -replace [regex]::Escape($source), $destination
-          New-Item -ItemType Directory -Path (Split-Path $destPath) -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path $_.FullName -Destination $destPath
-        }
-        $source = "logs"
-        $destination = "$(Build.ArtifactStagingDirectory)/logs"
-        Write-Host "Moving files: $source ==> $destination"
-        if (Test-Path $destination) {
-            Remove-Item -Recurse -Force $destination
-        }
-        Move-Item -Path $source -Destination $destination -Force
+        ./scripts/copy-logs.ps1 -Source "./vcpkg/buildtrees" -Destination "$(Build.ArtifactStagingDirectory)/logs"
       displayName: Stage logs for publish (if failed)
       condition: failed()
 
