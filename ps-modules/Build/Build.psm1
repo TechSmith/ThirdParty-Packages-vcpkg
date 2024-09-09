@@ -174,6 +174,36 @@ function Run-InstallPackageStep
    }
 }
 
+function Copy-ItemWithSymlinks {
+   param (
+       [string]$source,
+       [string]$destination
+   )
+
+   if ( -not (Test-Path -Path $destination) ) {
+      New-Item -ItemType Container -Path $destination | Out-Null
+   }
+
+   $items = Get-ChildItem -Path $source
+   foreach ($item in $items) {
+       $relativePath = $item.FullName.Substring($source.Length + 1)
+       $destPath = Join-Path -Path $destination -ChildPath $relativePath
+
+       if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+         New-Item -ItemType SymbolicLink -Path $destPath -Target $item.Target -Force | Out-Null
+       } 
+       else {
+         if ($item.PSIsContainer) {
+            Copy-ItemWithSymlinks -source $item.FullName -destination $destPath
+         }
+         else {
+            Copy-Item -Path "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
+         }
+       }
+   }
+}
+
+
 function Run-PrestageAndFinalizeArtifactsStep {
    param(
       [string]$linkType,
@@ -182,6 +212,28 @@ function Run-PrestageAndFinalizeArtifactsStep {
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
    Write-Banner -Level 3 -Title "Pre-staging artifacts"
+   
+   # Copy source files
+   # Copies source files to prestage dir for each lib (ex. "./vcpkg/buildtrees/<libName>/src/<someSrcSubdir.clean>" ==> "./PreStage/src/<libName>/<someSrcSubdir.clean>")
+   $buildTreesDir = "./vcpkg/buildtrees"
+   $destSourceCodeDir = "$preStagePath/src"
+   if (-not (Test-Path -Path $destSourceCodeDir)) {
+       New-Item -ItemType Directory -Path $destSourceCodeDir | Out-Null
+   }
+   $buildTreesSubDirs = Get-ChildItem -Path $buildTreesDir -Directory
+   foreach ($buildTreesSubDir in $buildTreesSubDirs) {
+       $srcDir = Join-Path -Path $buildTreesSubDir.FullName -ChildPath "src"
+       if (Test-Path -Path $srcDir) {
+           $destDir = Join-Path -Path $destSourceCodeDir -ChildPath $buildTreesSubDir.Name
+           Write-Message "$srcDir ==> $destDir"
+           if (-not (Test-Path -Path $destDir)) {
+               New-Item -ItemType Directory -Path $destDir | Out-Null
+           }
+           Copy-ItemWithSymlinks -source "$srcDir\*" -destination "$destDir"
+       }
+   }
+
+   # Copy other files
    $libDir = "lib"
    $binDir = "bin"
    if( $buildType -eq "debug" ) {
