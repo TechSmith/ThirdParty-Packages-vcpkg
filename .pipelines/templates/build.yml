@@ -97,15 +97,15 @@ stages:
 
     - pwsh: |
         ./scripts/copy-logs.ps1 -Source "./vcpkg/buildtrees" -Destination "$(Build.ArtifactStagingDirectory)/logs"
-      displayName: Stage logs (if failed)
-      condition: failed()
+      displayName: Stage logs
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }})
 
     - task: PublishBuildArtifacts@1
-      displayName: Publish logs (if failed)
+      displayName: Publish logs
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/logs
         artifactName: $(osName)-logs
-      condition: failed()
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }})
 
 - stage: PublishToGitHubRelease
   displayName: 'Publish to GitHub Release'
