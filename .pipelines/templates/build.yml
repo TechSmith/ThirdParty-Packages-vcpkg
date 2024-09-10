@@ -97,7 +97,7 @@ stages:
 
     - pwsh: |
         ./scripts/copy-logs.ps1 -Source "./vcpkg/buildtrees" -Destination "$(Build.ArtifactStagingDirectory)/logs"
-      displayName: Stage logs for publish (if failed)
+      displayName: Stage logs (if failed)
       condition: failed()
 
     - task: PublishBuildArtifacts@1
