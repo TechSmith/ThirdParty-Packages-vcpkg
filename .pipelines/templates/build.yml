@@ -84,8 +84,15 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: Publish build artifacts
       inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)/package
-        artifactName: $(osName)
+        pathToPublish: $(Build.ArtifactStagingDirectory)/package/bin
+        artifactName: $(osName)-bin
+      condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
+
+    - task: PublishBuildArtifacts@1
+      displayName: Publish build artifacts
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)/package/src
+        artifactName: $(osName)-src
       condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
 
     - pwsh: |
@@ -127,10 +134,11 @@ stages:
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
-          Move-Item -Path "./mac/*" -Destination . -Force
-          Remove-Item -Path "./mac" -Recurse -Force
-          Move-Item -Path "./win/*" -Destination . -Force
-          Remove-Item -Path "./win" -Recurse -Force
+          $paths = @( "./mac-bin", "./win-bin", "./mac-src", "./win-src" )
+          foreach ($path in $paths) {
+              Move-Item -Path "$path/*" -Destination . -Force
+              Remove-Item -Path $path -Recurse -Force
+          }
 
     - task: CopyFiles@2
       displayName: 'Stage artifacts'
@@ -146,7 +154,7 @@ stages:
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
-          $zipFiles = (Get-ChildItem -Filter "*.tar.gz")
+          $zipFiles = (Get-ChildItem -Filter "*-bin.tar.gz")
           $gitReleaseNotes = "| File | Hash |"
           $gitReleaseNotes += "`n| ---------- | ---------- |"
           foreach ($zipFile in $zipFiles) {
@@ -165,7 +173,7 @@ stages:
           $gitReleaseNotes = Escape-Data $gitReleaseNotes
           $packageInfoJsonFile = "package.json"
           $artifactsUnzippedDir = "artifactContents"
-          $artifactZip = (Get-ChildItem -Filter "*.tar.gz" | Select-Object -First 1).Name
+          $artifactZip = (Get-ChildItem -Filter "*-bin.tar.gz" | Select-Object -First 1).Name
           New-Item -ItemType Directory -Name "$artifactsUnzippedDir"
           tar -xzvf $artifactZip -C $artifactsUnzippedDir
           Push-Location $artifactsUnzippedDir

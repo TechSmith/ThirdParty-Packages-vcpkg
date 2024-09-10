@@ -49,7 +49,7 @@ function Copy-NonLibraryFiles {
    }
 }
 
-function Create-FinalizedMacArtifacts {
+function Create-FinalizedMacBuildArtifacts {
     param (
         [string]$arm64LibDir,
         [string]$x64LibDir,
@@ -284,4 +284,4 @@ function Run-CreateDysmAndStripDebugSymbols {
     Pop-Location
 }
 
-Export-ModuleMember -Function Create-FinalizedMacArtifacts
+Export-ModuleMember -Function Create-FinalizedMacBuildArtifacts
