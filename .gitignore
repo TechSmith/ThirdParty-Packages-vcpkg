@@ -2,3 +2,4 @@
 vcpkg/
 PreStage/
 StagedArtifacts/
+logs/
