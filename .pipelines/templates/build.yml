@@ -59,7 +59,7 @@ stages:
           imageName: windows-2022
           osName: win
         Mac:
-          imageName: macOS-12
+          imageName: macOS-14
           osName: mac
       maxParallel: 2
 
