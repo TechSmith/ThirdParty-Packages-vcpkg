@@ -201,7 +201,6 @@ function Run-InstallPackageStep
       Install-FromVcPkg -packageAndFeatures $packageAndFeatures -triplet $triplet
       Exit-IfError $LASTEXITCODE
    }
-   Exit 1
 }
 
 function Run-PrestageAndFinalizeBuildArtifactsStep {
