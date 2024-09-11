@@ -1,4 +1,4 @@
-Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
+Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 
 if ((Get-IsOnMacOS)) {
     Write-Message "Installing setuptools..."

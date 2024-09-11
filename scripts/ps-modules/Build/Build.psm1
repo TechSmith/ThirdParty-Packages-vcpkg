@@ -80,6 +80,35 @@ function Write-ReleaseInfoJson {
     $releaseInfo | ConvertTo-Json | Set-Content -Path $pathToJsonFile
 }
 
+function Copy-ItemWithSymlinks {
+   param (
+       [string]$source,
+       [string]$destination
+   )
+ 
+   if ( -not (Test-Path -Path $destination) ) {
+      New-Item -ItemType Container -Path $destination | Out-Null
+   }
+ 
+   $items = Get-ChildItem -Path $source
+   foreach ($item in $items) {
+       $relativePath = $item.FullName.Substring($source.Length + 1)
+       $destPath = Join-Path -Path $destination -ChildPath $relativePath
+ 
+       if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+         New-Item -ItemType SymbolicLink -Path $destPath -Target $item.Target -Force | Out-Null
+       } 
+       else {
+         if ($item.PSIsContainer) {
+            Copy-ItemWithSymlinks -source $item.FullName -destination $destPath
+         }
+         else {
+            Copy-Item -Path "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
+         }
+       }
+   }
+}
+
 ##################################################
 # Exported Functions
 ##################################################
@@ -174,7 +203,7 @@ function Run-InstallPackageStep
    }
 }
 
-function Run-PrestageAndFinalizeArtifactsStep {
+function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
       [string]$buildType
@@ -182,6 +211,7 @@ function Run-PrestageAndFinalizeArtifactsStep {
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
    Write-Banner -Level 3 -Title "Pre-staging artifacts"
+   
    $libDir = "lib"
    $binDir = "bin"
    if( $buildType -eq "debug" ) {
@@ -231,7 +261,7 @@ function Run-PrestageAndFinalizeArtifactsStep {
           }
       }
       $destUniversalLibDir = "$preStagePath/lib"
-      Create-FinalizedMacArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+      Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
    else
    {
@@ -257,7 +287,7 @@ function Run-PostBuildStep {
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
 }
 
-function Run-StageArtifactsStep {
+function Run-StageBuildArtifactsStep {
    param(
       [string]$packageName,
       [string]$packageAndFeatures,
@@ -268,42 +298,86 @@ function Run-StageArtifactsStep {
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
-   $artifactName = (Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType)
-   New-Item -Path $stagedArtifactsPath/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+   $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType))-bin"
+   New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
    Write-Message "Generating: `"$dependenciesFilename`"..."
-   Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactsPath/$artifactName/$dependenciesFilename"
+   Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
 
    $packageInfoFilename = "package.json"
    Write-Message "Generating: `"$packageInfoFilename`"..."
-   $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactsPath/$artifactName/$dependenciesFilename" | ConvertFrom-Json
+   $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactSubDir/$artifactName/$dependenciesFilename" | ConvertFrom-Json
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
-   Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactsPath/$artifactName/$packageInfoFilename"
-   
-   # TODO: Add info in this file on where each package was downloaded from
-   # TODO: Add license file info to the staged artifacts (ex. per-library LICENSE, COPYING, or other such files that commonly have license info in them)
+   Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
    
    $preStagePath = (Get-PreStagePath)
-   Write-Message "Copying files: $preStagePath =`> $artifactName"
+   Write-Message "Moving files: $preStagePath =`> $artifactName"
    $excludedFolders = @("tools", "debug")
-   Copy-Item -Path "$preStagePath/*" -Destination $stagedArtifactsPath/$artifactName -Force -Recurse -Exclude $excludedFolders
-#   if( $buildType -eq "debug" ) {
-#      # This will only run for Windows, which does not have a separate pre-stage path
-#      # TODO: Consider change for Windows so that it also has a separate pre-stage path, for consistency
-#      if (Test-Path "$preStagePath/debug" -PathType Container -ErrorAction SilentlyContinue) {
-#         Copy-Item -Path "$preStagePath/debug/bin", "$preStagePath/debug/lib" -Destination "$stagedArtifactsPath/$artifactName/" -Force -Recurse
-#      }
-#   }
+   Get-ChildItem -Path "$preStagePath" -Directory -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
+   Remove-Item -Path $preStagePath | Out-Null
+
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""
-   tar -czf "$stagedArtifactsPath/$artifactArchive" -C "$stagedArtifactsPath/$artifactName" .
-   Remove-Item -Path "$stagedArtifactsPath/$artifactName" -Recurse -Force
+   tar -czf "$stagedArtifactSubDir/$artifactArchive" -C "$stagedArtifactSubDir/$artifactName" .
+   Remove-Item -Path "$stagedArtifactSubDir/$artifactName" -Recurse -Force
 }
 
-Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeArtifactsStep, Run-PostBuildStep, Run-StageArtifactsStep
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS
+function Run-StageSourceArtifactsStep {
+   param(
+      [string]$packageName,
+      [string]$packageAndFeatures,
+      [string]$linkType,
+      [string]$buildType,
+      [string]$stagedArtifactsPath
+   )
+   
+   Write-Banner -Level 3 -Title "Stage source code artifacts"
+
+   $sourceCodeRootDir = "./vcpkg/buildtrees/"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType))-src"
+   $stagedArtifactSubDir = "$stagedArtifactsPath/src"
+   $artifactPath = "$stagedArtifactSubDir/$artifactName"
+
+   Write-Host "Copying: $sourceCodeRootDir ==> $artifactPath"
+   if (-not (Test-Path -Path $artifactPath)) {
+       New-Item -ItemType Directory -Path $artifactPath | Out-Null
+   }
+   $buildTreesSubDirs = Get-ChildItem -Path $sourceCodeRootDir -Directory
+   foreach ($buildTreesSubDir in $buildTreesSubDirs) {
+       $srcDir = Join-Path -Path $buildTreesSubDir.FullName -ChildPath "src"
+       if (Test-Path -Path $srcDir) {
+           $destDir = Join-Path -Path $artifactPath -ChildPath $buildTreesSubDir.Name
+           Write-Host "$srcDir ==> $destDir"
+           if (-not (Test-Path -Path $destDir)) {
+               New-Item -ItemType Directory -Path $destDir | Out-Null
+           }
+           Copy-ItemWithSymlinks -source "$srcDir\*" -destination "$destDir"
+       }
+   }
+
+   $artifactArchive = "$artifactName.tar.gz"
+   Write-Message "Creating final artifact: `"$artifactArchive`""
+   tar -czf "$stagedArtifactSubDir/$artifactArchive" -C "$stagedArtifactSubDir/$artifactName" .
+   Remove-Item -Path "$stagedArtifactSubDir/$artifactName" -Recurse -Force
+}
+
+function Resolve-Symlink {
+   param (
+       [string]$path
+   )
+
+   $currentPath = Get-Item -Path $path
+   while ($currentPath.PSIsContainer -eq $false -and $null -ne $currentPath.LinkType) {
+       $currentPath = Get-Item -Path $currentPath.Target
+   }
+   return $currentPath.FullName
+}
+
+Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force

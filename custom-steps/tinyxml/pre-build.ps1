@@ -1,5 +1,5 @@
 # This script is here just for testing purposes
-Import-Module "$PSScriptRoot/../../ps-modules/Build" -DisableNameChecking
+Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 
 Write-Message "Test: Running pre-build script..."
 if (-not (Get-IsOnMacOS)) {

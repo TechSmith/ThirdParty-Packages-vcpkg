@@ -56,12 +56,7 @@ function Invoke-Powershell {
         [PSObject]$ArgumentList
     )
 
-    $invokePrefix = ""
-    
-    if (-not (Get-IsOnWindowsOS)) {
-        $invokePrefix = "pwsh "
-    }
-
+    $invokePrefix = "pwsh "
     $expression = "$invokePrefix./$FilePath"
 
     if ($ArgumentList) {

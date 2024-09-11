@@ -9,13 +9,14 @@ param(
 )
 
 $global:showDebug = $ShowDebug
-Import-Module "$PSScriptRoot/ps-modules/Build" -Force -DisableNameChecking
+Import-Module "$PSScriptRoot/scripts/ps-modules/Build" -Force -DisableNameChecking
 Run-WriteParamsStep -packageAndFeatures $PackageAndFeatures -scriptArgs $PSBoundParameters
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
 Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
-Run-PrestageAndFinalizeArtifactsStep -linkType $LinkType -buildType $BuildType
+Run-PrestageAndFinalizeBuildArtifactsStep -linkType $LinkType -buildType $BuildType
 Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
-Run-StageArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath
+Run-StageBuildArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath
+Run-StageSourceArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath
 
 Write-Message "$(NL)$(NL)Done.$(NL)"
