@@ -3,57 +3,57 @@
         {
             "filename": "bin/avcodec-60.dll",
             "fileDescription": "FFmpeg codec library",
-            "fileVersion": "60.3.100",
+            "fileVersion": "60.31.102",
             "productName": "FFmpeg",
-            "productVersion": "6.0",
+            "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
             "filename": "bin/avdevice-60.dll",
             "fileDescription": "FFmpeg device handling library",
-            "fileVersion": "60.1.100",
+            "fileVersion": "60.3.100",
             "productName": "FFmpeg",
-            "productVersion": "6.0",
+            "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
             "filename": "bin/avfilter-9.dll",
             "fileDescription": "FFmpeg audio/video filtering library",
-            "fileVersion": "9.3.100",
+            "fileVersion": "9.12.100",
             "productName": "FFmpeg",
-            "productVersion": "6.0",
+            "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
             "filename": "bin/avformat-60.dll",
             "fileDescription": "FFmpeg container format library",
-            "fileVersion": "60.3.100",
+            "fileVersion": "60.16.100",
             "productName": "FFmpeg",
-            "productVersion": "6.0",
+            "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
             "filename": "bin/avutil-58.dll",
             "fileDescription": "FFmpeg utility library",
-            "fileVersion": "58.2.100",
+            "fileVersion": "58.29.100",
             "productName": "FFmpeg",
-            "productVersion": "6.0",
+            "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
             "filename": "bin/swresample-4.dll",
             "fileDescription": "FFmpeg audio resampling library",
-            "fileVersion": "4.10.100",
+            "fileVersion": "4.12.100",
             "productName": "FFmpeg",
-            "productVersion": "6.0",
+            "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
             "filename": "bin/swscale-7.dll",
             "fileDescription": "FFmpeg image rescaling library",
-            "fileVersion": "7.1.100",
+            "fileVersion": "7.5.100",
             "productName": "FFmpeg",
-            "productVersion": "6.0",
+            "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         }
     ]
