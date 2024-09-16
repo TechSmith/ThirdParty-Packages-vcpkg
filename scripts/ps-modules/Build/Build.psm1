@@ -126,6 +126,23 @@ function Get-PackageInfo
         exit
     }
     $selectedSection = if ((Get-IsOnWindowsOS)) { "win" } else { "mac" }
+    $pkgInfo = $pkg.$selectedSection
+
+    # Deal with any optional properties that might not be specified in the json file
+    $optionalProperties = @{ 
+      "publishTools" = $false
+    }
+    foreach ($property in $optionalProperties.Keys) {
+      Write-Host "Checking property: $property"
+      Write-Host $pkgInfo.PSObject.Properties
+      if (-not $pkgInfo.PSObject.Properties[$property]) {
+         Write-Host "Adding property: $property"
+         $pkgInfo | Add-Member -MemberType NoteProperty -Name $property -Value $optionalProperties[$property]
+      }
+    }
+
+    Write-Host $pkgInfo.PSObject.Properties
+
     return $pkg.$selectedSection
 }
 
@@ -206,7 +223,8 @@ function Run-InstallPackageStep
 function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
-      [string]$buildType
+      [string]$buildType,
+      [bool]$publishTools
    )
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
@@ -214,6 +232,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    
    $libDir = "lib"
    $binDir = "bin"
+   $toolsDir = "tools"
    if( $buildType -eq "debug" ) {
       $libDir = "debug/lib"
       $binDir = "debug/bin"
@@ -228,6 +247,9 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
          "$mainSrcDir/share" = "$preStagePath/share"
          "$mainSrcDir/$libDir" = "$preStagePath/lib"
          "$mainSrcDir/$binDir" = "$preStagePath/bin"
+      }
+      if($publishTools -eq $true){
+         $srcToDestDirs["$mainSrcDir/$toolsDir"] = "$preStagePath/tools"
       }
       foreach ($srcDir in $srcToDestDirs.Keys) {
           $destDir = $srcToDestDirs[$srcDir]
@@ -293,7 +315,8 @@ function Run-StageBuildArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$stagedArtifactsPath
+      [string]$stagedArtifactsPath,
+      [bool]$publishTools = $false
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
@@ -315,7 +338,8 @@ function Run-StageBuildArtifactsStep {
    
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
-   $excludedFolders = @("tools", "debug")
+   $excludedFolders = @("debug")
+   if(-not $publishTools) { $excludedFolders += "tools" }
    Get-ChildItem -Path "$preStagePath" -Directory -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
    Remove-Item -Path $preStagePath | Out-Null
 
