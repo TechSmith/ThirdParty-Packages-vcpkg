@@ -55,6 +55,10 @@
             "productName": "FFmpeg",
             "productVersion": "6.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
+        },
+        {
+            "filename": "bin/libmp3lame.dll",
+            "fileVersion": "3.100.2.16"
         }
     ]
 }
