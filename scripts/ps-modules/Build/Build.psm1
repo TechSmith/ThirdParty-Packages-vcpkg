@@ -341,7 +341,7 @@ function Run-StageBuildArtifactsStep {
    $excludedFolders = @("debug")
    if(-not $publishTools) { $excludedFolders += "tools" }
    Get-ChildItem -Path "$preStagePath" -Directory -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
-   Remove-Item -Path $preStagePath | Out-Null
+   Remove-Item -Path $preStagePath -Recurse | Out-Null
 
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""
