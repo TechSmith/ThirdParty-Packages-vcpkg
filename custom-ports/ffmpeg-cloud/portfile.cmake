@@ -351,10 +351,10 @@ else()
 endif()
 
 if("libjpeg-turbo" IN_LIST FEATURES)
-    set(OPTIONS "${OPTIONS} --enable-libjpeg")
+    set(OPTIONS "${OPTIONS} --enable-decoder=mjpeg --enable-demuxer=image2 --enable-encoder=mjpeg --enable-muxer=image2")
     set(WITH_LIBJPEG ON)
 else()
-    set(OPTIONS "${OPTIONS} --disable-libjpeg")
+    set(OPTIONS "${OPTIONS} --disable-decoder=mjpeg --disable-demuxer=image2 --disable-encoder=mjpeg --disable-muxer=image2")
     set(WITH_LIBJPEG OFF)
 endif()
 
