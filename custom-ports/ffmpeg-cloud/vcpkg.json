@@ -42,6 +42,7 @@
             "bzip2",
             "freetype",
             "iconv",
+            "libjpeg-turbo",
             "lzma",
             "mp3lame",
             "openjpeg",
@@ -105,6 +106,14 @@
           "default-features": false,
           "features": [
             "modplug"
+          ],
+          "platform": "!uwp"
+        },
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "libjpeg-turbo"
           ],
           "platform": "!uwp"
         },
@@ -440,6 +449,12 @@
       "description": "iLBC de/encoding via libilbc",
       "dependencies": [
         "libilbc"
+      ]
+    },
+    "libjpeg-turbo": {
+      "description": "libjpeg-turbo",
+      "dependencies": [
+        "libjpeg-turbo"
       ]
     },
     "lzma": {
