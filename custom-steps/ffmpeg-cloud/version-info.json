@@ -1,0 +1,20 @@
+{
+    "files": [
+        {
+            "filename": "tools/ffmpeg-cloud/ffmpeg.exe",
+            "fileDescription": "FFmpeg",
+            "fileVersion": "6.1.1",
+            "productName": "FFmpeg",
+            "productVersion": "6.1.1",
+            "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
+        },
+        {
+            "filename": "tools/ffmpeg-cloud/ffprobe.exe",
+            "fileDescription": "FFProbe",
+            "fileVersion": "6.1.1",
+            "productName": "FFProbe",
+            "productVersion": "6.1.1",
+            "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
+        }
+    ]
+}
