@@ -301,7 +301,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
 
    # Finalize artifacts (Mac-only)
-   if((Get-IsOnMacOS)) {
+   if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
      $destUniversalLibDir = "$preStagePath/lib"
      Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
