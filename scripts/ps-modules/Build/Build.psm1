@@ -135,8 +135,6 @@ function Get-PackageInfo
       "bin" = $true
       "share" = $true
       "tools" = $false
-      "dependenciesJson" = $true
-      "packageJson" = $true
     }
 
     if (-not ($pkgInfo.PSObject.Properties["publish"])) {
@@ -341,20 +339,16 @@ function Run-StageBuildArtifactsStep {
    $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
-   if($publishInfo.dependenciesJson) {
-      $dependenciesFilename = "dependencies.json"
-      Write-Message "Generating: `"$dependenciesFilename`"..."
-      Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
-   }
+   $dependenciesFilename = "dependencies.json"
+   Write-Message "Generating: `"$dependenciesFilename`"..."
+   Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
 
-   if($publishInfo.packageJson) {
-      $packageInfoFilename = "package.json"
-      Write-Message "Generating: `"$packageInfoFilename`"..."
-      $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactSubDir/$artifactName/$dependenciesFilename" | ConvertFrom-Json
-      $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
-      $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
-      Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
-   }
+   $packageInfoFilename = "package.json"
+   Write-Message "Generating: `"$packageInfoFilename`"..."
+   $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactSubDir/$artifactName/$dependenciesFilename" | ConvertFrom-Json
+   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+   $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
+   Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
    
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"

@@ -27,9 +27,7 @@
           "lib": false,
           "bin": false,
           "share": true,
-          "tools": true,
-          "dependenciesJson": false,
-          "packageJson": false
+          "tools": true
         }
       },
       "win": {
@@ -42,9 +40,7 @@
           "lib": false,
           "bin": false,
           "share": true,
-          "tools": true,
-          "dependenciesJson": false,
-          "packageJson": false
+          "tools": true
         }
       }
     },
