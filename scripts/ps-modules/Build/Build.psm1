@@ -129,19 +129,25 @@ function Get-PackageInfo
     $pkgInfo = $pkg.$selectedSection
 
     # Deal with any optional properties that might not be specified in the json file
-    $optionalProperties = @{ 
-      "publishTools" = $false
-    }
-    foreach ($property in $optionalProperties.Keys) {
-      Write-Host "Checking property: $property"
-      Write-Host $pkgInfo.PSObject.Properties
-      if (-not $pkgInfo.PSObject.Properties[$property]) {
-         Write-Host "Adding property: $property"
-         $pkgInfo | Add-Member -MemberType NoteProperty -Name $property -Value $optionalProperties[$property]
-      }
+    $publishProperties = @{ 
+      "include" = $true
+      "lib" = $true
+      "bin" = $true
+      "share" = $true
+      "tools" = $false
+      "dependenciesJson" = $true
+      "packageJson" = $true
     }
 
-    Write-Host $pkgInfo.PSObject.Properties
+    if (-not ($pkgInfo.PSObject.Properties["publish"])) {
+      $pkgInfo | Add-Member -MemberType NoteProperty -Name "publish" -Value @{}
+    }
+
+    foreach ($property in $publishProperties.Keys) {
+      if (-not $pkgInfo.publish.PSObject.Properties[$property]) {
+        $pkgInfo.publish | Add-Member -MemberType NoteProperty -Name $property -Value $publishProperties[$property]
+      }
+    }
 
     return $pkg.$selectedSection
 }
@@ -224,7 +230,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
       [string]$buildType,
-      [bool]$publishTools
+      [PSObject]$publishInfo
    )
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
@@ -238,8 +244,9 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       $binDir = "debug/bin"
    }
 
-   if ((Get-IsOnWindowsOS))
-   {  
+   # Get dirs to copy
+   $srcToDestDirs = @{}
+   if ((Get-IsOnWindowsOS)) {  
       $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
@@ -247,20 +254,10 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
          "$mainSrcDir/share" = "$preStagePath/share"
          "$mainSrcDir/$libDir" = "$preStagePath/lib"
          "$mainSrcDir/$binDir" = "$preStagePath/bin"
-      }
-      if($publishTools -eq $true){
-         $srcToDestDirs["$mainSrcDir/$toolsDir"] = "$preStagePath/tools"
-      }
-      foreach ($srcDir in $srcToDestDirs.Keys) {
-          $destDir = $srcToDestDirs[$srcDir]
-          if (Test-Path $srcDir) {
-             Write-Message "$srcDir ==> $destDir"
-             Copy-Item -Path $srcDir -Destination $destDir -Force -Recurse
-          }
+         "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
       }
    }
-   elseif((Get-IsOnMacOS))
-   {
+   elseif((Get-IsOnMacOS)) {
       $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
       $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
       $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
@@ -272,22 +269,41 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
          "$srcArm64Dir/$libDir" = "$destArm64LibDir"
          "$srcX64Dir/$libDir" = "$destX64LibDir"
       }
-      foreach ($srcDir in $srcToDestDirs.Keys) {
-          $destDir = $srcToDestDirs[$srcDir]
-          if (Test-Path $srcDir) {
-             Write-Message "$srcDir ==> $destDir"
-             if (Test-Path -Path $destDir -PathType Container) {
-               New-Item -ItemType Directory -Force -Path "$destDir"
-             }
-             cp -RP "$srcDir" "$destDir"
-          }
-      }
-      $destUniversalLibDir = "$preStagePath/lib"
-      Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
-   else
-   {
-      throw [System.Exception]::new("Invalid OS")
+   else {
+     throw [System.Exception]::new("Invalid OS")
+   }
+
+   $keysToRemove = @()
+   foreach ($srcDir in $srcToDestDirs.Keys) {
+     $destDir = $srcToDestDirs[$srcDir]
+     $dirName = [System.IO.Path]::GetFileName($srcDir)
+     if ($publishInfo.$dirName -eq $false) {
+       $keysToRemove += $srcDir
+     }
+   }
+   foreach($key in $keysToRemove) {
+      $srcToDestDirs.Remove($key)
+   }
+
+   # Copy dirs
+   foreach ($srcDir in $srcToDestDirs.Keys) {
+     $destDir = $srcToDestDirs[$srcDir]
+     if (Test-Path $srcDir) {
+       Write-Message "$srcDir ==> $destDir"
+       if((Get-IsOnWindowsOS)) {
+         Copy-Item -Path $srcDir -Destination $destDir -Force -Recurse
+       }
+       elseif((Get-IsOnMacOS)) {
+          cp -RP "$srcDir" "$destDir"
+       }
+     }
+   }
+
+   # Finalize artifacts (Mac-only)
+   if((Get-IsOnMacOS)) {
+     $destUniversalLibDir = "$preStagePath/lib"
+     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
 }
 
@@ -316,7 +332,7 @@ function Run-StageBuildArtifactsStep {
       [string]$linkType,
       [string]$buildType,
       [string]$stagedArtifactsPath,
-      [bool]$publishTools = $false
+      [PSObject]$publishInfo
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
@@ -325,21 +341,24 @@ function Run-StageBuildArtifactsStep {
    $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
-   $dependenciesFilename = "dependencies.json"
-   Write-Message "Generating: `"$dependenciesFilename`"..."
-   Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
+   if($publishInfo.dependenciesJson) {
+      $dependenciesFilename = "dependencies.json"
+      Write-Message "Generating: `"$dependenciesFilename`"..."
+      Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
+   }
 
-   $packageInfoFilename = "package.json"
-   Write-Message "Generating: `"$packageInfoFilename`"..."
-   $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactSubDir/$artifactName/$dependenciesFilename" | ConvertFrom-Json
-   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
-   $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
-   Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
+   if($publishInfo.packageJson) {
+      $packageInfoFilename = "package.json"
+      Write-Message "Generating: `"$packageInfoFilename`"..."
+      $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactSubDir/$artifactName/$dependenciesFilename" | ConvertFrom-Json
+      $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+      $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
+      Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
+   }
    
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
    $excludedFolders = @("debug")
-   if(-not $publishTools) { $excludedFolders += "tools" }
    Get-ChildItem -Path "$preStagePath" -Directory -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
    Remove-Item -Path $preStagePath -Recurse | Out-Null
 
