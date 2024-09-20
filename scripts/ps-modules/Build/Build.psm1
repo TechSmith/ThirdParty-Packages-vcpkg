@@ -359,7 +359,7 @@ function Run-StageBuildArtifactsStep {
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
    $excludedFolders = @("debug")
-   Get-ChildItem -Path "$preStagePath" -Directory -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
+   Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
    Remove-Item -Path $preStagePath -Recurse | Out-Null
 
    $artifactArchive = "$artifactName.tar.gz"
