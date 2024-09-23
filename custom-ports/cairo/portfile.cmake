@@ -14,6 +14,7 @@ vcpkg_from_gitlab(
         mingw-dllexport.patch
         fix-static-missing-lib-msimg32.patch
         disable-lzo.patch
+        1001-tsc-force-crash-cairo-set-source-rgba.patch
         ${PATCHES}
 )
 
