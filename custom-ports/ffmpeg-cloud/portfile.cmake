@@ -167,6 +167,8 @@ file(REMOVE_RECURSE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg" "${CURRENT
 
 set(FFMPEG_PKGCONFIG_MODULES libavutil)
 
+set(OPTIONS "${OPTIONS} --enable-encoder=png --enable-decoder=png")
+
 if("nonfree" IN_LIST FEATURES)
     set(OPTIONS "${OPTIONS} --enable-nonfree")
 endif()
