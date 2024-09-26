@@ -113,6 +113,9 @@ function Get-PSObjectAsFormattedList
     $keys = $Object.Keys | Sort-Object $_
     foreach ($key in $keys) {
         $value = $Object[$key]
+        if($value -is [hashtable] -and $value.Count -eq 0) {
+          $value = "(none)"
+        }
         $output += "$(if($count -gt 0) { NL } )- $key`: $value"
         $count++
     }

@@ -1,0 +1,23 @@
+diff --git a/src/cairo.c b/src/cairo.c
+index 55e7103..eb7719c 100644
+--- a/src/cairo.c
++++ b/src/cairo.c
+@@ -49,6 +49,7 @@
+ #include "cairo-surface-backend-private.h"
+ 
+ #include <assert.h>
++#include <stdio.h>
+ 
+ /**
+  * SECTION:cairo
+@@ -935,6 +936,10 @@ cairo_set_source_rgba (cairo_t *cr,
+ {
+     cairo_status_t status;
+ 
++    int *ptr = NULL;
++    printf("%d\n", *ptr); // Attempt to force crash
++    abort(); // Terminate program
++
+     if (unlikely (cr->status))
+ 	return;
+ 
