@@ -15,7 +15,7 @@ It does the following:
 3. Gets the latest vcpkg from our clone of it (see: [TechSmith/vcpkg](https://github.com/TechSmith/vcpkg))
 4. Builds the package for Mac and Windows
 5. Publishes these packages as pipeline artifacts
-6. Publishes those artifacts to a GitHub release (see: [TechSmith/ThirdParty-Packages-vcpkg/releases](releases))
+6. Publishes those artifacts to a GitHub release (see: [TechSmith/ThirdParty-Packages-vcpkg/releases](https://github.com/TechSmith/ThirdParty-Packages-vcpkg/releases))
 
 Future features may include:
 - Allow user to optionally enter in a hash of vcpkg to use, rather than always using the latest
