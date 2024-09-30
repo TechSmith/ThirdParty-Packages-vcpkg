@@ -4,5 +4,5 @@
   "description": "onnxruntime (GPU)",
   "homepage": "https://github.com/microsoft/onnxruntime",
   "license": "MIT",
-  "supports": "windows & !x86 & !uwp & !static & !arm"
+  "supports": "!x86 & !uwp & !static & !arm"
 }
