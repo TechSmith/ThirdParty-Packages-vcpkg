@@ -1,0 +1,64 @@
+{
+  "name": "onnxruntime",
+  "version": "1.22.0",
+  "port-version": 1,
+  "description": "A cross-platform inference and training machine-learning accelerator",
+  "homepage": "https://github.com/microsoft/onnxruntime",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "python3",
+      "host": true
+    }
+  ],
+  "default-features": [
+    "build-parallel",
+    "compile-no-warning-as-error",
+    "skip-submodule-sync",
+    "skip-tests",
+    {
+      "name": "ep-dml",
+      "platform": "windows"
+    },
+    {
+      "name": "ep-coreml",
+      "platform": "osx"
+    }
+  ],
+  "features": {
+    "build-parallel": {
+      "description": "Enable parallel builds for faster compilation. Maps to the --parallel flag."
+    },
+    "compile-no-warning-as-error": {
+      "description": "Do not treat compiler warnings as errors. Maps to the --compile_no_warning_as_error flag."
+    },
+    "ep-coreml": {
+      "description": "Enable the CoreML execution provider on Apple platforms. Maps to the --use_coreml flag."
+    },
+    "ep-cuda": {
+      "description": "Enable the CUDA execution provider. Requires CUDA toolkit. Maps to the --use_cuda flag."
+    },
+    "ep-dml": {
+      "description": "Enable the DirectML execution provider on Windows. Maps to the --use_dml flag."
+    },
+    "ep-openvino": {
+      "description": "Enable the OpenVINO execution provider. Requires OpenVINO toolkit. Maps to the --use_openvino flag."
+    },
+    "ep-tensorrt": {
+      "description": "Enable the TensorRT execution provider. Requires TensorRT. Maps to the --use_tensorrt flag."
+    },
+    "skip-submodule-sync": {
+      "description": "Skip synchronizing/updating Git submodules. Maps to the --skip_submodule_sync flag."
+    },
+    "skip-tests": {
+      "description": "Skip running tests after the build. Maps to the --skip_tests flag."
+    }
+  }
+}
