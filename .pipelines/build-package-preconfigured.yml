@@ -17,6 +17,8 @@ parameters:
   - libzip-static
   - libzip-dynamic
   - minizip
+  - onnx
+  - onnxruntime-gpu
   - openssl-static
   - opencv4
   - pango
