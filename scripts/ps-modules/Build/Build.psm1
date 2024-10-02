@@ -126,6 +126,27 @@ function Get-PackageInfo
         exit
     }
     $selectedSection = if ((Get-IsOnWindowsOS)) { "win" } else { "mac" }
+    $pkgInfo = $pkg.$selectedSection
+
+    # Deal with any optional properties that might not be specified in the json file
+    $publishProperties = @{ 
+      "include" = $true
+      "lib" = $true
+      "bin" = $true
+      "share" = $true
+      "tools" = $false
+    }
+
+    if (-not ($pkgInfo.PSObject.Properties["publish"])) {
+      $pkgInfo | Add-Member -MemberType NoteProperty -Name "publish" -Value @{}
+    }
+
+    foreach ($property in $publishProperties.Keys) {
+      if (-not $pkgInfo.publish.PSObject.Properties[$property]) {
+        $pkgInfo.publish | Add-Member -MemberType NoteProperty -Name $property -Value $publishProperties[$property]
+      }
+    }
+
     return $pkg.$selectedSection
 }
 
@@ -139,6 +160,32 @@ function Run-WriteParamsStep {
    Write-Message (Get-PSObjectAsFormattedList -Object $scriptArgs)
 }
 
+function Run-CleanupStep {
+   Write-Banner -Level 3 -Title "Cleaning files"
+
+   Write-Message "Removing vcpkg cache..."
+   if ( (Get-IsOnWindowsOS) ) {
+       $vcpkgCacheDir = "$env:LocalAppData/vcpkg/archives"
+   } elseif ( (Get-IsOnMacOS) ) {
+      $vcpkgCacheDir = "$HOME/.cache/vcpkg/archives"
+   }
+   if (Test-Path -Path $vcpkgCacheDir -PathType Container) {
+      Remove-Item -Path $vcpkgCacheDir -Recurse -Force
+   }
+
+   Write-Message "Removing vcpkg dir..."
+   $vcpkgInstallDir = "./vcpkg"
+   if (Test-Path -Path $vcpkgInstallDir -PathType Container) {
+      Remove-Item -Path $vcpkgInstallDir -Recurse -Force
+   }
+
+   Write-Message "Removing StagedArtifacts..."
+   $stagedArtifactsDir = "./StagedArtifacts"
+   if (Test-Path -Path $stagedArtifactsDir -PathType Container) {
+      Remove-Item -Path $stagedArtifactsDir -Recurse -Force
+   }
+}
+
 function Run-SetupVcpkgStep {
    param(
       [string]$repoHash
@@ -148,20 +195,11 @@ function Run-SetupVcpkgStep {
    $installDir = "./vcpkg"
    if ( (Get-IsOnWindowsOS) ) {
        $bootstrapScript = "./bootstrap-vcpkg.bat"
-       $cacheDir = "$env:LocalAppData/vcpkg/archives"
    } elseif ( (Get-IsOnMacOS) ) {
        $bootstrapScript = "./bootstrap-vcpkg.sh"
-       $cacheDir = "$HOME/.cache/vcpkg/archives"
    }
 
    Write-Banner -Level 3 -Title "Setting up vcpkg"
-   Write-Message "Removing vcpkg..."
-   if (Test-Path -Path $cacheDir -PathType Container) {
-      Remove-Item -Path $cacheDir -Recurse -Force
-   }
-   if (Test-Path -Path $installDir -PathType Container) {
-      Remove-Item -Path $installDir -Recurse -Force
-   }
 
    Write-Message "$(NL)Installing vcpkg..."
    if (-not (Test-Path -Path $installDir -PathType Container)) {
@@ -206,7 +244,8 @@ function Run-InstallPackageStep
 function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
-      [string]$buildType
+      [string]$buildType,
+      [PSObject]$publishInfo
    )
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
@@ -214,13 +253,15 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    
    $libDir = "lib"
    $binDir = "bin"
+   $toolsDir = "tools"
    if( $buildType -eq "debug" ) {
       $libDir = "debug/lib"
       $binDir = "debug/bin"
    }
 
-   if ((Get-IsOnWindowsOS))
-   {  
+   # Get dirs to copy
+   $srcToDestDirs = @{}
+   if ((Get-IsOnWindowsOS)) {  
       $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
@@ -228,17 +269,10 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
          "$mainSrcDir/share" = "$preStagePath/share"
          "$mainSrcDir/$libDir" = "$preStagePath/lib"
          "$mainSrcDir/$binDir" = "$preStagePath/bin"
-      }
-      foreach ($srcDir in $srcToDestDirs.Keys) {
-          $destDir = $srcToDestDirs[$srcDir]
-          if (Test-Path $srcDir) {
-             Write-Message "$srcDir ==> $destDir"
-             Copy-Item -Path $srcDir -Destination $destDir -Force -Recurse
-          }
+         "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
       }
    }
-   elseif((Get-IsOnMacOS))
-   {
+   elseif((Get-IsOnMacOS)) {
       $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
       $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
       $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
@@ -250,22 +284,41 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
          "$srcArm64Dir/$libDir" = "$destArm64LibDir"
          "$srcX64Dir/$libDir" = "$destX64LibDir"
       }
-      foreach ($srcDir in $srcToDestDirs.Keys) {
-          $destDir = $srcToDestDirs[$srcDir]
-          if (Test-Path $srcDir) {
-             Write-Message "$srcDir ==> $destDir"
-             if (Test-Path -Path $destDir -PathType Container) {
-               New-Item -ItemType Directory -Force -Path "$destDir"
-             }
-             cp -RP "$srcDir" "$destDir"
-          }
-      }
-      $destUniversalLibDir = "$preStagePath/lib"
-      Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
-   else
-   {
-      throw [System.Exception]::new("Invalid OS")
+   else {
+     throw [System.Exception]::new("Invalid OS")
+   }
+
+   $keysToRemove = @()
+   foreach ($srcDir in $srcToDestDirs.Keys) {
+     $destDir = $srcToDestDirs[$srcDir]
+     $dirName = [System.IO.Path]::GetFileName($srcDir)
+     if ($publishInfo.$dirName -eq $false) {
+       $keysToRemove += $srcDir
+     }
+   }
+   foreach($key in $keysToRemove) {
+      $srcToDestDirs.Remove($key)
+   }
+
+   # Copy dirs
+   foreach ($srcDir in $srcToDestDirs.Keys) {
+     $destDir = $srcToDestDirs[$srcDir]
+     if (Test-Path $srcDir) {
+       Write-Message "$srcDir ==> $destDir"
+       if((Get-IsOnWindowsOS)) {
+         Copy-Item -Path $srcDir -Destination $destDir -Force -Recurse
+       }
+       elseif((Get-IsOnMacOS)) {
+          cp -RP "$srcDir" "$destDir"
+       }
+     }
+   }
+
+   # Finalize artifacts (Mac-only)
+   if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
+     $destUniversalLibDir = "$preStagePath/lib"
+     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
 }
 
@@ -293,7 +346,8 @@ function Run-StageBuildArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$stagedArtifactsPath
+      [string]$stagedArtifactsPath,
+      [PSObject]$publishInfo
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
@@ -315,9 +369,9 @@ function Run-StageBuildArtifactsStep {
    
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
-   $excludedFolders = @("tools", "debug")
-   Get-ChildItem -Path "$preStagePath" -Directory -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
-   Remove-Item -Path $preStagePath | Out-Null
+   $excludedFolders = @("debug")
+   Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
+   Remove-Item -Path $preStagePath -Recurse | Out-Null
 
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""
@@ -376,7 +430,7 @@ function Resolve-Symlink {
    return $currentPath.FullName
 }
 
-Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep
+Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep
 Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
