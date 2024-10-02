@@ -48,6 +48,7 @@
             "openjpeg",
             "openmpt",
             "opus",
+            "png",
             "snappy",
             "soxr",
             "speex",
@@ -130,6 +131,14 @@
           "default-features": false,
           "features": [
             "openh264"
+          ],
+          "platform": "!uwp"
+        },
+        {
+          "name": "ffmpeg-cloud",
+          "default-features": false,
+          "features": [
+            "png"
           ],
           "platform": "!uwp"
         },
@@ -535,6 +544,12 @@
       "description": "Opus de/encoding via libopus",
       "dependencies": [
         "opus"
+      ]
+    },
+    "png": {
+      "description": "PNG encoding & decoding (requires zlib)",
+      "dependencies": [
+        "zlib"
       ]
     },
     "postproc": {
