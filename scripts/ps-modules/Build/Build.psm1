@@ -245,6 +245,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
       [string]$buildType,
+      [PSObject]$buildOptions,
       [PSObject]$publishDirs
    )
    $preStagePath = (Get-PreStagePath)
@@ -318,7 +319,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    # Finalize artifacts (Mac-only)
    if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
      $destUniversalLibDir = "$preStagePath/lib"
-     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir" -createUniversalBinaries $buildOptions.createUniversalBinaries -createDsyms $buildOptions.createDsyms
    }
 }
 
