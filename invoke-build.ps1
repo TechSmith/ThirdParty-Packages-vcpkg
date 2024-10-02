@@ -12,6 +12,7 @@ param(
 $global:showDebug = $ShowDebug
 Import-Module "$PSScriptRoot/scripts/ps-modules/Build" -Force -DisableNameChecking
 Run-WriteParamsStep -packageAndFeatures $PackageAndFeatures -scriptArgs $PSBoundParameters
+Run-CleanupStep
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
 Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
