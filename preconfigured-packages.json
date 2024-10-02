@@ -244,6 +244,19 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "onnx",
+      "mac": {
+        "package": "onnx",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "onnx",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
