@@ -167,8 +167,6 @@ file(REMOVE_RECURSE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg" "${CURRENT
 
 set(FFMPEG_PKGCONFIG_MODULES libavutil)
 
-set(OPTIONS "${OPTIONS} --enable-encoder=png --enable-decoder=png")
-
 if("nonfree" IN_LIST FEATURES)
     set(OPTIONS "${OPTIONS} --enable-nonfree")
 endif()
@@ -448,6 +446,14 @@ if("opus" IN_LIST FEATURES)
 else()
     set(OPTIONS "${OPTIONS} --disable-libopus")
     set(WITH_OPUS OFF)
+endif()
+
+if("png" IN_LIST FEATURES)
+    set(OPTIONS "${OPTIONS} --enable-encoder=png --enable-decoder=png --enable-muxer=png --enable-demuxer=png")
+    set(WITH_LIBPNG ON)
+else()
+    set(OPTIONS "${OPTIONS} --disable-encoder=png --disable-decoder=png --disable-muxer=png --disable-demuxer=png")
+    set(WITH_LIBPNG OFF)
 endif()
 
 if("sdl2" IN_LIST FEATURES)
