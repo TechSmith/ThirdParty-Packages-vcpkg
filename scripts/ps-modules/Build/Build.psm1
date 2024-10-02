@@ -245,7 +245,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
       [string]$buildType,
-      [PSObject]$publishInfo
+      [PSObject]$publishDirs
    )
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
@@ -293,7 +293,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    foreach ($srcDir in $srcToDestDirs.Keys) {
      $destDir = $srcToDestDirs[$srcDir]
      $dirName = [System.IO.Path]::GetFileName($srcDir)
-     if ($publishInfo.$dirName -eq $false) {
+     if ($publishDirs.$dirName -eq $false) {
        $keysToRemove += $srcDir
      }
    }
@@ -346,8 +346,7 @@ function Run-StageBuildArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$stagedArtifactsPath,
-      [PSObject]$publishInfo
+      [string]$stagedArtifactsPath
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"

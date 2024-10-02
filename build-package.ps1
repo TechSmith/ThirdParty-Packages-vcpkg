@@ -10,4 +10,4 @@ Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageName`"
 $pkg = Get-PackageInfo -PackageName $PackageName
 
 Write-Message "$(NL)Running invoke-build.ps1...$(NL)"
-./invoke-build.ps1 -PackageName $PackageName -PackageAndFeatures $pkg.package -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug
+./invoke-build.ps1 -PackageName $PackageName -PackageAndFeatures $pkg.package -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -PublishDirs $pkg.publishDirs -ShowDebug:$ShowDebug
