@@ -42,8 +42,8 @@
             "bzip2",
             "freetype",
             "iconv",
-            "libjpeg-turbo",
             "lzma",
+            "mjepg",
             "mp3lame",
             "openjpeg",
             "openmpt",
@@ -114,7 +114,7 @@
           "name": "ffmpeg-cloud",
           "default-features": false,
           "features": [
-            "libjpeg-turbo"
+            "mjpeg"
           ],
           "platform": "!uwp"
         },
@@ -460,16 +460,16 @@
         "libilbc"
       ]
     },
-    "libjpeg-turbo": {
-      "description": "libjpeg-turbo",
-      "dependencies": [
-        "libjpeg-turbo"
-      ]
-    },
     "lzma": {
       "description": "lzma support",
       "dependencies": [
         "liblzma"
+      ]
+    },
+    "mjpeg": {
+      "description": "Mjpeg encoding & decoding support",
+      "dependencies": [
+        "libjpeg-turbo"
       ]
     },
     "modplug": {
