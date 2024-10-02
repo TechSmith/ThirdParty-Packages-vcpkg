@@ -257,6 +257,23 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "onnxruntime-gpu",
+      "mac": {
+        "package": "onnxruntime-gpu",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "buildOptions": {
+          "createUniversalBinaries": false,
+          "createDsyms": false
+        }
+      },
+      "win": {
+        "package": "onnxruntime-gpu",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
