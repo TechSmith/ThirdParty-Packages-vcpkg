@@ -1,6 +1,6 @@
 {
   "name": "onnxruntime-gpu",
-  "version": "1.19.2",
+  "version": "1.18.1",
   "description": "onnxruntime (GPU)",
   "homepage": "https://github.com/microsoft/onnxruntime",
   "license": "MIT",
