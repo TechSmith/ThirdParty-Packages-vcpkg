@@ -50,6 +50,10 @@ function Get-IsOnMacOS {
     return $false
 }
 
+function Get-IsOnLinux {
+    $IsLinux
+}
+
 function Invoke-Powershell {
     param (
         [string]$FilePath,
@@ -144,4 +148,4 @@ function Run-ScriptIfExists {
    Invoke-Powershell -FilePath $script -ArgumentList $scriptArgs
 }
 
-Export-ModuleMember -Function Show-FileContent, Install-FromVcpkg, Exit-IfError, Write-ReleaseInfoJson, Get-IsOnMacOS, Get-IsOnWindowsOS, Invoke-Powershell, Write-Banner, Write-Message, Write-Debug, NL, Get-PSObjectAsFormattedList, Run-ScriptIfExists
+Export-ModuleMember -Function Show-FileContent, Install-FromVcpkg, Exit-IfError, Write-ReleaseInfoJson, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Invoke-Powershell, Write-Banner, Write-Message, Write-Debug, NL, Get-PSObjectAsFormattedList, Run-ScriptIfExists

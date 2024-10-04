@@ -28,6 +28,8 @@ function Get-Triplets {
    )
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
+   } elseif (Get-IsOnLinux) {
+       return @("x64-linux") # using microsoft provided release
    } elseif (Get-IsOnMacOS) {
        return @("x64-osx-$linkType-$buildType", "arm64-osx-$linkType-$buildType")
    }
@@ -41,7 +43,7 @@ function Get-PreStagePath {
 function Get-VcPkgExe {
    if ( (Get-IsOnWindowsOS) ) {
       return "./vcpkg/vcpkg.exe"
-   } elseif ( (Get-IsOnMacOS) ) {
+   } elseif ( (Get-IsOnMacOS) -or (Get-IsOnLinux) ) {
       return "./vcpkg/vcpkg"
    }
    throw [System.Exception]::new("Invalid OS")
@@ -63,6 +65,8 @@ function Get-ArtifactName {
       return "$packageName-windows-$buildType"
    } elseif ( (Get-IsOnMacOS) ) {
       return "$packageName-osx-$buildType"
+   } elseif ( (Get-IsOnLinux) ) {
+      return "$packageName-linux-$buildType"
    }
    throw [System.Exception]::new("Invalid OS")
 }
@@ -166,7 +170,7 @@ function Run-CleanupStep {
    Write-Message "Removing vcpkg cache..."
    if ( (Get-IsOnWindowsOS) ) {
        $vcpkgCacheDir = "$env:LocalAppData/vcpkg/archives"
-   } elseif ( (Get-IsOnMacOS) ) {
+   } elseif ( (Get-IsOnMacOS) -or (Get-IsOnLinux) ) {
       $vcpkgCacheDir = "$HOME/.cache/vcpkg/archives"
    }
    if (Test-Path -Path $vcpkgCacheDir -PathType Container) {
@@ -195,7 +199,7 @@ function Run-SetupVcpkgStep {
    $installDir = "./vcpkg"
    if ( (Get-IsOnWindowsOS) ) {
        $bootstrapScript = "./bootstrap-vcpkg.bat"
-   } elseif ( (Get-IsOnMacOS) ) {
+   } elseif ( (Get-IsOnMacOS) -or (Get-IsOnLinux) ) {
        $bootstrapScript = "./bootstrap-vcpkg.sh"
    }
 
@@ -261,7 +265,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
 
    # Get dirs to copy
    $srcToDestDirs = @{}
-   if ((Get-IsOnWindowsOS)) {  
+   if ((Get-IsOnWindowsOS) -or (Get-IsOnLinux)) {  
       $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
@@ -309,7 +313,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
        if((Get-IsOnWindowsOS)) {
          Copy-Item -Path $srcDir -Destination $destDir -Force -Recurse
        }
-       elseif((Get-IsOnMacOS)) {
+       elseif((Get-IsOnMacOS) -or (Get-IsOnLinux)) {
           cp -RP "$srcDir" "$destDir"
        }
      }
@@ -431,7 +435,7 @@ function Resolve-Symlink {
 }
 
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force
