@@ -74,6 +74,13 @@ stages:
 
     - template: steps/full-checkout.yml
 
+    - task: Bash@3
+      condition: and(succeeded(), eq(variables['osName'], 'linux'))
+      inputs:
+        targetType: 'inline'
+        script: sudo apt-get update && sudo apt-get install -y nasm
+      displayName: 'Install Required Linux Package: nasm'
+
     - pwsh: |
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (preconfigured)'
