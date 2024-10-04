@@ -91,31 +91,37 @@ stages:
       displayName: 'Run: install & stage (custom)'
       condition: and(succeeded(), ${{ parameters.isCustomBuild }})
 
+    - powershell: |
+        echo "##vso[task.setvariable variable=binExists]$(if (Test-Path "$(Build.ArtifactStagingDirectory)/package/bin") { 'true' } else { 'false' })"
+        echo "##vso[task.setvariable variable=srcExists]$(if (Test-Path "$(Build.ArtifactStagingDirectory)/package/src") { 'true' } else { 'false' })"
+      name: CheckDirectories
+      displayName: 'Verify builds ran'
+
     - task: PublishBuildArtifacts@1
       displayName: Publish build artifacts
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/package/bin
         artifactName: $(osName)-bin
-      condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
+      condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }}, eq(variables.binExists, 'true'))
 
     - task: PublishBuildArtifacts@1
       displayName: Publish build artifacts
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/package/src
         artifactName: $(osName)-src
-      condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }})
+      condition: and(succeeded(), ${{ parameters.publishToPipelineArtifacts }}, eq(variables.srcExists, 'true'))
 
     - pwsh: |
         ./scripts/copy-logs.ps1 -Source "./vcpkg/buildtrees" -Destination "$(Build.ArtifactStagingDirectory)/logs"
       displayName: Stage logs
-      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }})
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, or(eq(variables.binExists, 'true'), eq(variables.srcExists, 'true')))
 
     - task: PublishBuildArtifacts@1
       displayName: Publish logs
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/logs
         artifactName: $(osName)-logs
-      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }})
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, or(eq(variables.binExists, 'true'), eq(variables.srcExists, 'true')))
 
 - stage: PublishToGitHubRelease
   displayName: 'Publish to GitHub Release'
