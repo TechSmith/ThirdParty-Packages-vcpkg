@@ -9,5 +9,11 @@ Import-Module "$PSScriptRoot/scripts/ps-modules/Build" -Force -DisableNameChecki
 Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageName`""
 $pkg = Get-PackageInfo -PackageName $PackageName
 
+if ($pkg -eq $null) {
+    $selectedSection = if ((Get-IsOnWindowsOS)) { "win" } elseif ((Get-IsOnMacOS)) { "mac" } else { "linux" }
+    Write-Message "Package $PackageName contains no section for $selectedSection, skipping build."
+    exit 0
+}
+
 Write-Message "$(NL)Running invoke-build.ps1...$(NL)"
 ./invoke-build.ps1 -PackageName $PackageName -PackageAndFeatures $pkg.package -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug

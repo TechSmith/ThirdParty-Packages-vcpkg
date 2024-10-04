@@ -129,7 +129,7 @@ function Get-PackageInfo
         Write-Message "> Package not found in $jsonFilePath."
         exit
     }
-    $selectedSection = if ((Get-IsOnWindowsOS)) { "win" } else { "mac" }
+    $selectedSection = if ((Get-IsOnWindowsOS)) { "win" } elseif ((Get-IsOnMacOS)) { "mac" } else { "linux" }
     $pkgInfo = $pkg.$selectedSection
 
     # Deal with any optional properties that might not be specified in the json file
@@ -139,6 +139,10 @@ function Get-PackageInfo
       "bin" = $true
       "share" = $true
       "tools" = $false
+    }
+
+    if (-not ($pkgInfo.PSObject)) {
+      return $null;
     }
 
     if (-not ($pkgInfo.PSObject.Properties["publish"])) {
