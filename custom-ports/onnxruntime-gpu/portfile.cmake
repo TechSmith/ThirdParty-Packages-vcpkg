@@ -6,14 +6,14 @@ if(VCPKG_HOST_IS_WINDOWS)
     vcpkg_download_distfile(ARCHIVE
         URLS "https://github.com/microsoft/onnxruntime/releases/download/v${VERSION}/${PKG_NAME}.zip"
         FILENAME "${PKG_NAME}.zip"
-        SHA512 9576eafca59fc7f2af9f62d7ee8aa31208ef965d17f3ad71747d5a9a46cdffd6b3958dc945109d82937555df8bb35319ce92925e66ab707f1ca8e7564ecb3ced
+        SHA512 1a7f5c1ca0cecb50505e0f33fd5b485b557c8930c79869b25acab036683c376d8e5e429f46cd30cbb592456203eca791948a7bcf1b730685c45196e85300c95e
     )
 elseif(VCPKG_HOST_IS_OSX)
     set(PKG_NAME "onnxruntime-osx-universal2-${VERSION}")
     vcpkg_download_distfile(ARCHIVE
         URLS "https://github.com/microsoft/onnxruntime/releases/download/v${VERSION}/${PKG_NAME}.tgz"
         FILENAME "${PKG_NAME}.tgz"
-        SHA512 a4b233f5cb258624af4fa57c10c93010c01730d067809054846a7e9eec3f8d5025a52cc07f920258b0db5073a787d8fcffa5f627c0dd34c690900c836d797d49
+        SHA512 5a59c36a683aed3c984e2eb97d91a50923f906ff5969edeeb941659a395411dd6f0f36d87f51e170f2fda70b2381a1afe3b40ef0c4395f393e50981e227cdbc5
     )
 endif()
 
@@ -28,7 +28,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH REPO_PATH
     REPO microsoft/onnxruntime
     REF v${VERSION}
-    SHA512 3bf25e431d175c61953d28b1bf8f6871376684263992451a5b2a66e670768fc66e7027f141c6e3f4d1eddeebeda51f31ea0adf4749e50d99ee89d0a26bec77ce
+    SHA512 192cb95e131d7a7796f29556355d0c9055c05723e1120e21155ed21e05301d862f2ba3fd613d8f9289b61577f64cc4b406db7bb25d1bd666b75c29a0f29cc9d8
 )
 
 file(COPY
