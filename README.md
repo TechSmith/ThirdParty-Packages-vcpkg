@@ -36,10 +36,4 @@ It does the following:
 ### Testing Linux Builds Locally
 Linux builds can be developed and run from Windows via WSL.  The ffmpeg-cloud pre-configured package for example was created using Ubuntu, which is the default WSL OS.
 
-A few system packages are required to run the powershell `build-package.ps1` script, specifically `clang` (or a similar compiler) and `pkg-config`.  Some pre-configured builds require additional packages, such as ffmpeg-cloud needing `nasm`.  You can install them via:
-```
-sudo apt update
-sudo apt install clang, pkg-config, nasm
-```
-
 Given that WSL is quite slow when reading / writing files between Linux and Windows, it's best to run builds directly within a Linux mounted file location (for example `~/projects/ThirdParty-Packages-vcpkg` instead of `/mnt/c/projects/ThirdParty-Packages-vcpkg`).
