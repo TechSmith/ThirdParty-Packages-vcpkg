@@ -150,10 +150,12 @@ stages:
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
-          $paths = @( "./mac-bin", "./win-bin", "./mac-src", "./win-src" )
+          $paths = @( "./mac-bin", "./win-bin", "./mac-src", "./win-src", "./linux-bin", "./linux-src" )
           foreach ($path in $paths) {
-              Move-Item -Path "$path/*" -Destination . -Force
-              Remove-Item -Path $path -Recurse -Force
+              if (Test-Path $path) {
+                  Move-Item -Path "$path/*" -Destination . -Force
+                  Remove-Item -Path $path -Recurse -Force
+              }
           }
 
     - task: CopyFiles@2
