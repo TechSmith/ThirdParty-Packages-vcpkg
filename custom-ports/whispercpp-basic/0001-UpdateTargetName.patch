@@ -1,16 +1,13 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 82913aa..a77592a 100644
+index 16a00ad..3824bae 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -683,9 +683,10 @@ include_directories (
-     .
- )
- # Set the version numbers
--set_target_properties(whisper PROPERTIES
-+set_target_properties(${TARGET} PROPERTIES
-     VERSION ${PROJECT_VERSION}
-     SOVERSION ${SOVERSION}
-+    OUTPUT_NAME "whisper-basic"
- )
+@@ -143,7 +143,7 @@ set(WHISPER_BIN_INSTALL_DIR     ${CMAKE_INSTALL_BINDIR}     CACHE PATH "Location
  
- include(DefaultTargetOptions)
+ get_directory_property(WHISPER_TRANSIENT_DEFINES COMPILE_DEFINITIONS)
+ 
+-set_target_properties(whisper PROPERTIES PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/whisper.h)
++set_target_properties(whisper PROPERTIES OUTPUT_NAME "whisper-basic" PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/whisper.h)
+ install(TARGETS whisper LIBRARY PUBLIC_HEADER)
+ 
+ configure_package_config_file(
