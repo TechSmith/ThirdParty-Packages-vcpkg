@@ -3,9 +3,9 @@
     {
       "filename": "bin/whisper-basic.dll",
       "fileDescription": "High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.  This dll is built without enhanced CPU support for AVX, AVX2, FMA or F16C.",
-      "fileVersion": "1.6.2",
+      "fileVersion": "1.7.1",
       "productName": "WhisperCpp",
-      "productVersion": "1.6.2",
+      "productVersion": "1.7.1",
       "copyright": "Copyright (c) 2023-2024 The ggml authors"
     }
   ]
