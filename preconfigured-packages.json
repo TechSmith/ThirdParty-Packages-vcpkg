@@ -22,7 +22,7 @@
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
-        "publish": {
+        "publishDirs": {
           "include": false,
           "lib": false,
           "bin": false,
@@ -35,7 +35,7 @@
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
-        "publish": {
+        "publishDirs": {
           "include": false,
           "lib": false,
           "bin": false,
@@ -241,6 +241,36 @@
       },
       "win": {
         "package": "minizip",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "onnx",
+      "mac": {
+        "package": "onnx",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "onnx",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "onnxruntime-gpu",
+      "mac": {
+        "package": "onnxruntime-gpu",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "buildOptions": {
+          "createUniversalBinaries": false,
+          "createDsyms": false
+        }
+      },
+      "win": {
+        "package": "onnxruntime-gpu",
         "linkType": "dynamic",
         "buildType": "release"
       }

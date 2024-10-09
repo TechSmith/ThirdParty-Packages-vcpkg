@@ -5,7 +5,8 @@ param(
     [string]$BuildType = "release",                          # Build type: release or debug
     [string]$StagedArtifactsPath = "StagedArtifacts",        # Output path to stage these artifacts to
     [string]$VcpkgHash = "",                                 # The hash of vcpkg to checkout (if applicable)
-    [PSObject]$PublishInfo = $false,                         # Optional info on what to publish or not publish to the final artifact
+    [PSObject]$BuildOptions = $null,                         # Additional options to control how this package is built
+    [PSObject]$PublishDirs = $null,                          # Optional info on what to publish or not publish to the final artifact
     [switch]$ShowDebug = $false                              # Show additional debugging information
 )
 
@@ -16,9 +17,9 @@ Run-CleanupStep
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
 Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
-Run-PrestageAndFinalizeBuildArtifactsStep -linkType $LinkType -buildType $BuildType -publishInfo $PublishInfo
+Run-PrestageAndFinalizeBuildArtifactsStep -linkType $LinkType -buildType $BuildType -buildOptions $BuildOptions -publishDirs $PublishDirs
 Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
-Run-StageBuildArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath -publishInfo $PublishInfo
+Run-StageBuildArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath
 Run-StageSourceArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -stagedArtifactsPath $StagedArtifactsPath
 
 Write-Message "$(NL)$(NL)Done.$(NL)"

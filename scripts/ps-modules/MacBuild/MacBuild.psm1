@@ -34,6 +34,26 @@ function Create-UniversalBinaries {
    }
 }
 
+function Copy-SrcLibToDestLib {
+    param(
+       [string]$srcLibDir,
+       [string]$destLibDir
+    )
+    New-Item -Path "$destLibDir" -ItemType Directory -Force | Out-Null
+    Write-Message "Copying files from: $srcLibDir ==> $destLibDir..."
+    $items = Get-ChildItem -Path "$srcLibDir/*" -Include "*.dylib","*.a","*.dSYM"
+    foreach($item in $items) {
+        $fileName = $item.Name
+        Write-Message "> $fileName"
+        $srcPath = $item.FullName
+        $destPath = (Join-Path $destLibDir $fileName)
+        
+        if (-not $item.PSIsContainer) {
+            Invoke-Expression -Command "cp -R `"$srcPath`" `"$destPath`""
+        }
+    }
+ }
+
 function Copy-NonLibraryFiles {
    param(
       [string]$srcDir,
@@ -53,17 +73,28 @@ function Create-FinalizedMacBuildArtifacts {
     param (
         [string]$arm64LibDir,
         [string]$x64LibDir,
-        [string]$universalLibDir
+        [string]$universalLibDir,
+        [bool]$createUniversalBinaries,
+        [bool]$createDsyms
     )
     Write-Banner -Level 3 -Title "Finalizing Mac artifacts"
     Write-Message "arm64LibDir: $arm64LibDir"
     Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
-    Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalLibDir $universalLibDir
+    if($createUniversalBinaries) {
+        Write-Host ">> Create-UniversalBinaries"
+        Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalLibDir $universalLibDir
+    }
+    else {
+        Write-Host ">> Copy-SrcLibToDestLib"
+        Copy-SrcLibToDestLib -srcLibDir $arm64LibDir -destLibDir $universalLibDir
+    }
     Copy-NonLibraryFiles -srcDir $arm64LibDir -destDir $universalLibDir
     Remove-Item -Force -Recurse -Path $arm64LibDir
     Remove-Item -Force -Recurse -Path $x64LibDir
     Remove-DylibSymlinks -libDir $universalLibDir
-    Run-CreateDysmAndStripDebugSymbols -libDir $universalLibDir
+    if($createDsyms) {
+        Run-CreateDysmAndStripDebugSymbols -libDir $universalLibDir
+    }
 }
 
 function Update-LibraryPath {
@@ -260,6 +291,13 @@ function Remove-DylibSymlinks {
     foreach ($item in $filesAndSymlinks) {
         Write-Message "> Renaming: $($item.Filename) ==> $($item.NewFilename)"
         Move-Item -Path "$($item.Filename)" -Destination "$($item.NewFilename)"
+        $dsymDir = "$($item.Filename).dSYM"
+        if (Test-Path -Path $dsymDir -PathType Container) {
+            $newDsymDir = "$($item.NewFilename).dSYM"
+            Write-Message "> Renaming: $dsymDir ==> $newDsymDir"
+            Move-Item -Path "$dsymDir" -Destination "$newDsymDir"
+            # TODO: Rename the inner .dylib in the dwarf dir
+        }
     }
 
     Pop-Location

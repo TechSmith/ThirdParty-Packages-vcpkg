@@ -253,7 +253,8 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
       [string]$buildType,
-      [PSObject]$publishInfo
+      [PSObject]$buildOptions,
+      [PSObject]$publishDirs
    )
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
@@ -301,7 +302,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    foreach ($srcDir in $srcToDestDirs.Keys) {
      $destDir = $srcToDestDirs[$srcDir]
      $dirName = [System.IO.Path]::GetFileName($srcDir)
-     if ($publishInfo.$dirName -eq $false) {
+     if ($publishDirs.$dirName -eq $false) {
        $keysToRemove += $srcDir
      }
    }
@@ -326,7 +327,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    # Finalize artifacts (Mac-only)
    if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
      $destUniversalLibDir = "$preStagePath/lib"
-     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir" -createUniversalBinaries $buildOptions.createUniversalBinaries -createDsyms $buildOptions.createDsyms
    }
 }
 
@@ -354,8 +355,7 @@ function Run-StageBuildArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$stagedArtifactsPath,
-      [PSObject]$publishInfo
+      [string]$stagedArtifactsPath
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
