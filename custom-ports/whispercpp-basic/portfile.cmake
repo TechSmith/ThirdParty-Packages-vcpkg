@@ -3,31 +3,34 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggerganov/whisper.cpp
     REF "v${VERSION}"
-    SHA512 17e0485fb93fdea1a89f584a64db35f05371e0b8710a539f0dffca30bd3a2fff44c72ea754556566ca3cc55415b1e8f2bb868665437f5c93b9ce666b4fe53fb3
+    SHA512 944d8a6e4a770462e77139d918fd1d5b93efca377051d83a584d91164ec73fa50b5bfbc7d85014151b3b5c80fa59cfd386e456960401f8b3c66a9788585cac46
     HEAD_REF master
     PATCHES
-        0001-UpdateTargetName.patch
+        0001-BuildGgmlAsStatic.patch
+        0002-UpdateTargetName.patch
 )
+
+set(VCPKG_POLICY_SKIP_MISPLACED_CMAKE_FILES_CHECK enabled)
+set(VCPKG_POLICY_SKIP_LIB_CMAKE_MERGE_CHECK enabled)
 
 if(VCPKG_HOST_IS_OSX)
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
         OPTIONS
-            -DWHISPER_NO_AVX=ON
-            -DWHISPER_NO_AVX2=ON
-            -DWHISPER_NO_FMA=ON
-            -DWHISPER_NO_F16C=ON
-            -DWHISPER_METAL=OFF
+            -DGGML_AVX=OFF
+            -DGGML_AVX2=OFF
+            -DGGML_FMA=OFF
+            -DGGML_F16C=OFF
+            -DGGML_METAL=OFF
     )
 else()
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
         OPTIONS
-            -DWHISPER_NO_AVX=ON
-            -DWHISPER_NO_AVX2=ON
-            -DWHISPER_NO_FMA=ON
-            -DWHISPER_NO_F16C=ON
-    )
+            -DGGML_AVX=OFF
+            -DGGML_AVX2=OFF
+            -DGGML_FMA=OFF
+)
 endif()
 
 vcpkg_install_cmake()
@@ -42,3 +45,5 @@ endforeach()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/static")
 
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
+
+vcpkg_fixup_pkgconfig()

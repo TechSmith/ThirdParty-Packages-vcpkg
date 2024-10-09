@@ -1,0 +1,13 @@
+diff --git a/ggml/src/CMakeLists.txt b/ggml/src/CMakeLists.txt
+index 286bec2..d6e57e0 100644
+--- a/ggml/src/CMakeLists.txt
++++ b/ggml/src/CMakeLists.txt
+@@ -1319,7 +1319,7 @@ endif()
+ 
+ # ggml
+ 
+-add_library(ggml
++add_library(ggml STATIC
+             ../include/ggml.h
+             ../include/ggml-alloc.h
+             ../include/ggml-backend.h
