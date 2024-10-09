@@ -17,7 +17,7 @@
     },
     {
       "name": "ffmpeg-cloud",
-      "mac": {
+      "win": {
         "package": "ffmpeg-cloud[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,x264,openssl,mjpeg,png,zlib]",
         "linkType": "static",
         "buildType": "release",
@@ -30,7 +30,7 @@
           "tools": true
         }
       },
-      "win": {
+      "linux": {
         "package": "ffmpeg-cloud[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,x264,openssl,mjpeg,png,zlib]",
         "linkType": "static",
         "buildType": "release",
