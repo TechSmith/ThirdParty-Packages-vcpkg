@@ -129,7 +129,7 @@ function Get-PackageInfo
         Write-Message "> Package not found in $jsonFilePath."
         exit
     }
-    $selectedSection = if ((Get-IsOnWindowsOS)) { "win" } elseif ((Get-IsOnMacOS)) { "mac" } else { "linux" }
+    $selectedSection = Get-OSType;
     $pkgInfo = $pkg.$selectedSection
 
     # Deal with any optional properties that might not be specified in the json file
@@ -439,7 +439,7 @@ function Resolve-Symlink {
 }
 
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force

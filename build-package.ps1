@@ -10,7 +10,7 @@ Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageName`"
 $pkg = Get-PackageInfo -PackageName $PackageName
 
 if ($pkg -eq $null) {
-    $selectedSection = if ((Get-IsOnWindowsOS)) { "win" } elseif ((Get-IsOnMacOS)) { "mac" } else { "linux" }
+    $selectedSection = Get-OSType
     Write-Message "Package $PackageName contains no section for $selectedSection, skipping build."
     exit 0
 }
