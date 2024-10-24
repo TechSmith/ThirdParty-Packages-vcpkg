@@ -14,3 +14,5 @@ if(-not (Get-Module -Name $moduleName)) {
 if((Get-IsOnWindowsOS)) {
     Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
 }
+
+# TODO: Update versions for Windows in version-info.json
