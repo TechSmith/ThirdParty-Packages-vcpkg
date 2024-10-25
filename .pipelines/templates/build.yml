@@ -114,7 +114,7 @@ stages:
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/logs
         artifactName: $(osName)-logs
-      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, or(eq(variables.binExists, 'true'), eq(variables.srcExists, 'true')))
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }})
 
 - stage: PublishToGitHubRelease
   displayName: 'Publish to GitHub Release'
