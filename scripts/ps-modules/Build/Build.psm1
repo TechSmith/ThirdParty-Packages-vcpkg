@@ -286,11 +286,15 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
+      $destArm64ToolsDir = "$preStagePath/arm64Tools"
+      $destX64ToolsDir = "$preStagePath/x64Tools"
       $srcToDestDirs = @{
          "$srcArm64Dir/include" = "$preStagePath"
          "$srcArm64Dir/share" = "$preStagePath"
          "$srcArm64Dir/$libDir" = "$destArm64LibDir"
          "$srcX64Dir/$libDir" = "$destX64LibDir"
+         "$srcArm64Dir/$toolsDir" = "$destArm64ToolsDir"
+         "$srcX64Dir/$toolsDir" = "$destX64ToolsDir"
       }
    }
    else {
@@ -324,9 +328,10 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
 
    # Finalize artifacts (Mac-only)
-   if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
-     $destUniversalLibDir = "$preStagePath/lib"
-     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+   if((Get-IsOnMacOS) -and ((Test-Path $destArm64LibDir) -or (Test-Path $destArm64ToolsDir))) {
+      $destUniversalLibDir = "$preStagePath/lib"
+      $destUniversalToolsDir = "$preStagePath/tools"
+      Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir" -arm64ToolsDir "$destArm64ToolsDir" -x64ToolsDir "$destX64ToolsDir" -universalToolsDir "$destUniversalToolsDir"
    }
 }
 
