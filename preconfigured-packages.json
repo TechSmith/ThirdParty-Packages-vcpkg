@@ -244,6 +244,33 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "hellocmake",
+      "mac": {
+        "package": "hellocmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "hellocmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
     }
   ]
 }
