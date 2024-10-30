@@ -1,0 +1,12 @@
+{
+  "name": "macrotest-meson",
+  "version": "1.0.0",
+  "port-version": 1,
+  "description": "A test program, built with meson, which prints off OS version macro data for debugging purposes.",
+  "dependencies": [
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}

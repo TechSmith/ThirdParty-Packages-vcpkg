@@ -298,6 +298,33 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "macrotest-meson",
+      "mac": {
+        "package": "macrotest-meson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "macrotest-meson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      }
     }
   ]
 }

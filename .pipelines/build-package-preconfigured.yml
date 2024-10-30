@@ -19,6 +19,7 @@ parameters:
   - libpng
   - libzip-static
   - libzip-dynamic
+  - macrotest-meson
   - minizip
   - openssl-static
   - opencv4
