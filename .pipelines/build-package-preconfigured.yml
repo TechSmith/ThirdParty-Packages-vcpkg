@@ -13,6 +13,7 @@ parameters:
   - ffmpeg
   - ffmpeg-cloud
   - hellocmake
+  - hellomeson
   - hunspell
   - hunspell-debug
   - libpng

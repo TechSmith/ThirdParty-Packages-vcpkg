@@ -271,6 +271,33 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "hellomeson",
+      "mac": {
+        "package": "hellomeson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "hellomeson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
     }
   ]
 }

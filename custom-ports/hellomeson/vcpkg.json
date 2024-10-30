@@ -1,0 +1,12 @@
+{
+  "name": "hellomeson",
+  "version": "1.0.0",
+  "port-version": 1,
+  "description": "A test program built with meson, including a shared library and a exe which depends on that library.  The exe prints off OS version macro data, as well, for debugging purposes",
+  "dependencies": [
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}
