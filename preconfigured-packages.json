@@ -300,6 +300,33 @@
       }
     },
     {
+      "name": "macrotest-cmake",
+      "mac": {
+        "package": "macrotest-cmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "macrotest-cmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "macrotest-meson",
       "mac": {
         "package": "macrotest-meson",
