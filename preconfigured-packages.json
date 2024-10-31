@@ -244,6 +244,19 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "glslang",
+      "mac": {
+        "package": "glslang",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "glslang",
+        "linkType": "static",
+        "buildType": "release"
+      }
     }
   ]
 }
