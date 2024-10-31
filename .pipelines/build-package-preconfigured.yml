@@ -12,6 +12,7 @@ parameters:
   values:
   - ffmpeg
   - ffmpeg-cloud
+  - glslang
   - hunspell
   - hunspell-debug
   - libpng
