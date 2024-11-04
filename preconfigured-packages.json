@@ -254,8 +254,7 @@
       },
       "win": {
         "package": "glslang",
-        "linkType": "static",
-        "buildType": "release"
+        "customTriplet": "x64-windows-static-md"
       }
     }
   ]

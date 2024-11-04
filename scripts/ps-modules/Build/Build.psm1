@@ -24,8 +24,14 @@ function Get-PackageNameOnly {
 function Get-Triplets {
    param(
       [string]$linkType,
-      [string]$buildType
+      [string]$buildType,
+      [string]$customTriplet
    )
+
+   if ($null -ne $customTriplet ) {
+       return @($customTriplet)
+   }
+
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
    } elseif (Get-IsOnLinux) {
@@ -54,19 +60,27 @@ function Get-ArtifactName {
       [string]$packageName,
       [string]$packageAndFeatures,
       [string]$linkType,
-      [string]$buildType
+      [string]$buildType,
+      [string]$customTriplet
    )
 
    if( $packageName -eq "") {
       $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
       $packageName = "$packageNameOnly-$linkType"
    }
+
+   if($null -ne $customTriplet) {
+       $buildName = $customTriplet
+   } else {
+       $buildName = $buildType
+   }
+
    if ( (Get-IsOnWindowsOS) ) {
-      return "$packageName-windows-$buildType"
+      return "$packageName-windows-$buildName"
    } elseif ( (Get-IsOnMacOS) ) {
-      return "$packageName-osx-$buildType"
+      return "$packageName-osx-$buildName"
    } elseif ( (Get-IsOnLinux) ) {
-      return "$packageName-linux-$buildType"
+      return "$packageName-linux-$buildName"
    }
    throw [System.Exception]::new("Invalid OS")
 }
@@ -238,10 +252,11 @@ function Run-InstallPackageStep
    param(
       [string]$packageAndFeatures,
       [string]$linkType,
-      [string]$buildType
+      [string]$buildType,
+      [string]$customTriplet
    )
    Write-Banner -Level 3 -Title "Install package step: $packageAndFeatures"
-   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
+   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
    foreach ($triplet in $triplets) {
       Write-Message "> Installing for triplet: $triplet..."
       Install-FromVcPkg -packageAndFeatures $packageAndFeatures -triplet $triplet
@@ -253,6 +268,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
       [string]$linkType,
       [string]$buildType,
+      [string]$customTriplet,
       [PSObject]$publishInfo
    )
    $preStagePath = (Get-PreStagePath)
@@ -270,7 +286,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    # Get dirs to copy
    $srcToDestDirs = @{}
    if ((Get-IsOnWindowsOS) -or (Get-IsOnLinux)) {  
-      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType) | Select-Object -First 1
+      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet) | Select-Object -First 1
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
          "$mainSrcDir/include" = "$preStagePath/include"
@@ -278,10 +294,11 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
          "$mainSrcDir/$libDir" = "$preStagePath/lib"
          "$mainSrcDir/$binDir" = "$preStagePath/bin"
          "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
+         "$mainSrcDir/debug" = "$preStagePath/debug"
       }
    }
    elseif((Get-IsOnMacOS)) {
-      $triplets = (Get-Triplets -linkType $linkType -buildType $buildType)
+      $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
       $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
       $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
@@ -354,6 +371,7 @@ function Run-StageBuildArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
+      [string]$customTriplet,
       [string]$stagedArtifactsPath,
       [PSObject]$publishInfo
    )
@@ -361,7 +379,7 @@ function Run-StageBuildArtifactsStep {
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType))-bin"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
@@ -377,7 +395,12 @@ function Run-StageBuildArtifactsStep {
    
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
-   $excludedFolders = @("debug")
+
+   # when building this specific triplet, we want to keep the Windows debug static libraries because
+   # of the CRT setting needs to match with the rest of the dependencies
+   if ( $customTriplet -ne "x64-windows-static-md" ) {
+       $excludedFolders = @("debug")
+   }
    Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
    Remove-Item -Path $preStagePath -Recurse | Out-Null
 
@@ -393,13 +416,14 @@ function Run-StageSourceArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
+      [string]$customTriplet,
       [string]$stagedArtifactsPath
    )
    
    Write-Banner -Level 3 -Title "Stage source code artifacts"
 
    $sourceCodeRootDir = "./vcpkg/buildtrees/"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType))-src"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-src"
    $stagedArtifactSubDir = "$stagedArtifactsPath/src"
    $artifactPath = "$stagedArtifactSubDir/$artifactName"
 
