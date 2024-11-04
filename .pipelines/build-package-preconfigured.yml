@@ -12,11 +12,15 @@ parameters:
   values:
   - ffmpeg
   - ffmpeg-cloud
+  - hellocmake
+  - hellomeson
   - hunspell
   - hunspell-debug
   - libpng
   - libzip-static
   - libzip-dynamic
+  - macrotest-cmake
+  - macrotest-meson
   - minizip
   - openssl-static
   - opencv4

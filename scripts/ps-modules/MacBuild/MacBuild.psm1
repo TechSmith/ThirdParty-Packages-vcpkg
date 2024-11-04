@@ -11,25 +11,26 @@ function Update-LibsToRelativePaths {
 
 function Create-UniversalBinaries {
    param(
-      [string]$arm64LibDir,
-      [string]$x64LibDir,
-      [string]$universalLibDir
+      [string]$arm64Dir,
+      [string]$x64Dir,
+      [string]$universalDir,
+      [string[]] $includeFilter
    )
-   New-Item -Path "$universalLibDir" -ItemType Directory -Force | Out-Null
-   Write-Message "Creating universal bins: $arm64LibDir..."
-   $items = Get-ChildItem -Path "$arm64LibDir/*" -Include "*.dylib","*.a"
+   New-Item -Path "$universalDir" -ItemType Directory -Force | Out-Null
+   Write-Message "Creating universal bins: $arm64Dir..."
+   $items = Get-ChildItem -Path "$arm64Dir/*" -Include $includeFilter
    foreach($item in $items) {
        $fileName = $item.Name
        Write-Message "> $fileName"
-       $srcPathArm64 = $item.FullName
-       $srcPathX64 = (Join-Path $x64LibDir $fileName)
-       $destPath = (Join-Path $universalLibDir $fileName)
+       $srcArm64BinPath = $item.FullName
+       $srcX64BinPath = (Join-Path $x64Dir $fileName)
+       $destBinPath = (Join-Path $universalDir $fileName)
        
        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-           Invoke-Expression -Command "cp -R `"$srcPathArm64`" `"$destPath`""
+           Invoke-Expression -Command "cp -R `"$srcArm64BinPath`" `"$destBinPath`""
        }
        elseif (-not $item.PSIsContainer) {
-           Invoke-Expression -Command "lipo -create -output `"$destPath`" `"$srcPathArm64`" `"$srcPathX64`""
+           Invoke-Expression -Command "lipo -create -output `"$destBinPath`" `"$srcArm64BinPath`" `"$srcX64BinPath`""
        }
    }
 }
@@ -53,17 +54,30 @@ function Create-FinalizedMacBuildArtifacts {
     param (
         [string]$arm64LibDir,
         [string]$x64LibDir,
-        [string]$universalLibDir
+        [string]$universalLibDir,
+        [string]$arm64ToolsDir,
+        [string]$x64ToolsDir,
+        [string]$universalToolsDir
     )
     Write-Banner -Level 3 -Title "Finalizing Mac artifacts"
-    Write-Message "arm64LibDir: $arm64LibDir"
-    Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
-    Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalLibDir $universalLibDir
-    Copy-NonLibraryFiles -srcDir $arm64LibDir -destDir $universalLibDir
-    Remove-Item -Force -Recurse -Path $arm64LibDir
-    Remove-Item -Force -Recurse -Path $x64LibDir
-    Remove-DylibSymlinks -libDir $universalLibDir
-    Run-CreateDysmAndStripDebugSymbols -libDir $universalLibDir
+
+    if(Test-Path $arm64LibDir)
+    {
+        Write-Message "arm64LibDir: $arm64LibDir"
+        Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
+        Create-UniversalBinaries -arm64Dir $arm64LibDir -x64Dir $x64LibDir -universalDir $universalLibDir -includeFilter "*.dylib","*.a"
+        Copy-NonLibraryFiles -srcDir $arm64LibDir -destDir $universalLibDir
+        Remove-Item -Force -Recurse -Path $arm64LibDir,$x64LibDir
+        Remove-DylibSymlinks -libDir $universalLibDir
+        Run-CreateDysmAndStripDebugSymbols -libDir $universalLibDir
+    }
+
+    if(Test-Path $arm64ToolsDir)
+    {
+        Write-Message "arm64ToolsDir: $arm64ToolsDir"
+        Create-UniversalBinaries -arm64Dir $arm64ToolsDir -x64Dir $x64ToolsDir -universalDir $universalToolsDir -includeFilter "*"
+        Remove-Item -Force -Recurse -Path $arm64ToolsDir,$x64ToolsDir
+    }
 }
 
 function Update-LibraryPath {

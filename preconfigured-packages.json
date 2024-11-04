@@ -244,6 +244,114 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "hellocmake",
+      "mac": {
+        "package": "hellocmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "hellocmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "hellomeson",
+      "mac": {
+        "package": "hellomeson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "hellomeson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "macrotest-cmake",
+      "mac": {
+        "package": "macrotest-cmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "macrotest-cmake",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "macrotest-meson",
+      "mac": {
+        "package": "macrotest-meson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "macrotest-meson",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      }
     }
   ]
 }

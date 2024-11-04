@@ -87,6 +87,7 @@ stages:
     - powershell: |
         echo "##vso[task.setvariable variable=binExists]$(if (Test-Path "$(Build.ArtifactStagingDirectory)/package/bin") { 'true' } else { 'false' })"
         echo "##vso[task.setvariable variable=srcExists]$(if (Test-Path "$(Build.ArtifactStagingDirectory)/package/src") { 'true' } else { 'false' })"
+        echo "##vso[task.setvariable variable=buildtreesExists]$(if (Test-Path "$(Build.SourcesDirectory)/vcpkg/buildtrees") { 'true' } else { 'false' })"
       name: CheckDirectories
       displayName: 'Verify builds ran'
 
@@ -107,14 +108,14 @@ stages:
     - pwsh: |
         ./scripts/copy-logs.ps1 -Source "./vcpkg/buildtrees" -Destination "$(Build.ArtifactStagingDirectory)/logs"
       displayName: Stage logs
-      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, or(eq(variables.binExists, 'true'), eq(variables.srcExists, 'true')))
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, eq(variables.buildtreesExists, 'true'))
 
     - task: PublishBuildArtifacts@1
       displayName: Publish logs
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/logs
         artifactName: $(osName)-logs
-      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, or(eq(variables.binExists, 'true'), eq(variables.srcExists, 'true')))
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, eq(variables.buildtreesExists, 'true'))
 
 - stage: PublishToGitHubRelease
   displayName: 'Publish to GitHub Release'
