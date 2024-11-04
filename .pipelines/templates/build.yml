@@ -59,7 +59,7 @@ stages:
           imageName: windows-2022
           osName: win
         Mac:
-          imageName: macOS-13
+          imageName: macOS-14
           osName: mac
         Linux:
           imageName: ubuntu-latest
