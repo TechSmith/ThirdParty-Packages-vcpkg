@@ -395,11 +395,13 @@ function Run-StageBuildArtifactsStep {
 
    # Figure out which folders we should avoid copying from the PublishInfo object
    $excludedFolders = @()
-   foreach ($member in $pkg.publish | Get-Member -MemberType NoteProperty) {
-       $value = $pkg.publish."$($member.Name)"
-       if($value -eq $false) {
-           $excludedFolders += $member.Name
-       }
+   if ($null -ne $pkg.publish) {
+      foreach ($member in $pkg.publish | Get-Member -MemberType NoteProperty) {
+          $value = $pkg.publish."$($member.Name)"
+          if($value -eq $false) {
+              $excludedFolders += $member.Name
+          }
+      }
    }
 
    Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
