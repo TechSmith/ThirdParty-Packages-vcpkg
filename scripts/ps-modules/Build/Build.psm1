@@ -279,10 +279,6 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    $libDir = "lib"
    $binDir = "bin"
    $toolsDir = "tools"
-   if( $buildType -eq "debug" ) {
-      $libDir = "debug/lib"
-      $binDir = "debug/bin"
-   }
 
    # Get dirs to copy
    $srcToDestDirs = @{}

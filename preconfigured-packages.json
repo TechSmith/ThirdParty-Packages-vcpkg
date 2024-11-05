@@ -62,12 +62,18 @@
       "mac": {
         "package": "hunspell[core]",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "debug",
+        "publish": {
+          "debug": true
+        }
       },
       "win": {
         "package": "hunspell[core]",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "debug",
+        "publish": {
+          "debug": true
+        }
       }
     },
     {
