@@ -395,9 +395,9 @@ function Run-StageBuildArtifactsStep {
 
    # Figure out which folders we should avoid copying from the PublishInfo object
    $excludedFolders = @()
-   if ($null -ne $pkg.publish) {
-      foreach ($member in $pkg.publish | Get-Member -MemberType NoteProperty) {
-          $value = $pkg.publish."$($member.Name)"
+   if ($null -ne $publishInfo) {
+      foreach ($member in $publishInfo | Get-Member -MemberType NoteProperty) {
+          $value = $publishInfo."$($member.Name)"
           if($value -eq $false) {
               $excludedFolders += $member.Name
           }
