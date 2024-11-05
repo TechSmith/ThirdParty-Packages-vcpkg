@@ -28,7 +28,7 @@ function Get-Triplets {
       [string]$customTriplet
    )
 
-   if ($null -ne $customTriplet -and $customTriplet -ne "") {
+   if ( -not [string]::IsNullOrEmpty($customTriplet) ) {
        return @($customTriplet)
    }
 
