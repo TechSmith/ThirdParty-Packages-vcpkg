@@ -1,3 +1,2 @@
 variables:
-- group: PipelineVars
-#- group: TSCAzureDevOps
+- group: TSCAzureDevOps
