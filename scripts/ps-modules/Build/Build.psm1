@@ -153,6 +153,7 @@ function Get-PackageInfo
       "bin" = $true
       "share" = $true
       "tools" = $false
+      "debug" = $false
     }
 
     if (-not ($pkgInfo.PSObject)) {
@@ -396,11 +397,15 @@ function Run-StageBuildArtifactsStep {
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
 
-   # when building this specific triplet, we want to keep the Windows debug static libraries because
-   # of the CRT setting needs to match with the rest of the dependencies
-   if ( $customTriplet -ne "x64-windows-static-md" ) {
-       $excludedFolders = @("debug")
+   # Figure out which folders we should avoid copying from the PublishInfo object
+   $excludedFolders = @()
+   foreach ($member in $pkg.publish | Get-Member -MemberType NoteProperty) {
+       $value = $pkg.publish."$($member.Name)"
+       if($value -eq $false) {
+           $excludedFolders += $member.Name
+       }
    }
+
    Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
    Remove-Item -Path $preStagePath -Recurse | Out-Null
 
