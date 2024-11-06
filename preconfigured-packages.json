@@ -265,6 +265,19 @@
           "debug": true
         }
       }
+    },
+    {
+      "name": "dawn",
+      "mac": {
+        "package": "dawn",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "dawn",
+        "linkType": "static",
+        "buildType": "release"
+      }
     }
   ]
 }
