@@ -120,7 +120,9 @@ stages:
   displayName: 'Publish to GitHub Release'
   dependsOn: Build
   condition: and(succeeded(), ${{ parameters.publishToGitHubRelease }})
-
+  variables:
+  - template: steps/build-vars.yml
+  
   jobs:
   - job: PublishToGitHubRelease
     pool:
