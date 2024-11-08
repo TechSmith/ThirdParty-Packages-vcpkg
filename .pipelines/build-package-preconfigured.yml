@@ -15,6 +15,7 @@ parameters:
   - glslang
   - hunspell
   - hunspell-debug
+  - kaldi
   - libpng
   - libzip-static
   - libzip-dynamic
