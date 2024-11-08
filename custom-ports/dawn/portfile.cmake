@@ -57,7 +57,7 @@ else()
 endif()
 
 foreach(BUILD_DIR_SUFFIX ${BUILD_DIR_SUFFIXES})
-   set(BUILD_DIR ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET} ${BUILD_DIR_SUFFIX})
+   set(BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}${BUILD_DIR_SUFFIX}")
    set(MISSING_FILES
       ${BUILD_DIR}/src/tint/${PREFIX}tint_lang_glsl_intrinsic${SUFFIX}
       ${BUILD_DIR}/src/tint/${PREFIX}tint_lang_glsl_ir${SUFFIX}
