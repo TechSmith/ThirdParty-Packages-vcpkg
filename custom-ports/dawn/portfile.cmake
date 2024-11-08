@@ -86,3 +86,9 @@ file(COPY "${SOURCE_PATH}/src/utils/compiler.h"
    DESTINATION ${DST_DIR})
 
 vcpkg_copy_pdbs()
+
+# Remove large dSYM file
+if(VCPKG_HOST_IS_OSX)
+   file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/libwebgpu_dawn.dylib.dSYM")
+endif()
+
