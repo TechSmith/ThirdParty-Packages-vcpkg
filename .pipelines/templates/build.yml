@@ -57,15 +57,15 @@ stages:
       matrix:
         Windows:
           pool:
-             name: 'VMSS_CommonCpp_VS2022'
+            name: 'VMSS_CommonCpp_VS2022'
           osName: win
         Mac:
           pool:
-             vmImage: macOS-14
+            vmImage: macOS-14
           osName: mac
         Linux:
           pool:
-             vmImage: ubuntu-latest
+            vmImage: ubuntu-latest
           osName: linux
       maxParallel: 3
 
