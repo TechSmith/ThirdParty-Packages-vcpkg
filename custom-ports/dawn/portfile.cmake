@@ -45,8 +45,6 @@ vcpkg_build_cmake()
 # these files to exist after a build, but they don't.
 #
 # We'll just make some empty files so the CMake install process doesn't fail
-set(BUILD_DIR ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel) # Fragile! Not sure why there's a -rel suffix
-
 set(PREFIX ${VCPKG_TARGET_STATIC_LIBRARY_PREFIX})
 set(SUFFIX ${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX})
 
@@ -98,6 +96,19 @@ if(NOT EXISTS ${DST_DIR})
 endif()
 file(COPY "${SOURCE_PATH}/src/utils/compiler.h"
    DESTINATION ${DST_DIR})
+
+# Copy over SPIRV-Tools and SPIRV-Tools-opt
+foreach(BUILD_DIR_SUFFIX ${BUILD_DIR_SUFFIXES})
+   set(BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}${BUILD_DIR_SUFFIX}")
+   if(BUILD_DIR_SUFFIX STREQUAL "-dbg")
+      set(DST_DIR "${CURRENT_PACKAGES_DIR}/debug/lib")
+   else()
+      set(DST_DIR "${CURRENT_PACKAGES_DIR}/lib")
+   endif()
+
+   file(COPY ${BUILD_DIR}/third_party/spirv-tools/source/SPIRV-Tools.lib DESTINATION ${DST_DIR})
+   file(COPY ${BUILD_DIR}/third_party/spirv-tools/source/opt/SPIRV-Tools-opt.lib DESTINATION ${DST_DIR})
+endforeach()
 
 vcpkg_copy_pdbs()
 
