@@ -56,18 +56,17 @@ stages:
     strategy:
       matrix:
         Windows:
-          imageName: windows-2022
+          poolName: 'VMSS_CommonCpp_VS2022'
           osName: win
         Mac:
-          imageName: macOS-14
+          pool:
+             vmImage: macOS-14
           osName: mac
         Linux:
-          imageName: ubuntu-latest
+          pool:
+             vmImage: ubuntu-latest
           osName: linux
       maxParallel: 3
-
-    pool:
-      vmImage: $(imageName)
 
     steps:
     - template: steps/setup-auth.yml
