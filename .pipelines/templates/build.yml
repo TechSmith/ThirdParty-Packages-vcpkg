@@ -55,18 +55,20 @@ stages:
     condition: succeeded()  
     strategy:
       matrix:
-        Windows:
-          pool: 'VMSS_CommonCpp_VS2022'
+        windows:
+          poolName: 'VMSS_CommonCpp_VS2022'
           osName: win
-        Mac:
-          pool:
-            vmImage: macOS-14
+        mac:
+          imageName: macOS-14
           osName: mac
-        Linux:
-          pool:
-            vmImage: ubuntu-latest
+        linux:
+          imageName: ubuntu-latest
           osName: linux
       maxParallel: 3
+
+    pool:
+      name: $(poolName)
+      vmImage: $(imageName)
 
     steps:
     - template: steps/setup-auth.yml
