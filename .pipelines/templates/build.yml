@@ -56,8 +56,7 @@ stages:
     strategy:
       matrix:
         Windows:
-          pool:
-            name: 'VMSS_CommonCpp_VS2022'
+          pool: 'VMSS_CommonCpp_VS2022'
           osName: win
         Mac:
           pool:
