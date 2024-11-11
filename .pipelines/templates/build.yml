@@ -2,22 +2,22 @@ parameters:
 - name: packageName
   displayName: The package name to use
   type: string
-  default: 
+  default:
 
 - name: package
   displayName: The package name and feature flags to build the package with (ex. ""somepackage" or "somepackage[feature1,feature2]")
   type: string
-  default: 
+  default:
 
 - name: linkType
   displayName: Type of linking to use for libs in package (dynamic or static)
   type: string
-  default: 
+  default:
 
 - name: buildType
   displayName: Type of build to use for libs in package (release or debug)
   type: string
-  default: 
+  default:
 
 - name: publishToPipelineArtifacts
   displayName: Publish built package artifacts to pipeline artifacts
@@ -32,7 +32,7 @@ parameters:
 - name: appendStringToGitHubRelease
   displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
   type: string
-  default: 
+  default:
 
 - name: isPreconfiguredBuild
   displayName: isPreconfiguredBuild
@@ -52,22 +52,26 @@ stages:
 
   jobs:
   - job: Build
-    condition: succeeded()  
+    condition: succeeded()
     strategy:
       matrix:
-        Windows:
-          imageName: windows-2022
+        windows:
+          imageName: ''
+          poolName: 'VMSS_CommonCpp_VS2022'
           osName: win
-        Mac:
+        mac:
           imageName: macOS-14
+          poolName: ''
           osName: mac
-        Linux:
+        linux:
           imageName: ubuntu-latest
+          poolName: ''
           osName: linux
       maxParallel: 3
 
     pool:
       vmImage: $(imageName)
+      name: $(poolName)
 
     steps:
     - template: steps/setup-auth.yml
@@ -122,7 +126,7 @@ stages:
   condition: and(succeeded(), ${{ parameters.publishToGitHubRelease }})
   variables:
   - template: steps/build-vars.yml
-  
+
   jobs:
   - job: PublishToGitHubRelease
     pool:
@@ -130,7 +134,7 @@ stages:
 
     steps:
     - checkout: none
-    
+
     - template: steps/setup-auth.yml
 
     - task: DownloadPipelineArtifact@2
