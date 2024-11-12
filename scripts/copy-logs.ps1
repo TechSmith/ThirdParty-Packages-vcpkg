@@ -4,7 +4,12 @@ param(
 )
 
 Write-Host "Copying logs: $Source ==> $Destination"
+if (-not (Test-Path $Source)) {
+  Write-Host "Source path does not exist: $Source.  Exiting."
+  Exit 0
+}
 if (Test-Path $Destination) {
+    Write-Host "Removing: $Destination..."
     Remove-Item -Recurse -Force $Destination
 }
 Get-ChildItem -Path $Source -Recurse -Filter *.log | ForEach-Object {
