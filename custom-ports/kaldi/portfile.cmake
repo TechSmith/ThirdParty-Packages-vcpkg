@@ -21,3 +21,5 @@ vcpkg_cmake_build()
 vcpkg_cmake_install()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
+
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")
