@@ -115,8 +115,8 @@ if(VCPKG_HOST_IS_OSX)
    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/libwebgpu_dawn.dylib.dSYM")
 else()
    # Remove dlls and pdbs
-   file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/webgpu_dawn.pdb")
-   file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/bin/webgpu_dawn.pdb")
+   file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/webgpu_dawn.pdb"
+               "${CURRENT_PACKAGES_DIR}/debug/bin/webgpu_dawn.pdb")
 endif()
 
 vcpkg_cmake_config_fixup()
