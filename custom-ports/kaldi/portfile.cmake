@@ -17,7 +17,7 @@ vcpkg_cmake_configure(
    -DKALDI_BUILD_EXE=OFF
    -DKALDI_VERSION=${KALDI_VERSION}
 )
-vcpkg_build_cmake()
-vcpkg_install_cmake()
+vcpkg_cmake_build()
+vcpkg_cmake_install()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
