@@ -67,10 +67,7 @@ stages:
 #      maxParallel: 3
 
     pool:
-      ${{ if eq($(osName), 'win') }}:
-        name: $(poolName)
-      ${{ if ne($(osName), 'win') }}:
-        vmImage: $(imageName)
+      name: $(poolName)
 
     steps:
     - template: steps/setup-auth.yml
