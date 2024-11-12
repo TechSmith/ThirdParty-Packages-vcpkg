@@ -17,7 +17,23 @@ vcpkg_cmake_configure(
    -DKALDI_BUILD_EXE=OFF
    -DKALDI_VERSION=${KALDI_VERSION}
 )
-vcpkg_build_cmake()
-vcpkg_install_cmake()
+vcpkg_cmake_build()
+vcpkg_cmake_install()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
+# Remove files:
+# 1. "bin" files (ex. .dll files) from static builds
+# 2. cmake files we don't want to publish
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+   set(DIRS_TO_REMOVE
+      ${CURRENT_PACKAGES_DIR}/bin
+      ${CURRENT_PACKAGES_DIR}/lib/fst
+      ${CURRENT_PACKAGES_DIR}/lib/cmake
+   )
+   foreach(DIR ${DIRS_TO_REMOVE})
+      if(EXISTS ${DIR})
+         file(REMOVE_RECURSE ${DIR})
+      endif()
+   endforeach()
+endif()
+
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")
