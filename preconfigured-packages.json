@@ -283,7 +283,7 @@
       "name": "dawn",
       "mac": {
         "package": "dawn",
-        "linkType": "dynamic",
+        "linkType": "static",
         "buildType": "release"
       },
       "win": {

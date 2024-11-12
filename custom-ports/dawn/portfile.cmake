@@ -6,23 +6,17 @@ vcpkg_from_git(
    HEAD_REF main
 )
 
-# DAWN_FETCH_DEPENDENCIES doesn't work on Windows, so we'll fetch the dependencies ourselves
-if(VCPKG_HOST_IS_WINDOWS)
-   vcpkg_find_acquire_program(GIT)
-   vcpkg_find_acquire_program(PYTHON3)
-   vcpkg_execute_required_process(
-      COMMAND ${PYTHON3} ${SOURCE_PATH}/tools/fetch_dawn_dependencies.py --git ${GIT}
-      WORKING_DIRECTORY ${SOURCE_PATH}
-      LOGNAME fetch_dawn_dependencies
-   )
-   set(FETCH_DEPENDENCIES OFF)
-else()
-   set(FETCH_DEPENDENCIES ON)
-endif()
-
+# Call fetch_dawn_dependencies ourselves so we can pass the --git argument
+vcpkg_find_acquire_program(GIT)
+vcpkg_find_acquire_program(PYTHON3)
+vcpkg_execute_required_process(
+   COMMAND ${PYTHON3} ${SOURCE_PATH}/tools/fetch_dawn_dependencies.py --git ${GIT}
+   WORKING_DIRECTORY ${SOURCE_PATH}
+   LOGNAME fetch_dawn_dependencies
+)
 
 list(APPEND CONFIGURE_OPTIONS
-   -DDAWN_FETCH_DEPENDENCIES=${FETCH_DEPENDENCIES}
+   -DDAWN_FETCH_DEPENDENCIES=OFF
    -DDAWN_BUILD_SAMPLES=OFF
    -DDAWN_ENABLE_VULKAN=OFF
    -DDAWN_ENABLE_INSTALL=ON
@@ -32,7 +26,6 @@ list(APPEND CONFIGURE_OPTIONS
 
 if(VCPKG_HOST_IS_WINDOWS)
    list(APPEND CONFIGURE_OPTIONS
-      -DBUILD_SHARED_LIBS=OFF
       -DTINT_ENABLE_INSTALL=ON
    )
 endif()
@@ -100,18 +93,20 @@ endif()
 file(COPY "${SOURCE_PATH}/src/utils/compiler.h"
    DESTINATION ${DST_DIR})
 
-# Copy over SPIRV-Tools and SPIRV-Tools-opt
-foreach(BUILD_DIR_SUFFIX ${BUILD_DIR_SUFFIXES})
-   set(BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}${BUILD_DIR_SUFFIX}")
-   if(BUILD_DIR_SUFFIX STREQUAL "-dbg")
-      set(DST_DIR "${CURRENT_PACKAGES_DIR}/debug/lib")
-   else()
-      set(DST_DIR "${CURRENT_PACKAGES_DIR}/lib")
-   endif()
+if(VCPKG_HOST_IS_WINDOWS)
+   # Copy over SPIRV-Tools and SPIRV-Tools-opt
+   foreach(BUILD_DIR_SUFFIX ${BUILD_DIR_SUFFIXES})
+      set(BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}${BUILD_DIR_SUFFIX}")
+      if(BUILD_DIR_SUFFIX STREQUAL "-dbg")
+         set(DST_DIR "${CURRENT_PACKAGES_DIR}/debug/lib")
+      else()
+         set(DST_DIR "${CURRENT_PACKAGES_DIR}/lib")
+      endif()
 
-   file(COPY ${BUILD_DIR}/third_party/spirv-tools/source/SPIRV-Tools.lib DESTINATION ${DST_DIR})
-   file(COPY ${BUILD_DIR}/third_party/spirv-tools/source/opt/SPIRV-Tools-opt.lib DESTINATION ${DST_DIR})
-endforeach()
+      file(COPY ${BUILD_DIR}/third_party/spirv-tools/source/SPIRV-Tools.lib DESTINATION ${DST_DIR})
+      file(COPY ${BUILD_DIR}/third_party/spirv-tools/source/opt/SPIRV-Tools-opt.lib DESTINATION ${DST_DIR})
+   endforeach()
+endif()
 
 vcpkg_copy_pdbs()
 
@@ -120,7 +115,9 @@ if(VCPKG_HOST_IS_OSX)
    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/libwebgpu_dawn.dylib.dSYM")
 else()
    # Remove dlls and pdbs
-   file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin/webgpu_dawn.pdb")
+   file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/webgpu_dawn.pdb")
    file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/bin/webgpu_dawn.pdb")
 endif()
+
+vcpkg_cmake_config_fixup()
 
