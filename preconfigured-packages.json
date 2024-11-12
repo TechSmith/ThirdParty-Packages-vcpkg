@@ -252,6 +252,19 @@
       }
     },
     {
+      "name": "kaldi",
+      "mac": {
+        "package": "kaldi",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "kaldi",
+        "linkType": "static",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "glslang",
       "mac": {
         "package": "glslang",
