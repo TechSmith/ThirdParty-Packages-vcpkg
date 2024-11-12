@@ -6,16 +6,23 @@ vcpkg_from_git(
    HEAD_REF main
 )
 
-vcpkg_find_acquire_program(GIT)
-vcpkg_find_acquire_program(PYTHON3)
-vcpkg_execute_required_process(
-   COMMAND ${PYTHON3} ${SOURCE_PATH}/tools/fetch_dawn_dependencies.py --git ${GIT}
-   WORKING_DIRECTORY ${SOURCE_PATH}
-   LOGNAME fetch_dawn_dependencies
-)
+# DAWN_FETCH_DEPENDENCIES doesn't work on Windows, so we'll fetch the dependencies ourselves
+if(VCPKG_HOST_IS_WINDOWS)
+   vcpkg_find_acquire_program(GIT)
+   vcpkg_find_acquire_program(PYTHON3)
+   vcpkg_execute_required_process(
+      COMMAND ${PYTHON3} ${SOURCE_PATH}/tools/fetch_dawn_dependencies.py --git ${GIT}
+      WORKING_DIRECTORY ${SOURCE_PATH}
+      LOGNAME fetch_dawn_dependencies
+   )
+   set(FETCH_DEPENDENCIES OFF)
+else()
+   set(FETCH_DEPENDENCIES ON)
+endif()
+
 
 list(APPEND CONFIGURE_OPTIONS
-   -DDAWN_FETCH_DEPENDENCIES=OFF # We'll call this ourselves
+   -DDAWN_FETCH_DEPENDENCIES=${FETCH_DEPENDENCIES}
    -DDAWN_BUILD_SAMPLES=OFF
    -DDAWN_ENABLE_VULKAN=OFF
    -DDAWN_ENABLE_INSTALL=ON
