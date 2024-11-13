@@ -106,15 +106,16 @@ stages:
 
     - pwsh: |
         ./scripts/copy-logs.ps1 -Source "./vcpkg/buildtrees" -Destination "$(Build.ArtifactStagingDirectory)/logs"
+        echo "##vso[task.setvariable variable=logsExists]$(if (Test-Path "$(Build.ArtifactStagingDirectory)/logs") { 'true' } else { 'false' })"
       displayName: Stage logs
-      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, or(eq(variables.binExists, 'true'), eq(variables.srcExists, 'true')))
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }})
 
     - task: PublishBuildArtifacts@1
       displayName: Publish logs
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)/logs
         artifactName: $(osName)-logs
-      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, or(eq(variables.binExists, 'true'), eq(variables.srcExists, 'true')))
+      condition: and(succeededOrFailed(), ${{ parameters.publishToPipelineArtifacts }}, eq(variables.logsExists, 'true'))
 
 - stage: PublishToGitHubRelease
   displayName: 'Publish to GitHub Release'
