@@ -3,16 +3,16 @@
     {
       "name": "ffmpeg",
       "mac": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
+        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,vpx,vorbis,aom]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb"
+        "vcpkgHash": "9b5cb8e554487f3edb5d50b80188883846f81e14"
       },
       "win": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
+        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,vpx,vorbis,aom,nvcodec]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb"
+        "vcpkgHash": "9b5cb8e554487f3edb5d50b80188883846f81e14"
       }
     },
     {
