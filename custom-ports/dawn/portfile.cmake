@@ -119,5 +119,24 @@ else()
                "${CURRENT_PACKAGES_DIR}/debug/bin/webgpu_dawn.pdb")
 endif()
 
-vcpkg_cmake_config_fixup()
+# Allow bin/webgpu_dawn.dll to be in the package, even though this is a static build
+set(VCPKG_POLICY_DLLS_IN_STATIC_LIBRARY enabled)
 
+# Remove other dirs that post-build validation does not like does not like
+file(REMOVE_RECURSE 
+   "${CURRENT_PACKAGES_DIR}/debug/lib/cmake"
+   "${CURRENT_PACKAGES_DIR}/debug/include")
+
+# Move cmake files from lib/cmake/Dawn to share/dawn
+set(SRC_DIR "${CURRENT_PACKAGES_DIR}/lib/cmake/Dawn")
+set(DEST_DIR "${CURRENT_PACKAGES_DIR}/share/dawn/")
+file(GLOB cmake_files "${SRC_DIR}/*.cmake")
+message("Copying files to: ${DEST_DIR}...")
+foreach(cmake_file ${cmake_files})
+  message("> Copying: ${cmake_file}")
+  file(COPY ${cmake_file} DESTINATION ${DEST_DIR})
+endforeach()
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/cmake")
+
+# Install copyright
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
