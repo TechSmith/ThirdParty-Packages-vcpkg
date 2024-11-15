@@ -278,6 +278,21 @@
           "debug": true
         }
       }
+    },
+    {
+      "name": "dawn",
+      "mac": {
+        "package": "dawn",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "dawn",
+        "customTriplet": "x64-windows-static-md",
+        "publish": {
+          "debug": true
+        }
+      }
     }
   ]
 }
