@@ -3,16 +3,30 @@
     {
       "name": "ffmpeg",
       "mac": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom]",
+        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,ffmpeg]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "9b5cb8e554487f3edb5d50b80188883846f81e14"
+        "vcpkgHash": "9b5cb8e554487f3edb5d50b80188883846f81e14",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       },
       "win": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,nvcodec]",
+        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,nvcodec,ffmpeg]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "9b5cb8e554487f3edb5d50b80188883846f81e14"
+        "vcpkgHash": "9b5cb8e554487f3edb5d50b80188883846f81e14",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
