@@ -32,6 +32,147 @@ endif()
 
 set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
 
+# <Additional custom TechSmith options>
+# Just to be extra-safe, we will disable everything and explicitly enable only the things we need
+# FFMPEG References:
+# - Muxers and Demuxers (Formats): https://ffmpeg.org/ffmpeg-formats.html
+# - Encoders and decoders (Codecs): https://www.ffmpeg.org/ffmpeg-codecs.html
+# - HW Acceleration: https://trac.ffmpeg.org/wiki/HWAccelIntro
+string(APPEND OPTIONS " --disable-encoders --disable-decoders --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices")
+string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
+string(APPEND OPTIONS " --enable-protocol=file")
+
+# === Encoders ===
+# I am intentionally leaving out "vorbis" and "opus" encoders, as they are marked "Experimental"
+set(TSC_ENCODERS 
+   "aac"
+   "libaom-av1" 
+   "libmp3lame"
+   "libopus" 
+   "libvorbis"
+   "libvpx" 
+   "libvpx-vp9"
+)
+# TODO: 
+# 1. I'm not sure if we should include OS-specific encoders (other than h264 & hevc for Mac), or if this could cause compatibility and/or sync issues?
+# 2. Should we include an h.264 encoder for Windows (libopenh264, h264_amf, h264_mf, h264_nvenc, h264_qsv)?
+# 3. Should we also include libopenh264 for Mac?
+if(VCPKG_TARGET_IS_OSX)
+   list(APPEND TSC_ENCODERS 
+      "aac_at"
+      "h264_videotoolbox"
+      "hevc_videotoolbox"
+   )
+elseif(VCPKG_TARGET_IS_WINDOWS)
+   # TODO: Do we want to ship the nvenc (Nvidia), qsv (Intel) and amf (AMD) decoders on Windows?
+   # TODO: Do we want to ship the media foundation MP3 encoder on Windows (mp3_mf), or just "libmp3lame"?
+   # TODO: Do we want to ship the media foundation AAC encoder on Windows (aac_mf), or just the native FFMpeg one (aac)?
+   list(APPEND TSC_ENCODERS 
+      "aac_mf"
+      "av1_nvenc"
+      "av1_amf"
+      "mp3_mf"
+      "vp9_qsv"
+   )
+endif()
+string(REPLACE ";" "," TSC_ENCODERS_STRING "${TSC_ENCODERS}")
+string(APPEND OPTIONS " --enable-encoder=${TSC_ENCODERS_STRING}")
+
+# === Decoders ===
+# Note: I did not see any hevc_videotoolbox decoder available for Mac (only as an encoder).  I only see "hevc".
+# Note: mp3* will pick up "mp3_at" on Mac
+set(TSC_DECODERS 
+   "aac"
+   "aac_fixed"
+   "aac_latm"
+   "av1"
+   "hevc"
+   "libaom-av1"
+   "libdav1d"
+   "libopus"
+   "libvorbis"
+   "libvpx"
+   "libvpx-vp9"
+   "mp3*"
+   "opus"
+   "pcm*"
+   "vorbis"
+   "vp8"
+   "vp9"
+)
+if(VCPKG_TARGET_IS_OSX)
+   list(APPEND TSC_DECODERS
+      "aac_at"
+   )
+elseif(VCPKG_TARGET_IS_WINDOWS)
+   # TODO: Do we want to ship the cuvid (Nvidia) and qsv (Intel) decoders on Windows?
+   # Note: There is no aac_mf decoder for Windows.  This is only an encoder.
+   list(APPEND TSC_DECODERS
+      "av1_cuvid" 
+      "av1_qsv" 
+      "hevc_cuvid"
+      "hevc_qsv"
+      "vp8_cuvid" 
+      "vp8_qsv" 
+      "vp9_cuvid" 
+      "vp9_qsv"
+   )
+endif()
+string(REPLACE ";" "," TSC_DECODERS_STRING "${TSC_DECODERS}")
+string(APPEND OPTIONS " --enable-decoder=${TSC_DECODERS_STRING}")
+
+# === Muxers ===
+set(TSC_MUXERS 
+   "mp3" 
+   "opus"
+   "webm"
+)
+if(VCPKG_TARGET_IS_OSX)
+   list(APPEND TSC_MUXERS 
+      "mp4"
+   )
+endif()
+string(REPLACE ";" "," TSC_MUXERS_STRING "${TSC_MUXERS}")
+string(APPEND OPTIONS " --enable-muxer=${TSC_MUXERS_STRING}")
+
+# === Demuxers ===
+set(TSC_DEMUXERS 
+   "aac"
+   "hevc"
+   "m4a"
+   "mov"
+   "mp3"
+   "mp4"
+   "webm"
+)
+string(REPLACE ";" "," TSC_DEMUXERS_STRING "${TSC_DEMUXERS}")
+string(APPEND OPTIONS " --enable-demuxer=${TSC_DEMUXERS_STRING}")
+
+# === Hardware accelerators ===
+# Note: I do not see any hw acceleration option that starts with "hevc_d3d" (https://trac.ffmpeg.org/wiki/HWAccelIntro)
+#       I believe the equivalent is dxva2: https://trac.ffmpeg.org/wiki/HWAccelIntro#DXVA2
+# Note: Enable hw accel options using --enable-hwaccel=NAME.  See: https://github.com/FFmpeg/FFmpeg/blob/970d57988d2031b86bd457f4d2ef6bf73810fd13/configure#L155C12-L155C19
+if(VCPKG_TARGET_IS_OSX)
+   set(TSC_HWACCELS 
+      "videotoolbox"
+   )
+elseif(VCPKG_TARGET_IS_WINDOWS)
+   set(TSC_HWACCELS 
+      "cuda"
+      "dxva2"
+      "qsv"
+      "d3d11va"
+      "opencl"
+      "d3d12va"
+   )
+endif()
+string(REPLACE ";" "," TSC_HWACCELS_STRING "${TSC_HWACCELS}")
+string(APPEND OPTIONS " --enable-hwaccel=${TSC_HWACCELS_STRING}")
+
+# Show options
+message(">> Initial TSC OPTIONS: ${OPTIONS}")
+# </Additional custom TechSmith options>
+
 if(VCPKG_TARGET_IS_MINGW)
     if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
         string(APPEND OPTIONS " --target-os=mingw32")
