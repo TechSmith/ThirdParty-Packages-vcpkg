@@ -126,12 +126,8 @@ set(TSC_MUXERS
    "mp3" 
    "opus"
    "webm"
+   "mp4"
 )
-if(VCPKG_TARGET_IS_OSX)
-   list(APPEND TSC_MUXERS 
-      "mp4"
-   )
-endif()
 string(REPLACE ";" "," TSC_MUXERS_STRING "${TSC_MUXERS}")
 string(APPEND OPTIONS " --enable-muxer=${TSC_MUXERS_STRING}")
 
