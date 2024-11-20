@@ -128,6 +128,7 @@ set(TSC_DEMUXERS
    "mp3"
    "mp4"
    "webm"
+   "mpegts"
 )
 string(REPLACE ";" "," TSC_DEMUXERS_STRING "${TSC_DEMUXERS}")
 string(APPEND OPTIONS " --enable-demuxer=${TSC_DEMUXERS_STRING}")
