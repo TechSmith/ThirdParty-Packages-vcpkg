@@ -41,17 +41,26 @@ set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetec
 string(APPEND OPTIONS " --disable-encoders --disable-decoders --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices")
 string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 string(APPEND OPTIONS " --enable-protocol=file")
+string(APPEND OPTIONS " --enable-libsvtav1 --enable-libaom --enable-libvpx")
+
+if(VCPKG_TARGET_IS_WINDOWS)
+   string(APPEND OPTIONS " --enable-libmfx")
+endif()
 
 # === Encoders ===
 # I am intentionally leaving out "vorbis" and "opus" encoders, as they are marked "Experimental"
 set(TSC_ENCODERS 
-   "aac"
-   "libaom-av1" 
-   "libmp3lame"
-   "libopus" 
-   "libvorbis"
-   "libvpx" 
-   "libvpx-vp9"
+   "aac"#
+   "av1"#NO
+   "libaom-av1"#NO
+   "libsvtav1"
+   "libmp3lame"#
+   "libopus"# 
+   "libvorbis"#
+   "libvpx"#NO
+   "libvpx-vp9"#NO
+   "vp8"#NO
+   "vp9"#NO
 )
 # TODO: 
 # 1. I'm not sure if we should include OS-specific encoders (other than h264 & hevc for Mac), or if this could cause compatibility and/or sync issues?
@@ -68,11 +77,11 @@ elseif(VCPKG_TARGET_IS_WINDOWS)
    # TODO: Do we want to ship the media foundation MP3 encoder on Windows (mp3_mf), or just "libmp3lame"?
    # TODO: Do we want to ship the media foundation AAC encoder on Windows (aac_mf), or just the native FFMpeg one (aac)?
    list(APPEND TSC_ENCODERS 
-      "aac_mf"
-      "av1_nvenc"
-      "av1_amf"
-      "mp3_mf"
-      "vp9_qsv"
+      "aac_mf"#
+      "av1_nvenc"#
+      "av1_amf"#
+      "mp3_mf"#
+      "vp9_qsv"#NO
    )
 endif()
 string(REPLACE ";" "," TSC_ENCODERS_STRING "${TSC_ENCODERS}")
@@ -82,23 +91,23 @@ string(APPEND OPTIONS " --enable-encoder=${TSC_ENCODERS_STRING}")
 # Note: I did not see any hevc_videotoolbox decoder available for Mac (only as an encoder).  I only see "hevc".
 # Note: mp3* will pick up "mp3_at" on Mac
 set(TSC_DECODERS 
-   "aac"
-   "aac_fixed"
-   "aac_latm"
-   "av1"
-   "hevc"
-   "libaom-av1"
-   "libdav1d"
-   "libopus"
-   "libvorbis"
-   "libvpx"
-   "libvpx-vp9"
-   "mp3*"
-   "opus"
-   "pcm*"
-   "vorbis"
-   "vp8"
-   "vp9"
+   "aac"#
+   "aac_fixed"#
+   "aac_latm"#
+   "av1"#
+   "hevc"#
+   "libaom-av1"#NO
+   "libdav1d"#
+   "libopus"#
+   "libvorbis"#
+   "libvpx"#NO
+   "libvpx-vp9"#NO
+   "mp3*"#
+   "opus"#
+   "pcm*"#
+   "vorbis"#
+   "vp8"#
+   "vp9"#
 )
 if(VCPKG_TARGET_IS_OSX)
    list(APPEND TSC_DECODERS
@@ -108,14 +117,14 @@ elseif(VCPKG_TARGET_IS_WINDOWS)
    # TODO: Do we want to ship the cuvid (Nvidia) and qsv (Intel) decoders on Windows?
    # Note: There is no aac_mf decoder for Windows.  This is only an encoder.
    list(APPEND TSC_DECODERS
-      "av1_cuvid" 
-      "av1_qsv" 
-      "hevc_cuvid"
-      "hevc_qsv"
-      "vp8_cuvid" 
-      "vp8_qsv" 
-      "vp9_cuvid" 
-      "vp9_qsv"
+      "av1_cuvid"# 
+      "av1_qsv" #NO
+      "hevc_cuvid"#
+      "hevc_qsv"#NO
+      "vp8_cuvid"#
+      "vp8_qsv"#NO
+      "vp9_cuvid"#
+      "vp9_qsv"#NO
    )
 endif()
 string(REPLACE ";" "," TSC_DECODERS_STRING "${TSC_DECODERS}")
