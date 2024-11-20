@@ -43,10 +43,6 @@ string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejectio
 string(APPEND OPTIONS " --enable-protocol=file")
 string(APPEND OPTIONS " --enable-libsvtav1 --enable-libaom --enable-libvpx")
 
-if(VCPKG_TARGET_IS_WINDOWS)
-   string(APPEND OPTIONS " --enable-libmfx")
-endif()
-
 # === Encoders ===
 # I am intentionally leaving out "vorbis" and "opus" encoders, as they are marked "Experimental"
 set(TSC_ENCODERS 
@@ -78,10 +74,7 @@ elseif(VCPKG_TARGET_IS_WINDOWS)
    # TODO: Do we want to ship the media foundation AAC encoder on Windows (aac_mf), or just the native FFMpeg one (aac)?
    list(APPEND TSC_ENCODERS 
       "aac_mf"#
-      "av1_nvenc"#
-      "av1_amf"#
       "mp3_mf"#
-      "vp9_qsv"#NO
    )
 endif()
 string(REPLACE ";" "," TSC_ENCODERS_STRING "${TSC_ENCODERS}")
@@ -112,19 +105,6 @@ set(TSC_DECODERS
 if(VCPKG_TARGET_IS_OSX)
    list(APPEND TSC_DECODERS
       "aac_at"
-   )
-elseif(VCPKG_TARGET_IS_WINDOWS)
-   # TODO: Do we want to ship the cuvid (Nvidia) and qsv (Intel) decoders on Windows?
-   # Note: There is no aac_mf decoder for Windows.  This is only an encoder.
-   list(APPEND TSC_DECODERS
-      "av1_cuvid"# 
-      "av1_qsv" #NO
-      "hevc_cuvid"#
-      "hevc_qsv"#NO
-      "vp8_cuvid"#
-      "vp8_qsv"#NO
-      "vp9_cuvid"#
-      "vp9_qsv"#NO
    )
 endif()
 string(REPLACE ";" "," TSC_DECODERS_STRING "${TSC_DECODERS}")
@@ -163,9 +143,7 @@ if(VCPKG_TARGET_IS_OSX)
    )
 elseif(VCPKG_TARGET_IS_WINDOWS)
    set(TSC_HWACCELS 
-      "cuda"
       "dxva2"
-      "qsv"
       "d3d11va"
       "opencl"
       "d3d12va"
