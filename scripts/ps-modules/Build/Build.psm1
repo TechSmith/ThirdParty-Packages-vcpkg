@@ -296,15 +296,19 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
    elseif((Get-IsOnMacOS)) {
       $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
-      $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
-      $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
+      $srcX64Dir = "./vcpkg/installed/$($triplets[0])"
+      $srcArm64Dir = "./vcpkg/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
+      $destArm64ToolsDir = "$preStagePath/arm64Tools"
+      $destX64ToolsDir = "$preStagePath/x64Tools"
       $srcToDestDirs = @{
          "$srcArm64Dir/include" = "$preStagePath"
          "$srcArm64Dir/share" = "$preStagePath"
          "$srcArm64Dir/$libDir" = "$destArm64LibDir"
          "$srcX64Dir/$libDir" = "$destX64LibDir"
+         "$srcArm64Dir/$toolsDir" = "$destArm64ToolsDir"
+         "$srcX64Dir/$toolsDir" = "$destX64ToolsDir"
       }
    }
    else {
@@ -339,8 +343,15 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
 
    # Finalize artifacts (Mac-only)
    if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
-     $destUniversalLibDir = "$preStagePath/lib"
-     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+     if($publishInfo.lib -eq $true) {
+       $destUniversalLibDir = "$preStagePath/lib"
+       Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64LibDir" -x64Dir "$destX64LibDir" -universalDir "$destUniversalLibDir"
+     }
+
+     if($publishInfo.tools -eq $true) {
+       $destUniversalToolsDir = "$preStagePath/tools"
+       Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64ToolsDir" -x64Dir "$destX64ToolsDir" -universalDir "$destUniversalToolsDir" -filenameFilter @("*")
+     }
    }
 }
 
@@ -430,7 +441,7 @@ function Run-StageSourceArtifactsStep {
    $stagedArtifactSubDir = "$stagedArtifactsPath/src"
    $artifactPath = "$stagedArtifactSubDir/$artifactName"
 
-   Write-Host "Copying: $sourceCodeRootDir ==> $artifactPath"
+   Write-Message "Copying: $sourceCodeRootDir ==> $artifactPath"
    if (-not (Test-Path -Path $artifactPath)) {
        New-Item -ItemType Directory -Path $artifactPath | Out-Null
    }
@@ -439,7 +450,7 @@ function Run-StageSourceArtifactsStep {
        $srcDir = Join-Path -Path $buildTreesSubDir.FullName -ChildPath "src"
        if (Test-Path -Path $srcDir) {
            $destDir = Join-Path -Path $artifactPath -ChildPath $buildTreesSubDir.Name
-           Write-Host "$srcDir ==> $destDir"
+           Write-Message "$srcDir ==> $destDir"
            if (-not (Test-Path -Path $destDir)) {
                New-Item -ItemType Directory -Path $destDir | Out-Null
            }
