@@ -38,7 +38,7 @@ set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetec
 # - Muxers and Demuxers (Formats): https://ffmpeg.org/ffmpeg-formats.html
 # - Encoders and decoders (Codecs): https://www.ffmpeg.org/ffmpeg-codecs.html
 # - HW Acceleration: https://trac.ffmpeg.org/wiki/HWAccelIntro
-string(APPEND OPTIONS " --disable-encoders --disable-decoders --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices")
+string(APPEND OPTIONS " --disable-encoders --disable-decoders --disable-muxers --disable-demuxers --disable-protocols")
 string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 string(APPEND OPTIONS " --enable-protocol=file")
 
