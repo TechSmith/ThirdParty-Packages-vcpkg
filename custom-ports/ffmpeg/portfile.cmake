@@ -57,9 +57,6 @@ set(TSC_ENCODERS
    "vp9"#NO
 )
 # TODO: 
-# 1. I'm not sure if we should include OS-specific encoders (other than h264 & hevc for Mac), or if this could cause compatibility and/or sync issues?
-# 2. Should we include an h.264 encoder for Windows (libopenh264, h264_amf, h264_mf, h264_nvenc, h264_qsv)?
-# 3. Should we also include libopenh264 for Mac?
 if(VCPKG_TARGET_IS_OSX)
    list(APPEND TSC_ENCODERS 
       "aac_at"
@@ -67,7 +64,6 @@ if(VCPKG_TARGET_IS_OSX)
       "hevc_videotoolbox"
    )
 elseif(VCPKG_TARGET_IS_WINDOWS)
-   # TODO: Do we want to ship the nvenc (Nvidia), qsv (Intel) and amf (AMD) decoders on Windows?
    # TODO: Do we want to ship the media foundation MP3 encoder on Windows (mp3_mf), or just "libmp3lame"?
    # TODO: Do we want to ship the media foundation AAC encoder on Windows (aac_mf), or just the native FFMpeg one (aac)?
    list(APPEND TSC_ENCODERS 
