@@ -41,7 +41,6 @@ set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetec
 string(APPEND OPTIONS " --disable-encoders --disable-decoders --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices")
 string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 string(APPEND OPTIONS " --enable-protocol=file")
-string(APPEND OPTIONS " --enable-libaom --enable-libvpx")
 
 # === Encoders ===
 # I am intentionally leaving out "vorbis" and "opus" encoders, as they are marked "Experimental"
