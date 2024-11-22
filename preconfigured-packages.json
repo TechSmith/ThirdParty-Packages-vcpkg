@@ -263,11 +263,6 @@
     },
     {
       "name": "kaldi",
-      "mac": {
-        "package": "kaldi",
-        "linkType": "static",
-        "buildType": "release"
-      },
       "win": {
         "package": "kaldi",
         "customTriplet": "x64-windows-static-md",
