@@ -21,6 +21,7 @@ parameters:
   - libzip-static
   - libzip-dynamic
   - minizip
+  - openblas
   - openssl-static
   - opencv4
   - pango
