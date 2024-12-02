@@ -41,6 +41,7 @@ set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetec
 string(APPEND OPTIONS " --disable-protocols --enable-protocol=file") # Only enable file protocol
 string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 string(APPEND OPTIONS " --disable-encoder=hevc*")
+string(APPEND OPTIONS " --enable-libsvtav1")
 
 # # === Encoders ===
 # # I am intentionally leaving out "vorbis" and "opus" encoders, as they are marked "Experimental"
