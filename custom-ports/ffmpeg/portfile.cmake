@@ -38,117 +38,117 @@ set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetec
 # - Muxers and Demuxers (Formats): https://ffmpeg.org/ffmpeg-formats.html
 # - Encoders and decoders (Codecs): https://www.ffmpeg.org/ffmpeg-codecs.html
 # - HW Acceleration: https://trac.ffmpeg.org/wiki/HWAccelIntro
-string(APPEND OPTIONS " --disable-encoders --disable-decoders --disable-muxers --disable-demuxers --disable-protocols")
-string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
-string(APPEND OPTIONS " --enable-protocol=file")
+# string(APPEND OPTIONS " --disable-encoders --disable-decoders --disable-muxers --disable-demuxers --disable-protocols")
+# string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
+# string(APPEND OPTIONS " --enable-protocol=file")
 
-# === Encoders ===
-# I am intentionally leaving out "vorbis" and "opus" encoders, as they are marked "Experimental"
-set(TSC_ENCODERS 
-   "aac"#
-   "av1"#NO
-   "libaom-av1"#NO
-   "libmp3lame"#
-   "libopus"# 
-   "libvorbis"#
-   "libvpx"#NO
-   "libvpx-vp9"#NO
-   "vp8"#NO
-   "vp9"#NO
-)
-# TODO: 
-if(VCPKG_TARGET_IS_OSX)
-   list(APPEND TSC_ENCODERS 
-      "aac_at"
-      "h264_videotoolbox"
-      "hevc_videotoolbox"
-   )
-elseif(VCPKG_TARGET_IS_WINDOWS)
-   # TODO: Do we want to ship the media foundation MP3 encoder on Windows (mp3_mf), or just "libmp3lame"?
-   # TODO: Do we want to ship the media foundation AAC encoder on Windows (aac_mf), or just the native FFMpeg one (aac)?
-   list(APPEND TSC_ENCODERS 
-      "aac_mf"#
-      "mp3_mf"#
-   )
-endif()
-string(REPLACE ";" "," TSC_ENCODERS_STRING "${TSC_ENCODERS}")
-string(APPEND OPTIONS " --enable-encoder=${TSC_ENCODERS_STRING}")
+# # === Encoders ===
+# # I am intentionally leaving out "vorbis" and "opus" encoders, as they are marked "Experimental"
+# set(TSC_ENCODERS 
+#    "aac"#
+#    "av1"#NO
+#    "libaom-av1"#NO
+#    "libmp3lame"#
+#    "libopus"# 
+#    "libvorbis"#
+#    "libvpx"#NO
+#    "libvpx-vp9"#NO
+#    "vp8"#NO
+#    "vp9"#NO
+# )
+# # TODO: 
+# if(VCPKG_TARGET_IS_OSX)
+#    list(APPEND TSC_ENCODERS 
+#       "aac_at"
+#       "h264_videotoolbox"
+#       "hevc_videotoolbox"
+#    )
+# elseif(VCPKG_TARGET_IS_WINDOWS)
+#    # TODO: Do we want to ship the media foundation MP3 encoder on Windows (mp3_mf), or just "libmp3lame"?
+#    # TODO: Do we want to ship the media foundation AAC encoder on Windows (aac_mf), or just the native FFMpeg one (aac)?
+#    list(APPEND TSC_ENCODERS 
+#       "aac_mf"#
+#       "mp3_mf"#
+#    )
+# endif()
+# string(REPLACE ";" "," TSC_ENCODERS_STRING "${TSC_ENCODERS}")
+# string(APPEND OPTIONS " --enable-encoder=${TSC_ENCODERS_STRING}")
 
-# === Decoders ===
-# Note: I did not see any hevc_videotoolbox decoder available for Mac (only as an encoder).  I only see "hevc".
-# Note: mp3* will pick up "mp3_at" on Mac
-set(TSC_DECODERS 
-   "aac"#
-   "aac_fixed"#
-   "aac_latm"#
-   "av1"#
-   "hevc"#
-   "libaom-av1"#NO
-   "libdav1d"#
-   "libopus"#
-   "libvorbis"#
-   "libvpx"#NO
-   "libvpx-vp9"#NO
-   "mp3*"#
-   "opus"#
-   "pcm*"#
-   "vorbis"#
-   "vp8"#
-   "vp9"#
-)
-if(VCPKG_TARGET_IS_OSX)
-   list(APPEND TSC_DECODERS
-      "aac_at"
-   )
-endif()
-string(REPLACE ";" "," TSC_DECODERS_STRING "${TSC_DECODERS}")
-string(APPEND OPTIONS " --enable-decoder=${TSC_DECODERS_STRING}")
+# # === Decoders ===
+# # Note: I did not see any hevc_videotoolbox decoder available for Mac (only as an encoder).  I only see "hevc".
+# # Note: mp3* will pick up "mp3_at" on Mac
+# set(TSC_DECODERS 
+#    "aac"#
+#    "aac_fixed"#
+#    "aac_latm"#
+#    "av1"#
+#    "hevc"#
+#    "libaom-av1"#NO
+#    "libdav1d"#
+#    "libopus"#
+#    "libvorbis"#
+#    "libvpx"#NO
+#    "libvpx-vp9"#NO
+#    "mp3*"#
+#    "opus"#
+#    "pcm*"#
+#    "vorbis"#
+#    "vp8"#
+#    "vp9"#
+# )
+# if(VCPKG_TARGET_IS_OSX)
+#    list(APPEND TSC_DECODERS
+#       "aac_at"
+#    )
+# endif()
+# string(REPLACE ";" "," TSC_DECODERS_STRING "${TSC_DECODERS}")
+# string(APPEND OPTIONS " --enable-decoder=${TSC_DECODERS_STRING}")
 
-# === Muxers ===
-set(TSC_MUXERS 
-   "mp3" 
-   "opus"
-   "webm"
-   "mp4"
-)
-string(REPLACE ";" "," TSC_MUXERS_STRING "${TSC_MUXERS}")
-string(APPEND OPTIONS " --enable-muxer=${TSC_MUXERS_STRING}")
+# # === Muxers ===
+# set(TSC_MUXERS 
+#    "mp3" 
+#    "opus"
+#    "webm"
+#    "mp4"
+# )
+# string(REPLACE ";" "," TSC_MUXERS_STRING "${TSC_MUXERS}")
+# string(APPEND OPTIONS " --enable-muxer=${TSC_MUXERS_STRING}")
 
-# === Demuxers ===
-set(TSC_DEMUXERS 
-   "aac"
-   "hevc"
-   "m4a"
-   "mov"
-   "mp3"
-   "mp4"
-   "webm"
-   "mpegts"
-)
-string(REPLACE ";" "," TSC_DEMUXERS_STRING "${TSC_DEMUXERS}")
-string(APPEND OPTIONS " --enable-demuxer=${TSC_DEMUXERS_STRING}")
+# # === Demuxers ===
+# set(TSC_DEMUXERS 
+#    "aac"
+#    "hevc"
+#    "m4a"
+#    "mov"
+#    "mp3"
+#    "mp4"
+#    "webm"
+#    "mpegts"
+# )
+# string(REPLACE ";" "," TSC_DEMUXERS_STRING "${TSC_DEMUXERS}")
+# string(APPEND OPTIONS " --enable-demuxer=${TSC_DEMUXERS_STRING}")
 
-# === Hardware accelerators ===
-# Note: I do not see any hw acceleration option that starts with "hevc_d3d" (https://trac.ffmpeg.org/wiki/HWAccelIntro)
-#       I believe the equivalent is dxva2: https://trac.ffmpeg.org/wiki/HWAccelIntro#DXVA2
-# Note: Enable hw accel options using --enable-hwaccel=NAME.  See: https://github.com/FFmpeg/FFmpeg/blob/970d57988d2031b86bd457f4d2ef6bf73810fd13/configure#L155C12-L155C19
-if(VCPKG_TARGET_IS_OSX)
-   set(TSC_HWACCELS 
-      "videotoolbox"
-   )
-elseif(VCPKG_TARGET_IS_WINDOWS)
-   set(TSC_HWACCELS 
-      "dxva2"
-      "d3d11va"
-      "opencl"
-      "d3d12va"
-   )
-endif()
-string(REPLACE ";" "," TSC_HWACCELS_STRING "${TSC_HWACCELS}")
-string(APPEND OPTIONS " --enable-hwaccel=${TSC_HWACCELS_STRING}")
+# # === Hardware accelerators ===
+# # Note: I do not see any hw acceleration option that starts with "hevc_d3d" (https://trac.ffmpeg.org/wiki/HWAccelIntro)
+# #       I believe the equivalent is dxva2: https://trac.ffmpeg.org/wiki/HWAccelIntro#DXVA2
+# # Note: Enable hw accel options using --enable-hwaccel=NAME.  See: https://github.com/FFmpeg/FFmpeg/blob/970d57988d2031b86bd457f4d2ef6bf73810fd13/configure#L155C12-L155C19
+# if(VCPKG_TARGET_IS_OSX)
+#    set(TSC_HWACCELS 
+#       "videotoolbox"
+#    )
+# elseif(VCPKG_TARGET_IS_WINDOWS)
+#    set(TSC_HWACCELS 
+#       "dxva2"
+#       "d3d11va"
+#       "opencl"
+#       "d3d12va"
+#    )
+# endif()
+# string(REPLACE ";" "," TSC_HWACCELS_STRING "${TSC_HWACCELS}")
+# string(APPEND OPTIONS " --enable-hwaccel=${TSC_HWACCELS_STRING}")
 
-# Show options
-message(">> Initial TSC OPTIONS: ${OPTIONS}")
+# # Show options
+# message(">> Initial TSC OPTIONS: ${OPTIONS}")
 # </Additional custom TechSmith options>
 
 if(VCPKG_TARGET_IS_MINGW)
