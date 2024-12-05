@@ -381,7 +381,8 @@ function Run-StageBuildArtifactsStep {
       [string]$buildType,
       [string]$customTriplet,
       [string]$stagedArtifactsPath,
-      [PSObject]$publishInfo
+      [PSObject]$publishInfo,
+      [bool]$deletePrestageDir = $true
    )
    
    Write-Banner -Level 3 -Title "Stage build artifacts"
@@ -415,8 +416,13 @@ function Run-StageBuildArtifactsStep {
       }
    }
 
-   Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
-   Remove-Item -Path $preStagePath -Recurse | Out-Null
+   if ($deletePrestageDir) {
+      Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
+      Remove-Item -Path $preStagePath -Recurse | Out-Null
+   }
+   else {
+      Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Copy-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
+   }
 
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""
