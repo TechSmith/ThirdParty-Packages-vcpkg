@@ -371,6 +371,7 @@ function Run-PostBuildStep {
       ModulesRoot = "$PSScriptRoot/../../ps-modules"
    }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
+   Exit-IfError $LASTEXITCODE
 }
 
 function Run-StageBuildArtifactsStep {
