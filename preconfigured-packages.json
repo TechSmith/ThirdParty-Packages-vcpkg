@@ -252,6 +252,16 @@
       }
     },
     {
+      "name": "openblas",
+      "win": {
+        "package": "openblas",
+        "customTriplet": "x64-windows-static-md",
+        "publish": {
+          "debug": true
+        }
+      }
+    },
+    {
       "name": "kaldi",
       "mac": {
         "package": "kaldi",
@@ -260,8 +270,10 @@
       },
       "win": {
         "package": "kaldi",
-        "linkType": "static",
-        "buildType": "release"
+        "customTriplet": "x64-windows-static-md",
+        "publish": {
+          "debug": true
+        }
       }
     },
     {
