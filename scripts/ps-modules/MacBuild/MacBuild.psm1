@@ -1,38 +1,40 @@
-function Update-LibsToRelativePaths {
-   param(
-      [string]$arm64LibDir,
-      [string]$x64LibDir
-   )
-   ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "a"
-   ConvertTo-RelativeInstallPaths -directory $arm64LibDir -extension "dylib"
-   ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "a"
-   ConvertTo-RelativeInstallPaths -directory $x64LibDir -extension "dylib"
-}
-
 function Create-UniversalBinaries {
-   param(
-      [string]$arm64LibDir,
-      [string]$x64LibDir,
-      [string]$universalLibDir
-   )
-   New-Item -Path "$universalLibDir" -ItemType Directory -Force | Out-Null
-   Write-Message "Creating universal bins: $arm64LibDir..."
-   $items = Get-ChildItem -Path "$arm64LibDir/*" -Include "*.dylib","*.a"
-   foreach($item in $items) {
-       $fileName = $item.Name
-       Write-Message "> $fileName"
-       $srcPathArm64 = $item.FullName
-       $srcPathX64 = (Join-Path $x64LibDir $fileName)
-       $destPath = (Join-Path $universalLibDir $fileName)
-       
-       if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-           Invoke-Expression -Command "cp -R `"$srcPathArm64`" `"$destPath`""
-       }
-       elseif (-not $item.PSIsContainer) {
-           Invoke-Expression -Command "lipo -create -output `"$destPath`" `"$srcPathArm64`" `"$srcPathX64`""
-       }
-   }
-}
+    param(
+       [string]$arm64Dir,
+       [string]$x64Dir,
+       [string]$universalDir,
+       [string[]]$filenameFilter = @("*.dylib", "*.a")
+    )
+
+    Write-Output "Creating universal bins: $arm64Dir..."
+
+    $arm64Dir = [System.IO.Path]::GetFullPath($arm64Dir)
+    $x64Dir = [System.IO.Path]::GetFullPath($x64Dir)
+    $universalDir = [System.IO.Path]::GetFullPath($universalDir)
+
+    New-Item -Path "$universalDir" -ItemType Directory -Force | Out-Null
+        
+    $items = Get-ChildItem -Path "$arm64Dir" -Include $filenameFilter -Recurse
+    foreach ($item in $items) {
+        $relativePath = $item.FullName.Substring($arm64Dir.Length)
+        $destDir = Join-Path $universalDir (Split-Path $relativePath -Parent)
+        $fileName = $item.Name
+        Write-Output "> $fileName"
+ 
+        $srcPathArm64 = $item.FullName
+        $srcPathX64 = Join-Path $x64Dir $relativePath
+        $destPath = Join-Path $universalDir $relativePath 
+        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+            New-Item -Path "$destDir" -ItemType Directory -Force | Out-Null
+            Invoke-Expression -Command "cp -R `"$srcPathArm64`" `"$destPath`""
+        }
+        elseif (-not $item.PSIsContainer) {
+            New-Item -Path "$destDir" -ItemType Directory -Force | Out-Null
+            Invoke-Expression -Command "lipo -create -output `"$destPath`" `"$srcPathArm64`" `"$srcPathX64`""
+        }
+    }
+ }
+ 
 
 function Copy-NonLibraryFiles {
    param(
@@ -44,26 +46,30 @@ function Copy-NonLibraryFiles {
    $destDir = (Convert-Path -LiteralPath $destDir)
 
    Get-ChildItem -Path $srcDir -Recurse | Where-Object { $_.Extension -notin ('.dylib', '.a') } | ForEach-Object {
-   $destinationPath = Join-Path -Path $destDir -ChildPath $_.FullName.Substring($srcDir.Length)
-      Copy-Item -Path $_.FullName -Destination $destinationPath
+      $destinationPath = Join-Path -Path $destDir -ChildPath $_.FullName.Substring($srcDir.Length)
+      if(-not (Test-Path($destinationPath))) 
+      {
+        Copy-Item -Path $_.FullName -Destination $destinationPath
+      }
    }
 }
 
 function Create-FinalizedMacBuildArtifacts {
     param (
-        [string]$arm64LibDir,
-        [string]$x64LibDir,
-        [string]$universalLibDir
+        [string]$arm64Dir,
+        [string]$x64Dir,
+        [string]$universalDir,
+        [string[]]$filenameFilter = @("*.dylib","*.a")
     )
     Write-Banner -Level 3 -Title "Finalizing Mac artifacts"
-    Write-Message "arm64LibDir: $arm64LibDir"
-    Update-LibsToRelativePaths -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir
-    Create-UniversalBinaries -arm64LibDir $arm64LibDir -x64LibDir $x64LibDir -universalLibDir $universalLibDir
-    Copy-NonLibraryFiles -srcDir $arm64LibDir -destDir $universalLibDir
-    Remove-Item -Force -Recurse -Path $arm64LibDir
-    Remove-Item -Force -Recurse -Path $x64LibDir
-    Remove-DylibSymlinks -libDir $universalLibDir
-    Run-CreateDysmAndStripDebugSymbols -libDir $universalLibDir
+    ConvertTo-RelativeInstallPaths -directory $arm64Dir -filenameFilter $filenameFilter
+    ConvertTo-RelativeInstallPaths -directory $x64Dir -filenameFilter $filenameFilter
+    Create-UniversalBinaries -arm64Dir $arm64Dir -x64Dir $x64Dir -universalDir $universalDir -filenameFilter $filenameFilter
+    Copy-NonLibraryFiles -srcDir $arm64Dir -destDir $universalDir
+    Remove-Item -Force -Recurse -Path $arm64Dir
+    Remove-Item -Force -Recurse -Path $x64Dir
+    Remove-DylibSymlinks -libDir $universalDir
+    Run-CreateDysmAndStripDebugSymbols -libDir $universalDir
 }
 
 function Update-LibraryPath {
@@ -113,10 +119,11 @@ function Update-LibraryPath {
 function ConvertTo-RelativeInstallPaths {
     param (
         [string]$directory,
-        [string]$extension
+        [string]$extension,
+        [string[]]$filenameFilter
     )
 
-    $libFiles = Get-ChildItem -Path $directory -Filter "*.$extension"
+    $libFiles = Get-ChildItem -Path $directory -Include $filenameFilter -Recurse -File
     foreach ($libFile in $libFiles) {
         $filePath = $libFile.FullName
         $fileName = $libFile.Name
