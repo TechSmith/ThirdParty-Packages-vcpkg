@@ -443,7 +443,7 @@ function Run-StageSourceArtifactsStep {
            if (-not (Test-Path -Path $destDir)) {
                New-Item -ItemType Directory -Path $destDir | Out-Null
            }
-           Copy-ItemWithSymlinks -source "$srcDir\*" -destination "$destDir"
+           Copy-ItemWithSymlinks -source "$srcDir" -destination "$destDir"
        }
    }
 
