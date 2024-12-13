@@ -34,6 +34,6 @@ It does the following:
 4. Publishes these packages as pipeline artifacts
 
 ### Testing Linux Builds Locally
-Linux builds can be developed and run from Windows via WSL.  The ffmpeg-cloud pre-configured package for example was created using Ubuntu, which is the default WSL OS.
+Linux builds can be developed and run from Windows via WSL.  The ffmpeg-cloud-gpl pre-configured package for example was created using Ubuntu, which is the default WSL OS.
 
 Given that WSL is quite slow when reading / writing files between Linux and Windows, it's best to run builds directly within a Linux mounted file location (for example `~/projects/ThirdParty-Packages-vcpkg` instead of `/mnt/c/projects/ThirdParty-Packages-vcpkg`).

@@ -1,7 +1,7 @@
 {
     "files": [
         {
-            "filename": "tools/ffmpeg-cloud/ffmpeg.exe",
+            "filename": "tools/ffmpeg-cloud-gpl/ffmpeg.exe",
             "fileDescription": "FFmpeg",
             "fileVersion": "6.1.1",
             "productName": "FFmpeg",
@@ -9,7 +9,7 @@
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "tools/ffmpeg-cloud/ffprobe.exe",
+            "filename": "tools/ffmpeg-cloud-gpl/ffprobe.exe",
             "fileDescription": "FFProbe",
             "fileVersion": "6.1.1",
             "productName": "FFProbe",

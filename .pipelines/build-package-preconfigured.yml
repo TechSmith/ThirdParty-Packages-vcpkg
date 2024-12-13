@@ -12,7 +12,7 @@ parameters:
   values:
   - dawn
   - ffmpeg
-  - ffmpeg-cloud
+  - ffmpeg-cloud-gpl
   - glslang
   - hunspell
   - hunspell-debug
