@@ -16,9 +16,9 @@
       }
     },
     {
-      "name": "ffmpeg-cloud",
+      "name": "ffmpeg-cloud-gpl",
       "win": {
-        "package": "ffmpeg-cloud[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,nvcodec,x264,dav1d,vpx,nonfree,gpl,version3]",
+        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,nvcodec,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
@@ -31,7 +31,7 @@
         }
       },
       "linux": {
-        "package": "ffmpeg-cloud[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,nvcodec,x264,dav1d,vpx,nonfree,gpl,version3]",
+        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,nvcodec,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
