@@ -1,3 +1,7 @@
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    message("FFMPEG building with emscripten...")
+endif()
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ffmpeg/ffmpeg
