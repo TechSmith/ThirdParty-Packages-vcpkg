@@ -133,7 +133,8 @@ function Copy-ItemWithSymlinks {
 function Get-PackageInfo
 {
     param(
-        [string]$packageName
+        [string]$packageName,
+        [string]$targetOS
     )
     $jsonFilePath = "preconfigured-packages.json"
     Write-Message "Reading config from: `"$jsonFilePath`""
@@ -143,11 +144,11 @@ function Get-PackageInfo
         Write-Message "> Package not found in $jsonFilePath."
         exit
     }
-    $selectedSection = Get-OSType;
-    $pkgInfo = $pkg.$selectedSection
+
+    $pkgInfo = $pkg.$targetOS
 
     # Deal with any optional properties that might not be specified in the json file
-    $publishProperties = @{ 
+    $publishProperties = @{
       "include" = $true
       "lib" = $true
       "bin" = $true
@@ -170,7 +171,7 @@ function Get-PackageInfo
       }
     }
 
-    return $pkg.$selectedSection
+    return $pkg.$targetOS
 }
 
 function Run-WriteParamsStep {
@@ -275,29 +276,21 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
    Write-Banner -Level 3 -Title "Pre-staging artifacts"
-   
+
    $libDir = "lib"
    $binDir = "bin"
    $toolsDir = "tools"
 
+   # If we're on MacOS and we didn't specify a custom triplet, we're building a universal binary
+   # If we specify a custom triplet, we can only build one architecture at a time
+   $isUniversalBinary = ((Get-IsOnMacOS) -and ($customTriplet -eq ""))
+
    # Get dirs to copy
    $srcToDestDirs = @{}
-   if ((Get-IsOnWindowsOS) -or (Get-IsOnLinux)) {  
-      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet) | Select-Object -First 1
-      $mainSrcDir = "./vcpkg/installed/$firstTriplet"
-      $srcToDestDirs = @{
-         "$mainSrcDir/include" = "$preStagePath/include"
-         "$mainSrcDir/share" = "$preStagePath/share"
-         "$mainSrcDir/$libDir" = "$preStagePath/lib"
-         "$mainSrcDir/$binDir" = "$preStagePath/bin"
-         "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
-         "$mainSrcDir/debug" = "$preStagePath/debug"
-      }
-   }
-   elseif((Get-IsOnMacOS)) {
+   if($isUniversalBinary) {
       $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
-      $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
-      $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
+      $srcArm64Dir = "./vcpkg/installed/$( $triplets[0] )"
+      $srcX64Dir = "./vcpkg/installed/$( $triplets[1] )"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
       $srcToDestDirs = @{
@@ -308,7 +301,16 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       }
    }
    else {
-     throw [System.Exception]::new("Invalid OS")
+      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet) | Select-Object -First 1
+      $mainSrcDir = "./vcpkg/installed/$firstTriplet"
+      $srcToDestDirs = @{
+         "$mainSrcDir/include" = "$preStagePath/include"
+         "$mainSrcDir/share" = "$preStagePath/share"
+         "$mainSrcDir/$libDir" = "$preStagePath/lib"
+         "$mainSrcDir/$binDir" = "$preStagePath/bin"
+         "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
+         "$mainSrcDir/debug" = "$preStagePath/debug"
+      }
    }
 
    $keysToRemove = @()
@@ -338,7 +340,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
 
    # Finalize artifacts (Mac-only)
-   if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
+   if(($isUniversalBinary) -and (Test-Path $destArm64LibDir)) {
      $destUniversalLibDir = "$preStagePath/lib"
      Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
