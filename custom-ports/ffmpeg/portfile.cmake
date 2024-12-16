@@ -1,6 +1,3 @@
-if(VCPKG_TARGET_IS_EMSCRIPTEN)
-    message("FFMPEG building with emscripten...")
-endif()
 
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
@@ -37,13 +34,19 @@ endif()
 set(OPTIONS " --enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
 
 # <Additional custom TechSmith options>
-string(APPEND OPTIONS "${OPTIONS} --disable-encoders --disable-decoders")
+string(APPEND OPTIONS " --disable-encoders --disable-decoders")
 if(VCPKG_TARGET_IS_WINDOWS)
-   string(APPEND OPTIONS "${OPTIONS} --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
-   string(APPEND OPTIONS "${OPTIONS} --enable-encoder=aac,libmp3lame --enable-decoder=aac,hevc,mp3*,pcm* --enable-muxer=aac,mp3 --enable-demuxer=aac,hevc,mov,mp3,mp4 --enable-hwaccel=hevc_d3d*")
+   string(APPEND OPTIONS " --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
+   string(APPEND OPTIONS " --enable-encoder=aac,libmp3lame --enable-decoder=aac,hevc,mp3*,pcm* --enable-muxer=aac,mp3 --enable-demuxer=aac,hevc,mov,mp3,mp4 --enable-hwaccel=hevc_d3d*")
 elseif(VCPKG_TARGET_IS_OSX)
-    string(APPEND OPTIONS "${OPTIONS} --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
-    string(APPEND OPTIONS "${OPTIONS} --enable-encoder=aac_at,h264_videotoolbox,h265_videotoolbox,libmp3lame --enable-decoder=aac_at,h264,h264_videotoolbox,h265_videotoolbox,mp3*,mpeg4,pcm*")
+    string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
+    string(APPEND OPTIONS " --enable-encoder=aac_at,h264_videotoolbox,h265_videotoolbox,libmp3lame --enable-decoder=aac_at,h264,h264_videotoolbox,h265_videotoolbox,mp3*,mpeg4,pcm*")
+elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
+    string(APPEND OPTIONS " --disable-parsers --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
+    string(APPEND OPTIONS " --arch=x86_32 --target-os=none") # This looks wrong but I think it's necessary
+    string(APPEND OPTIONS " --enable-encoder=aac* --enable-decoder=aac*,h264 --enable-muxer=aac,mp3 --enable-demuxer=mov")
+    string(APPEND OPTIONS " --disable-x86asm --disable-inline-asm --disable-doc --disable-stripping --disable-runtime-cpudetect --disable-network --disable-pthreads")
+    string(APPEND OPTIONS " --nm=emnm --ar=emar --ranlib=emranlib --cc=emcc --cxx=em++ --objcc=emcc --dep-cc=emcc")
 endif()
 string(APPEND OPTIONS "${OPTIONS} --enable-protocol=file")
 # </Additional custom TechSmith options>
@@ -55,6 +58,46 @@ if(VCPKG_HOST_IS_WINDOWS)
     string(APPEND OPTIONS " --pkg-config=${CURRENT_HOST_INSTALLED_DIR}/tools/pkgconf/pkgconf${VCPKG_HOST_EXECUTABLE_SUFFIX}")
 else()
     find_program(SHELL bash)
+endif()
+
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    file(COPY ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.in DESTINATION ${SOURCE_PATH}) # overwrite their configure with ours
+    file(RENAME ${SOURCE_PATH}/configure_emscripten.in ${SOURCE_PATH}/configure)
+
+    # configure
+    # TODO: Pass OPTIONS into configure_emscripten
+    vcpkg_execute_required_process(
+       COMMAND "${SHELL}" ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.sh ${CURRENT_PACKAGES_DIR}
+       WORKING_DIRECTORY "${SOURCE_PATH}"
+       LOGNAME "configure-${TARGET_TRIPLET}-rel"
+       SAVE_LOG_FILES ffbuild/config.log
+    )
+
+    # make
+    vcpkg_execute_required_process(
+       COMMAND make -j8
+       WORKING_DIRECTORY "${SOURCE_PATH}"
+       LOGNAME "build-${TARGET_TRIPLET}-rel"
+       SAVE_LOG_FILES ffbuild/build.log
+    )
+
+    # install
+    vcpkg_execute_required_process(
+       COMMAND make install
+       WORKING_DIRECTORY "${SOURCE_PATH}"
+       LOGNAME "install-${TARGET_TRIPLET}-rel"
+       SAVE_LOG_FILES ffbuild/build.log
+    )
+
+    # Handle usage and copyright
+    file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
+    set(LICENSE_FILE "COPYING.LGPLv2.1")
+    vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/${LICENSE_FILE}")
+
+    # Remove unused files with absolute paths
+    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig")
+
+    return()
 endif()
 
 if(VCPKG_TARGET_IS_MINGW)
