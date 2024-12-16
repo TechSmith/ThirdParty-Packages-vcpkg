@@ -13,6 +13,11 @@
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb"
+      },
+      "wasm": {
+        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
+        "linkType": "dynamic",
+        "buildType": "release"
       }
     },
     {
