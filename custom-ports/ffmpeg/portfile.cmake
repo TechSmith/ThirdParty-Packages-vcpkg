@@ -38,17 +38,55 @@ string(APPEND OPTIONS " --disable-encoders --disable-decoders")
 if(VCPKG_TARGET_IS_WINDOWS)
    string(APPEND OPTIONS " --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
    string(APPEND OPTIONS " --enable-encoder=aac,libmp3lame --enable-decoder=aac,hevc,mp3*,pcm* --enable-muxer=aac,mp3 --enable-demuxer=aac,hevc,mov,mp3,mp4 --enable-hwaccel=hevc_d3d*")
+   string(APPEND OPTIONS " --enable-protocol=file")
 elseif(VCPKG_TARGET_IS_OSX)
     string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
     string(APPEND OPTIONS " --enable-encoder=aac_at,h264_videotoolbox,h265_videotoolbox,libmp3lame --enable-decoder=aac_at,h264,h264_videotoolbox,h265_videotoolbox,mp3*,mpeg4,pcm*")
+    string(APPEND OPTIONS " --enable-protocol=file")
 elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
-    string(APPEND OPTIONS " --disable-parsers --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
-    string(APPEND OPTIONS " --arch=x86_32 --target-os=none") # This looks wrong but I think it's necessary
-    string(APPEND OPTIONS " --enable-encoder=aac* --enable-decoder=aac*,h264 --enable-muxer=aac,mp3 --enable-demuxer=mov")
-    string(APPEND OPTIONS " --disable-x86asm --disable-inline-asm --disable-doc --disable-stripping --disable-runtime-cpudetect --disable-network --disable-pthreads")
-    string(APPEND OPTIONS " --nm=emnm --ar=emar --ranlib=emranlib --cc=emcc --cxx=em++ --objcc=emcc --dep-cc=emcc")
+    # Remove some options that we don't want for the emscripten build
+    string(REPLACE " --enable-debug" "" OPTIONS "${OPTIONS}")
+    string(REPLACE " --enable-runtime-cpudetect" "" OPTIONS "${OPTIONS}")
+
+    string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a cmake list
+
+    list(APPEND OPTIONS
+         --logfile=configure.log
+         --prefix=${CURRENT_PACKAGES_DIR}
+         --target-os=none
+         --arch=wasm32
+         --enable-cross-compile
+         --disable-x86asm
+         --disable-inline-asm
+         --disable-stripping
+         --enable-shared # guarantee dynamic linking
+         --disable-static # guarantee dynamic linking
+         --disable-programs
+         --disable-debug
+         --disable-runtime-cpudetect
+         --disable-autodetect
+         --disable-network
+         --disable-filters
+         --disable-demuxers
+         --disable-muxers
+         --disable-bsfs
+         --disable-parsers
+         --disable-protocols
+         --disable-devices
+         --disable-pthreads
+         --enable-encoder=aac* # TODO: Disable this???
+         --enable-decoder=aac*
+         --enable-decoder=h264 # TODO: Disable this too?
+         --enable-protocol=file
+         --enable-demuxer=mov
+         --nm=emnm
+         --ar=emar
+         --ranlib=emranlib
+         --cc=emcc
+         --cxx=em++
+         --objcc=emcc
+         --dep-cc=emcc)
 endif()
-string(APPEND OPTIONS "${OPTIONS} --enable-protocol=file")
 # </Additional custom TechSmith options>
 
 if(VCPKG_HOST_IS_WINDOWS)
@@ -65,12 +103,11 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
     file(RENAME ${SOURCE_PATH}/configure_emscripten.in ${SOURCE_PATH}/configure)
 
     # configure
-    # TODO: Pass OPTIONS into configure_emscripten
     vcpkg_execute_required_process(
-       COMMAND "${SHELL}" ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.sh ${CURRENT_PACKAGES_DIR}
-       WORKING_DIRECTORY "${SOURCE_PATH}"
-       LOGNAME "configure-${TARGET_TRIPLET}-rel"
-       SAVE_LOG_FILES ffbuild/config.log
+        COMMAND emconfigure ./configure ${OPTIONS} --extra-cflags="-pthread -g0 -O3" --extra-ldflags="-sSIDE_MODULE=1 -sWASM_BIGINT -pthread -sINITIAL_MEMORY=33554432"
+        WORKING_DIRECTORY "${SOURCE_PATH}"
+        LOGNAME "configure-${TARGET_TRIPLET}-rel"
+        SAVE_LOG_FILES ffbuild/config.log
     )
 
     # make
