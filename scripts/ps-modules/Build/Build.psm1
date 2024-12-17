@@ -103,19 +103,19 @@ function Copy-ItemWithSymlinks {
        [string]$source,
        [string]$destination
    )
- 
+
    if ( -not (Test-Path -Path $destination) ) {
       New-Item -ItemType Container -Path $destination | Out-Null
    }
- 
+
    $items = Get-ChildItem -Path $source
    foreach ($item in $items) {
        $relativePath = $item.FullName.Substring($source.Length + 1)
        $destPath = Join-Path -Path $destination -ChildPath $relativePath
- 
+
        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
          New-Item -ItemType SymbolicLink -Path $destPath -Target $item.Target -Force | Out-Null
-       } 
+       }
        else {
          if ($item.PSIsContainer) {
             Copy-ItemWithSymlinks -source $item.FullName -destination $destPath
@@ -395,7 +395,7 @@ function Run-PostBuildStep {
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $preStagePath = (Get-PreStagePath)
-   $scriptArgs = @{ 
+   $scriptArgs = @{
       BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/')
       PackageAndFeatures = ($packageAndFeatures -replace ',', '`,')
       LinkType = "$linkType"
@@ -415,7 +415,7 @@ function Run-StageBuildArtifactsStep {
       [string]$stagedArtifactsPath,
       [PSObject]$publishInfo
    )
-   
+
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
@@ -432,7 +432,7 @@ function Run-StageBuildArtifactsStep {
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
    Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
-   
+
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
 
@@ -465,7 +465,7 @@ function Run-StageSourceArtifactsStep {
       [string]$customTriplet,
       [string]$stagedArtifactsPath
    )
-   
+
    Write-Banner -Level 3 -Title "Stage source code artifacts"
 
    $sourceCodeRootDir = "./vcpkg/buildtrees/"
@@ -517,7 +517,7 @@ if ( (Get-IsOnMacOS) ) {
 } elseif ( (Get-IsOnWindowsOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/WinBuild" -DisableNameChecking -Force
    Export-ModuleMember -Function Update-VersionInfoForDlls
-} 
+}
 
 function Create-EmptyDir {
     param(
