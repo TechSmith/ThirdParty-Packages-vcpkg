@@ -74,9 +74,8 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --disable-protocols
          --disable-devices
          --disable-pthreads
-         --enable-encoder=aac* # TODO: Disable this???
+         --enable-encoder=aac*
          --enable-decoder=aac*
-         --enable-decoder=h264 # TODO: Disable this too?
          --enable-protocol=file
          --enable-demuxer=mov
          --nm=emnm
