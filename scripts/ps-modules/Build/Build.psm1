@@ -330,8 +330,8 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    $srcToDestDirs = @{}
    if($isUniversalBinary) {
       $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
-      $srcArm64Dir = "./vcpkg/installed/$( $triplets[0] )"
-      $srcX64Dir = "./vcpkg/installed/$( $triplets[1] )"
+      $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
+      $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
       $srcToDestDirs = @{
