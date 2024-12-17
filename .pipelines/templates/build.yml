@@ -154,7 +154,7 @@ stages:
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
-          $paths = @( "./mac-bin", "./win-bin", "./mac-src", "./win-src", "./linux-bin", "./linux-src" )
+          $paths = @( "./mac-bin", "./win-bin", "./mac-src", "./win-src", "./linux-bin", "./linux-src", "./wasm-bin", "./wasm-src" )
           foreach ($path in $paths) {
               if (Test-Path $path) {
                   Move-Item -Path "$path/*" -Destination . -Force
