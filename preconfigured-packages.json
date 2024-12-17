@@ -5,7 +5,8 @@
       "wasm": {
         "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-dynamic"
       }
     },
     {

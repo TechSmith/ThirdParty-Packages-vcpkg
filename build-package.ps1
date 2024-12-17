@@ -1,17 +1,22 @@
 param(
     [Parameter(Mandatory=$true)][string]$PackageName, # Name of package from preconfigured-packages.json
     [string]$StagedArtifactsPath = "StagedArtifacts", # Output path to stage these artifacts to
-    [switch]$ShowDebug = $false
+    [switch]$ShowDebug = $false,
+    [string]$TargetOS = $null
 )
 
 Import-Module "$PSScriptRoot/scripts/ps-modules/Build" -Force -DisableNameChecking
- 
+
 Write-Banner -Level 1 -Title "Installing preconfigured package: `"$PackageName`""
-$pkg = Get-PackageInfo -PackageName $PackageName
+
+if($TargetOS -eq $null) {
+    $TargetOS = Get-OSType
+}
+
+$pkg = Get-PackageInfo -PackageName $PackageName -TargetOS $TargetOS
 
 if ($pkg -eq $null) {
-    $selectedSection = Get-OSType
-    Write-Message "Package $PackageName contains no section for $selectedSection, skipping build."
+    Write-Message "Package $PackageName contains no section for TargetOS = $TargetOS, skipping build."
     exit 0
 }
 
