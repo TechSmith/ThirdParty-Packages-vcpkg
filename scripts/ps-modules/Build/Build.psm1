@@ -249,6 +249,42 @@ function Run-PreBuildStep {
    Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
 }
 
+function Check-RequiresEmscripten {
+   param(
+      [array]$triplets
+   )
+
+   foreach ($triplet in $triplets) {
+      if ($triplet -like "*wasm32*") {
+         return $true
+      }
+   }
+   return $false
+}
+
+function Install-Emscripten
+{
+   param(
+      [string]$version
+   )
+
+   Write-Message "Installing emscripten..."
+   $emsdkDir = "./emsdk"
+   pwd
+   if (Test-Path -Path $emsdkDir -PathType Container) {
+      Remove-Item -Path $emsdkDir -Recurse -Force
+   }
+
+   git clone https://github.com/emscripten-core/emsdk.git
+   Push-Location emsdk
+   ./emsdk install $version
+   ./emsdk activate $version
+   $EMSDK_PY="python3"
+   ./emsdk_env.ps1
+   Pop-Location
+}
+
+
 function Run-InstallPackageStep
 {
    param(
@@ -259,6 +295,11 @@ function Run-InstallPackageStep
    )
    Write-Banner -Level 3 -Title "Install package step: $packageAndFeatures"
    $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
+
+   if( Check-RequiresEmscripten -triplets $triplets ) {
+      Install-Emscripten -version "3.1.58"
+   }
+
    foreach ($triplet in $triplets) {
       Write-Message "> Installing for triplet: $triplet..."
       Install-FromVcPkg -packageAndFeatures $packageAndFeatures -triplet $triplet
