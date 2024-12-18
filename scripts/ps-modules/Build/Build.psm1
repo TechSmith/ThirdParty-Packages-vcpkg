@@ -134,7 +134,7 @@ function Get-PackageInfo
 {
     param(
         [string]$packageName,
-        [string]$targetOS
+        [string]$targetPlatform
     )
     $jsonFilePath = "preconfigured-packages.json"
     Write-Message "Reading config from: `"$jsonFilePath`""
@@ -145,7 +145,7 @@ function Get-PackageInfo
         exit
     }
 
-    $pkgInfo = $pkg.$targetOS
+    $pkgInfo = $pkg.$targetPlatform
 
     # Deal with any optional properties that might not be specified in the json file
     $publishProperties = @{
@@ -171,7 +171,7 @@ function Get-PackageInfo
       }
     }
 
-    return $pkg.$targetOS
+    return $pkg.$targetPlatform
 }
 
 function Run-WriteParamsStep {
