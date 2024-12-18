@@ -286,12 +286,8 @@ function Install-Emscripten
 
 function Run-InstallCompilerIfNecessary {
    param(
-      [string]$linkType,
-      [string]$buildType,
-      [string]$customTriplet
+      [string[]]$triplets
    )
-
-   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
 
    if( Check-RequiresEmscripten -triplets $triplets ) {
       $emscriptenCompilerVersion = "3.1.58"
@@ -303,12 +299,9 @@ function Run-InstallPackageStep
 {
    param(
       [string]$packageAndFeatures,
-      [string]$linkType,
-      [string]$buildType,
-      [string]$customTriplet
+      [string[]]$triplets
    )
    Write-Banner -Level 3 -Title "Install package step: $packageAndFeatures"
-   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
 
    foreach ($triplet in $triplets) {
       Write-Message "> Installing for triplet: $triplet..."
@@ -319,9 +312,7 @@ function Run-InstallPackageStep
 
 function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
-      [string]$linkType,
-      [string]$buildType,
-      [string]$customTriplet,
+      [string[]]$triplets,
       [PSObject]$publishInfo
    )
    $preStagePath = (Get-PreStagePath)
@@ -339,7 +330,6 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    # Get dirs to copy
    $srcToDestDirs = @{}
    if($isUniversalBinary) {
-      $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
       $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
       $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
@@ -352,7 +342,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       }
    }
    else {
-      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet) | Select-Object -First 1
+      $firstTriplet = $triplets | Select-Object -First 1
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
          "$mainSrcDir/include" = "$preStagePath/include"
@@ -518,7 +508,7 @@ function Resolve-Symlink {
    return $currentPath.FullName
 }
 
-Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep
+Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
 Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {

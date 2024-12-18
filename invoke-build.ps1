@@ -16,9 +16,11 @@ Run-WriteParamsStep -packageAndFeatures $PackageAndFeatures -scriptArgs $PSBound
 Run-CleanupStep
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
-Run-InstallCompilerIfNecessary -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet
-Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet
-Run-PrestageAndFinalizeBuildArtifactsStep -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet -publishInfo $PublishInfo
+
+$triplets = Get-Triplets -linkType $linkType -buildType $BuildType -customTriplet $CustomTriplet
+Run-InstallCompilerIfNecessary -triplets $triplets
+Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -triplets $triplets
+Run-PrestageAndFinalizeBuildArtifactsStep -triplets $triplets -publishInfo $PublishInfo
 Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
 Run-StageBuildArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet -stagedArtifactsPath $StagedArtifactsPath -publishInfo $PublishInfo
 Run-StageSourceArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet -stagedArtifactsPath $StagedArtifactsPath
