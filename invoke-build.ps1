@@ -16,6 +16,7 @@ Run-WriteParamsStep -packageAndFeatures $PackageAndFeatures -scriptArgs $PSBound
 Run-CleanupStep
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
+Run-InstallCompilerIfNecessary -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet
 Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet
 Run-PrestageAndFinalizeBuildArtifactsStep -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet -publishInfo $PublishInfo
 Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType

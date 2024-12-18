@@ -284,6 +284,20 @@ function Install-Emscripten
    Pop-Location
 }
 
+function Run-InstallCompilerIfNecessary {
+   param(
+      [string]$linkType,
+      [string]$buildType,
+      [string]$customTriplet
+   )
+
+   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
+
+   if( Check-RequiresEmscripten -triplets $triplets ) {
+      $emscriptenCompilerVersion = "3.1.58"
+      Install-Emscripten -version $emscriptenCompilerVersion
+   }
+}
 
 function Run-InstallPackageStep
 {
@@ -295,10 +309,6 @@ function Run-InstallPackageStep
    )
    Write-Banner -Level 3 -Title "Install package step: $packageAndFeatures"
    $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
-
-   if( Check-RequiresEmscripten -triplets $triplets ) {
-      Install-Emscripten -version "3.1.58"
-   }
 
    foreach ($triplet in $triplets) {
       Write-Message "> Installing for triplet: $triplet..."
