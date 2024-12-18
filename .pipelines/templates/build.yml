@@ -67,7 +67,11 @@ stages:
           imageName: ubuntu-latest
           poolName: ''
           osName: linux
-      maxParallel: 3
+        wasm:
+          imageName: ubuntu-latest
+          poolName: ''
+          osName: wasm
+      maxParallel: 4
 
     pool:
       vmImage: $(imageName)
@@ -79,7 +83,7 @@ stages:
     - template: steps/full-checkout.yml
 
     - pwsh: |
-        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
+        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 
@@ -150,7 +154,7 @@ stages:
         targetType: 'inline'
         workingDirectory: $(Build.SourcesDirectory)/artifacts
         script: |
-          $paths = @( "./mac-bin", "./win-bin", "./mac-src", "./win-src", "./linux-bin", "./linux-src" )
+          $paths = @( "./mac-bin", "./win-bin", "./mac-src", "./win-src", "./linux-bin", "./linux-src", "./wasm-bin", "./wasm-src" )
           foreach ($path in $paths) {
               if (Test-Path $path) {
                   Move-Item -Path "$path/*" -Destination . -Force

@@ -103,19 +103,19 @@ function Copy-ItemWithSymlinks {
        [string]$source,
        [string]$destination
    )
- 
+
    if ( -not (Test-Path -Path $destination) ) {
       New-Item -ItemType Container -Path $destination | Out-Null
    }
- 
+
    $items = Get-ChildItem -Path $source
    foreach ($item in $items) {
        $relativePath = $item.FullName.Substring($source.Length + 1)
        $destPath = Join-Path -Path $destination -ChildPath $relativePath
- 
+
        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
          New-Item -ItemType SymbolicLink -Path $destPath -Target $item.Target -Force | Out-Null
-       } 
+       }
        else {
          if ($item.PSIsContainer) {
             Copy-ItemWithSymlinks -source $item.FullName -destination $destPath
@@ -133,7 +133,8 @@ function Copy-ItemWithSymlinks {
 function Get-PackageInfo
 {
     param(
-        [string]$packageName
+        [string]$packageName,
+        [string]$targetPlatform
     )
     $jsonFilePath = "preconfigured-packages.json"
     Write-Message "Reading config from: `"$jsonFilePath`""
@@ -143,11 +144,11 @@ function Get-PackageInfo
         Write-Message "> Package not found in $jsonFilePath."
         exit
     }
-    $selectedSection = Get-OSType;
-    $pkgInfo = $pkg.$selectedSection
+
+    $pkgInfo = $pkg.$targetPlatform
 
     # Deal with any optional properties that might not be specified in the json file
-    $publishProperties = @{ 
+    $publishProperties = @{
       "include" = $true
       "lib" = $true
       "bin" = $true
@@ -170,7 +171,7 @@ function Get-PackageInfo
       }
     }
 
-    return $pkg.$selectedSection
+    return $pkg.$targetPlatform
 }
 
 function Run-WriteParamsStep {
@@ -248,16 +249,60 @@ function Run-PreBuildStep {
    Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
 }
 
+function Check-RequiresEmscripten {
+   param(
+      [array]$triplets
+   )
+
+   foreach ($triplet in $triplets) {
+      if ($triplet -like "*wasm32*") {
+         return $true
+      }
+   }
+   return $false
+}
+
+function Install-Emscripten
+{
+   param(
+      [string]$version
+   )
+
+   Write-Message "Installing emscripten..."
+   $emsdkDir = "./emsdk"
+   pwd
+   if (Test-Path -Path $emsdkDir -PathType Container) {
+      Remove-Item -Path $emsdkDir -Recurse -Force
+   }
+
+   git clone https://github.com/emscripten-core/emsdk.git
+   Push-Location emsdk
+   ./emsdk install $version
+   ./emsdk activate $version
+   $EMSDK_PY="python3"
+   ./emsdk_env.ps1
+   Pop-Location
+}
+
+function Run-InstallCompilerIfNecessary {
+   param(
+      [string[]]$triplets
+   )
+
+   if( Check-RequiresEmscripten -triplets $triplets ) {
+      $emscriptenCompilerVersion = "3.1.58"
+      Install-Emscripten -version $emscriptenCompilerVersion
+   }
+}
+
 function Run-InstallPackageStep
 {
    param(
       [string]$packageAndFeatures,
-      [string]$linkType,
-      [string]$buildType,
-      [string]$customTriplet
+      [string[]]$triplets
    )
    Write-Banner -Level 3 -Title "Install package step: $packageAndFeatures"
-   $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
+
    foreach ($triplet in $triplets) {
       Write-Message "> Installing for triplet: $triplet..."
       Install-FromVcPkg -packageAndFeatures $packageAndFeatures -triplet $triplet
@@ -267,35 +312,24 @@ function Run-InstallPackageStep
 
 function Run-PrestageAndFinalizeBuildArtifactsStep {
    param(
-      [string]$linkType,
-      [string]$buildType,
-      [string]$customTriplet,
+      [string[]]$triplets,
       [PSObject]$publishInfo
    )
    $preStagePath = (Get-PreStagePath)
    Create-EmptyDir $preStagePath
    Write-Banner -Level 3 -Title "Pre-staging artifacts"
-   
+
    $libDir = "lib"
    $binDir = "bin"
    $toolsDir = "tools"
 
+   # If we're on MacOS and we didn't specify a custom triplet, we're building a universal binary
+   # If we specify a custom triplet, we can only build one architecture at a time
+   $isUniversalBinary = ((Get-IsOnMacOS) -and ($customTriplet -eq ""))
+
    # Get dirs to copy
    $srcToDestDirs = @{}
-   if ((Get-IsOnWindowsOS) -or (Get-IsOnLinux)) {  
-      $firstTriplet = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet) | Select-Object -First 1
-      $mainSrcDir = "./vcpkg/installed/$firstTriplet"
-      $srcToDestDirs = @{
-         "$mainSrcDir/include" = "$preStagePath/include"
-         "$mainSrcDir/share" = "$preStagePath/share"
-         "$mainSrcDir/$libDir" = "$preStagePath/lib"
-         "$mainSrcDir/$binDir" = "$preStagePath/bin"
-         "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
-         "$mainSrcDir/debug" = "$preStagePath/debug"
-      }
-   }
-   elseif((Get-IsOnMacOS)) {
-      $triplets = (Get-Triplets -linkType $linkType -buildType $buildType -customTriplet $customTriplet)
+   if($isUniversalBinary) {
       $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
       $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
@@ -308,7 +342,16 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       }
    }
    else {
-     throw [System.Exception]::new("Invalid OS")
+      $firstTriplet = $triplets | Select-Object -First 1
+      $mainSrcDir = "./vcpkg/installed/$firstTriplet"
+      $srcToDestDirs = @{
+         "$mainSrcDir/include" = "$preStagePath/include"
+         "$mainSrcDir/share" = "$preStagePath/share"
+         "$mainSrcDir/$libDir" = "$preStagePath/lib"
+         "$mainSrcDir/$binDir" = "$preStagePath/bin"
+         "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
+         "$mainSrcDir/debug" = "$preStagePath/debug"
+      }
    }
 
    $keysToRemove = @()
@@ -338,7 +381,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
 
    # Finalize artifacts (Mac-only)
-   if((Get-IsOnMacOS) -and (Test-Path $destArm64LibDir)) {
+   if(($isUniversalBinary) -and (Test-Path $destArm64LibDir)) {
      $destUniversalLibDir = "$preStagePath/lib"
      Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
    }
@@ -352,7 +395,7 @@ function Run-PostBuildStep {
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $preStagePath = (Get-PreStagePath)
-   $scriptArgs = @{ 
+   $scriptArgs = @{
       BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/')
       PackageAndFeatures = ($packageAndFeatures -replace ',', '`,')
       LinkType = "$linkType"
@@ -372,7 +415,7 @@ function Run-StageBuildArtifactsStep {
       [string]$stagedArtifactsPath,
       [PSObject]$publishInfo
    )
-   
+
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
@@ -389,7 +432,7 @@ function Run-StageBuildArtifactsStep {
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
    Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
-   
+
    $preStagePath = (Get-PreStagePath)
    Write-Message "Moving files: $preStagePath =`> $artifactName"
 
@@ -422,7 +465,7 @@ function Run-StageSourceArtifactsStep {
       [string]$customTriplet,
       [string]$stagedArtifactsPath
    )
-   
+
    Write-Banner -Level 3 -Title "Stage source code artifacts"
 
    $sourceCodeRootDir = "./vcpkg/buildtrees/"
@@ -465,7 +508,7 @@ function Resolve-Symlink {
    return $currentPath.FullName
 }
 
-Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep
+Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
 Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
@@ -474,7 +517,7 @@ if ( (Get-IsOnMacOS) ) {
 } elseif ( (Get-IsOnWindowsOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/WinBuild" -DisableNameChecking -Force
    Export-ModuleMember -Function Update-VersionInfoForDlls
-} 
+}
 
 function Create-EmptyDir {
     param(
