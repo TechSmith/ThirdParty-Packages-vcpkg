@@ -67,8 +67,6 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --disable-autodetect
          --disable-network
          --disable-filters
-         --disable-demuxers
-         --disable-muxers
          --disable-bsfs
          --disable-parsers
          --disable-protocols
