@@ -78,6 +78,7 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --enable-decoder=aac*
          --enable-protocol=file
          --enable-demuxer=mov
+         --enable-muxer=mov
          --nm=emnm
          --ar=emar
          --ranlib=emranlib
