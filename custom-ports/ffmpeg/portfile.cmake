@@ -84,7 +84,14 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --cc=emcc
          --cxx=em++
          --objcc=emcc
-         --dep-cc=emcc)
+         --dep-cc=emcc
+         --extra-cflags=-pthread
+         --extra-cflags=-g0
+         --extra-cflags=-O3
+         --extra-ldflags=-sSIDE_MODULE=1
+         --extra-ldflags=-sWASM_BIGINT
+         --extra-ldflags=-pthread
+         --extra-ldflags=-sINITIAL_MEMORY=33554432)
 endif()
 # </Additional custom TechSmith options>
 
@@ -103,7 +110,7 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
 
     # configure
     vcpkg_execute_required_process(
-        COMMAND emconfigure ./configure ${OPTIONS} --extra-cflags="-pthread -g0 -O3" --extra-ldflags="-sSIDE_MODULE=1 -sWASM_BIGINT -pthread -sINITIAL_MEMORY=33554432"
+        COMMAND emconfigure ./configure ${OPTIONS}
         WORKING_DIRECTORY "${SOURCE_PATH}"
         LOGNAME "configure-${TARGET_TRIPLET}-rel"
         SAVE_LOG_FILES ffbuild/config.log
