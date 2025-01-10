@@ -1,64 +1,108 @@
 {
     "files": [
         {
-            "filename": "bin/avcodec-60.dll",
+            "filename": "bin/aom.dll",
+            "fileDescription": "AV1 codec library",
+            "fileVersion": "3.9.1",
+            "productName": "AV1 codec library",
+            "productVersion": "3.9.1",
+            "copyright": "Copyright (c) 2016, Alliance for Open Media"
+        },
+        {
+            "filename": "bin/avcodec-61.dll",
             "fileDescription": "FFmpeg codec library",
-            "fileVersion": "60.31.102",
+            "fileVersion": "61.19.100",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.0",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "bin/avdevice-60.dll",
+            "filename": "bin/avdevice-61.dll",
             "fileDescription": "FFmpeg device handling library",
-            "fileVersion": "60.3.100",
+            "fileVersion": "61.3.100",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.0",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "bin/avfilter-9.dll",
+            "filename": "bin/avfilter-10.dll",
             "fileDescription": "FFmpeg audio/video filtering library",
-            "fileVersion": "9.12.100",
+            "fileVersion": "10.4.100",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.0",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "bin/avformat-60.dll",
+            "filename": "bin/avformat-61.dll",
             "fileDescription": "FFmpeg container format library",
-            "fileVersion": "60.16.100",
+            "fileVersion": "61.7.100",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.0",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "bin/avutil-58.dll",
+            "filename": "bin/avutil-59.dll",
             "fileDescription": "FFmpeg utility library",
-            "fileVersion": "58.29.100",
+            "fileVersion": "59.39.100",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.0",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "bin/swresample-4.dll",
+            "filename": "bin/ogg.dll",
+            "fileDescription": "A library for manipulating ogg bitstreams.",
+            "fileVersion": "1.3.5",
+            "productName": "Ogg",
+            "productVersion": "1.3.5",
+            "copyright": "Copyright (c) 2002, Xiph.org Foundation"
+        },
+        {
+            "filename": "bin/opus.dll",
+            "fileDescription": "Totally open, royalty-free, highly versatile audio codec",
+            "fileVersion": "1.5.2",
+            "productName": "Opus audio codec",
+            "productVersion": "1.5.2",
+            "copyright": "Copyright 2001-2023 Xiph.Org, Skype Limited, Octasic, Jean-Marc Valin, Timothy B. Terriberry, CSIRO, Gregory Maxwell, Mark Borgerding, Erik de Castro Lopo, Mozilla, Amazon"
+        },
+        {
+            "filename": "bin/swresample-5.dll",
             "fileDescription": "FFmpeg audio resampling library",
-            "fileVersion": "4.12.100",
+            "fileVersion": "5.3.100",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.0",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "bin/swscale-7.dll",
+            "filename": "bin/swscale-8.dll",
             "fileDescription": "FFmpeg image rescaling library",
-            "fileVersion": "7.5.100",
+            "fileVersion": "8.3.100",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.0",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
-            "filename": "bin/libmp3lame.dll",
-            "fileVersion": "3.100.2.16"
+            "filename": "bin/vorbis.dll",
+            "fileDescription": "A BSD-style license software implementation of the Vorbis specification by the Xiph.Org Foundation (https://xiph.org/)",
+            "fileVersion": "1.3.7",
+            "productName": "libvorbis",
+            "productVersion": "1.3.7",
+            "copyright": "Copyright (c) 2002-2020 Xiph.org Foundation"
+        },
+        {
+            "filename": "bin/vorbisenc.dll",
+            "fileDescription": "A BSD-style license library that provides a simple, programmatic encoding setup interface",
+            "fileVersion": "2.0.12",
+            "productName": "libvorbisenc",
+            "productVersion": "2.0.12",
+            "copyright": "Copyright (c) 2002-2020 Xiph.org Foundation"
+        },
+        {
+            "filename": "bin/vorbisfile.dll",
+            "fileDescription": "A BSD-style license convenience library built on Vorbis designed to simplify common uses",
+            "fileVersion": "3.3.8",
+            "productName": "libvorbisfile",
+            "productVersion": "3.3.8",
+            "copyright": "Copyright (c) 2002-2020 Xiph.org Foundation"
         }
     ]
 }
