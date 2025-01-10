@@ -34,22 +34,23 @@ endif()
 set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
 
 # <Additional custom TechSmith options>
-string(APPEND OPTIONS " --disable-encoders --disable-decoders")
-if(VCPKG_TARGET_IS_WINDOWS)
-   string(APPEND OPTIONS " --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
-   string(APPEND OPTIONS " --enable-encoder=aac,libmp3lame --enable-decoder=aac,hevc,mp3*,pcm* --enable-muxer=aac,mp3 --enable-demuxer=aac,hevc,mov,mp3,mp4 --enable-hwaccel=hevc_d3d*")
-   string(APPEND OPTIONS " --enable-protocol=file")
-elseif(VCPKG_TARGET_IS_OSX)
-    string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
-    string(APPEND OPTIONS " --enable-encoder=aac_at,h264_videotoolbox,h265_videotoolbox,libmp3lame --enable-decoder=aac_at,h264,h264_videotoolbox,h265_videotoolbox,mp3*,mpeg4,pcm*")
-    string(APPEND OPTIONS " --enable-protocol=file")
-elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
+# Just to be extra-safe, we will disable everything and explicitly enable only the things we need
+# FFMPEG References:
+# - Muxers and Demuxers (Formats): https://ffmpeg.org/ffmpeg-formats.html
+# - Encoders and decoders (Codecs): https://www.ffmpeg.org/ffmpeg-codecs.html
+# - HW Acceleration: https://trac.ffmpeg.org/wiki/HWAccelIntro
+string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a cmake list
+list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, and build up from there (it disables these things: https://stackoverflow.com/questions/24849129/compile-ffmpeg-without-most-codecs)
+list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
+list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
+list(APPEND OPTIONS --enable-filter=aresample) # This is needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
+
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
     # Remove some options that we don't want for the emscripten build
-    string(REPLACE " --enable-debug" "" OPTIONS "${OPTIONS}")
-    string(REPLACE " --enable-runtime-cpudetect" "" OPTIONS "${OPTIONS}")
-
-    string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a cmake list
-
+    list(REMOVE_ITEM OPTIONS
+         --enable-debug
+         --enable-runtime-cpudetect
+    )
     list(APPEND OPTIONS
          --logfile=configure.log
          --prefix=${CURRENT_PACKAGES_DIR}
@@ -66,18 +67,8 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --disable-runtime-cpudetect
          --disable-autodetect
          --disable-network
-         --disable-filters
-         --disable-demuxers
-         --disable-muxers
-         --disable-bsfs
          --disable-parsers
-         --disable-protocols
-         --disable-devices
          --disable-pthreads
-         --enable-encoder=aac*
-         --enable-decoder=aac*
-         --enable-protocol=file
-         --enable-demuxer=mov
          --nm=emnm
          --ar=emar
          --ranlib=emranlib
@@ -93,17 +84,96 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --extra-ldflags=-pthread
          --extra-ldflags=-sINITIAL_MEMORY=33554432)
 endif()
-# </Additional custom TechSmith options>
 
-if(VCPKG_HOST_IS_WINDOWS)
-    vcpkg_acquire_msys(MSYS_ROOT PACKAGES automake1.16)
-    set(SHELL "${MSYS_ROOT}/usr/bin/bash.exe")
-    vcpkg_add_to_path("${MSYS_ROOT}/usr/share/automake-1.16")
-    string(APPEND OPTIONS " --pkg-config=${CURRENT_HOST_INSTALLED_DIR}/tools/pkgconf/pkgconf${VCPKG_HOST_EXECUTABLE_SUFFIX}")
-else()
-    find_program(SHELL bash)
+# === Encoders ===
+set(TSC_ENCODERS 
+   aac
+   libaom_av1
+   libmp3lame
+   libopus
+   libvorbis
+   libvpx_vp8
+   libvpx_vp9
+)
+if(VCPKG_TARGET_IS_OSX)
+   list(APPEND TSC_ENCODERS 
+      aac_at
+      h264_videotoolbox
+      hevc_videotoolbox
+   )
+elseif(VCPKG_TARGET_IS_WINDOWS)
+   list(APPEND TSC_ENCODERS 
+      aac_mf
+      mp3_mf
+      h264_mf
+      hevc_mf
+   )
 endif()
+foreach(ENCODER IN LISTS TSC_ENCODERS)
+    list(APPEND OPTIONS --enable-encoder=${ENCODER})
+endforeach()
 
+# === Decoders ===
+set(TSC_DECODERS 
+   aac
+   aac_fixed
+   aac_latm
+   libaom_av1
+   libdav1d
+   libopus
+   libvorbis
+   libvpx_vp8
+   libvpx_vp9
+   hevc
+   mp3*
+   pcm*
+   vp8
+   vp9
+)
+if(VCPKG_TARGET_IS_OSX)
+   list(APPEND TSC_DECODERS
+      aac_at
+   )
+endif()
+foreach(DECODER IN LISTS TSC_DECODERS)
+    list(APPEND OPTIONS --enable-decoder=${DECODER})
+endforeach()
+
+# === Muxers ===
+set(TSC_MUXERS 
+   matroska
+   mkvtimestamp_v2
+   mp3 
+   mp4
+   mpegts
+   rtp_mpegts
+   webm*
+)
+foreach(MUXER IN LISTS TSC_MUXERS)
+    list(APPEND OPTIONS --enable-muxer=${MUXER})
+endforeach()
+
+# === Demuxers ===
+set(TSC_DEMUXERS 
+   aac
+   hevc
+   m4a
+   matroska
+   mov
+   mp3
+   mp4
+   mpegts
+   mpegtsraw
+   webm*
+)
+foreach(DEMUXER IN LISTS TSC_DEMUXERS)
+    list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
+endforeach()
+
+# Convert OPTIONS back to a string
+string(REPLACE ";" " " OPTIONS "${OPTIONS}")
+
+# Emscripten build (if applicable)
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.in DESTINATION ${SOURCE_PATH}) # overwrite their configure with ours
     file(RENAME ${SOURCE_PATH}/configure_emscripten.in ${SOURCE_PATH}/configure)
@@ -142,6 +212,7 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
 
     return()
 endif()
+# </Additional custom TechSmith options>
 
 if(VCPKG_TARGET_IS_MINGW)
     if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
