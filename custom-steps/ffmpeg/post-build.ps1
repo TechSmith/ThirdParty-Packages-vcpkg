@@ -6,9 +6,12 @@ param (
     [Parameter(Mandatory=$false)][string]$ModulesRoot    
 )
 
-$moduleName = "Build"
-if(-not (Get-Module -Name $moduleName)) {
-    Import-Module "$ModulesRoot/$moduleName" -Force -DisableNameChecking
+# Import modules
+$moduleNames = @("Build", "Util")
+foreach( $moduleName in $moduleNames ) {
+    if(-not (Get-Module -Name $moduleName)) {
+        Import-Module "$ModulesRoot/$moduleName" -Force -DisableNameChecking
+    }
 }
 
 if( Check-IsEmscriptenBuild -triplets $Triplets ) {
@@ -19,8 +22,24 @@ $pathToTools = "$BuildArtifactsPath/tools/ffmpeg"
 $pathToFFmpegExe = ""
 if((Get-IsOnWindowsOS)) {
     Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+    $pathToFFmpegExe = "$pathToTools/ffmpeg.exe"
 }
 
+if((Get-IsOnMacOS)) {
+    Write-Message "> Updating library paths in ffmpeg executable..."
+    $binaryPath = "$buildArtifactsPath/tools/ffmpeg/ffmpeg"
+    $otoolOutput = & "otool" "-L" $binaryPath
+    foreach ($line in $otoolOutput) {
+        if ($line -match '@rpath\/([^\.]+)\.[^\/]*\.dylib') {
+            $originalPath = $matches[0]
+            $newPath = "@rpath/$($matches[1]).dylib"
+    
+            Write-Output ">> Updating $originalPath to $newPath"
+            & "install_name_tool" "-change" $originalPath $newPath $binaryPath
+        }
+    }
+    $pathToFFmpegExe = "$pathToTools/ffmpeg"
+}
 
 Write-Message "$(NL)Running post-build tests..."
 $finalExitCode = 0
