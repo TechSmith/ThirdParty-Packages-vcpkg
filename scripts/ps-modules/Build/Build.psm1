@@ -402,7 +402,8 @@ function Run-PostBuildStep {
    param(
       [string]$packageAndFeatures,
       [string]$linkType,
-      [string]$buildType
+      [string]$buildType,
+      [string[]]$triplets
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $preStagePath = (Get-PreStagePath)
@@ -412,6 +413,7 @@ function Run-PostBuildStep {
       LinkType = "$linkType"
       BuildType = "$buildType"
       ModulesRoot = "$PSScriptRoot/../../ps-modules"
+      Triplets = $triplets
    }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
    Exit-IfError $LASTEXITCODE

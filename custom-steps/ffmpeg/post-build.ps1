@@ -3,7 +3,8 @@ param (
     [Parameter(Mandatory=$false)][string]$PackageAndFeatures,
     [Parameter(Mandatory=$false)][string]$LinkType,
     [Parameter(Mandatory=$false)][string]$BuildType,
-    [Parameter(Mandatory=$false)][string]$ModulesRoot    
+    [Parameter(Mandatory=$false)][string]$ModulesRoot,
+    [Parameter(Mandatory=$false)][string[]]$Triplets
 )
 
 # Import modules
