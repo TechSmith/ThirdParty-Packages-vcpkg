@@ -249,9 +249,9 @@ function Run-PreBuildStep {
    Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
 }
 
-function Check-RequiresEmscripten {
+function Check-IsEmscriptenBuild {
    param(
-      [array]$triplets
+      [string[]]$triplets
    )
 
    foreach ($triplet in $triplets) {
@@ -289,7 +289,7 @@ function Run-InstallCompilerIfNecessary {
       [string[]]$triplets
    )
 
-   if( Check-RequiresEmscripten -triplets $triplets ) {
+   if( Check-IsEmscriptenBuild -triplets $triplets ) {
       $emscriptenCompilerVersion = "3.1.58"
       Install-Emscripten -version $emscriptenCompilerVersion
    }
@@ -529,7 +529,7 @@ function Resolve-Symlink {
 }
 
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force
