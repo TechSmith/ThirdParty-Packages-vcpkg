@@ -170,9 +170,6 @@ foreach(DEMUXER IN LISTS TSC_DEMUXERS)
     list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
 endforeach()
 
-# Convert OPTIONS back to a string
-string(REPLACE ";" " " OPTIONS "${OPTIONS}")
-
 # Emscripten build (if applicable)
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.in DESTINATION ${SOURCE_PATH}) # overwrite their configure with ours
@@ -212,6 +209,9 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
 
     return()
 endif()
+
+# Convert OPTIONS back to a string
+string(REPLACE ";" " " OPTIONS "${OPTIONS}")
 # </Additional custom TechSmith options>
 
 if(VCPKG_TARGET_IS_MINGW)
