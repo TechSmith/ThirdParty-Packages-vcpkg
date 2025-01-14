@@ -88,26 +88,30 @@ endif()
 # === Encoders ===
 set(TSC_ENCODERS 
    aac
-   libaom_av1
    libmp3lame
-   libopus
-   libvorbis
-   libvpx_vp8
-   libvpx_vp9
 )
-if(VCPKG_TARGET_IS_OSX)
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    list(APPEND TSC_ENCODERS 
-      aac_at
-      h264_videotoolbox
-      hevc_videotoolbox
+      libaom_av1
+      libopus
+      libvorbis
+      libvpx_vp8
+      libvpx_vp9
    )
-elseif(VCPKG_TARGET_IS_WINDOWS)
-   list(APPEND TSC_ENCODERS 
-      aac_mf
-      mp3_mf
-      h264_mf
-      hevc_mf
-   )
+   if(VCPKG_TARGET_IS_OSX)
+      list(APPEND TSC_ENCODERS 
+         aac_at
+         h264_videotoolbox
+         hevc_videotoolbox
+      )
+   elseif(VCPKG_TARGET_IS_WINDOWS)
+      list(APPEND TSC_ENCODERS 
+         aac_mf
+         mp3_mf
+         h264_mf
+         hevc_mf
+      )
+   endif()
 endif()
 foreach(ENCODER IN LISTS TSC_ENCODERS)
     list(APPEND OPTIONS --enable-encoder=${ENCODER})
@@ -118,22 +122,26 @@ set(TSC_DECODERS
    aac
    aac_fixed
    aac_latm
-   libaom_av1
-   libdav1d
-   libopus
-   libvorbis
-   libvpx_vp8
-   libvpx_vp9
    hevc
    mp3*
    pcm*
-   vp8
-   vp9
 )
-if(VCPKG_TARGET_IS_OSX)
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    list(APPEND TSC_DECODERS
-      aac_at
+      libaom_av1
+      libdav1d
+      libopus
+      libvorbis
+      libvpx_vp8
+      libvpx_vp9
+      vp8
+      vp9
    )
+   if(VCPKG_TARGET_IS_OSX)
+      list(APPEND TSC_DECODERS
+         aac_at
+      )
+   endif()
 endif()
 foreach(DECODER IN LISTS TSC_DECODERS)
     list(APPEND OPTIONS --enable-decoder=${DECODER})
