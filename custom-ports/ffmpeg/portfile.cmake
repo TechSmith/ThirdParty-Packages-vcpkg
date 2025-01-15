@@ -88,11 +88,11 @@ endif()
 # === Encoders ===
 set(TSC_ENCODERS 
    aac
-   libmp3lame
 )
 if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    list(APPEND TSC_ENCODERS 
       libaom_av1
+      libmp3lame
       libopus
       libvorbis
       libvpx_vp8
@@ -122,18 +122,18 @@ set(TSC_DECODERS
    aac
    aac_fixed
    aac_latm
-   hevc
-   mp3*
-   pcm*
 )
 if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    list(APPEND TSC_DECODERS
+      hevc
       libaom_av1
       libdav1d
       libopus
       libvorbis
       libvpx_vp8
       libvpx_vp9
+      mp3*
+      pcm*
       vp8
       vp9
    )
