@@ -21,7 +21,7 @@ $triplets = Get-Triplets -linkType $linkType -buildType $BuildType -customTriple
 Run-InstallCompilerIfNecessary -triplets $triplets
 Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -triplets $triplets
 Run-PrestageAndFinalizeBuildArtifactsStep -triplets $triplets -publishInfo $PublishInfo
-Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType
+Run-PostBuildStep -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -triplets $triplets
 Run-StageBuildArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet -stagedArtifactsPath $StagedArtifactsPath -publishInfo $PublishInfo
 Run-StageSourceArtifactsStep -packageName $PackageName -packageAndFeatures $PackageAndFeatures -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet -stagedArtifactsPath $StagedArtifactsPath
 

@@ -249,9 +249,9 @@ function Run-PreBuildStep {
    Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
 }
 
-function Check-RequiresEmscripten {
+function Check-IsEmscriptenBuild {
    param(
-      [array]$triplets
+      [string[]]$triplets
    )
 
    foreach ($triplet in $triplets) {
@@ -289,7 +289,7 @@ function Run-InstallCompilerIfNecessary {
       [string[]]$triplets
    )
 
-   if( Check-RequiresEmscripten -triplets $triplets ) {
+   if( Check-IsEmscriptenBuild -triplets $triplets ) {
       $emscriptenCompilerVersion = "3.1.58"
       Install-Emscripten -version $emscriptenCompilerVersion
    }
@@ -330,15 +330,19 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    # Get dirs to copy
    $srcToDestDirs = @{}
    if($isUniversalBinary) {
-      $srcArm64Dir = "./vcpkg/installed/$($triplets[0])"
-      $srcX64Dir = "./vcpkg/installed/$($triplets[1])"
+      $srcX64Dir = "./vcpkg/installed/$($triplets[0])"
+      $srcArm64Dir = "./vcpkg/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
+      $destArm64ToolsDir = "$preStagePath/arm64Tools"
+      $destX64ToolsDir = "$preStagePath/x64Tools"
       $srcToDestDirs = @{
          "$srcArm64Dir/include" = "$preStagePath"
          "$srcArm64Dir/share" = "$preStagePath"
          "$srcArm64Dir/$libDir" = "$destArm64LibDir"
          "$srcX64Dir/$libDir" = "$destX64LibDir"
+         "$srcArm64Dir/$toolsDir" = "$destArm64ToolsDir"
+         "$srcX64Dir/$toolsDir" = "$destX64ToolsDir"
       }
    }
    else {
@@ -381,9 +385,16 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
 
    # Finalize artifacts (Mac-only)
-   if(($isUniversalBinary) -and (Test-Path $destArm64LibDir)) {
-     $destUniversalLibDir = "$preStagePath/lib"
-     Create-FinalizedMacBuildArtifacts -arm64LibDir "$destArm64LibDir" -x64LibDir "$destX64LibDir" -universalLibDir "$destUniversalLibDir"
+   if(($isUniversalBinary) -and ((Test-Path $destArm64LibDir) -or (Test-Path $destArm64ToolsDir))) {
+     if($publishInfo.lib -eq $true) {
+       $destUniversalLibDir = "$preStagePath/lib"
+       Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64LibDir" -x64Dir "$destX64LibDir" -universalDir "$destUniversalLibDir"
+     }
+     
+     if($publishInfo.tools -eq $true) {
+       $destUniversalToolsDir = "$preStagePath/tools"
+       Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64ToolsDir" -x64Dir "$destX64ToolsDir" -universalDir "$destUniversalToolsDir" -filenameFilter @("*")
+     }
    }
 }
 
@@ -391,7 +402,8 @@ function Run-PostBuildStep {
    param(
       [string]$packageAndFeatures,
       [string]$linkType,
-      [string]$buildType
+      [string]$buildType,
+      [string[]]$triplets
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
    $preStagePath = (Get-PreStagePath)
@@ -401,8 +413,10 @@ function Run-PostBuildStep {
       LinkType = "$linkType"
       BuildType = "$buildType"
       ModulesRoot = "$PSScriptRoot/../../ps-modules"
+      Triplets = $triplets
    }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
+   Exit-IfError $LASTEXITCODE
 }
 
 function Run-StageBuildArtifactsStep {
@@ -413,7 +427,8 @@ function Run-StageBuildArtifactsStep {
       [string]$buildType,
       [string]$customTriplet,
       [string]$stagedArtifactsPath,
-      [PSObject]$publishInfo
+      [PSObject]$publishInfo,
+      [bool]$deletePrestageDir = $true
    )
 
    Write-Banner -Level 3 -Title "Stage build artifacts"
@@ -447,8 +462,13 @@ function Run-StageBuildArtifactsStep {
       }
    }
 
-   Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
-   Remove-Item -Path $preStagePath -Recurse | Out-Null
+   if ($deletePrestageDir) {
+      Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Move-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
+      Remove-Item -Path $preStagePath -Recurse | Out-Null
+   }
+   else {
+      Get-ChildItem -Path "$preStagePath" -Exclude $excludedFolders | ForEach-Object { Copy-Item -Path "$($_.FullName)" -Destination "$stagedArtifactSubDir/$artifactName" }
+   }
 
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""
@@ -473,7 +493,7 @@ function Run-StageSourceArtifactsStep {
    $stagedArtifactSubDir = "$stagedArtifactsPath/src"
    $artifactPath = "$stagedArtifactSubDir/$artifactName"
 
-   Write-Host "Copying: $sourceCodeRootDir ==> $artifactPath"
+   Write-Message "Copying: $sourceCodeRootDir ==> $artifactPath"
    if (-not (Test-Path -Path $artifactPath)) {
        New-Item -ItemType Directory -Path $artifactPath | Out-Null
    }
@@ -482,7 +502,7 @@ function Run-StageSourceArtifactsStep {
        $srcDir = Join-Path -Path $buildTreesSubDir.FullName -ChildPath "src"
        if (Test-Path -Path $srcDir) {
            $destDir = Join-Path -Path $artifactPath -ChildPath $buildTreesSubDir.Name
-           Write-Host "$srcDir ==> $destDir"
+           Write-Message "$srcDir ==> $destDir"
            if (-not (Test-Path -Path $destDir)) {
                New-Item -ItemType Directory -Path $destDir | Out-Null
            }
@@ -509,7 +529,7 @@ function Resolve-Symlink {
 }
 
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force

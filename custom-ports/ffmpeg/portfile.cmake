@@ -3,53 +3,55 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ffmpeg/ffmpeg
     REF "n${VERSION}"
-    SHA512 a84209fe36a2a0262ebc34b727e7600b12d4739991a95599d7b4df533791b12e2e43586ccc6ff26aab2f935a3049866204e322ec0c5e49e378fc175ded34e183
+    SHA512 3b273769ef1a1b63aed0691eef317a760f8c83b1d0e1c232b67bbee26db60b4864aafbc88df0e86d6bebf07185bbd057f33e2d5258fde6d97763b9994cd48b6f
     HEAD_REF master
     PATCHES
         0001-create-lib-libraries.patch
-        0002-fix-msvc-link.patch #upstreamed in future version
+        0002-fix-msvc-link.patch
         0003-fix-windowsinclude.patch
         0004-dependencies.patch
-        0005-fix-nasm.patch #upstreamed in future version
+        0005-fix-nasm.patch
         0007-fix-lib-naming.patch
-        0012-Fix-ssl-110-detection.patch
         0013-define-WINVER.patch
         0020-fix-aarch64-libswscale.patch
+        0024-fix-osx-host-c11.patch
         0040-ffmpeg-add-av_stream_get_first_dts-for-chromium.patch # Do not remove this patch. It is required by chromium
         0041-add-const-for-opengl-definition.patch
-        0042-fix-arm64-linux.patch #https://github.com/FFmpeg/FFmpeg/commit/fcfd17dbb4a6cf270cdd82e91c21a5efdc878d12
-        1001-tsc-disable-non-aac-lc.patch # TechSmith patch
+        0043-fix-miss-head.patch
+        1001-tsc-disable-aac-non-lc-profiles.patch
 )
 
 if(SOURCE_PATH MATCHES " ")
     message(FATAL_ERROR "Error: ffmpeg will not build with spaces in the path. Please use a directory with no spaces")
 endif()
 
-if(NOT VCPKG_TARGET_ARCHITECTURE STREQUAL "wasm32")
+if (VCPKG_TARGET_ARCHITECTURE STREQUAL "x86" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
     vcpkg_find_acquire_program(NASM)
     get_filename_component(NASM_EXE_PATH "${NASM}" DIRECTORY)
     vcpkg_add_to_path("${NASM_EXE_PATH}")
 endif()
 
-set(OPTIONS " --enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
+set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
 
 # <Additional custom TechSmith options>
-string(APPEND OPTIONS " --disable-encoders --disable-decoders")
-if(VCPKG_TARGET_IS_WINDOWS)
-   string(APPEND OPTIONS " --disable-programs --disable-muxers --disable-demuxers --disable-filters --disable-bsfs --disable-protocols --disable-devices --disable-decoder=h264")
-   string(APPEND OPTIONS " --enable-encoder=aac,libmp3lame --enable-decoder=aac,hevc,mp3*,pcm* --enable-muxer=aac,mp3 --enable-demuxer=aac,hevc,mov,mp3,mp4 --enable-hwaccel=hevc_d3d*")
-   string(APPEND OPTIONS " --enable-protocol=file")
-elseif(VCPKG_TARGET_IS_OSX)
-    string(APPEND OPTIONS " --disable-securetransport") # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
-    string(APPEND OPTIONS " --enable-encoder=aac_at,h264_videotoolbox,h265_videotoolbox,libmp3lame --enable-decoder=aac_at,h264,h264_videotoolbox,h265_videotoolbox,mp3*,mpeg4,pcm*")
-    string(APPEND OPTIONS " --enable-protocol=file")
-elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
+# Just to be extra-safe, we will disable everything and explicitly enable only the things we need
+# FFMPEG References:
+# - Muxers and Demuxers (Formats): https://ffmpeg.org/ffmpeg-formats.html
+# - Encoders and decoders (Codecs): https://www.ffmpeg.org/ffmpeg-codecs.html
+# - HW Acceleration: https://trac.ffmpeg.org/wiki/HWAccelIntro
+string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a cmake list
+list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, and build up from there (it disables these things: https://stackoverflow.com/questions/24849129/compile-ffmpeg-without-most-codecs)
+list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
+list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
+list(APPEND OPTIONS --enable-filter=aresample) # This is needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
+
+# === Add extra options for emscripten builds ===
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
     # Remove some options that we don't want for the emscripten build
-    string(REPLACE " --enable-debug" "" OPTIONS "${OPTIONS}")
-    string(REPLACE " --enable-runtime-cpudetect" "" OPTIONS "${OPTIONS}")
-
-    string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a cmake list
-
+    list(REMOVE_ITEM OPTIONS
+         --enable-debug
+         --enable-runtime-cpudetect
+    )
     list(APPEND OPTIONS
          --logfile=configure.log
          --prefix=${CURRENT_PACKAGES_DIR}
@@ -66,19 +68,8 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --disable-runtime-cpudetect
          --disable-autodetect
          --disable-network
-         --disable-filters
-         --disable-demuxers
-         --disable-muxers
-         --disable-bsfs
          --disable-parsers
-         --disable-protocols
-         --disable-devices
          --disable-pthreads
-         --enable-encoder=aac*
-         --enable-decoder=aac*
-         --enable-protocol=file
-         --enable-demuxer=mov,mp4
-         --enable-muxer=mov,mp4
          --nm=emnm
          --ar=emar
          --ranlib=emranlib
@@ -94,17 +85,133 @@ elseif(VCPKG_TARGET_IS_EMSCRIPTEN)
          --extra-ldflags=-pthread
          --extra-ldflags=-sINITIAL_MEMORY=33554432)
 endif()
-# </Additional custom TechSmith options>
 
-if(VCPKG_HOST_IS_WINDOWS)
-    vcpkg_acquire_msys(MSYS_ROOT PACKAGES automake1.16)
-    set(SHELL "${MSYS_ROOT}/usr/bin/bash.exe")
-    vcpkg_add_to_path("${MSYS_ROOT}/usr/share/automake-1.16")
-    string(APPEND OPTIONS " --pkg-config=${CURRENT_HOST_INSTALLED_DIR}/tools/pkgconf/pkgconf${VCPKG_HOST_EXECUTABLE_SUFFIX}")
-else()
-    find_program(SHELL bash)
+# === Add TSC options based on feature flags ===
+set(TSC_ENCODERS "")
+set(TSC_DECODERS "")
+set(TSC_MUXERS "")
+set(TSC_DEMUXERS "")
+
+if("aom" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libaom_av1)
+   list(APPEND TSC_DECODERS libaom_av1)
 endif()
 
+if("dav1d" IN_LIST FEATURES)
+   list(APPEND TSC_DECODERS libdav1d)
+endif()
+
+if("mp3lame" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libmp3lame)
+   list(APPEND TSC_DECODERS libmp3lame)
+endif()
+
+if("opus" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libopus)
+   list(APPEND TSC_DECODERS libopus)
+endif()
+
+if("vorbis" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libvorbis)
+   list(APPEND TSC_DECODERS libvorbis)
+endif()
+
+if("vpx" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libvpx_vp8 libvpx_vp9)
+
+   # VP8 is On2 vp8 and VP9 is Google VP9.  These are not actually libvpx, but we are enabling both for now along with libvpx.
+   list(APPEND TSC_DECODERS libvpx_vp8 libvpx_vp9 vp8 vp9)
+endif()
+
+# === Add other TSC options ===
+# --- Encoders ---
+list(APPEND TSC_ENCODERS 
+   aac
+)
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+   if(VCPKG_TARGET_IS_OSX)
+      list(APPEND TSC_ENCODERS 
+         aac_at
+         h264_videotoolbox
+         hevc_videotoolbox
+      )
+   elseif(VCPKG_TARGET_IS_WINDOWS)
+      list(APPEND TSC_ENCODERS 
+         aac_mf
+         mp3_mf
+         h264_mf
+         hevc_mf
+      )
+   endif()
+endif()
+
+# --- Decoders ---
+list(APPEND TSC_DECODERS 
+   aac
+   aac_fixed
+   aac_latm
+)
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+   list(APPEND TSC_DECODERS
+      hevc
+      mp3*
+      pcm*
+   )
+   if(VCPKG_TARGET_IS_OSX)
+      list(APPEND TSC_DECODERS
+         aac_at
+      )
+   endif()
+endif()
+
+# --- Muxers ---
+list(APPEND TSC_MUXERS 
+   mov
+   mp4
+)
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+   list(APPEND TSC_MUXERS
+      matroska
+      mkvtimestamp_v2
+      mp3 
+      mpegts
+      rtp_mpegts
+      webm*
+   )
+endif()
+
+# --- Demuxers ---
+# Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
+list(APPEND TSC_DEMUXERS 
+   mov 
+)
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+   list(APPEND TSC_DEMUXERS
+      aac
+      hevc
+      matroska
+      mp3
+      mpegts
+      mpegtsraw
+      webm*
+   )
+endif()
+
+# === Add TSC options to main OPTIONS list ===
+foreach(ENCODER IN LISTS TSC_ENCODERS)
+    list(APPEND OPTIONS --enable-encoder=${ENCODER})
+endforeach()
+foreach(DECODER IN LISTS TSC_DECODERS)
+    list(APPEND OPTIONS --enable-decoder=${DECODER})
+endforeach()
+foreach(MUXER IN LISTS TSC_MUXERS)
+    list(APPEND OPTIONS --enable-muxer=${MUXER})
+endforeach()
+foreach(DEMUXER IN LISTS TSC_DEMUXERS)
+    list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
+endforeach()
+
+# === Run emscripten build (if applicable) ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.in DESTINATION ${SOURCE_PATH}) # overwrite their configure with ours
     file(RENAME ${SOURCE_PATH}/configure_emscripten.in ${SOURCE_PATH}/configure)
@@ -144,6 +251,10 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
     return()
 endif()
 
+# Convert OPTIONS back to a string
+string(REPLACE ";" " " OPTIONS "${OPTIONS}")
+# </Additional custom TechSmith options>
+
 if(VCPKG_TARGET_IS_MINGW)
     if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
         string(APPEND OPTIONS " --target-os=mingw32")
@@ -153,9 +264,9 @@ if(VCPKG_TARGET_IS_MINGW)
 elseif(VCPKG_TARGET_IS_LINUX)
     string(APPEND OPTIONS " --target-os=linux --enable-pthreads")
 elseif(VCPKG_TARGET_IS_UWP)
-    string(APPEND OPTIONS " --target-os=win32 --enable-w32threads --enable-d3d11va --enable-mediafoundation")
+    string(APPEND OPTIONS " --target-os=win32 --enable-w32threads --enable-d3d11va --enable-d3d12va --enable-mediafoundation")
 elseif(VCPKG_TARGET_IS_WINDOWS)
-    string(APPEND OPTIONS " --target-os=win32 --enable-w32threads --enable-d3d11va --enable-dxva2 --enable-mediafoundation")
+    string(APPEND OPTIONS " --target-os=win32 --enable-w32threads --enable-d3d11va --enable-d3d12va --enable-dxva2 --enable-mediafoundation")
 elseif(VCPKG_TARGET_IS_OSX)
     string(APPEND OPTIONS " --target-os=darwin --enable-appkit --enable-avfoundation --enable-coreimage --enable-audiotoolbox --enable-videotoolbox")
 elseif(VCPKG_TARGET_IS_IOS)
@@ -195,7 +306,7 @@ if(VCPKG_DETECTED_CMAKE_C_COMPILER)
     get_filename_component(CC_filename "${VCPKG_DETECTED_CMAKE_C_COMPILER}" NAME)
     set(ENV{CC} "${CC_filename}")
     string(APPEND OPTIONS " --cc=${CC_filename}")
-    #string(APPEND OPTIONS " --host_cc=${CC_filename}") ffmpeg not yet setup for cross builds?
+    string(APPEND OPTIONS " --host_cc=${CC_filename}")
     list(APPEND prog_env "${CC_path}")
 endif()
 
@@ -260,6 +371,21 @@ if(VCPKG_DETECTED_CMAKE_STRIP)
     set(ENV{STRIP} "${STRIP_filename}")
     string(APPEND OPTIONS " --strip=${STRIP_filename}")
     list(APPEND prog_env "${STRIP_path}")
+endif()
+
+if(VCPKG_HOST_IS_WINDOWS)
+    vcpkg_acquire_msys(MSYS_ROOT PACKAGES automake)
+    set(SHELL "${MSYS_ROOT}/usr/bin/bash.exe")
+    vcpkg_execute_required_process(
+        COMMAND "${SHELL}" -c "'/usr/bin/automake' --print-lib"
+        OUTPUT_VARIABLE automake_lib
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        WORKING_DIRECTORY "${MSYS_ROOT}"
+        LOGNAME automake-print-lib
+    )
+    list(APPEND prog_env "${MSYS_ROOT}/usr/bin" "${MSYS_ROOT}${automake_lib}")
+else()
+    find_program(SHELL bash)
 endif()
 
 list(REMOVE_DUPLICATES prog_env)
@@ -424,6 +550,12 @@ if("fontconfig" IN_LIST FEATURES)
     set(OPTIONS "${OPTIONS} --enable-libfontconfig")
 else()
     set(OPTIONS "${OPTIONS} --disable-libfontconfig")
+endif()
+
+if("drawtext" IN_LIST FEATURES)
+    set(OPTIONS "${OPTIONS} --enable-libharfbuzz")
+else()
+    set(OPTIONS "${OPTIONS} --disable-libharfbuzz")
 endif()
 
 if("freetype" IN_LIST FEATURES)
@@ -702,6 +834,65 @@ if(VCPKG_TARGET_IS_UWP)
     string(APPEND OPTIONS " --extra-ldflags=-APPCONTAINER --extra-ldflags=WindowsApp.lib")
 endif()
 
+if (VCPKG_TARGET_IS_IOS)
+    set(vcpkg_target_arch "${VCPKG_TARGET_ARCHITECTURE}")
+    if (VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
+        set(vcpkg_target_arch "x86_64")
+    elseif (VCPKG_TARGET_ARCHITECTURE STREQUAL "arm")
+        message(FATAL_ERROR "You can build for arm up to iOS 10 but ffmpeg can only be built for iOS 11.0 and later.
+                            Did you mean arm64?")
+    elseif (VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
+        message(FATAL_ERROR "You can build for x86 up to iOS 10 but ffmpeg can only be built for iOS 11.0 and later.
+                            Did you mean x64")
+    endif ()
+
+    set(vcpkg_osx_deployment_target "${VCPKG_OSX_DEPLOYMENT_TARGET}")
+    if (NOT VCPKG_OSX_DEPLOYMENT_TARGET)
+        set(vcpkg_osx_deployment_target 11.0)
+    elseif (VCPKG_OSX_DEPLOYMENT_TARGET LESS 11.0) # nowadays ffmpeg needs to be built for ios 11.0 and later
+        message(FATAL_ERROR "ffmpeg can be built only for iOS 11.0 and later but you set VCPKG_OSX_DEPLOYMENT_TARGET to
+                            ${VCPKG_OSX_DEPLOYMENT_TARGET}")
+    endif ()
+
+    if (VCPKG_OSX_SYSROOT STREQUAL "iphonesimulator")
+        set(simulator "-simulator")
+    endif ()
+
+    set(OPTIONS "${OPTIONS} --extra-cflags=--target=${vcpkg_target_arch}-apple-ios${vcpkg_osx_deployment_target}${simulator}")
+    set(OPTIONS "${OPTIONS} --extra-ldflags=--target=${vcpkg_target_arch}-apple-ios${vcpkg_osx_deployment_target}${simulator}")
+
+    set(vcpkg_osx_sysroot "${VCPKG_OSX_SYSROOT}")
+    # only on x64 for some reason you need to specify the sdk path, otherwise it will try to build with the MacOS sdk
+    # (on apple silicon it's not required but shouldn't cause any problems)
+    if ((VCPKG_OSX_SYSROOT MATCHES "^(iphoneos|iphonesimulator)$") OR (NOT VCPKG_OSX_SYSROOT) OR (VCPKG_OSX_SYSROOT STREQUAL "")) # if it's not a path
+        if (VCPKG_OSX_SYSROOT MATCHES "^(iphoneos|iphonesimulator)$")
+            set(requested_sysroot "${VCPKG_OSX_SYSROOT}")
+        elseif (VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64") # if the sysroot is not specified we have to guess
+            set(requested_sysroot "iphoneos")
+        elseif (VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
+            set(requested_sysroot "iphonesimulator")
+        else ()
+            message(FATAL_ERROR "Unsupported build arch: ${VCPKG_TARGET_ARCHITECTURE}")
+        endif ()
+        message(STATUS "Retrieving default SDK for ${requested_sysroot}")
+        execute_process(
+                COMMAND /usr/bin/xcrun --sdk ${requested_sysroot} --show-sdk-path
+                OUTPUT_VARIABLE sdk_path
+                ERROR_VARIABLE xcrun_error
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_STRIP_TRAILING_WHITESPACE
+        )
+        if (sdk_path)
+            message(STATUS "Found!")
+            set(vcpkg_osx_sysroot "${sdk_path}")
+        else ()
+            message(FATAL_ERROR "Can't determine ${CMAKE_OSX_SYSROOT} SDK path. Error: ${xcrun_error}")
+        endif ()
+    endif ()
+    set(OPTIONS "${OPTIONS} --extra-cflags=-isysroot\"${vcpkg_osx_sysroot}\"")
+    set(OPTIONS "${OPTIONS} --extra-ldflags=-isysroot\"${vcpkg_osx_sysroot}\"")
+endif ()
+
 set(OPTIONS_DEBUG "--disable-optimizations")
 set(OPTIONS_RELEASE "--enable-optimizations")
 
@@ -717,8 +908,16 @@ elseif(VCPKG_TARGET_IS_WINDOWS)
     set(OPTIONS "${OPTIONS} --extra-cflags=-DHAVE_UNISTD_H=0")
 endif()
 
+set(maybe_needed_libraries -lm)
+separate_arguments(standard_libraries NATIVE_COMMAND "${VCPKG_DETECTED_CMAKE_C_STANDARD_LIBRARIES}")
+foreach(item IN LISTS standard_libraries)
+    if(item IN_LIST maybe_needed_libraries)
+        set(OPTIONS "${OPTIONS} \"--extra-libs=${item}\"")
+    endif()
+endforeach()
+
 vcpkg_find_acquire_program(PKGCONFIG)
-set(OPTIONS "${OPTIONS} --pkg-config=${PKGCONFIG}")
+set(OPTIONS "${OPTIONS} --pkg-config=\"${PKGCONFIG}\"")
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     set(OPTIONS "${OPTIONS} --pkg-config-flags=--static")
 endif()
@@ -733,7 +932,6 @@ if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
         set(OPTIONS_RELEASE "${OPTIONS_RELEASE} --extra-ldflags=-L\"${CURRENT_INSTALLED_DIR}/lib\"")
     endif()
     message(STATUS "Building Release Options: ${OPTIONS_RELEASE}")
-    set(ENV{PKG_CONFIG_PATH} "${CURRENT_INSTALLED_DIR}/lib/pkgconfig")
     message(STATUS "Building ${PORT} for Release")
     file(MAKE_DIRECTORY "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel")
     # We use response files here as the only known way to handle spaces in paths
@@ -778,8 +976,6 @@ if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
         set(OPTIONS_DEBUG "${OPTIONS_DEBUG} --extra-ldflags=-L\"${CURRENT_INSTALLED_DIR}/debug/lib\"")
     endif()
     message(STATUS "Building Debug Options: ${OPTIONS_DEBUG}")
-    set(ENV{LDFLAGS} "${VCPKG_COMBINED_SHARED_LINKER_FLAGS_DEBUG}")
-    set(ENV{PKG_CONFIG_PATH} "${CURRENT_INSTALLED_DIR}/debug/lib/pkgconfig")
     message(STATUS "Building ${PORT} for Debug")
     file(MAKE_DIRECTORY "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg")
     set(crsp "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/cflags.rsp")
@@ -881,31 +1077,9 @@ if (VCPKG_TARGET_IS_WINDOWS)
     foreach(_debug IN LISTS _dirs)
         foreach(PKGCONFIG_MODULE IN LISTS FFMPEG_PKGCONFIG_MODULES)
             set(PKGCONFIG_FILE "${CURRENT_PACKAGES_DIR}${_debug}lib/pkgconfig/${PKGCONFIG_MODULE}.pc")
-            # remove redundant cygwin style -libpath entries
-            execute_process(
-                COMMAND "${MSYS_ROOT}/usr/bin/cygpath.exe" -u "${CURRENT_INSTALLED_DIR}"
-                OUTPUT_VARIABLE CYG_INSTALLED_DIR
-                OUTPUT_STRIP_TRAILING_WHITESPACE
-            )
-            vcpkg_replace_string("${PKGCONFIG_FILE}" "-libpath:${CYG_INSTALLED_DIR}${_debug}lib/pkgconfig/../../lib " "" IGNORE_UNCHANGED)
-            # transform libdir, includedir, and prefix paths from cygwin style to windows style
             file(READ "${PKGCONFIG_FILE}" PKGCONFIG_CONTENT)
-            foreach(PATH_NAME prefix libdir includedir)
-                string(REGEX MATCH "${PATH_NAME}=[^\n]*" PATH_VALUE "${PKGCONFIG_CONTENT}")
-                string(REPLACE "${PATH_NAME}=" "" PATH_VALUE "${PATH_VALUE}")
-                if(NOT PATH_VALUE)
-                    message(FATAL_ERROR "failed to find pkgconfig variable ${PATH_NAME}")
-                endif()
-                execute_process(
-                    COMMAND "${MSYS_ROOT}/usr/bin/cygpath.exe" -w "${PATH_VALUE}"
-                    OUTPUT_VARIABLE FIXED_PATH
-                    OUTPUT_STRIP_TRAILING_WHITESPACE
-                )
-                file(TO_CMAKE_PATH "${FIXED_PATH}" FIXED_PATH)
-                vcpkg_replace_string("${PKGCONFIG_FILE}" "${PATH_NAME}=${PATH_VALUE}" "${PATH_NAME}=${FIXED_PATH}")
-            endforeach()
             # list libraries with -l flag (so pkgconf knows they are libraries and not just linker flags)
-            foreach(LIBS_ENTRY Libs Libs.private)
+            foreach(LIBS_ENTRY IN ITEMS Libs Libs.private)
                 string(REGEX MATCH "${LIBS_ENTRY}: [^\n]*" LIBS_VALUE "${PKGCONFIG_CONTENT}")
                 if(NOT LIBS_VALUE)
                     message(FATAL_ERROR "failed to find pkgconfig entry ${LIBS_ENTRY}")
@@ -913,11 +1087,12 @@ if (VCPKG_TARGET_IS_WINDOWS)
                 string(REPLACE "${LIBS_ENTRY}: " "" LIBS_VALUE "${LIBS_VALUE}")
                 if(LIBS_VALUE)
                     set(LIBS_VALUE_OLD "${LIBS_VALUE}")
-                    string(REGEX REPLACE "([^ ]+)[.]lib" "-l\\1" LIBS_VALUE "${LIBS_VALUE}")
+                    string(REGEX REPLACE " ([^ ]+)[.]lib" " -l\\1" LIBS_VALUE "${LIBS_VALUE}")
                     set(LIBS_VALUE_NEW "${LIBS_VALUE}")
-                    vcpkg_replace_string("${PKGCONFIG_FILE}" "${LIBS_ENTRY}: ${LIBS_VALUE_OLD}" "${LIBS_ENTRY}: ${LIBS_VALUE_NEW}" IGNORE_UNCHANGED)
+                    string(REPLACE "${LIBS_ENTRY}: ${LIBS_VALUE_OLD}" "${LIBS_ENTRY}: ${LIBS_VALUE_NEW}" PKGCONFIG_CONTENT "${PKGCONFIG_CONTENT}")
                 endif()
             endforeach()
+            file(WRITE "${PKGCONFIG_FILE}" "${PKGCONFIG_CONTENT}")
         endforeach()
     endforeach()
 endif()

@@ -70,17 +70,35 @@ function Invoke-Powershell {
         [PSObject]$ArgumentList
     )
 
-    $invokePrefix = "pwsh "
-    $expression = "$invokePrefix./$FilePath"
-
-    if ($ArgumentList) {
-        foreach ($key in $ArgumentList.Keys) {
-            $value = $ArgumentList[$key]
-            $expression += " -$key $value"
+    $paramArray = @()
+    $namedParamStrings = @()
+    foreach ($key in $ArgumentList.Keys) {
+        $value = $ArgumentList[$key]
+        $isValueAnArray = ($value -is [array])
+        $type = if($isValueAnArray) { "string[]" } else { $value.GetType().Name }
+        $paramArray += "[${type}]`$$key"
+        if($isValueAnArray) {
+           Write-Host "$key is array!"
+           $value | Format-List
+           $namedParamStrings += "-$key $($value -join ",")"
+        }
+        else {
+           $namedParamStrings += "-$key `"$value`""
         }
     }
 
-    Invoke-Expression $expression
+    $scriptBlockContent = @"
+param ($($paramArray -join ", "))
+& './$FilePath' $($namedParamStrings -join " ")
+"@
+    $scriptBlock = [scriptblock]::Create($scriptBlockContent)
+    $namedParams = @()
+    foreach ($key in $ArgumentList.Keys) {
+        $namedParams += "-$key"
+        $namedParams += $ArgumentList[$key]
+    }
+
+    Invoke-Command -ScriptBlock $scriptBlock -ArgumentList $namedParams
 }
 
 function Write-Banner {
