@@ -45,6 +45,7 @@ list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by 
 list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
 list(APPEND OPTIONS --enable-filter=aresample) # This is needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
 
+# === Add extra options for emscripten builds ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     # Remove some options that we don't want for the emscripten build
     list(REMOVE_ITEM OPTIONS
@@ -85,19 +86,44 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
          --extra-ldflags=-sINITIAL_MEMORY=33554432)
 endif()
 
-# === Encoders ===
+# === Add TSC options based on feature flags ===
+if("aom" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libaom_av1)
+   list(APPEND TSC_DECODERS libaom_av1)
+endif()
+
+if("dav1d" IN_LIST FEATURES)
+   list(APPEND TSC_DECODERS libdav1d)
+endif()
+
+if("mp3lame" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libmp3lame)
+   list(APPEND TSC_DECODERS libmp3lame)
+endif()
+
+if("opus" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libopus)
+   list(APPEND TSC_DECODERS libopus)
+endif()
+
+if("vorbis" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libvorbis)
+   list(APPEND TSC_DECODERS libvorbis)
+endif()
+
+if("vpx" IN_LIST FEATURES)
+   list(APPEND TSC_ENCODERS libvpx_vp8 libvpx_vp9)
+
+   # VP8 is On2 vp8 and VP9 is Google VP9.  These are not actually libvpx, but we are enabling both for now along with libvpx.
+   list(APPEND TSC_DECODERS libvpx_vp8 libvpx_vp9 vp8 vp9)
+endif()
+
+# === Add other TSC options ===
+# --- Encoders ---
 set(TSC_ENCODERS 
    aac
 )
 if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
-   list(APPEND TSC_ENCODERS 
-      libaom_av1
-      libmp3lame
-      libopus
-      libvorbis
-      libvpx_vp8
-      libvpx_vp9
-   )
    if(VCPKG_TARGET_IS_OSX)
       list(APPEND TSC_ENCODERS 
          aac_at
@@ -113,11 +139,8 @@ if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
       )
    endif()
 endif()
-foreach(ENCODER IN LISTS TSC_ENCODERS)
-    list(APPEND OPTIONS --enable-encoder=${ENCODER})
-endforeach()
 
-# === Decoders ===
+# --- Decoders ---
 set(TSC_DECODERS 
    aac
    aac_fixed
@@ -126,16 +149,8 @@ set(TSC_DECODERS
 if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    list(APPEND TSC_DECODERS
       hevc
-      libaom_av1
-      libdav1d
-      libopus
-      libvorbis
-      libvpx_vp8
-      libvpx_vp9
       mp3*
       pcm*
-      vp8
-      vp9
    )
    if(VCPKG_TARGET_IS_OSX)
       list(APPEND TSC_DECODERS
@@ -143,11 +158,8 @@ if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
       )
    endif()
 endif()
-foreach(DECODER IN LISTS TSC_DECODERS)
-    list(APPEND OPTIONS --enable-decoder=${DECODER})
-endforeach()
 
-# === Muxers ===
+# --- Muxers ---
 set(TSC_MUXERS 
    mov
    mp4
@@ -162,11 +174,8 @@ if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
       webm*
    )
 endif()
-foreach(MUXER IN LISTS TSC_MUXERS)
-    list(APPEND OPTIONS --enable-muxer=${MUXER})
-endforeach()
 
-# === Demuxers ===
+# --- Demuxers ---
 # Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
 set(TSC_DEMUXERS 
    mov 
@@ -182,11 +191,22 @@ if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
       webm*
    )
 endif()
+
+# === Add TSC options to main OPTIONS list ===
+foreach(ENCODER IN LISTS TSC_ENCODERS)
+    list(APPEND OPTIONS --enable-encoder=${ENCODER})
+endforeach()
+foreach(DECODER IN LISTS TSC_DECODERS)
+    list(APPEND OPTIONS --enable-decoder=${DECODER})
+endforeach()
+foreach(MUXER IN LISTS TSC_MUXERS)
+    list(APPEND OPTIONS --enable-muxer=${MUXER})
+endforeach()
 foreach(DEMUXER IN LISTS TSC_DEMUXERS)
     list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
 endforeach()
 
-# Emscripten build (if applicable)
+# === Run emscripten build (if applicable) ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.in DESTINATION ${SOURCE_PATH}) # overwrite their configure with ours
     file(RENAME ${SOURCE_PATH}/configure_emscripten.in ${SOURCE_PATH}/configure)
