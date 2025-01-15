@@ -29,7 +29,7 @@
         }
       },
       "wasm": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample]",
+        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,opus,vpx]",
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
