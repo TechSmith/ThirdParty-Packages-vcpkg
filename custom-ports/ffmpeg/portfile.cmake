@@ -149,31 +149,39 @@ endforeach()
 
 # === Muxers ===
 set(TSC_MUXERS 
-   matroska
-   mkvtimestamp_v2
-   mp3 
+   mov
    mp4
-   mpegts
-   rtp_mpegts
-   webm*
 )
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+   list(APPEND TSC_MUXERS
+      matroska
+      mkvtimestamp_v2
+      mp3 
+      mpegts
+      rtp_mpegts
+      webm*
+   )
+endif()
 foreach(MUXER IN LISTS TSC_MUXERS)
     list(APPEND OPTIONS --enable-muxer=${MUXER})
 endforeach()
 
 # === Demuxers ===
+# Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
 set(TSC_DEMUXERS 
-   aac
-   hevc
-   m4a
-   matroska
-   mov
-   mp3
-   mp4
-   mpegts
-   mpegtsraw
-   webm*
+   mov 
 )
+if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+   list(APPEND TSC_DEMUXERS
+      aac
+      hevc
+      matroska
+      mp3
+      mpegts
+      mpegtsraw
+      webm*
+   )
+endif()
 foreach(DEMUXER IN LISTS TSC_DEMUXERS)
     list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
 endforeach()
