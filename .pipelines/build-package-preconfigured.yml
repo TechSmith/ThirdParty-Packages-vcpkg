@@ -13,6 +13,7 @@ parameters:
   - dawn
   - ffmpeg
   - ffmpeg-cloud-gpl
+  - ffmpeg-hevc
   - glslang
   - hunspell
   - hunspell-debug
