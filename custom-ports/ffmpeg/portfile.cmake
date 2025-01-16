@@ -87,126 +87,97 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
 endif()
 
 # === Add TSC options based on feature flags ===
-set(TSC_ENCODERS "")
-set(TSC_DECODERS "")
-set(TSC_MUXERS "")
-set(TSC_DEMUXERS "")
+function(map_features_to_items input_map FEATURES return_list)
+    set(${return_list} "" PARENT_SCOPE)
+    foreach(mapitem ${input_map})
+        string(REPLACE "=" ";" list ${mapitem})
+        list(GET list 0 key)
+        list(GET list 1 valuesstring)
+        string(REPLACE "," ";" values ${valuesstring})
+        if(key IN_LIST FEATURES)
+            list(APPEND ${return_list} ${values})
+        endif()
+    endforeach()
+    set(${return_list} ${${return_list}} PARENT_SCOPE)
+endfunction()
 
-if("aom" IN_LIST FEATURES)
-   list(APPEND TSC_ENCODERS libaom_av1)
-   list(APPEND TSC_DECODERS libaom_av1)
-endif()
-
-if("dav1d" IN_LIST FEATURES)
-   list(APPEND TSC_DECODERS libdav1d)
-endif()
-
-if("mp3lame" IN_LIST FEATURES)
-   list(APPEND TSC_ENCODERS libmp3lame)
-   list(APPEND TSC_DECODERS libmp3lame)
-endif()
-
-if("opus" IN_LIST FEATURES)
-   list(APPEND TSC_ENCODERS libopus)
-   list(APPEND TSC_DECODERS libopus)
-endif()
-
-if("vorbis" IN_LIST FEATURES)
-   list(APPEND TSC_ENCODERS libvorbis)
-   list(APPEND TSC_DECODERS libvorbis)
-endif()
-
-if("vpx" IN_LIST FEATURES)
-   list(APPEND TSC_ENCODERS libvpx_vp8 libvpx_vp9)
-
-   # VP8 is On2 vp8 and VP9 is Google VP9.  These are not actually libvpx, but we are enabling both for now along with libvpx.
-   list(APPEND TSC_DECODERS libvpx_vp8 libvpx_vp9 vp8 vp9)
-endif()
-
-# === Add other TSC options ===
 # --- Encoders ---
-list(APPEND TSC_ENCODERS 
-   aac
-)
-if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
-   if(VCPKG_TARGET_IS_OSX)
-      list(APPEND TSC_ENCODERS 
-         aac_at
-         h264_videotoolbox
-         hevc_videotoolbox
-      )
-   elseif(VCPKG_TARGET_IS_WINDOWS)
-      list(APPEND TSC_ENCODERS 
-         aac_mf
-         mp3_mf
-         h264_mf
-         hevc_mf
-      )
-   endif()
-endif()
+set(TSC_ENCODERS "")
+set(FEATURE_ENCODER_MAP 
+   "aom=libaom_av1"
+   "mp3lame=libmp3lame"
+   "opus=libopus"
+   "vorbis=libvorbis"
+   "vpx=libvpx_vp8,libvpx_vp9"
 
-# --- Decoders ---
-list(APPEND TSC_DECODERS 
-   aac
-   aac_fixed
-   aac_latm
+   # Custom feature flags for encoders
+   "encoder-hevc-videotoolbox=hevc_videotoolbox"
+   "encoder-hevc-mf=hevc_mf"
+   "encoder-h264-videotoolbox=h264_videotoolbox"
+   "encoder-h264-mf=h264_mf"
+   "encoder-aac=aac"
+   "encoder-aac-at=aac_at"
+   "encoder-aac-mf=aac_mf"
+   "encoder-mp3-mf=mp3_mf"
 )
-if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
-   list(APPEND TSC_DECODERS
-      hevc
-      mp3*
-      pcm*
-   )
-   if(VCPKG_TARGET_IS_OSX)
-      list(APPEND TSC_DECODERS
-         aac_at
-      )
-   endif()
-endif()
-
-# --- Muxers ---
-list(APPEND TSC_MUXERS 
-   mov
-   mp4
-)
-if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
-   list(APPEND TSC_MUXERS
-      matroska
-      mkvtimestamp_v2
-      mp3 
-      mpegts
-      rtp_mpegts
-      webm*
-   )
-endif()
-
-# --- Demuxers ---
-# Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
-list(APPEND TSC_DEMUXERS 
-   mov 
-)
-if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
-   list(APPEND TSC_DEMUXERS
-      aac
-      hevc
-      matroska
-      mp3
-      mpegts
-      mpegtsraw
-      webm*
-   )
-endif()
-
-# === Add TSC options to main OPTIONS list ===
+map_features_to_items("${FEATURE_ENCODER_MAP}" "${FEATURES}" TSC_ENCODERS)
 foreach(ENCODER IN LISTS TSC_ENCODERS)
     list(APPEND OPTIONS --enable-encoder=${ENCODER})
 endforeach()
+
+# --- Decoders ---
+set(TSC_DECODERS "")
+set(FEATURE_DECODER_MAP 
+   "aom=libaom_av1"
+   "dav1d=libdav1d"
+   "mp3lame=libmp3lame"
+   "opus=libopus"
+   "vorbis=libvorbis"
+   "vpx=libvpx_vp8,libvpx_vp9"
+
+   # Custom feature flags for decoders
+   "decoder-hevc=hevc"
+   "decoder-aac=aac,aac_fixed,aac_latm"
+   "decoder-aac-at=aac_at"
+   "decoder-mp3=mp3*"
+   "decoder-pcm=pcm*"
+   "decoder-vp8=vp8" # On2 VP8 decoding (different from libvpx)
+   "decoder-vp9=vp9" # Google VP9 decoding (different from libvpx)
+)
+map_features_to_items("${FEATURE_DECODER_MAP}" "${FEATURES}" TSC_DECODERS)
 foreach(DECODER IN LISTS TSC_DECODERS)
     list(APPEND OPTIONS --enable-decoder=${DECODER})
 endforeach()
+
+# --- Muxers ---
+set(TSC_MUXERS "")
+set(FEATURE_MUXER_MAP
+   "muxer-mov=mov"
+   "muxer-mp4=mp4"
+   "muxer-matroska=matroska"
+   "muxer-mkvtimestamp-v2=mkvtimestamp_v2"
+   "muxer-mp3=mp3"
+   "muxer-mpegts=mpegts"
+   "muxer-rtp-mpegts=rtp_mpegts"
+   "muxer-webm=webm*"
+)
+map_features_to_items("${FEATURE_MUXER_MAP}" "${FEATURES}" TSC_MUXERS)
 foreach(MUXER IN LISTS TSC_MUXERS)
     list(APPEND OPTIONS --enable-muxer=${MUXER})
 endforeach()
+
+# --- Demuxers ---
+set(TSC_DEMUXERS "")
+set(FEATURE_DEMUXER_MAP
+   "demuxer-aac=aac"
+   "demuxer-hevc=hevc"
+   "demuxer-matroska=matroska"
+   "demuxer-mov=mov" # Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
+   "demuxer-mp3=mp3"
+   "demuxer-mpegts=mpegts,mpegtsraw"
+   "demuxer-webm=webm*"
+)
+map_features_to_items("${FEATURE_DEMUXER_MAP}" "${FEATURES}" TSC_DEMUXERS)
 foreach(DEMUXER IN LISTS TSC_DEMUXERS)
     list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
 endforeach()
