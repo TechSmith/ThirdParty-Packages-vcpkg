@@ -119,6 +119,7 @@ set(FEATURE_ENCODER_MAP
    "encoder-aac-at=aac_at"
    "encoder-aac-mf=aac_mf"
    "encoder-mp3-mf=mp3_mf"
+   "png=png"
 )
 map_features_to_items("${FEATURE_ENCODER_MAP}" "${FEATURES}" TSC_ENCODERS)
 foreach(ENCODER IN LISTS TSC_ENCODERS)
@@ -136,13 +137,14 @@ set(FEATURE_DECODER_MAP
    "vpx=libvpx_vp8,libvpx_vp9"
 
    # Custom feature flags for decoders
-   "decoder-hevc=hevc"
    "decoder-aac=aac,aac_fixed,aac_latm"
    "decoder-aac-at=aac_at"
+   "decoder-hevc=hevc"
    "decoder-mp3=mp3*"
    "decoder-pcm=pcm*"
    "decoder-vp8=vp8" # On2 VP8 decoding (different from libvpx)
    "decoder-vp9=vp9" # Google VP9 decoding (different from libvpx)
+   "png=png"
 )
 map_features_to_items("${FEATURE_DECODER_MAP}" "${FEATURES}" TSC_DECODERS)
 foreach(DECODER IN LISTS TSC_DECODERS)
@@ -160,6 +162,7 @@ set(FEATURE_MUXER_MAP
    "muxer-mpegts=mpegts"
    "muxer-rtp-mpegts=rtp_mpegts"
    "muxer-webm=webm*"
+   "image2=image2"
 )
 map_features_to_items("${FEATURE_MUXER_MAP}" "${FEATURES}" TSC_MUXERS)
 foreach(MUXER IN LISTS TSC_MUXERS)
@@ -176,6 +179,7 @@ set(FEATURE_DEMUXER_MAP
    "demuxer-mp3=mp3"
    "demuxer-mpegts=mpegts,mpegtsraw"
    "demuxer-webm=webm*"
+   "image2=image2"
 )
 map_features_to_items("${FEATURE_DEMUXER_MAP}" "${FEATURES}" TSC_DEMUXERS)
 foreach(DEMUXER IN LISTS TSC_DEMUXERS)
