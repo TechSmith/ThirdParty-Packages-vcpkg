@@ -43,7 +43,7 @@ string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a 
 list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, and build up from there (it disables these things: https://stackoverflow.com/questions/24849129/compile-ffmpeg-without-most-codecs)
 list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
-list(APPEND OPTIONS --enable-filter=aresample) # This is needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
+list(APPEND OPTIONS --enable-filter=aresample --enable-filter=scale) # These are needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
 
 # === Add extra options for emscripten builds ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
