@@ -227,6 +227,14 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
 
     file(WRITE "${SOURCE_PATH}/configure" "${CONFIGURE_CONTENTS}")
 
+    if("opus" IN_LIST FEATURES)
+        set(OPTIONS "${OPTIONS} --enable-libopus")
+        set(WITH_OPUS ON)
+    else()
+        set(OPTIONS "${OPTIONS} --disable-libopus")
+        set(WITH_OPUS OFF)
+    endif()
+
     # configure
     vcpkg_execute_required_process(
         COMMAND emconfigure ./configure ${OPTIONS}
