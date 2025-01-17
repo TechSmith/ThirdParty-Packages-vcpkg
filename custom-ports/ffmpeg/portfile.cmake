@@ -92,14 +92,14 @@ set(TSC_DECODERS "")
 set(TSC_MUXERS "")
 set(TSC_DEMUXERS "")
 
-if("aom" IN_LIST FEATURES)
-   list(APPEND TSC_ENCODERS libaom_av1)
-   list(APPEND TSC_DECODERS libaom_av1)
-endif()
-
-if("dav1d" IN_LIST FEATURES)
-   list(APPEND TSC_DECODERS libdav1d)
-endif()
+#if("aom" IN_LIST FEATURES)
+#   list(APPEND TSC_ENCODERS libaom_av1)
+#   list(APPEND TSC_DECODERS libaom_av1)
+#endif()
+#
+#if("dav1d" IN_LIST FEATURES)
+#   list(APPEND TSC_DECODERS libdav1d)
+#endif()
 
 if("mp3lame" IN_LIST FEATURES)
    list(APPEND TSC_ENCODERS libmp3lame)
