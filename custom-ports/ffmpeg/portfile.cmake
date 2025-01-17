@@ -131,7 +131,6 @@ set(TSC_DECODERS "")
 set(FEATURE_DECODER_MAP 
    "aom=libaom_av1"
    "dav1d=libdav1d"
-   "mp3lame=libmp3lame"
    "opus=libopus"
    "vorbis=libvorbis"
    "vpx=libvpx_vp8,libvpx_vp9"
