@@ -1,5 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
+    [Parameter(Mandatory=$true)][string]$PackageAndFeatures,
     [Parameter(Mandatory=$true)][string]$ModulesRoot,
     [Parameter(Mandatory=$true)][string]$FFMpegExePath,
     [Parameter(Mandatory=$false)][string]$OutputDir = "test-output"
@@ -17,11 +18,12 @@ if (-Not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir
 }
 
-$inputVideo = "$PSScriptRoot/../../resources/BigBuckBunnyClip-hevc-240p.mp4"
+$inputVideo = "$PSScriptRoot/../../resources/BigBuckBunnyClip-vp9-240p.mp4"
 $ffmpegExe = "$FFMpegExePath -hide_banner"
 $ffmpegCmd = "$ffmpegExe -i `"$inputVideo`" -r 30 -b:a 192k"
 
 # Define the encoding commands with explicit format specification
+$features = ($PackageAndFeatures -match '\[(.*?)\]')[1] -split ','
 $tests = @(
     # --- M4A Tests ---
     @{
@@ -92,6 +94,31 @@ $tests = @(
     }
 )
 
+# HEVC decode tests
+$features = Get-Features $PackageAndFeatures
+$inputHevcVideo = "$PSScriptRoot/../../resources/BigBuckBunnyClip-hevc-240p.mp4"
+$ffmpegDecodeHevcFrameCmd = "$ffmpegExe -i `"$inputHevcVideo`" -ss 00:00:04.5 -frames:v 1"
+if($features -contains "decoder-hevc")
+{
+   $tests += 
+   @{
+      Name = "Verify decoding succeeds - MP4: hevc"
+      OutFilename = "hevc-frame.png"
+      CmdPrefix = "$ffmpegDecodeHevcFrameCmd"
+      ExpectedReturnCode = 0
+   }
+}
+else
+{
+   $tests += 
+   @{
+      Name = "Verify decoding fails - MP4: hevc"
+      OutFilename = "hevc-frame.png"
+      CmdPrefix = "$ffmpegDecodeHevcFrameCmd"
+      ExpectedReturnCode = if(Get-IsOnWindowsOS) { -22 } elseif(Get-IsOnMacOS) { 234 } else { -1 }
+   }
+}
+
 $runMsg     = " RUN      "
 $successMsg = "       OK "
 $failMsg    = "     FAIL "
@@ -99,7 +126,7 @@ $finalExitCode = 0
 Write-Host "Running encoding tests..."
 foreach ($test in $tests) {
     $OutFilePath = "$OutputDir/$($test.OutFilename)"
-    $cmd = "$($test.CmdPrefix) `"$OutFilePath`" > `"$OutFilePath.txt`""
+    $cmd = "$($test.CmdPrefix) `"$OutFilePath`""
     Write-Host "[ $runMsg ] $($test.Name) ==> $OutFilePath"
     $startTime = Get-Date
 

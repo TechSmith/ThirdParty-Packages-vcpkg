@@ -46,6 +46,7 @@ Write-Message "$(NL)Running post-build tests..."
 $finalExitCode = 0
 $testScriptArgs = @{ 
   BuildArtifactsPath = $BuildArtifactsPath
+  PackageAndFeatures = $PackageAndFeatures
   ModulesRoot = $ModulesRoot
   FFMpegExePath = $pathToFFmpegExe
   OutputDir = "test-output"
