@@ -94,31 +94,6 @@ $tests = @(
     }
 )
 
-# HEVC decode tests
-$features = Get-Features $PackageAndFeatures
-$inputHevcVideo = "$PSScriptRoot/../../resources/BigBuckBunnyClip-hevc-240p.mp4"
-$ffmpegDecodeHevcFrameCmd = "$ffmpegExe -i `"$inputHevcVideo`" -ss 00:00:04.5 -frames:v 1"
-if($features -contains "decoder-hevc")
-{
-   $tests += 
-   @{
-      Name = "Verify decoding succeeds - MP4: hevc"
-      OutFilename = "hevc-frame.png"
-      CmdPrefix = "$ffmpegDecodeHevcFrameCmd"
-      ExpectedReturnCode = 0
-   }
-}
-else
-{
-   $tests += 
-   @{
-      Name = "Verify decoding fails - MP4: hevc"
-      OutFilename = "hevc-frame.png"
-      CmdPrefix = "$ffmpegDecodeHevcFrameCmd"
-      ExpectedReturnCode = if(Get-IsOnWindowsOS) { -22 } elseif(Get-IsOnMacOS) { 234 } else { -1 }
-   }
-}
-
 $runMsg     = " RUN      "
 $successMsg = "       OK "
 $failMsg    = "     FAIL "

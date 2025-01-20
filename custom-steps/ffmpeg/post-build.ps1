@@ -55,18 +55,19 @@ Push-Location $PSScriptRoot
 if (Test-Path $testScriptArgs.OutputDir) {
   Remove-Item -Path $testScriptArgs.OutputDir -Recurse -Force
 }
-Invoke-Powershell -FilePath "test001--query-capabilities.ps1" -ArgumentList $testScriptArgs
-$scriptReturnCode = $LASTEXITCODE
-Write-Host "$(NL)> Script exit code = $scriptReturnCode"
-if ( ($finalExitCode -eq 0) -and ($returnCode -ne 0) ) {
-    $finalExitCode = $scriptReturnCode
-}
 
-Invoke-Powershell -FilePath "test002--verify-encoding.ps1" -ArgumentList $testScriptArgs
-$scriptReturnCode = $LASTEXITCODE
-Write-Host "$(NL)> Script exit code = $scriptReturnCode"
-if ( ($finalExitCode -eq 0) -and ($returnCode -ne 0) ) {
-    $finalExitCode = $scriptReturnCode
+$testScripts = @(
+   "test001--query-capabilities.ps1"
+   "test002--verify-decoding.ps1"
+   "test003--verify-encoding.ps1"
+)
+foreach($testScript in $testScripts) {
+   Write-Message "$(NL)Running tests: $testScript..."
+   Invoke-Powershell -FilePath "$testScript" -ArgumentList $testScriptArgs
+   $scriptReturnCode = $LASTEXITCODE
+   if ( ($finalExitCode -eq 0) -and ($returnCode -ne 0) ) {
+       $finalExitCode = $scriptReturnCode
+   }
 }
 
 Pop-Location
