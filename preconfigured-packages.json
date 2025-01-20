@@ -3,7 +3,7 @@
     {
       "name": "ffmpeg",
       "mac": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,ffmpeg,image2,png,zlib,encoder-aac,encoder-aac-at,encoder-h264-videotoolbox,decoder-aac,decoder-aac-at,decoder-mp3,decoder-pcm,decoder-vp8,decoder-vp9,muxer-matroska,muxer-mov,muxer-mp3,muxer-mp4,muxer-mpegts,muxer-mkvtimestamp-v2,muxer-rtp-mpegts,muxer-webm,demuxer-aac,muxer-matroska,demuxer-mov,demuxer-mp3,demuxer-mpegts,demuxer-webm]",
+        "package": "ffmpeg[tsc-desktop-mac,encoder-h264-videotoolbox,encoder-hevc-videotoolbox]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
@@ -16,7 +16,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,ffmpeg,image2,png,zlib,encoder-aac,encoder-aac-mf,encoder-h264-mf,encoder-mp3-mf,decoder-aac,decoder-aac-at,decoder-mp3,decoder-pcm,decoder-vp8,decoder-vp9,muxer-matroska,muxer-mov,muxer-mp3,muxer-mp4,muxer-mpegts,muxer-mkvtimestamp-v2,muxer-rtp-mpegts,muxer-webm,demuxer-aac,muxer-matroska,demuxer-mov,demuxer-mp3,demuxer-mpegts,demuxer-webm]",
+        "package": "ffmpeg[tsc-desktop-win,encoder-h264-mf,encoder-hevc-mf]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
@@ -29,7 +29,7 @@
         }
       },
       "wasm": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,encoder-aac,decoder-aac,muxer-mov,muxer-mp4,demuxer-mov]",
+        "package": "ffmpeg[tsc-wasm-base]",
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
@@ -39,7 +39,7 @@
     {
       "name": "ffmpeg-hevc",
       "mac": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,ffmpeg,image2,png,zlib,encoder-aac,encoder-aac-at,encoder-h264-videotoolbox,encoder-hevc-videotoolbox,decoder-aac,decoder-aac-at,decoder-hevc,decoder-mp3,decoder-pcm,decoder-vp8,decoder-vp9,muxer-matroska,muxer-mov,muxer-mp3,muxer-mp4,muxer-mpegts,muxer-mkvtimestamp-v2,muxer-rtp-mpegts,muxer-webm,demuxer-aac,muxer-matroska,demuxer-mov,demuxer-mp3,demuxer-mpegts,demuxer-webm]",
+        "package": "ffmpeg[tsc-desktop-mac,encoder-h264-videotoolbox,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
@@ -52,7 +52,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,ffmpeg,image2,png,zlib,encoder-aac,encoder-aac-mf,encoder-h264-mf,encoder-hevc-mf,encoder-mp3-mf,decoder-aac,decoder-aac-at,decoder-hevc,decoder-mp3,decoder-pcm,decoder-vp8,decoder-vp9,muxer-matroska,muxer-mov,muxer-mp3,muxer-mp4,muxer-mpegts,muxer-mkvtimestamp-v2,muxer-rtp-mpegts,muxer-webm,demuxer-aac,muxer-matroska,demuxer-mov,demuxer-mp3,demuxer-mpegts,demuxer-webm]",
+        "package": "ffmpeg[tsc-desktop-win,encoder-h264-mf,encoder-hevc-mf,decoder-hevc,demuxer-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
