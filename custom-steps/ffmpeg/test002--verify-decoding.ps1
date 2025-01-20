@@ -25,6 +25,18 @@ $resourcesDir = "$PSScriptRoot/../../resources"
 Write-Message "Features are..."
 $features | Format-List
 
+# H.264 decode tests
+$features = Get-Features $PackageAndFeatures
+$inputH264Video = "$PSScriptRoot/../../resources/BigBuckBunnyClip-h264-240p.mp4"
+$ffmpegDecodeH264FrameCmd = "$ffmpegExe -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1"
+$tests += 
+@{
+   Name = "Verify decoding fails - MP4: h.264"
+   OutFilename = "h264-frame.png"
+   CmdPrefix = "$ffmpegDecodeH264FrameCmd"
+   ExpectedReturnCode = if(Get-IsOnWindowsOS) { -22 } elseif(Get-IsOnMacOS) { 234 } else { -1 }
+}
+
 # HEVC decode tests
 $inputVideo = "$resourcesDir/BigBuckBunnyClip-hevc-240p.mp4"
 $ffmpegCmd = "$ffmpegExe -i `"$inputVideo`" -ss 00:00:04.5 -frames:v 1"
