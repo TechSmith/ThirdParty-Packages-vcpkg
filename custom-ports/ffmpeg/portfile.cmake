@@ -125,18 +125,18 @@ endif()
 
 # === Add other TSC options ===
 # --- Encoders ---
-list(APPEND TSC_ENCODERS 
+list(APPEND TSC_ENCODERS
    aac
 )
 if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    if(VCPKG_TARGET_IS_OSX)
-      list(APPEND TSC_ENCODERS 
+      list(APPEND TSC_ENCODERS
          aac_at
          h264_videotoolbox
          hevc_videotoolbox
       )
    elseif(VCPKG_TARGET_IS_WINDOWS)
-      list(APPEND TSC_ENCODERS 
+      list(APPEND TSC_ENCODERS
          aac_mf
          mp3_mf
          h264_mf
@@ -146,7 +146,7 @@ if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
 endif()
 
 # --- Decoders ---
-list(APPEND TSC_DECODERS 
+list(APPEND TSC_DECODERS
    aac
    aac_fixed
    aac_latm
@@ -165,7 +165,7 @@ if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
 endif()
 
 # --- Muxers ---
-list(APPEND TSC_MUXERS 
+list(APPEND TSC_MUXERS
    mov
    mp4
 )
@@ -173,7 +173,7 @@ if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    list(APPEND TSC_MUXERS
       matroska
       mkvtimestamp_v2
-      mp3 
+      mp3
       mpegts
       rtp_mpegts
       webm*
@@ -182,8 +182,8 @@ endif()
 
 # --- Demuxers ---
 # Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
-list(APPEND TSC_DEMUXERS 
-   mov 
+list(APPEND TSC_DEMUXERS
+   mov
 )
 if(NOT VCPKG_TARGET_IS_EMSCRIPTEN)
    list(APPEND TSC_DEMUXERS
