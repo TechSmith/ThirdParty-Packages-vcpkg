@@ -1,7 +1,7 @@
 {
   "packages": [
     {
-      "name": "ffmpeg",
+      "name": "ffmpeg-desktop-base",
       "mac": {
         "package": "ffmpeg[tsc-desktop-mac,encoder-h264-videotoolbox,encoder-hevc-videotoolbox]",
         "linkType": "dynamic",
@@ -27,17 +27,10 @@
           "share": true,
           "tools": true
         }
-      },
-      "wasm": {
-        "package": "ffmpeg[tsc-wasm-base]",
-        "linkType": "dynamic",
-        "buildType": "release",
-        "customTriplet": "wasm32-emscripten-dynamic",
-        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c"
       }
     },
     {
-      "name": "ffmpeg-hevc",
+      "name": "ffmpeg-desktop-hevc",
       "mac": {
         "package": "ffmpeg[tsc-desktop-mac,encoder-h264-videotoolbox,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc]",
         "linkType": "dynamic",
@@ -63,6 +56,16 @@
           "share": true,
           "tools": true
         }
+      }
+    },
+    {
+      "name": "ffmpeg-wasm-base",
+      "wasm": {
+        "package": "ffmpeg[tsc-wasm-base]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-dynamic",
+        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c"
       }
     },
     {
