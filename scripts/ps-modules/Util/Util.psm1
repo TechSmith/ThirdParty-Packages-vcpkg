@@ -78,8 +78,6 @@ function Invoke-Powershell {
         $type = if($isValueAnArray) { "string[]" } else { $value.GetType().Name }
         $paramArray += "[${type}]`$$key"
         if($isValueAnArray) {
-           Write-Host "$key is array!"
-           $value | Format-List
            $namedParamStrings += "-$key $($value -join ",")"
         }
         else {
