@@ -742,6 +742,8 @@
             "aom",
             "dav1d",
             "ffmpeg",
+            "ffplay",
+            "ffprobe",
             "image2",
             "mp3lame",
             "opus",
