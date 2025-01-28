@@ -22,8 +22,6 @@ $ffmpegExe = "$FFMpegExePath -hide_banner"
 $tests = @()
 $features = Get-Features $PackageAndFeatures
 $resourcesDir = "$PSScriptRoot/../../resources" 
-Write-Message "Features are..."
-$features | Format-List
 
 # H.264 decode tests
 $features = Get-Features $PackageAndFeatures
