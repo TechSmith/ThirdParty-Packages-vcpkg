@@ -42,11 +42,19 @@ if((Get-IsOnMacOS)) {
     $pathToFFmpegExe = "$pathToTools/ffmpeg"
 }
 
+# Expand/flatten feature flags, so we have them all in one big list
+$vcpkgExe = "$PSScriptRoot/../../$(Get-VcPkgExe)"
+$pathToCustomPorts = "$PSScriptRoot/../../custom-ports"
+$vcpkgCommand = "$vcpkgExe install $PackageAndFeatures --overlay-ports '$pathToCustomPorts' --dry-run"
+$dryRunOutput = Invoke-Expression $vcpkgCommand
+$ffmpegPackageAndFeaturesExpanded = ($dryRunOutput -split "`n" | Select-String -Pattern 'ffmpeg\[[^\]]+\]').Matches.Value
+
+# Run tests
 Write-Message "$(NL)Running post-build tests..."
 $finalExitCode = 0
 $testScriptArgs = @{ 
   BuildArtifactsPath = $BuildArtifactsPath
-  PackageAndFeatures = $PackageAndFeatures
+  PackageAndFeatures = $ffmpegPackageAndFeaturesExpanded
   ModulesRoot = $ModulesRoot
   FFMpegExePath = $pathToFFmpegExe
   OutputDir = "test-output"
