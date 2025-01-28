@@ -784,6 +784,8 @@
           "features": [
             "tsc-desktop-base",
             "encoder-aac-mf",
+            "encoder-h264-mf",
+            "encoder-hevc-mf",
             "encoder-mp3-mf"
           ]
         }
@@ -798,6 +800,8 @@
           "features": [
             "tsc-desktop-base",
             "encoder-aac-at",
+            "encoder-h264-videotoolbox",
+            "encoder-hevc-videotoolbox",
             "decoder-aac-at"
           ]
         }
