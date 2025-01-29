@@ -11,7 +11,7 @@ function Install-FromVcpkg {
 
     $pkgToInstall = "${packageAndFeatures}:${triplet}"
     Write-Message "Installing package: `"$pkgToInstall`""
-    Invoke-Expression "$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
+    Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
 }
 
 function Get-PackageNameOnly {
@@ -48,9 +48,9 @@ function Get-PreStagePath {
 
 function Get-VcPkgExe {
    if ( (Get-IsOnWindowsOS) ) {
-      return "./vcpkg/vcpkg.exe"
+      return "vcpkg/vcpkg.exe"
    } elseif ( (Get-IsOnMacOS) -or (Get-IsOnLinux) ) {
-      return "./vcpkg/vcpkg"
+      return "vcpkg/vcpkg"
    }
    throw [System.Exception]::new("Invalid OS")
 }
@@ -325,7 +325,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
 
    # If we're on MacOS and we didn't specify a custom triplet, we're building a universal binary
    # If we specify a custom triplet, we can only build one architecture at a time
-   $isUniversalBinary = ((Get-IsOnMacOS) -and ($customTriplet -eq ""))
+   $isUniversalBinary = ((Get-IsOnMacOS) -and ($triplets.Count -eq 2))
 
    # Get dirs to copy
    $srcToDestDirs = @{}
@@ -439,7 +439,7 @@ function Run-StageBuildArtifactsStep {
 
    $dependenciesFilename = "dependencies.json"
    Write-Message "Generating: `"$dependenciesFilename`"..."
-   Invoke-Expression "$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
+   Invoke-Expression "./$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
 
    $packageInfoFilename = "package.json"
    Write-Message "Generating: `"$packageInfoFilename`"..."
@@ -529,7 +529,7 @@ function Resolve-Symlink {
 }
 
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force

@@ -1,9 +1,9 @@
 {
   "packages": [
     {
-      "name": "ffmpeg",
+      "name": "ffmpeg-desktop-base",
       "mac": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,ffmpeg]",
+        "package": "ffmpeg[tsc-desktop-mac]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
@@ -16,7 +16,23 @@
         }
       },
       "win": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,dav1d,swscale,swresample,opus,mp3lame,vpx,vorbis,aom,ffmpeg]",
+        "package": "ffmpeg[tsc-desktop-win]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "ffmpeg-desktop-hevc",
+      "mac": {
+        "package": "ffmpeg[tsc-desktop-mac,decoder-hevc,demuxer-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
@@ -28,8 +44,24 @@
           "tools": true
         }
       },
+      "win": {
+        "package": "ffmpeg[tsc-desktop-win,decoder-hevc,demuxer-hevc]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "ffmpeg-wasm-base",
       "wasm": {
-        "package": "ffmpeg[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample]",
+        "package": "ffmpeg[tsc-wasm-base]",
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",

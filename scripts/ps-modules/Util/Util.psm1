@@ -78,8 +78,6 @@ function Invoke-Powershell {
         $type = if($isValueAnArray) { "string[]" } else { $value.GetType().Name }
         $paramArray += "[${type}]`$$key"
         if($isValueAnArray) {
-           Write-Host "$key is array!"
-           $value | Format-List
            $namedParamStrings += "-$key $($value -join ",")"
         }
         else {
@@ -176,4 +174,15 @@ function Run-ScriptIfExists {
    Invoke-Powershell -FilePath $script -ArgumentList $scriptArgs
 }
 
-Export-ModuleMember -Function Show-FileContent, Install-FromVcpkg, Exit-IfError, Write-ReleaseInfoJson, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Invoke-Powershell, Write-Banner, Write-Message, Write-Debug, NL, Get-PSObjectAsFormattedList, Run-ScriptIfExists
+function Get-Features {
+   param(
+      [string]$packageAndFeatures
+   )
+   if($packageAndFeatures -match '\[(.*?)\]')
+   {
+      return ($matches[1] -split ",")
+   }
+   return $()
+}
+
+Export-ModuleMember -Function Show-FileContent, Install-FromVcpkg, Exit-IfError, Write-ReleaseInfoJson, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Invoke-Powershell, Write-Banner, Write-Message, Write-Debug, NL, Get-Features, Get-PSObjectAsFormattedList, Run-ScriptIfExists

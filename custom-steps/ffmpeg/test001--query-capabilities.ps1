@@ -1,5 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
+    [Parameter(Mandatory=$true)][string]$PackageAndFeatures,
     [Parameter(Mandatory=$true)][string]$ModulesRoot,
     [Parameter(Mandatory=$true)][string]$FFMpegExePath,
     [Parameter(Mandatory=$false)][string]$OutputDir = "test-output"
@@ -32,8 +33,9 @@ $tests = @(
             " libvorbis "
             " libvpx "
             " libvpx-vp9 "
+            " png "
         )
-        NotExpectedValues = @(" hevc "," h264 ")
+        NotExpectedValues = @(" h264 ")
         IsEnabled = $true
     },
     @{
@@ -43,7 +45,6 @@ $tests = @(
             "aac_mf"
             "mp3_mf"
             "h264_mf"
-            "hevc_mf"
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnWindowsOS)
@@ -54,7 +55,6 @@ $tests = @(
         ExpectedValues = @(
             " aac_at "
             " h264_videotoolbox "
-            " hevc_videotoolbox "
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnMacOS)
@@ -66,7 +66,6 @@ $tests = @(
             " aac "
             " aac_fixed "
             " aac_latm "
-            " hevc "
             " libaom-av1 "
             " libdav1d "
             " libopus "
@@ -74,6 +73,7 @@ $tests = @(
             " libvpx "
             " libvpx-vp9 "
             " mp3 "
+            " png "
             "pcm_"
             " vp8 "
             " vp9 "
@@ -94,6 +94,7 @@ $tests = @(
         Name = "Muxers"
         CmdOption = "-muxers"
         ExpectedValues = @(
+            " image2 "
             " matroska "
             " mkvtimestamp_v2 "
             " mp3 "
@@ -110,7 +111,7 @@ $tests = @(
         CmdOption = "-demuxers"
         ExpectedValues = @(
             " aac "
-            " hevc "
+            " image2 "
             " matroska,webm "
             " mov,mp4,m4a,3gp,3g2,mj2 "
             " mp3 "
@@ -141,6 +142,51 @@ $tests = @(
         IsEnabled = (Get-IsOnMacOS)
     }
 )
+
+$features = Get-Features $PackageAndFeatures
+$tests += 
+@{
+   Name = "EncodersMacH264"
+   CmdOption = "-encoders"
+   ExpectedValues = ($features -contains "encoder-h264-videotoolbox") ? @( "h264_videotoolbox" ) : @()
+   NotExpectedValues = ($features -contains "encoder-h264-videotoolbox") ? @() : @( "h264_videotoolbox" )
+   IsEnabled = (Get-IsOnWindowsOS)
+},
+@{
+   Name = "EncodersWinH264"
+   CmdOption = "-encoders"
+   ExpectedValues = ($features -contains "encoder-h264-mf") ? @( "h264_mf" ) : @()
+   NotExpectedValues = ($features -contains "encoder-h264-mf") ? @() : @( "h264_mf" )
+   IsEnabled = (Get-IsOnWindowsOS)
+},
+@{
+   Name = "EncodersMacHEVC"
+   CmdOption = "-encoders"
+   ExpectedValues = ($features -contains "encoder-hevc-videotoolbox") ? @( "hevc_videotoolbox" ) : @()
+   NotExpectedValues = ($features -contains "encoder-hevc-videotoolbox") ? @() : @( "hevc_videotoolbox" )
+   IsEnabled = (Get-IsOnMacOS)
+},
+@{
+   Name = "EncodersMacHEVC"
+   CmdOption = "-encoders"
+   ExpectedValues = ($features -contains "encoder-hevc-videotoolbox") ? @( "hevc_videotoolbox" ) : @()
+   NotExpectedValues = ($features -contains "encoder-hevc-videotoolbox") ? @() : @( "hevc_videotoolbox" )
+   IsEnabled = (Get-IsOnMacOS)
+},
+{
+   Name = "DecodersHEVC"
+   CmdOption = "-decoders"
+   ExpectedValues = ($features -contains "decoder-hevc") ? @( " hevc " ) : @()
+   NotExpectedValues = ($features -contains "decoder-hevc") ? @() : @( " hevc " )
+   IsEnabled = $true
+},
+{
+   Name = "DemuxersHEVC"
+   CmdOption = "-demuxers"
+   ExpectedValues = ($features -contains "demuxer-hevc") ? @( " hevc " ) : @()
+   NotExpectedValues = ($features -contains "demuxer-hevc") ? @() : @( " hevc " )
+   IsEnabled = $true
+}
 
 $runMsg     = " RUN      "
 $successMsg = "       OK "

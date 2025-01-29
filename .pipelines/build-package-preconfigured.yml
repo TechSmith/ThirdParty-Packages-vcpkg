@@ -11,8 +11,10 @@ parameters:
   type: string
   values:
   - dawn
-  - ffmpeg
   - ffmpeg-cloud-gpl
+  - ffmpeg-desktop-base
+  - ffmpeg-desktop-hevc
+  - ffmpeg-wasm-base
   - glslang
   - hunspell
   - hunspell-debug

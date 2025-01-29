@@ -712,6 +712,216 @@
       "dependencies": [
         "zlib"
       ]
+    },
+    "tsc-base": {
+      "description": "The base set of features for all TSC FFmpeg builds",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "avcodec",
+            "avdevice",
+            "avfilter",
+            "avformat",
+            "avresample",
+            "swscale",
+            "swresample"
+          ]
+        }
+      ]
+    },
+    "tsc-desktop-base": {
+      "description": "The base set of features for all TSC desktop FFmpeg builds",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "tsc-base",
+            "aom",
+            "dav1d",
+            "ffmpeg",
+            "ffplay",
+            "ffprobe",
+            "image2",
+            "mp3lame",
+            "opus",
+            "png",
+            "vorbis",
+            "vpx",
+            "zlib",
+            "encoder-aac",
+            "decoder-aac",
+            "decoder-mp3",
+            "decoder-pcm",
+            "decoder-vp8",
+            "decoder-vp9",
+            "muxer-matroska",
+            "muxer-mov",
+            "muxer-mp3",
+            "muxer-mp4",
+            "muxer-mpegts",
+            "muxer-mkvtimestamp-v2",
+            "muxer-rtp-mpegts",
+            "muxer-webm",
+            "muxer-matroska",
+            "demuxer-aac",
+            "demuxer-mov",
+            "demuxer-mp3",
+            "demuxer-mpegts",
+            "demuxer-webm"
+          ]
+        }
+      ]
+    },
+    "tsc-desktop-win": {
+      "description": "The base set of features for all TSC desktop builds for windows",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "tsc-desktop-base",
+            "encoder-aac-mf",
+            "encoder-h264-mf",
+            "encoder-hevc-mf",
+            "encoder-mp3-mf"
+          ]
+        }
+      ]
+    },
+    "tsc-desktop-mac": {
+      "description": "The base set of features for all TSC desktop builds for mac",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "tsc-desktop-base",
+            "encoder-aac-at",
+            "encoder-h264-videotoolbox",
+            "encoder-hevc-videotoolbox",
+            "decoder-aac-at"
+          ]
+        }
+      ]
+    },
+    "tsc-wasm-base": {
+      "description": "The base set of features for all TSC wasm builds",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "tsc-base",
+            "encoder-aac",
+            "decoder-aac",
+            "muxer-mov",
+            "muxer-mp4",
+            "demuxer-mov"
+          ]
+        }
+      ]
+    },
+    "encoder-aac": {
+      "description": "Enable encoder: aac"
+    },
+    "encoder-aac-at": {
+      "description": "Enable encoder: aac_at"
+    },
+    "encoder-aac-mf": {
+      "description": "Enable encoder: aac_mf"
+    },
+    "encoder-h264-mf": {
+      "description": "Enable encoder: h264_mf"
+    },
+    "encoder-h264-videotoolbox": {
+      "description": "Enable encoder: h264_videotoolbox"
+    },
+    "encoder-hevc-mf": {
+      "description": "Enable encoder: hevc_mf"
+    },
+    "encoder-hevc-videotoolbox": {
+      "description": "Enable encoder: hevc_videotoolbox"
+    },
+    "encoder-mp3-mf": {
+      "description": "Enable encoder: mp3_mf"
+    },
+    "decoder-aac": {
+      "description": "Enable decoders for aac"
+    },
+    "decoder-aac-at": {
+      "description": "Enable decoder: aac_at"
+    },
+    "decoder-hevc": {
+      "description": "Enable decoder: hevc"
+    },
+    "decoder-mp3": {
+      "description": "Enable decoder: mp3*"
+    },
+    "decoder-pcm": {
+      "description": "Enable decoder: pcm*"
+    },
+    "decoder-vp8": {
+      "description": "Enable decoder: vp8"
+    },
+    "decoder-vp9": {
+      "description": "Enable decoder: vp9"
+    },
+    "muxer-matroska": {
+      "description": "Enable muxer: matroska"
+    },
+    "muxer-mov": {
+      "description": "Enable muxer: mov"
+    },
+    "muxer-mp3": {
+      "description": "Enable muxer: mp3"
+    },
+    "muxer-mp4": {
+      "description": "Enable muxer: mp4"
+    },
+    "muxer-mpegts": {
+      "description": "Enable muxer: mpegts"
+    },
+    "muxer-mkvtimestamp-v2": {
+      "description": "Enable muxer: mkvtimestamp_v2"
+    },
+    "muxer-rtp-mpegts": {
+      "description": "Enable muxer: rtp_mpegts"
+    },
+    "muxer-webm": {
+      "description": "Enable muxer: webm*"
+    },
+    "demuxer-aac": {
+      "description": "Enable demuxer: aac"
+    },
+    "demuxer-hevc": {
+      "description": "Enable demuxer: hevc"
+    },
+    "demuxer-matroska": {
+      "description": "Enable demuxer: matroska"
+    },
+    "demuxer-mov": {
+      "description": "Enable demuxer: mov"
+    },
+    "demuxer-mp3": {
+      "description": "Enable demuxer: mp3"
+    },
+    "demuxer-mpegts": {
+      "description": "Enable demuxers for: mpegts"
+    },
+    "demuxer-webm": {
+      "description": "Enable demuxer: webm*"
+    },
+    "image2": {
+      "description": "Enable muxing and demuxing images with image2"
+    },
+    "png": {
+      "description": "PNG encoding & decoding (requires zlib)",
+      "dependencies": [
+        "zlib"
+      ]
     }
   }
 }

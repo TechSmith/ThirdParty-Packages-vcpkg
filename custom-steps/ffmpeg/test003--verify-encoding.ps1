@@ -1,5 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
+    [Parameter(Mandatory=$true)][string]$PackageAndFeatures,
     [Parameter(Mandatory=$true)][string]$ModulesRoot,
     [Parameter(Mandatory=$true)][string]$FFMpegExePath,
     [Parameter(Mandatory=$false)][string]$OutputDir = "test-output"
@@ -17,11 +18,12 @@ if (-Not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir
 }
 
-$inputVideo = "$PSScriptRoot/../../resources/BigBuckBunnyClip-hevc-240p.mp4"
+$inputVideo = "$PSScriptRoot/../../resources/BigBuckBunnyClip-vp9-240p.mp4"
 $ffmpegExe = "$FFMpegExePath -hide_banner"
 $ffmpegCmd = "$ffmpegExe -i `"$inputVideo`" -r 30 -b:a 192k"
 
 # Define the encoding commands with explicit format specification
+$features = ($PackageAndFeatures -match '\[(.*?)\]')[1] -split ','
 $tests = @(
     # --- M4A Tests ---
     @{
@@ -99,7 +101,7 @@ $finalExitCode = 0
 Write-Host "Running encoding tests..."
 foreach ($test in $tests) {
     $OutFilePath = "$OutputDir/$($test.OutFilename)"
-    $cmd = "$($test.CmdPrefix) `"$OutFilePath`" > `"$OutFilePath.txt`""
+    $cmd = "$($test.CmdPrefix) `"$OutFilePath`""
     Write-Host "[ $runMsg ] $($test.Name) ==> $OutFilePath"
     $startTime = Get-Date
 
