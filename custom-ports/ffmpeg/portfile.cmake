@@ -43,8 +43,6 @@ string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a 
 list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, and build up from there (it disables these things: https://stackoverflow.com/questions/24849129/compile-ffmpeg-without-most-codecs)
 list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
-list(APPEND OPTIONS --enable-filter=aresample --enable-filter=scale) # These are needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
-LIST(APPEND OPTIONS --enable-filter=asetrate --enable-filter=atempo) # These are needed for time stretching and pitch adjustment
 
 # === Add extra options for emscripten builds ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
@@ -184,6 +182,19 @@ set(FEATURE_DEMUXER_MAP
 map_features_to_items("${FEATURE_DEMUXER_MAP}" "${FEATURES}" TSC_DEMUXERS)
 foreach(DEMUXER IN LISTS TSC_DEMUXERS)
     list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
+endforeach()
+
+# --- Filters ---
+set(TSC_FILTERS "")
+set(FEATURE_FILTER_MAP
+   "filter-aresample=aresample" # aresample and scale are needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
+   "filter-scale=scale"
+   "filter-asetrate=asetrate" # Needed for pitch adjustment
+   "filter-atempo=atempo" # Needed for time stretching
+)
+map_features_to_items("${FEATURE_FILTER_MAP}" "${FEATURES}" TSC_FILTERS)
+foreach(AFILTER IN LISTS TSC_FILTERS)
+    list(APPEND OPTIONS --enable-filter=${AFILTER})
 endforeach()
 
 # === Run emscripten build (if applicable) ===
