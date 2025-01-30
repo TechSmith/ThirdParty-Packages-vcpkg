@@ -44,6 +44,7 @@ list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, a
 list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
 list(APPEND OPTIONS --enable-filter=aresample --enable-filter=scale) # These are needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
+LIST(APPEND OPTIONS --enable-filter=asetrate --enable-filter=atempo) # These are needed for time stretching and pitch adjustment
 
 # === Add extra options for emscripten builds ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
