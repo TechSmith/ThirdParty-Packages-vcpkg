@@ -772,6 +772,8 @@
             "demuxer-mpegts",
             "demuxer-webm",
             "filter-aresample",
+            "filter-asetrate",
+            "filter-atempo",
             "filter-scale"
           ]
         }
