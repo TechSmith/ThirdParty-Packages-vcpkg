@@ -22,6 +22,8 @@ if(VCPKG_HOST_IS_OSX)
 else()
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
+        OPTIONS
+            -DGGML_VULKAN=ON
     )
 endif()
 
