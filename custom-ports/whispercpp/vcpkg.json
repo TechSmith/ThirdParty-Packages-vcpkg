@@ -5,6 +5,7 @@
   "description": "A high-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.",
   "homepage": "https://github.com/ggerganov/whisper.cpp",
   "dependencies": [
+    "vulkan",
     {
       "name": "vcpkg-cmake",
       "host": true
