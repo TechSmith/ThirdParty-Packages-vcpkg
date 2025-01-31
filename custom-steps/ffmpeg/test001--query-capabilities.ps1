@@ -122,6 +122,18 @@ $tests = @(
         IsEnabled = $true
     },
     @{
+        Name = "Filters"
+        CmdOption = "-filters"
+        ExpectedValues = @(
+            " atempo "
+            " asetrate "
+            " aresample "
+            " scale "
+        )
+        NotExpectedValues = @()
+        IsEnabled = $true
+    },
+    @{
         Name = "HwaccelsWin"
         CmdOption = "-hwaccels"
         ExpectedValues = @(

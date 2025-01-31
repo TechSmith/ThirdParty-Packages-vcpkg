@@ -770,7 +770,11 @@
             "demuxer-mov",
             "demuxer-mp3",
             "demuxer-mpegts",
-            "demuxer-webm"
+            "demuxer-webm",
+            "filter-aresample",
+            "filter-asetrate",
+            "filter-atempo",
+            "filter-scale"
           ]
         }
       ]
@@ -819,7 +823,9 @@
             "decoder-aac",
             "muxer-mov",
             "muxer-mp4",
-            "demuxer-mov"
+            "demuxer-mov",
+            "filter-aresample",
+            "filter-scale"
           ]
         }
       ]
@@ -913,6 +919,18 @@
     },
     "demuxer-webm": {
       "description": "Enable demuxer: webm*"
+    },
+    "filter-aresample": {
+      "description": "Enable filter: aresample"
+    },
+    "filter-asetrate": {
+      "description": "Enable filter: asetrate"
+    },
+    "filter-atempo": {
+      "description": "Enable filter: atempo"
+    },
+    "filter-scale": {
+      "description": "Enable filter: scale"
     },
     "image2": {
       "description": "Enable muxing and demuxing images with image2"
