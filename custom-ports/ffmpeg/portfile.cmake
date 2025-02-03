@@ -149,6 +149,8 @@ foreach(DECODER IN LISTS TSC_DECODERS)
     list(APPEND OPTIONS --enable-decoder=${DECODER})
 endforeach()
 
+message("OPTIONS: ${OPTIONS}")
+
 # --- Muxers ---
 set(TSC_MUXERS "")
 set(FEATURE_MUXER_MAP
@@ -211,6 +213,22 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
         string(REPLACE "${LINE}" "# Disabled for Emscripten build ${LINE}" FILE_CONTENTS "${FILE_CONTENTS}")
     endforeach()
     file(WRITE "${SOURCE_PATH}/configure" "${FILE_CONTENTS}")
+
+    if("vpx" IN_LIST FEATURES)
+        list(APPEND OPTIONS --enable-libvpx)
+        set(WITH_VPX ON)
+    else()
+        list(APPEND OPTIONS --disable-libvpx)
+        set(WITH_VPX OFF)
+    endif()
+
+    if("opus" IN_LIST FEATURES)
+        list(APPEND --enable-libopus)
+        set(WITH_OPUS ON)
+    else()
+        list(APPEND --disable-libopus)
+        set(WITH_OPUS OFF)
+    endif()
 
     # configure
     vcpkg_execute_required_process(
