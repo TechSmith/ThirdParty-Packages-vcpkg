@@ -107,8 +107,8 @@ if("mp3lame" IN_LIST FEATURES)
 endif()
 
 if("opus" IN_LIST FEATURES)
-   list(APPEND TSC_ENCODERS libopus)
-   list(APPEND TSC_DECODERS libopus)
+   list(APPEND TSC_ENCODERS opus)
+   list(APPEND TSC_DECODERS opus)
 endif()
 
 if("vorbis" IN_LIST FEATURES)
@@ -228,10 +228,10 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
     file(WRITE "${SOURCE_PATH}/configure" "${CONFIGURE_CONTENTS}")
 
     if("opus" IN_LIST FEATURES)
-        set(OPTIONS "${OPTIONS} --enable-libopus")
+        list(APPEND OPTIONS --enable-libopus)
         set(WITH_OPUS ON)
     else()
-        set(OPTIONS "${OPTIONS} --disable-libopus")
+        list(APPEND OPTIONS --disable-libopus)
         set(WITH_OPUS OFF)
     endif()
 
