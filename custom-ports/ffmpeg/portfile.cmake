@@ -102,7 +102,7 @@ endfunction()
 
 # --- Encoders ---
 set(TSC_ENCODERS "")
-set(FEATURE_ENCODER_MAP 
+set(FEATURE_ENCODER_MAP
    "aom=libaom_av1"
    "mp3lame=libmp3lame"
    "opus=libopus"
@@ -127,7 +127,7 @@ endforeach()
 
 # --- Decoders ---
 set(TSC_DECODERS "")
-set(FEATURE_DECODER_MAP 
+set(FEATURE_DECODER_MAP
    "aom=libaom_av1"
    "dav1d=libdav1d"
    "opus=libopus"
