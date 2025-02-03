@@ -199,8 +199,18 @@ endforeach()
 
 # === Run emscripten build (if applicable) ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
-    file(COPY ${CMAKE_CURRENT_LIST_DIR}/configure_emscripten.in DESTINATION ${SOURCE_PATH}) # overwrite their configure with ours
-    file(RENAME ${SOURCE_PATH}/configure_emscripten.in ${SOURCE_PATH}/configure)
+    set(ORIG_CONFIGURE ${SOURCE_PATH}/configure)
+    file(READ "${ORIG_CONFIGURE}" FILE_CONTENTS)
+    set(LINES_TO_COMMENT_OUT
+       "check_ldflags -Wl,-z,noexecstack"
+       "check_func  gethrtime"
+       "check_func  sched_getaffinity"
+       "check_func  sysctl"
+    )
+    foreach(LINE ${LINES_TO_COMMENT_OUT})
+        string(REPLACE "${LINE}" "# Disabled for Emscripten build ${LINE}" FILE_CONTENTS "${FILE_CONTENTS}")
+    endforeach()
+    file(WRITE "${SOURCE_PATH}/configure" "${FILE_CONTENTS}")
 
     # configure
     vcpkg_execute_required_process(
