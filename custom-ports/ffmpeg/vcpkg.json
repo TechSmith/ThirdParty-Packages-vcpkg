@@ -820,10 +820,8 @@
           "features": [
             "tsc-base",
             "opus",
-            "vpx",
             "encoder-aac",
             "decoder-aac",
-            "decoder-vp9",
             "muxer-mov",
             "muxer-mp4",
             "demuxer-mov",
