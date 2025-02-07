@@ -49,6 +49,10 @@
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
+            "filename": "bin/libmp3lame.dll",
+            "fileVersion": "3.100.2.17"
+        },
+        {
             "filename": "bin/ogg.dll",
             "fileDescription": "A library for manipulating ogg bitstreams.",
             "fileVersion": "1.3.5",
