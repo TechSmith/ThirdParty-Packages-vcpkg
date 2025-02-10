@@ -11,6 +11,7 @@ vcpkg_extract_source_archive(SOURCE_PATH
         use-libiconv-on-windows.patch
         libintl.patch
         0005-pr-4133-4143-avoid-package-packaging.patch # Backport from 2.81.1
+        tsc-allow-threadpriority-to-fail-windows.patch
 )
 
 set(LANGUAGES C CXX)
