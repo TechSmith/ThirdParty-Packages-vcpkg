@@ -156,7 +156,7 @@
       }
     },
     {
-      "name": "pango",
+      "name": "pango-desktop",
       "mac": {
         "package": "pango",
         "linkType": "dynamic",
