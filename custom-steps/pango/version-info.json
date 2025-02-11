@@ -1,164 +1,170 @@
 {
-    "files": [
-        {
-            "filename": "bin/brotlicommon.dll",
-            "fileDescription": "Brotli common dictionary library",
-            "fileVersion": "1.1.0",
-            "productName": "Brotli",
-            "productVersion": "1.1.0",
-            "copyright": "Copyright (c) 2016 Google Inc."
-        },
-        {
-            "filename": "bin/brotlidec.dll",
-            "fileDescription": "Brotli decoder library",
-            "fileVersion": "1.1.0",
-            "productName": "Brotli",
-            "productVersion": "1.1.0",
-            "copyright": "Copyright (c) 2016 Google Inc."
-        },
-        {
-            "filename": "bin/brotlienc.dll",
-            "fileDescription": "Brotli encoder library",
-            "fileVersion": "1.1.0",
-            "productName": "Brotli",
-            "productVersion": "1.1.0",
-            "copyright": "Copyright (c) 2016 Google Inc."
-        },
-        {
-            "filename": "bin/bz2.dll",
-            "fileDescription": "A program and library for lossless, block-sorting data compression",
-            "fileVersion": "1.0.8",
-            "productName": "Bzip2",
-            "productVersion": "1.0.8",
-            "copyright": "Copyright (c) 1996-2019 Julian Seward"
-        },
-        {
-            "filename": "bin/cairo-2.dll",
-            "fileDescription": "Cairo Graphics Library",
-            "fileVersion": "1.17.8",
-            "productName": "Cairo",
-            "productVersion": "1.17.8"
-        },
-        {
-            "filename": "bin/cairo-gobject-2.dll",
-            "fileDescription": "Cairo gobject",
-            "fileVersion": "1.17.8",
-            "productName": "Cairo",
-            "productVersion": "1.17.8"
-        },
-        {
-            "filename": "bin/cairo-script-interpreter-2.dll",
-            "fileDescription": "Cairo script interpreter",
-            "fileVersion": "1.17.8",
-            "productName": "Cairo",
-            "productVersion": "1.17.8"
-        },
-        {
-            "filename": "bin/charset-1.dll",
-            "fileDescription": "libcharset",
-            "fileVersion": "1.5",
-            "productName": "libcharset",
-            "productVersion": "1.5"
-        },
-        {
-            "filename": "bin/ffi-8.dll",
-            "fileDescription": "Portable foreign function interface library.",
-            "fileVersion": "3.4.4",
-            "productName": "libffi",
-            "productVersion": "3.4.4",
-            "copyright": "Copyright (c) 2008-2019, 2021, 2022 Anthony Green and Red Hat, Inc."
-        },
-        {
-            "filename": "bin/fontconfig-1.dll",
-            "fileDescription": "Font configuration and customization library",
-            "fileVersion": "2.14.2",
-            "productName": "FontConfig",
-            "productVersion": "2.14.2",
-            "copyright": "Copyright (c) 2001 Keith Packard"
-        },
-        {
-            "filename": "bin/fribidi-0.dll",
-            "fileDescription": "GNU FriBidi",
-            "fileVersion": "1.0.13",
-            "productName": "FriBidi",
-            "productVersion": "1.0.13",
-            "copyright": "Copyright (c) 2004 Sharif FarsiWeb, Inc"
-        },
-        {
-            "filename": "bin/getopt.dll",
-            "fileDescription": "Getopt for Microsoft C",
-            "fileVersion": "1.1",
-            "productName": "Getopt",
-            "productVersion": "1.1"
-        },
-        {
-            "filename": "bin/harfbuzz.dll",
-            "fileDescription": "HarfBuzz",
-            "fileVersion": "8.3.0",
-            "productName": "HarfBuzz",
-            "productVersion": "8.3.0",
-            "copyright": "Copyright (c) 2011 Google, Inc."
-        },
-        {
-            "filename": "bin/harfbuzz-subset.dll",
-            "fileDescription": "HarfBuzz",
-            "fileVersion": "8.3.0",
-            "productName": "HarfBuzz",
-            "productVersion": "8.3.0",
-            "copyright": "Copyright (c) 2011 Google, Inc."
-        },
-        {
-            "filename": "bin/libexpat.dll",
-            "fileDescription": "Expat XML Parser",
-            "productName": "Expat"
-        },
-        {
-            "filename": "bin/libpng16.dll",
-            "fileDescription": "PNG image compression library",
-            "fileVersion": "1.6.40",
-            "productName": "LibPNG",
-            "productVersion": "1.6.40",
-            "copyright": "Copyright (c) 1998-2009 Glenn Randers-Pehrson et al."
-        },
-        {
-            "filename": "bin/pcre2-16.dll",
-            "fileDescription": "Perl-Compatible Regular Expressions",
-            "fileVersion": "10.42",
-            "productName": "PCRE2",
-            "productVersion": "10.42",
-            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
-        },
-        {
-            "filename": "bin/pcre2-32.dll",
-            "fileDescription": "Perl-Compatible Regular Expressions",
-            "fileVersion": "10.42",
-            "productName": "PCRE2",
-            "productVersion": "10.42",
-            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
-        },
-        {
-            "filename": "bin/pcre2-8.dll",
-            "fileDescription": "Perl-Compatible Regular Expressions",
-            "fileVersion": "10.42",
-            "productName": "PCRE2",
-            "productVersion": "10.42",
-            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
-        },
-        {
-            "filename": "bin/pcre2-posix.dll",
-            "fileDescription": "Posix compatible interface to libpcre2-8",
-            "fileVersion": "10.42",
-            "productName": "PCRE2-POSIX",
-            "productVersion": "10.42",
-            "copyright": "Copyright (c) 2016-2021 University of Cambridge"
-        },
-        {
-            "filename": "bin/pixman-1-0.dll",
-            "fileDescription": "Pixman",
-            "fileVersion": "0.43.2",
-            "productName": "Pixman",
-            "productVersion": "0.43.2",
-            "copyright": "Copyright (c) 2008 Red Hat, Inc."
-        }
-    ]
+  "files": [
+    {
+      "filename": "bin/brotlicommon.dll",
+      "fileDescription": "Brotli common dictionary library",
+      "fileVersion": "1.1.0",
+      "productName": "Brotli",
+      "productVersion": "1.1.0",
+      "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
+    },
+    {
+      "filename": "bin/brotlidec.dll",
+      "fileDescription": "Brotli decoder library",
+      "fileVersion": "1.1.0",
+      "productName": "Brotli",
+      "productVersion": "1.1.0",
+      "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
+    },
+    {
+      "filename": "bin/brotlienc.dll",
+      "fileDescription": "Brotli encoder library",
+      "fileVersion": "1.1.0",
+      "productName": "Brotli",
+      "productVersion": "1.1.0",
+      "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
+    },
+    {
+      "filename": "bin/bz2.dll",
+      "fileDescription": "A program and library for lossless, block-sorting data compression",
+      "fileVersion": "1.0.8",
+      "productName": "Bzip2",
+      "productVersion": "1.0.8",
+      "copyright": "Copyright (C) 1996-2019 Julian R Seward"
+    },
+    {
+      "filename": "bin/cairo-2.dll",
+      "fileDescription": "Multi-platform 2D graphics library",
+      "fileVersion": "1.18.2",
+      "productName": "Cairo",
+      "productVersion": "1.18.2",
+      "copyright": "Copyright (c) 2003-2025 The Cairo Authors"
+    },
+    {
+      "filename": "bin/cairo-gobject-2.dll",
+      "fileDescription": "Cairo gobject",
+      "fileVersion": "1.18.2",
+      "productName": "Cairo",
+      "productVersion": "1.18.2",
+      "copyright": "Copyright (c) 2003-2025 The Cairo Authors"
+    },
+    {
+      "filename": "bin/cairo-script-interpreter-2.dll",
+      "fileDescription": "Cairo script interpreter",
+      "fileVersion": "1.18.2",
+      "productName": "Cairo",
+      "productVersion": "1.18.2",
+      "copyright": "Copyright (c) 2003-2025 The Cairo Authors"
+    },
+    {
+      "filename": "bin/charset-1.dll",
+      "fileDescription": "libcharset",
+      "fileVersion": "1.5",
+      "productName": "libiconv: character set conversion library",
+      "productVersion": "1.17.0.0",
+      "copyright": "Copyright (C) 1999-2022"
+    },
+    {
+      "filename": "bin/ffi-8.dll",
+      "fileDescription": "libffi",
+      "fileVersion": "3.4.6",
+      "productName": "libffi: The portable foreign function interface library",
+      "productVersion": "3.4.6",
+      "copyright": "Copyright (c) 1996-2024  Anthony Green, Red Hat, Inc and others."
+    },
+    {
+      "filename": "bin/fontconfig-1.dll",
+      "fileDescription": "Fontconfig",
+      "fileVersion": "2.15.0",
+      "productName": "Font configuration and customization library",
+      "productVersion": "2.15.0",
+      "copyright": "Copyright (c) 2000-2020 Keith Packard, Patrick Lam and others"
+    },
+    {
+      "filename": "bin/fribidi-0.dll",
+      "fileDescription": "Unicode Bidirectional Algorithm Library",
+      "fileVersion": "1.0.16",
+      "productName": "GNU FriBidi",
+      "productVersion": "1.0.16",
+      "copyright": "Copyright (C) 2004 Sharif FarsiWeb, Inc"
+    },
+    {
+      "filename": "bin/girepository-2.0-0.dll",
+      "fileDescription": "GObject Introspection repository parser",
+      "fileVersion": "2.80.0.0",
+      "productName": "GLib",
+      "productVersion": "2.80.0",
+      "copyright": "Copyright (C) 2005-2025 Matthias Clasen, Red Hat, Inc. and others"
+    },
+    {
+      "filename": "bin/harfbuzz-subset.dll",
+      "fileDescription": "HarfBuzz font subsetter",
+      "fileVersion": "10.2.0",
+      "productName": "Harfbuzz",
+      "productVersion": "10.2.0",
+      "copyright": "Copyright © 2010-2022 Google, Inc. and others"
+    },
+    {
+      "filename": "bin/harfbuzz.dll",
+      "fileDescription": "HarfBuzz text shaping library",
+      "fileVersion": "10.2.0",
+      "productName": "Harfbuzz",
+      "productVersion": "10.2.0",
+      "copyright": "Copyright © 2010-2022 Google, Inc. and others"
+    },
+    {
+      "filename": "bin/libexpat.dll",
+      "fileDescription": "Expat XML parser",
+      "productName": "Expat",
+      "copyright": "Copyright (c) 2001-2022 Expat maintainers"
+    },
+    {
+      "filename": "bin/libpng16.dll",
+      "fileDescription": "Loads and saves PNG files",
+      "fileVersion": "1.6.45",
+      "productName": "libpng",
+      "productVersion": "1.6.45",
+      "copyright": "Copyright (c) 1995-2025 The PNG Reference Library Authors."
+    },
+    {
+      "filename": "bin/pcre2-16.dll",
+      "fileDescription": "PCRE2 - Perl compatible regular expressions C library (2nd API) with 16 bit character support",
+      "fileVersion": "12.0.2",
+      "productName": "libpcre2-16",
+      "productVersion": "12.0.2",
+      "copyright": "Copyright (c) 1997-2024 University of Cambridge and others"
+    },
+    {
+      "filename": "bin/pcre2-32.dll",
+      "fileDescription": "PCRE2 - Perl compatible regular expressions C library (2nd API) with 32 bit character support",
+      "fileVersion": "12.0.2",
+      "productName": "libpcre2-32",
+      "productVersion": "12.0.2",
+      "copyright": "Copyright (c) 1997-2024 University of Cambridge and others"
+    },
+    {
+      "filename": "bin/pcre2-8.dll",
+      "fileDescription": "PCRE2 - Perl compatible regular expressions C library (2nd API) with 8 bit character support",
+      "fileVersion": "12.0.2",
+      "productName": "libpcre2-8",
+      "productVersion": "12.0.2",
+      "copyright": "Copyright (c) 1997-2024 University of Cambridge and others"
+    },
+    {
+      "filename": "bin/pcre2-posix.dll",
+      "fileDescription": "Posix compatible interface to libpcre2-8",
+      "fileVersion": "3.5.0",
+      "productName": "libpcre2-posix",
+      "productVersion": "3.5.0",
+      "copyright": "Copyright (c) 1997-2024 University of Cambridge and others"
+    },
+    {
+      "filename": "bin/pixman-1-0.dll",
+      "fileDescription": "The pixman library (version 1)",
+      "fileVersion": "0.43.4",
+      "productName": "Pixman",
+      "productVersion": "0.43.4",
+      "copyright": "Copyright (c) 1997-2010 Red Hat, Inc. and others"
+    }
+  ]
 }
