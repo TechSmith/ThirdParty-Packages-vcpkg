@@ -820,7 +820,6 @@
           "features": [
             "tsc-base",
             "opus",
-            "vpx",
             "encoder-aac",
             "decoder-aac",
             "decoder-vp9",
