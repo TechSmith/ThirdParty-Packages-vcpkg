@@ -149,8 +149,6 @@ foreach(DECODER IN LISTS TSC_DECODERS)
     list(APPEND OPTIONS --enable-decoder=${DECODER})
 endforeach()
 
-message("OPTIONS: ${OPTIONS}")
-
 # --- Muxers ---
 set(TSC_MUXERS "")
 set(FEATURE_MUXER_MAP
