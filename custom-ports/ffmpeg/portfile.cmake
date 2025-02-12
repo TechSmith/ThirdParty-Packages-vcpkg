@@ -199,6 +199,8 @@ endforeach()
 
 # === Run emscripten build (if applicable) ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
+
+    # Patch the configure script to work with Emscripten
     set(ORIG_CONFIGURE ${SOURCE_PATH}/configure)
     file(READ "${ORIG_CONFIGURE}" FILE_CONTENTS)
     set(LINES_TO_COMMENT_OUT
@@ -212,39 +214,6 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
     endforeach()
     file(WRITE "${SOURCE_PATH}/configure" "${FILE_CONTENTS}")
 
-    # configure
-    vcpkg_execute_required_process(
-        COMMAND emconfigure ./configure ${OPTIONS}
-        WORKING_DIRECTORY "${SOURCE_PATH}"
-        LOGNAME "configure-${TARGET_TRIPLET}-rel"
-        SAVE_LOG_FILES ffbuild/config.log
-    )
-
-    # make
-    vcpkg_execute_required_process(
-       COMMAND make -j8
-       WORKING_DIRECTORY "${SOURCE_PATH}"
-       LOGNAME "build-${TARGET_TRIPLET}-rel"
-       SAVE_LOG_FILES ffbuild/build.log
-    )
-
-    # install
-    vcpkg_execute_required_process(
-       COMMAND make install
-       WORKING_DIRECTORY "${SOURCE_PATH}"
-       LOGNAME "install-${TARGET_TRIPLET}-rel"
-       SAVE_LOG_FILES ffbuild/build.log
-    )
-
-    # Handle usage and copyright
-    file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-    set(LICENSE_FILE "COPYING.LGPLv2.1")
-    vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/${LICENSE_FILE}")
-
-    # Remove unused files with absolute paths
-    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig")
-
-    return()
 endif()
 
 # Convert OPTIONS back to a string
