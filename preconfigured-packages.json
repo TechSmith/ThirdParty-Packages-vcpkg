@@ -358,6 +358,20 @@
           "debug": true
         }
       }
-    }
+    },
+    {
+      "name": "matroska",
+      "mac": {
+        "package": "matroska",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "matroska",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+
   ]
 }
