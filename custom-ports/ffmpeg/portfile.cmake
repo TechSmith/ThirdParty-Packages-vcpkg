@@ -19,6 +19,7 @@ vcpkg_from_github(
         0041-add-const-for-opengl-definition.patch
         0043-fix-miss-head.patch
         1001-tsc-disable-aac-non-lc-profiles.patch
+        1002-tsc-dont-delay-cue-parsing.patch
 )
 
 if(SOURCE_PATH MATCHES " ")
