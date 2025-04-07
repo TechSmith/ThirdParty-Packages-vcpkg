@@ -15,6 +15,7 @@ parameters:
   - ffmpeg-desktop-base
   - ffmpeg-desktop-hevc
   - ffmpeg-wasm-base
+  - ffmpeg-wasm-image2video
   - glslang
   - hunspell
   - hunspell-debug

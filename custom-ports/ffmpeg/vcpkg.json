@@ -823,15 +823,27 @@
             "encoder-aac",
             "decoder-aac",
             "decoder-vp9",
-            "decoder-mp3",
-            "decoder-pcm",
             "muxer-mov",
             "muxer-mp4",
-            "demuxer-mp3",
             "demuxer-mov",
-            "demuxer-wav",
             "filter-aresample",
             "filter-scale"
+          ]
+        }
+      ]
+    },
+    "tsc-wasm-image2video": {
+      "description": "The set of features for the image to video microapp",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "tsc-wasm-base",
+            "decoder-mp3",
+            "decoder-pcm",
+            "demuxer-mp3",
+            "demuxer-wav"
           ]
         }
       ]

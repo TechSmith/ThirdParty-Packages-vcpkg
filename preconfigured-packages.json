@@ -69,6 +69,16 @@
       }
     },
     {
+      "name": "ffmpeg-wasm-image2video",
+      "wasm": {
+        "package": "ffmpeg[tsc-wasm-image2video]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-dynamic",
+        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c"
+      }
+    },
+    {
       "name": "ffmpeg-cloud-gpl",
       "win": {
         "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
