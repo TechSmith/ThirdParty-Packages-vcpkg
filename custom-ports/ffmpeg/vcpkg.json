@@ -823,8 +823,10 @@
             "encoder-aac",
             "decoder-aac",
             "decoder-vp9",
+            "decoder-mp3",
             "muxer-mov",
             "muxer-mp4",
+            "demuxer-mp3",
             "demuxer-mov",
             "filter-aresample",
             "filter-scale"
