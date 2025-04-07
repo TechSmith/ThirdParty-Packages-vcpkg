@@ -177,6 +177,7 @@ set(FEATURE_DEMUXER_MAP
    "demuxer-mp3=mp3"
    "demuxer-mpegts=mpegts,mpegtsraw"
    "demuxer-webm=webm*"
+   "demuxer-wav=wav"
    "image2=image2"
 )
 map_features_to_items("${FEATURE_DEMUXER_MAP}" "${FEATURES}" TSC_DEMUXERS)

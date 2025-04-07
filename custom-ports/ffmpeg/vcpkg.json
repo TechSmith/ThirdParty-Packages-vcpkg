@@ -824,10 +824,12 @@
             "decoder-aac",
             "decoder-vp9",
             "decoder-mp3",
+            "decoder-pcm",
             "muxer-mov",
             "muxer-mp4",
             "demuxer-mp3",
             "demuxer-mov",
+            "demuxer-wav",
             "filter-aresample",
             "filter-scale"
           ]
@@ -923,6 +925,9 @@
     },
     "demuxer-webm": {
       "description": "Enable demuxer: webm*"
+    },
+    "demuxer-wav": {
+      "description": "Enable demuxer: wav"
     },
     "filter-aresample": {
       "description": "Enable filter: aresample"
