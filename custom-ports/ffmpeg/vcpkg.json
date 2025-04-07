@@ -832,6 +832,22 @@
         }
       ]
     },
+    "tsc-wasm-image2video": {
+      "description": "The set of features for the image to video microapp",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "tsc-wasm-base",
+            "decoder-mp3",
+            "decoder-pcm",
+            "demuxer-mp3",
+            "demuxer-wav"
+          ]
+        }
+      ]
+    },
     "encoder-aac": {
       "description": "Enable encoder: aac"
     },
@@ -921,6 +937,9 @@
     },
     "demuxer-webm": {
       "description": "Enable demuxer: webm*"
+    },
+    "demuxer-wav": {
+      "description": "Enable demuxer: wav"
     },
     "filter-aresample": {
       "description": "Enable filter: aresample"
