@@ -757,6 +757,7 @@
             "decoder-pcm",
             "decoder-vp8",
             "decoder-vp9",
+            "decoder-qtrle",
             "muxer-matroska",
             "muxer-mov",
             "muxer-mp3",
@@ -766,6 +767,7 @@
             "muxer-rtp-mpegts",
             "muxer-webm",
             "muxer-matroska",
+            "demuxer-wav",
             "demuxer-aac",
             "demuxer-mov",
             "demuxer-mp3",
@@ -886,6 +888,9 @@
     },
     "decoder-pcm": {
       "description": "Enable decoder: pcm*"
+    },
+    "decoder-qtrle": {
+      "description": "Enable decoder: qtrle" 
     },
     "decoder-vp8": {
       "description": "Enable decoder: vp8"
