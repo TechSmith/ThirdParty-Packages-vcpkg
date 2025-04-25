@@ -142,6 +142,7 @@ set(FEATURE_DECODER_MAP
    "decoder-vp8=vp8" # On2 VP8 decoding (different from libvpx)
    "decoder-vp9=vp9" # Google VP9 decoding (different from libvpx)
    "png=png"
+   "decoder-qtrle=qtrle"
 )
 map_features_to_items("${FEATURE_DECODER_MAP}" "${FEATURES}" TSC_DECODERS)
 foreach(DECODER IN LISTS TSC_DECODERS)
