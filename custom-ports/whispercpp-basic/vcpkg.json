@@ -1,6 +1,6 @@
 {
   "name": "whispercpp-basic",
-  "version": "1.7.1",
+  "version": "1.7.4",
   "port-version": 1,
   "description": "High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.  This dll is built without enhanced CPU support for AVX, AVX2, FMA or F16C.",
   "homepage": "https://github.com/ggerganov/whisper.cpp",
