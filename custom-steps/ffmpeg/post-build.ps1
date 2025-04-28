@@ -27,16 +27,19 @@ if((Get-IsOnWindowsOS)) {
 }
 
 if((Get-IsOnMacOS)) {
-    Write-Message "> Updating library paths in ffmpeg executable..."
-    $binaryPath = "$buildArtifactsPath/tools/ffmpeg/ffmpeg"
-    $otoolOutput = & "otool" "-L" $binaryPath
-    foreach ($line in $otoolOutput) {
-        if ($line -match '@rpath\/([^\.]+)\.[^\/]*\.dylib') {
-            $originalPath = $matches[0]
-            $newPath = "@rpath/$($matches[1]).dylib"
-    
-            Write-Output ">> Updating $originalPath to $newPath"
-            & "install_name_tool" "-change" $originalPath $newPath $binaryPath
+    Write-Message  "> Updating library paths in /tools/ffmpeg/..."
+    $folderPath = "$buildArtifactsPath/tools/ffmpeg/"
+    $files = Get-ChildItem -Path $folderPath -Attributes !Hidden
+    foreach ($binaryPath in $files) {
+        Write-Output "   > Updating: $binaryPath"
+        $otoolOutput = & "otool" "-L" $binaryPath
+        foreach ($line in $otoolOutput) {
+            if ($line -match '@rpath\/([^\.]+)\.[^\/]*\.dylib') {
+                $originalPath = $matches[0]
+                $newPath = "@rpath/$($matches[1]).dylib"
+                Write-Output "      >> Updating $originalPath to $newPath"
+                & "install_name_tool" "-change" $originalPath $newPath $binaryPath
+            }
         }
     }
     $pathToFFmpegExe = "$pathToTools/ffmpeg"
