@@ -276,6 +276,19 @@
       }
     },
     {
+      "name": "libvorbis",
+      "mac": {
+        "package": "libvorbis",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "libvorbis",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "whispercpp",
       "mac": {
         "package": "whispercpp",
