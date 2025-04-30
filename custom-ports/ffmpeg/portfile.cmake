@@ -104,8 +104,8 @@ set(TSC_ENCODERS "")
 set(FEATURE_ENCODER_MAP
    "aom=libaom_av1"
    "mp3lame=libmp3lame"
-   "opus=libopus"
-   "vorbis=libvorbis"
+   "opus=libopus,opus"
+   "vorbis=libvorbis,vorbis"
    "vpx=libvpx_vp8,libvpx_vp9"
 
    # Custom feature flags for encoders
@@ -129,8 +129,8 @@ set(TSC_DECODERS "")
 set(FEATURE_DECODER_MAP
    "aom=libaom_av1"
    "dav1d=libdav1d"
-   "opus=libopus"
-   "vorbis=libvorbis"
+   "opus=libopus,opus"
+   "vorbis=libvorbis,vorbis"
    "vpx=libvpx_vp8,libvpx_vp9"
 
    # Custom feature flags for decoders
