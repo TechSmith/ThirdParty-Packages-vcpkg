@@ -6,7 +6,7 @@
         "package": "ffmpeg[tsc-desktop-mac]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
+        "vcpkgHash": "2025.04.09",
         "publish": {
           "include": true,
           "lib": true,
@@ -19,7 +19,7 @@
         "package": "ffmpeg[tsc-desktop-win]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
+        "vcpkgHash": "2025.04.09",
         "publish": {
           "include": true,
           "lib": true,
@@ -35,7 +35,7 @@
         "package": "ffmpeg[tsc-desktop-mac,decoder-hevc,demuxer-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
+        "vcpkgHash": "2025.04.09",
         "publish": {
           "include": true,
           "lib": true,
@@ -48,7 +48,7 @@
         "package": "ffmpeg[tsc-desktop-win,decoder-hevc,demuxer-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c",
+        "vcpkgHash": "2025.04.09",
         "publish": {
           "include": true,
           "lib": true,
@@ -65,7 +65,7 @@
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
-        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c"
+        "vcpkgHash": "2025.04.09"
       }
     },
     {
@@ -75,7 +75,7 @@
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
-        "vcpkgHash": "b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c"
+        "vcpkgHash": "2025.04.09"
       }
     },
     {
