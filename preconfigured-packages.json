@@ -1,6 +1,35 @@
 {
   "packages": [
     {
+      "name": "ffmpeg-all",
+      "mac": {
+        "package": "ffmpeg[all,vpx,vorbis,opus]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.04.09",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "ffmpeg[all,vpx,vorbis,opus]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.04.09",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "ffmpeg-desktop-base",
       "mac": {
         "package": "ffmpeg[tsc-desktop-mac]",

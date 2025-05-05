@@ -17,7 +17,7 @@ vcpkg_from_github(
         0040-ffmpeg-add-av_stream_get_first_dts-for-chromium.patch # Do not remove this patch. It is required by chromium
         0041-add-const-for-opengl-definition.patch
         0043-fix-miss-head.patch
-        1001-tsc-disable-aac-non-lc-profiles.patch
+        #1001-tsc-disable-aac-non-lc-profiles.patch
 )
 
 if(SOURCE_PATH MATCHES " ")
@@ -32,193 +32,193 @@ endif()
 
 set(OPTIONS "--enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect")
 
-# <Additional custom TechSmith options>
-# Just to be extra-safe, we will disable everything and explicitly enable only the things we need
-# FFMPEG References:
-# - Muxers and Demuxers (Formats): https://ffmpeg.org/ffmpeg-formats.html
-# - Encoders and decoders (Codecs): https://www.ffmpeg.org/ffmpeg-codecs.html
-# - HW Acceleration: https://trac.ffmpeg.org/wiki/HWAccelIntro
-string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a cmake list
-list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, and build up from there (it disables these things: https://stackoverflow.com/questions/24849129/compile-ffmpeg-without-most-codecs)
-list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
-list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
+# # <Additional custom TechSmith options>
+# # Just to be extra-safe, we will disable everything and explicitly enable only the things we need
+# # FFMPEG References:
+# # - Muxers and Demuxers (Formats): https://ffmpeg.org/ffmpeg-formats.html
+# # - Encoders and decoders (Codecs): https://www.ffmpeg.org/ffmpeg-codecs.html
+# # - HW Acceleration: https://trac.ffmpeg.org/wiki/HWAccelIntro
+# string(REPLACE " " ";" OPTIONS ${OPTIONS}) # Convert space-separate list into a cmake list
+# list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, and build up from there (it disables these things: https://stackoverflow.com/questions/24849129/compile-ffmpeg-without-most-codecs)
+# list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
+# list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
 
-# === Add extra options for emscripten builds ===
-if(VCPKG_TARGET_IS_EMSCRIPTEN)
-    # Remove some options that we don't want for the emscripten build
-    list(REMOVE_ITEM OPTIONS
-         --enable-debug
-         --enable-runtime-cpudetect
-    )
-    list(APPEND OPTIONS
-         --logfile=configure.log
-         --prefix=${CURRENT_PACKAGES_DIR}
-         --target-os=none
-         --arch=wasm32
-         --enable-cross-compile
-         --disable-x86asm
-         --disable-inline-asm
-         --disable-stripping
-         --enable-shared # guarantee dynamic linking
-         --disable-static # guarantee dynamic linking
-         --disable-programs
-         --disable-debug
-         --disable-runtime-cpudetect
-         --disable-autodetect
-         --disable-network
-         --disable-parsers
-         --disable-pthreads
-         --nm=emnm
-         --ar=emar
-         --ranlib=emranlib
-         --cc=emcc
-         --cxx=em++
-         --objcc=emcc
-         --dep-cc=emcc
-         --extra-cflags=-pthread
-         --extra-cflags=-g0
-         --extra-cflags=-O3
-         --extra-ldflags=-sSIDE_MODULE=1
-         --extra-ldflags=-sWASM_BIGINT
-         --extra-ldflags=-pthread
-         --extra-ldflags=-sINITIAL_MEMORY=33554432)
-endif()
+# # === Add extra options for emscripten builds ===
+# if(VCPKG_TARGET_IS_EMSCRIPTEN)
+#     # Remove some options that we don't want for the emscripten build
+#     list(REMOVE_ITEM OPTIONS
+#          --enable-debug
+#          --enable-runtime-cpudetect
+#     )
+#     list(APPEND OPTIONS
+#          --logfile=configure.log
+#          --prefix=${CURRENT_PACKAGES_DIR}
+#          --target-os=none
+#          --arch=wasm32
+#          --enable-cross-compile
+#          --disable-x86asm
+#          --disable-inline-asm
+#          --disable-stripping
+#          --enable-shared # guarantee dynamic linking
+#          --disable-static # guarantee dynamic linking
+#          --disable-programs
+#          --disable-debug
+#          --disable-runtime-cpudetect
+#          --disable-autodetect
+#          --disable-network
+#          --disable-parsers
+#          --disable-pthreads
+#          --nm=emnm
+#          --ar=emar
+#          --ranlib=emranlib
+#          --cc=emcc
+#          --cxx=em++
+#          --objcc=emcc
+#          --dep-cc=emcc
+#          --extra-cflags=-pthread
+#          --extra-cflags=-g0
+#          --extra-cflags=-O3
+#          --extra-ldflags=-sSIDE_MODULE=1
+#          --extra-ldflags=-sWASM_BIGINT
+#          --extra-ldflags=-pthread
+#          --extra-ldflags=-sINITIAL_MEMORY=33554432)
+# endif()
 
-# === Add TSC options based on feature flags ===
-function(map_features_to_items input_map FEATURES return_list)
-    set(${return_list} "" PARENT_SCOPE)
-    foreach(mapitem ${input_map})
-        string(REPLACE "=" ";" list ${mapitem})
-        list(GET list 0 key)
-        list(GET list 1 valuesstring)
-        string(REPLACE "," ";" values ${valuesstring})
-        if(key IN_LIST FEATURES)
-            list(APPEND ${return_list} ${values})
-        endif()
-    endforeach()
-    set(${return_list} ${${return_list}} PARENT_SCOPE)
-endfunction()
+# # === Add TSC options based on feature flags ===
+# function(map_features_to_items input_map FEATURES return_list)
+#     set(${return_list} "" PARENT_SCOPE)
+#     foreach(mapitem ${input_map})
+#         string(REPLACE "=" ";" list ${mapitem})
+#         list(GET list 0 key)
+#         list(GET list 1 valuesstring)
+#         string(REPLACE "," ";" values ${valuesstring})
+#         if(key IN_LIST FEATURES)
+#             list(APPEND ${return_list} ${values})
+#         endif()
+#     endforeach()
+#     set(${return_list} ${${return_list}} PARENT_SCOPE)
+# endfunction()
 
-# --- Encoders ---
-set(TSC_ENCODERS "")
-set(FEATURE_ENCODER_MAP
-   "aom=libaom_av1"
-   "mp3lame=libmp3lame"
-   "opus=libopus,opus"
-   "vorbis=libvorbis,vorbis"
-   "vpx=libvpx_vp8,libvpx_vp9"
+# # --- Encoders ---
+# set(TSC_ENCODERS "")
+# set(FEATURE_ENCODER_MAP
+#    "aom=libaom_av1"
+#    "mp3lame=libmp3lame"
+#    "opus=libopus,opus"
+#    "vorbis=libvorbis,vorbis"
+#    "vpx=libvpx_vp8,libvpx_vp9"
 
-   # Custom feature flags for encoders
-   "encoder-hevc-videotoolbox=hevc_videotoolbox"
-   "encoder-hevc-mf=hevc_mf"
-   "encoder-h264-videotoolbox=h264_videotoolbox"
-   "encoder-h264-mf=h264_mf"
-   "encoder-aac=aac"
-   "encoder-aac-at=aac_at"
-   "encoder-aac-mf=aac_mf"
-   "encoder-mp3-mf=mp3_mf"
-   "png=png"
-)
-map_features_to_items("${FEATURE_ENCODER_MAP}" "${FEATURES}" TSC_ENCODERS)
-foreach(ENCODER IN LISTS TSC_ENCODERS)
-    list(APPEND OPTIONS --enable-encoder=${ENCODER})
-endforeach()
+#    # Custom feature flags for encoders
+#    "encoder-hevc-videotoolbox=hevc_videotoolbox"
+#    "encoder-hevc-mf=hevc_mf"
+#    "encoder-h264-videotoolbox=h264_videotoolbox"
+#    "encoder-h264-mf=h264_mf"
+#    "encoder-aac=aac"
+#    "encoder-aac-at=aac_at"
+#    "encoder-aac-mf=aac_mf"
+#    "encoder-mp3-mf=mp3_mf"
+#    "png=png"
+# )
+# map_features_to_items("${FEATURE_ENCODER_MAP}" "${FEATURES}" TSC_ENCODERS)
+# foreach(ENCODER IN LISTS TSC_ENCODERS)
+#     list(APPEND OPTIONS --enable-encoder=${ENCODER})
+# endforeach()
 
-# --- Decoders ---
-set(TSC_DECODERS "")
-set(FEATURE_DECODER_MAP
-   "aom=libaom_av1"
-   "dav1d=libdav1d"
-   "opus=libopus,opus"
-   "vorbis=libvorbis,vorbis"
-   "vpx=libvpx_vp8,libvpx_vp9"
+# # --- Decoders ---
+# set(TSC_DECODERS "")
+# set(FEATURE_DECODER_MAP
+#    "aom=libaom_av1"
+#    "dav1d=libdav1d"
+#    "opus=libopus,opus"
+#    "vorbis=libvorbis,vorbis"
+#    "vpx=libvpx_vp8,libvpx_vp9"
 
-   # Custom feature flags for decoders
-   "decoder-aac=aac,aac_fixed,aac_latm"
-   "decoder-aac-at=aac_at"
-   "decoder-hevc=hevc"
-   "decoder-mp3=mp3*"
-   "decoder-pcm=pcm*"
-   "decoder-vp8=vp8" # On2 VP8 decoding (different from libvpx)
-   "decoder-vp9=vp9" # Google VP9 decoding (different from libvpx)
-   "png=png"
-)
-map_features_to_items("${FEATURE_DECODER_MAP}" "${FEATURES}" TSC_DECODERS)
-foreach(DECODER IN LISTS TSC_DECODERS)
-    list(APPEND OPTIONS --enable-decoder=${DECODER})
-endforeach()
+#    # Custom feature flags for decoders
+#    "decoder-aac=aac,aac_fixed,aac_latm"
+#    "decoder-aac-at=aac_at"
+#    "decoder-hevc=hevc"
+#    "decoder-mp3=mp3*"
+#    "decoder-pcm=pcm*"
+#    "decoder-vp8=vp8" # On2 VP8 decoding (different from libvpx)
+#    "decoder-vp9=vp9" # Google VP9 decoding (different from libvpx)
+#    "png=png"
+# )
+# map_features_to_items("${FEATURE_DECODER_MAP}" "${FEATURES}" TSC_DECODERS)
+# foreach(DECODER IN LISTS TSC_DECODERS)
+#     list(APPEND OPTIONS --enable-decoder=${DECODER})
+# endforeach()
 
-# --- Muxers ---
-set(TSC_MUXERS "")
-set(FEATURE_MUXER_MAP
-   "muxer-mov=mov"
-   "muxer-mp4=mp4"
-   "muxer-matroska=matroska"
-   "muxer-mkvtimestamp-v2=mkvtimestamp_v2"
-   "muxer-mp3=mp3"
-   "muxer-mpegts=mpegts"
-   "muxer-rtp-mpegts=rtp_mpegts"
-   "muxer-webm=webm*"
-   "image2=image2"
-)
-map_features_to_items("${FEATURE_MUXER_MAP}" "${FEATURES}" TSC_MUXERS)
-foreach(MUXER IN LISTS TSC_MUXERS)
-    list(APPEND OPTIONS --enable-muxer=${MUXER})
-endforeach()
+# # --- Muxers ---
+# set(TSC_MUXERS "")
+# set(FEATURE_MUXER_MAP
+#    "muxer-mov=mov"
+#    "muxer-mp4=mp4"
+#    "muxer-matroska=matroska"
+#    "muxer-mkvtimestamp-v2=mkvtimestamp_v2"
+#    "muxer-mp3=mp3"
+#    "muxer-mpegts=mpegts"
+#    "muxer-rtp-mpegts=rtp_mpegts"
+#    "muxer-webm=webm*"
+#    "image2=image2"
+# )
+# map_features_to_items("${FEATURE_MUXER_MAP}" "${FEATURES}" TSC_MUXERS)
+# foreach(MUXER IN LISTS TSC_MUXERS)
+#     list(APPEND OPTIONS --enable-muxer=${MUXER})
+# endforeach()
 
-# --- Demuxers ---
-set(TSC_DEMUXERS "")
-set(FEATURE_DEMUXER_MAP
-   "demuxer-aac=aac"
-   "demuxer-hevc=hevc"
-   "demuxer-matroska=matroska"
-   "demuxer-mov=mov" # Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
-   "demuxer-mp3=mp3"
-   "demuxer-mpegts=mpegts,mpegtsraw"
-   "demuxer-webm=webm*"
-   "demuxer-wav=wav"
-   "image2=image2"
-)
-map_features_to_items("${FEATURE_DEMUXER_MAP}" "${FEATURES}" TSC_DEMUXERS)
-foreach(DEMUXER IN LISTS TSC_DEMUXERS)
-    list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
-endforeach()
+# # --- Demuxers ---
+# set(TSC_DEMUXERS "")
+# set(FEATURE_DEMUXER_MAP
+#    "demuxer-aac=aac"
+#    "demuxer-hevc=hevc"
+#    "demuxer-matroska=matroska"
+#    "demuxer-mov=mov" # Note: For demuxers, "mov" enables "mov,mp4,m4a,3gp,3g2,mj2"
+#    "demuxer-mp3=mp3"
+#    "demuxer-mpegts=mpegts,mpegtsraw"
+#    "demuxer-webm=webm*"
+#    "demuxer-wav=wav"
+#    "image2=image2"
+# )
+# map_features_to_items("${FEATURE_DEMUXER_MAP}" "${FEATURES}" TSC_DEMUXERS)
+# foreach(DEMUXER IN LISTS TSC_DEMUXERS)
+#     list(APPEND OPTIONS --enable-demuxer=${DEMUXER})
+# endforeach()
 
-# --- Filters ---
-set(TSC_FILTERS "")
-set(FEATURE_FILTER_MAP
-   "filter-aresample=aresample" # aresample and scale are needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
-   "filter-scale=scale"
-   "filter-asetrate=asetrate" # Needed for pitch adjustment
-   "filter-atempo=atempo" # Needed for time stretching
-)
-map_features_to_items("${FEATURE_FILTER_MAP}" "${FEATURES}" TSC_FILTERS)
-foreach(AFILTER IN LISTS TSC_FILTERS)
-    list(APPEND OPTIONS --enable-filter=${AFILTER})
-endforeach()
+# # --- Filters ---
+# set(TSC_FILTERS "")
+# set(FEATURE_FILTER_MAP
+#    "filter-aresample=aresample" # aresample and scale are needed for converting between formats.  Fixes: "'aresample' filter not present, cannot convert formats."
+#    "filter-scale=scale"
+#    "filter-asetrate=asetrate" # Needed for pitch adjustment
+#    "filter-atempo=atempo" # Needed for time stretching
+# )
+# map_features_to_items("${FEATURE_FILTER_MAP}" "${FEATURES}" TSC_FILTERS)
+# foreach(AFILTER IN LISTS TSC_FILTERS)
+#     list(APPEND OPTIONS --enable-filter=${AFILTER})
+# endforeach()
 
-# === Run emscripten build (if applicable) ===
-if(VCPKG_TARGET_IS_EMSCRIPTEN)
+# # === Run emscripten build (if applicable) ===
+# if(VCPKG_TARGET_IS_EMSCRIPTEN)
 
-    # Patch the configure script to work with Emscripten
-    set(ORIG_CONFIGURE ${SOURCE_PATH}/configure)
-    file(READ "${ORIG_CONFIGURE}" FILE_CONTENTS)
-    set(LINES_TO_COMMENT_OUT
-       "check_ldflags -Wl,-z,noexecstack"
-       "check_func  gethrtime"
-       "check_func  sched_getaffinity"
-       "check_func  sysctl"
-    )
-    foreach(LINE ${LINES_TO_COMMENT_OUT})
-        string(REPLACE "${LINE}" "# Disabled for Emscripten build ${LINE}" FILE_CONTENTS "${FILE_CONTENTS}")
-    endforeach()
-    file(WRITE "${SOURCE_PATH}/configure" "${FILE_CONTENTS}")
+#     # Patch the configure script to work with Emscripten
+#     set(ORIG_CONFIGURE ${SOURCE_PATH}/configure)
+#     file(READ "${ORIG_CONFIGURE}" FILE_CONTENTS)
+#     set(LINES_TO_COMMENT_OUT
+#        "check_ldflags -Wl,-z,noexecstack"
+#        "check_func  gethrtime"
+#        "check_func  sched_getaffinity"
+#        "check_func  sysctl"
+#     )
+#     foreach(LINE ${LINES_TO_COMMENT_OUT})
+#         string(REPLACE "${LINE}" "# Disabled for Emscripten build ${LINE}" FILE_CONTENTS "${FILE_CONTENTS}")
+#     endforeach()
+#     file(WRITE "${SOURCE_PATH}/configure" "${FILE_CONTENTS}")
 
-endif()
+# endif()
 
-# Convert OPTIONS back to a string
-string(REPLACE ";" " " OPTIONS "${OPTIONS}")
-# </Additional custom TechSmith options>
+# # Convert OPTIONS back to a string
+# string(REPLACE ";" " " OPTIONS "${OPTIONS}")
+# # </Additional custom TechSmith options>
 
 if(VCPKG_TARGET_IS_MINGW)
     if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
