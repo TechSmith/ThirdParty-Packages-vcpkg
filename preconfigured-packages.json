@@ -1,6 +1,35 @@
 {
   "packages": [
     {
+      "name": "yasm",
+      "mac": {
+        "package": "yasm",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "41c447cc210dc39aa85d4a5f58b4a1b9e573b3dc",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "yasm",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "41c447cc210dc39aa85d4a5f58b4a1b9e573b3dc",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "ffmpeg-all",
       "mac": {
         "package": "ffmpeg[all,vpx,vorbis,opus]",
