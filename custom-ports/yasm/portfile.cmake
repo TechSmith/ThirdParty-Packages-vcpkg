@@ -6,8 +6,11 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         add-feature-tools.patch
-        fix-arm-cross-build.patch
         fix-overlay-pdb.patch
+        1001-tsc-CMakeLists-fix-cmake-version-error.patch
+        1002-tsc-ConfigureChecks-fix-python-error.patch
+        1003-tsc-YasmMacros-fix-dependencies-error.patch
+        1004-tsc-Nasm-CMakeLists-fix-dependencies-error.patch
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
@@ -28,6 +31,7 @@ if (VCPKG_CROSSCOMPILING)
         "-D_tmp_GENVERSION_EXE=${CURRENT_HOST_INSTALLED_DIR}/tools/${PORT}/genversion${VCPKG_HOST_EXECUTABLE_SUFFIX}"
     )
 endif()
+
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
