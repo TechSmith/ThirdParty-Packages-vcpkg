@@ -958,6 +958,12 @@
     "filter-scale": {
       "description": "Enable filter: scale"
     },
+    "parser-opus": {
+      "description": "Enable parser: opus"
+    },
+    "parser-vorbis": {
+      "description": "Enable parser: vorbis"
+    },
     "image2": {
       "description": "Enable muxing and demuxing images with image2"
     },

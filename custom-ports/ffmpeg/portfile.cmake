@@ -198,6 +198,17 @@ foreach(AFILTER IN LISTS TSC_FILTERS)
     list(APPEND OPTIONS --enable-filter=${AFILTER})
 endforeach()
 
+# --- Parsers ---
+set(TSC_PARSERS "")
+set(FEATURE_PARSER_MAP
+   "parser-opus=opus"
+   "parser-vorbis=vorbis"
+)
+map_features_to_items("${FEATURE_PARSER_MAP}" "${FEATURES}" TSC_PARSERS)
+foreach(APARSER IN LISTS TSC_PARSERS)
+    list(APPEND OPTIONS --enable-parser=${APARSER})
+endforeach()
+
 # === Run emscripten build (if applicable) ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
 
