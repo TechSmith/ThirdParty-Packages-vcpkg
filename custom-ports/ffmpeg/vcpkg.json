@@ -776,7 +776,9 @@
             "filter-aresample",
             "filter-asetrate",
             "filter-atempo",
-            "filter-scale"
+            "filter-scale",
+            "parser-opus",
+            "parser-vorbis"
           ]
         }
       ]
