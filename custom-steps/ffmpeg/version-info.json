@@ -103,9 +103,9 @@
         {
             "filename": "bin/vorbisfile.dll",
             "fileDescription": "A BSD-style license convenience library built on Vorbis designed to simplify common uses",
-            "fileVersion": "3.3.8",
+            "fileVersion": "3.3.8.1",
             "productName": "libvorbisfile",
-            "productVersion": "3.3.8",
+            "productVersion": "3.3.8.1",
             "copyright": "Copyright (c) 2002-2020 Xiph.org Foundation"
         }
     ]
