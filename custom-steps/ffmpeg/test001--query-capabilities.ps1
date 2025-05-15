@@ -33,7 +33,9 @@ $tests = @(
             " libvorbis "
             " libvpx "
             " libvpx-vp9 "
+            " opus "
             " png "
+            " vorbis "
         )
         NotExpectedValues = @(" h264 ")
         IsEnabled = $true
@@ -45,6 +47,7 @@ $tests = @(
             "aac_mf"
             "mp3_mf"
             "h264_mf"
+            "hevc_mf"
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnWindowsOS)
@@ -55,6 +58,7 @@ $tests = @(
         ExpectedValues = @(
             " aac_at "
             " h264_videotoolbox "
+            " hevc_videotoolbox "
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnMacOS)
@@ -73,8 +77,50 @@ $tests = @(
             " libvpx "
             " libvpx-vp9 "
             " mp3 "
+            " mp3float "
+            " mp3adufloat "
+            " mp3adu "
+            " mp3on4float "
+            " mp3on4 "
+            " opus "
             " png "
-            "pcm_"
+            " pcm_alaw "
+            " pcm_bluray "
+            " pcm_dvd "
+            " pcm_f16le "
+            " pcm_f24le "
+            " pcm_f32be "
+            " pcm_f32le "
+            " pcm_f64be "
+            " pcm_f64le "
+            " pcm_lxf "
+            " pcm_mulaw "
+            " pcm_s16be "
+            " pcm_s16be_planar "
+            " pcm_s16le "
+            " pcm_s16le_planar "
+            " pcm_s24be "
+            " pcm_s24daud "
+            " pcm_s24le "
+            " pcm_s24le_planar "
+            " pcm_s32be "
+            " pcm_s32le "
+            " pcm_s32le_planar "
+            " pcm_s64be "
+            " pcm_s64le "
+            " pcm_s8 "
+            " pcm_s8_planar "
+            " pcm_sga "
+            " pcm_u16be "
+            " pcm_u16le "
+            " pcm_u24be "
+            " pcm_u24le "
+            " pcm_u32be "
+            " pcm_u32le "
+            " pcm_u8 "
+            " pcm_vidc "
+            " qtrle "
+            " vorbis "
             " vp8 "
             " vp9 "
         )
@@ -94,12 +140,16 @@ $tests = @(
         Name = "Muxers"
         CmdOption = "-muxers"
         ExpectedValues = @(
+            " adts " 
             " image2 "
+            " latm "
             " matroska "
             " mkvtimestamp_v2 "
+            " mov "
             " mp3 "
             " mp4 "
             " mpegts "
+            " rtp "
             " rtp_mpegts "
             " webm "
         )
@@ -117,6 +167,7 @@ $tests = @(
             " mp3 "
             " mpegts "
             " mpegtsraw "
+            " wav "
         )
         NotExpectedValues = @()
         IsEnabled = $true
@@ -125,9 +176,9 @@ $tests = @(
         Name = "Filters"
         CmdOption = "-filters"
         ExpectedValues = @(
-            " atempo "
-            " asetrate "
             " aresample "
+            " asetrate "
+            " atempo "
             " scale "
         )
         NotExpectedValues = @()
