@@ -87,9 +87,9 @@
         {
             "filename": "bin/vorbis.dll",
             "fileDescription": "A BSD-style license software implementation of the Vorbis specification by the Xiph.Org Foundation (https://xiph.org/)",
-            "fileVersion": "1.3.7",
+            "fileVersion": "1.3.7.1",
             "productName": "libvorbis",
-            "productVersion": "1.3.7",
+            "productVersion": "1.3.7.1",
             "copyright": "Copyright (c) 2002-2020 Xiph.org Foundation"
         },
         {
