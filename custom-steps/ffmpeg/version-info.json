@@ -63,9 +63,9 @@
         {
             "filename": "bin/opus.dll",
             "fileDescription": "Totally open, royalty-free, highly versatile audio codec",
-            "fileVersion": "1.5.2",
+            "fileVersion": "1.5.2.1",
             "productName": "Opus audio codec",
-            "productVersion": "1.5.2",
+            "productVersion": "1.5.2.1",
             "copyright": "Copyright 2001-2023 Xiph.Org, Skype Limited, Octasic, Jean-Marc Valin, Timothy B. Terriberry, CSIRO, Gregory Maxwell, Mark Borgerding, Erik de Castro Lopo, Mozilla, Amazon"
         },
         {
