@@ -55,9 +55,9 @@
         {
             "filename": "bin/ogg.dll",
             "fileDescription": "A library for manipulating ogg bitstreams.",
-            "fileVersion": "1.3.5",
+            "fileVersion": "1.3.5.1",
             "productName": "Ogg",
-            "productVersion": "1.3.5",
+            "productVersion": "1.3.5.1",
             "copyright": "Copyright (c) 2002, Xiph.org Foundation"
         },
         {
