@@ -823,10 +823,14 @@
           "default-features": false,
           "features": [
             "tsc-desktop-base",
+            "qsv",
             "encoder-aac-mf",
             "encoder-h264-mf",
-            "encoder-hevc-mf",
-            "encoder-mp3-mf"
+            "encoder-mp3-mf",
+            "encoder-vp9-qsv",
+            "decoder-av1-qsv",
+            "decoder-vp8-qsv",
+            "decoder-vp9-qsv"
           ]
         }
       ]
@@ -841,7 +845,6 @@
             "tsc-desktop-base",
             "encoder-aac-at",
             "encoder-h264-videotoolbox",
-            "encoder-hevc-videotoolbox",
             "decoder-aac-at"
           ]
         }
@@ -966,7 +969,7 @@
         "zlib"
       ]
     },
-   "decoder-aac": { "description": "" },
+    "decoder-aac": { "description": "" },
     "decoder-aac-at": { "description": "" },
     "decoder-aac-fixed": { "description": "" },
     "decoder-aac-latm": { "description": "" },

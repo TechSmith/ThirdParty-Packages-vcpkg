@@ -1056,7 +1056,7 @@ else()
 endif()
 
 if ("qsv" IN_LIST FEATURES)
-    set(OPTIONS "${OPTIONS} --enable-libmfx --enable-encoder=h264_qsv --enable-decoder=h264_qsv")
+    set(OPTIONS "${OPTIONS} --enable-libmfx")
     set(WITH_MFX ON)
 else()
     set(OPTIONS "${OPTIONS} --disable-libmfx")
