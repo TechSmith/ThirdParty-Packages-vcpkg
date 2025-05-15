@@ -3,9 +3,9 @@
         {
             "filename": "bin/aom.dll",
             "fileDescription": "AV1 codec library",
-            "fileVersion": "3.9.1",
+            "fileVersion": "3.11.0",
             "productName": "AV1 codec library",
-            "productVersion": "3.9.1",
+            "productVersion": "3.11.0",
             "copyright": "Copyright (c) 2016, Alliance for Open Media"
         },
         {
