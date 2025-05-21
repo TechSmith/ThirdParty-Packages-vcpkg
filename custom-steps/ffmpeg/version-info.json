@@ -81,7 +81,7 @@
             "fileDescription": "FFmpeg audio resampling library",
             "fileVersion": "5.3.100.2",
             "productName": "FFmpeg",
-            "productVersion": "7.1.0",
+            "productVersion": "7.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
@@ -89,7 +89,7 @@
             "fileDescription": "FFmpeg image rescaling library",
             "fileVersion": "8.3.100.2",
             "productName": "FFmpeg",
-            "productVersion": "7.1.0",
+            "productVersion": "7.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
