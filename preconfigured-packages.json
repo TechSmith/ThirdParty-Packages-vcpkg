@@ -368,6 +368,19 @@
           "debug": true
         }
       }
+    },
+    {
+      "name": "angle",
+      "mac": {
+        "package": "angle",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "angle",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
