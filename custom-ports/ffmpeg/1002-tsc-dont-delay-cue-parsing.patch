@@ -1,0 +1,13 @@
+diff --git a/libavformat/matroskadec.c b/libavformat/matroskadec.c
+index c8741ff2af..d79724c508 100644
+--- a/libavformat/matroskadec.c
++++ b/libavformat/matroskadec.c
+@@ -3308,7 +3308,7 @@ static int matroska_read_header(AVFormatContext *s)
+     int i, j, res;
+ 
+     matroska->ctx = s;
+-    matroska->cues_parsing_deferred = 1;
++    matroska->cues_parsing_deferred = 0;
+ 
+     /* First read the EBML header. */
+     if (ebml_parse(matroska, ebml_syntax, &ebml) || !ebml.doctype) {
