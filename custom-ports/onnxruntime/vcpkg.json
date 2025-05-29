@@ -46,7 +46,7 @@
       "description": "Enable the CUDA execution provider. Requires CUDA toolkit. Maps to the --use_cuda flag."
     },
     "ep-dml": {
-      "description": "Enable the DirectML execution provider on Windows. Maps to the --use_directml flag."
+      "description": "Enable the DirectML execution provider on Windows. Maps to the --use_dml flag."
     },
     "ep-openvino": {
       "description": "Enable the OpenVINO execution provider. Requires OpenVINO toolkit. Maps to the --use_openvino flag."

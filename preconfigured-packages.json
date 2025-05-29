@@ -381,6 +381,19 @@
         "linkType": "dynamic",
         "buildType": "release"
       }
+    },
+    {
+      "name": "directml",
+      "mac": {
+        "package": "directml",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "directml",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }

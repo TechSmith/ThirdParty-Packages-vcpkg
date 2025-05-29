@@ -7,8 +7,15 @@ vcpkg_from_github(
     HEAD_REF main
 )
 
+# --- Find Python (Host Dependency) ---
+# vcpkg_find_acquire_program(PYTHON3) ensures Python is found/acquired
+# and its directory is added to the PATH for subsequent process execution.
+# PYTHON3 will hold the full path to the Python executable.
+vcpkg_find_acquire_program(PYTHON3)
+message(STATUS "Using Python3 from: ${PYTHON3}")
+
+
 # --- Check for enabled features ---
-# These variables will be set to ON if the corresponding feature is enabled in vcpkg.json
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
         "build-parallel"                ENABLE_PARALLEL
@@ -22,7 +29,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         "skip-tests"                    ENABLE_SKIP_TESTS
 )
 
-# --- Assemble Build Arguments based on features and vcpkg settings ---
+# --- Assemble Build Arguments for build.py ---
 set(ONNXRUNTIME_BUILD_ARGS)
 
 # 1. --build_shared_lib / --build_static_lib (from vcpkg linkage)
@@ -37,9 +44,9 @@ if(ENABLE_PARALLEL)
     list(APPEND ONNXRUNTIME_BUILD_ARGS --parallel)
 endif()
 
-# 3. --use_directml (from feature, note: script uses --use_directml, not --use_dml)
+# 3. --use_dml (from feature)
 if(ENABLE_DML)
-    list(APPEND ONNXRUNTIME_BUILD_ARGS --use_directml)
+    list(APPEND ONNXRUNTIME_BUILD_ARGS --use_dml)
 endif()
 
 # 4. --use_cuda (from feature)
@@ -67,62 +74,68 @@ if(ENABLE_COMPILE_NO_WARNING_AS_ERROR)
     list(APPEND ONNXRUNTIME_BUILD_ARGS --compile_no_warning_as_error)
 endif()
 
-# 9. --skip_submodule_sync (from feature)
+# 9. --skip_submodule_sync / --update (from feature)
 if(ENABLE_SKIP_SUBMODULE_SYNC)
     list(APPEND ONNXRUNTIME_BUILD_ARGS --skip_submodule_sync)
 else()
-    # The --update flag in the build script ensures submodules are initialized.
-    # We only add it if we are NOT skipping the sync.
-    list(APPEND ONNXRUNTIME_BUILD_ARGS --update)
+    list(APPEND ONNXRUNTIME_BUILD_ARGS --update) # Ensure submodules are updated if not skipping sync
 endif()
 
-# 10. macOS Universal Architecture defines
-if(VCPKG_TARGET_IS_OSX)
-    list(APPEND ONNXRUNTIME_BUILD_ARGS --cmake_extra_defines "CMAKE_OSX_ARCHITECTURES=x86_64;arm64")
-endif()
-
-# 11. --skip_tests (from feature, mapped to correct flag)
+# 11. --skip_tests (from feature) - Note: build.py uses --skip_tests
 if(ENABLE_SKIP_TESTS)
     list(APPEND ONNXRUNTIME_BUILD_ARGS --skip_tests)
 endif()
 
-# --- Add required arguments for vcpkg integration ---
+# --- Platform-specific CMake definitions for build.py's --cmake_extra_defines ---
+set(CMAKE_EXTRA_DEFINES_STRING "")
 
-# The --build flag is required to trigger the build step in the script.
-list(APPEND ONNXRUNTIME_BUILD_ARGS --build)
+# 10. macOS Universal Architecture
+if(VCPKG_TARGET_IS_OSX)
+    set(CMAKE_EXTRA_DEFINES_STRING "CMAKE_OSX_ARCHITECTURES=x86_64;arm64")
+endif()
 
-# Determine build configuration (Debug/Release)
+# Toolchain file for non-Windows (Linux, macOS, etc.)
+if(NOT VCPKG_TARGET_IS_WINDOWS)
+    if(CMAKE_EXTRA_DEFINES_STRING STREQUAL "")
+        set(CMAKE_EXTRA_DEFINES_STRING "CMAKE_TOOLCHAIN_FILE=${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
+    else()
+        string(APPEND CMAKE_EXTRA_DEFINES_STRING " CMAKE_TOOLCHAIN_FILE=${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
+    endif()
+endif()
+
+# Add the consolidated --cmake_extra_defines to ONNXRUNTIME_BUILD_ARGS if not empty
+if(NOT CMAKE_EXTRA_DEFINES_STRING STREQUAL "")
+    list(APPEND ONNXRUNTIME_BUILD_ARGS --cmake_extra_defines "${CMAKE_EXTRA_DEFINES_STRING}")
+endif()
+
+# Add --use_vcpkg for Windows (specific to onnxruntime's build.py)
+if(VCPKG_TARGET_IS_WINDOWS)
+    list(APPEND ONNXRUNTIME_BUILD_ARGS --use_vcpkg)
+endif()
+
+
+# --- Add required general arguments for build.py and vcpkg integration ---
+list(APPEND ONNXRUNTIME_BUILD_ARGS --build) # Trigger the build
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(ONNXRUNTIME_CONFIG Debug)
 else()
-    set(ONNXRUNTIME_CONFIG RelWithDebInfo)
+    set(ONNXRUNTIME_CONFIG RelWithDebInfo) # Or Release, depending on preference
 endif()
 list(APPEND ONNXRUNTIME_BUILD_ARGS --config ${ONNXRUNTIME_CONFIG})
 
-# Define a build directory for intermediate files
-set(ONNXRUNTIME_BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}")
-list(APPEND ONNXRUNTIME_BUILD_ARGS --build_dir "${ONNXRUNTIME_BUILD_DIR}")
+set(ONNXRUNTIME_BUILD_DIR_PATH "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}")
+list(APPEND ONNXRUNTIME_BUILD_ARGS --build_dir "${ONNXRUNTIME_BUILD_DIR_PATH}")
 
-# Set the final installation prefix
-list(APPEND ONNXRUNTIME_BUILD_ARGS --cmake_install_prefix "${CURRENT_PACKAGES_DIR}")
+# --- Execute Build by calling build.py directly ---
+set(PYTHON_BUILD_SCRIPT_PATH "${SOURCE_PATH}/tools/ci_build/build.py")
 
+message(STATUS "ONNXRuntime build.py arguments: ${ONNXRUNTIME_BUILD_ARGS}")
 
-# --- Select Script and Execute Build ---
-if(VCPKG_TARGET_IS_WINDOWS)
-    set(BUILD_SCRIPT "${SOURCE_PATH}/build.bat")
-    # Tell onnxruntime to use dependencies from vcpkg
-    list(APPEND ONNXRUNTIME_BUILD_ARGS --use_vcpkg)
-else() # Linux or macOS
-    set(BUILD_SCRIPT "${SOURCE_PATH}/build.sh")
-    # Pass the vcpkg toolchain file to ensure correct compiler and flags are used
-    list(APPEND ONNXRUNTIME_BUILD_ARGS --cmake_extra_defines "CMAKE_TOOLCHAIN_FILE=${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
-endif()
-
-# Execute the build script with all configured arguments
 vcpkg_execute_build_process(
-    COMMAND "${BUILD_SCRIPT}" ${ONNXRUNTIME_BUILD_ARGS}
-    WORKING_DIRECTORY "${SOURCE_PATH}"
-    LOGNAME "build-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
+    COMMAND "${PYTHON3}" "${PYTHON_BUILD_SCRIPT_PATH}" ${ONNXRUNTIME_BUILD_ARGS}
+    WORKING_DIRECTORY "${SOURCE_PATH}" # build.py is typically run from the root of the onnxruntime checkout
+    LOGNAME "build-py-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
 )
 
 # --- Post-Build Processing ---
@@ -131,3 +144,14 @@ vcpkg_cmake_config_fixup(PACKAGE_NAME onnxruntime CONFIG_PATH "lib/cmake/onnxrun
 vcpkg_fixup_pkgconfig()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include" "${CURRENT_PACKAGES_DIR}/debug/share")
 vcpkg_install_copyright(FILE_PATH "${SOURCE_PATH}/LICENSE")
+
+# Create a usage file
+file(WRITE "${CURRENT_PACKAGES_DIR}/share/${PORT}/usage"
+    "To use onnxruntime in your CMake project, add the following to your CMakeLists.txt:\n"
+    "    find_package(onnxruntime CONFIG REQUIRED)\n"
+    "    target_link_libraries(your_target PRIVATE onnxruntime::onnxruntime)\n"
+    "\n"
+    "Replace 'your_target' with the name of your executable or library.\n"
+)
+
+message(STATUS "onnxruntime build and installation complete.")
