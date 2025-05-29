@@ -117,14 +117,17 @@ endif()
 # --- Add required general arguments for build.py and vcpkg integration ---
 list(APPEND ONNXRUNTIME_BUILD_ARGS --build) # Trigger the build
 
+# Determine the build configuration
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(ONNXRUNTIME_CONFIG Debug)
 else()
     set(ONNXRUNTIME_CONFIG RelWithDebInfo) # Or Release, depending on preference
 endif()
 list(APPEND ONNXRUNTIME_BUILD_ARGS --config ${ONNXRUNTIME_CONFIG})
+set(ONNXRUNTIME_BUILD_DIR_PATH "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}")
 
-set(ONNXRUNTIME_BUILD_DIR_PATH "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}")
+# Clean the directory before use to prevent stale cache issues
+file(REMOVE_RECURSE "${ONNXRUNTIME_BUILD_DIR_PATH}")
 list(APPEND ONNXRUNTIME_BUILD_ARGS --build_dir "${ONNXRUNTIME_BUILD_DIR_PATH}")
 
 # --- Execute Build by calling build.py directly ---
@@ -134,7 +137,7 @@ message(STATUS "ONNXRuntime build.py arguments: ${ONNXRUNTIME_BUILD_ARGS}")
 
 vcpkg_execute_build_process(
     COMMAND "${PYTHON3}" "${PYTHON_BUILD_SCRIPT_PATH}" ${ONNXRUNTIME_BUILD_ARGS}
-    WORKING_DIRECTORY "${SOURCE_PATH}" # build.py is typically run from the root of the onnxruntime checkout
+    WORKING_DIRECTORY "${SOURCE_PATH}"
     LOGNAME "build-py-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
 )
 
