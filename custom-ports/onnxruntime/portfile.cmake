@@ -82,12 +82,12 @@ else()
 endif()
 list(APPEND ONNXRUNTIME_BUILD_ARGS --config ${ONNXRUNTIME_CONFIG})
 
-# Define the build directory WITHOUT the config suffix. The script adds it.
-set(ONNXRUNTIME_BUILD_DIR_PATH "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}")
+# # Define the build directory WITHOUT the config suffix. The script adds it.
+# set(ONNXRUNTIME_BUILD_DIR_PATH "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}")
 
-# Clean the directory to prevent stale cache issues
-file(REMOVE_RECURSE "${ONNXRUNTIME_BUILD_DIR_PATH}")
-list(APPEND ONNXRUNTIME_BUILD_ARGS --build_dir "${ONNXRUNTIME_BUILD_DIR_PATH}")
+# # Clean the directory to prevent stale cache issues
+# file(REMOVE_RECURSE "${ONNXRUNTIME_BUILD_DIR_PATH}")
+# list(APPEND ONNXRUNTIME_BUILD_ARGS --build_dir "${ONNXRUNTIME_BUILD_DIR_PATH}")
 
 # --- Execute Build ---
 set(BUILD_SCRIPT_PATH "${SOURCE_PATH}/build.bat")
@@ -96,7 +96,7 @@ message(STATUS ">>> ONNXRuntime build.bat arguments: ${ONNXRUNTIME_BUILD_ARGS}")
 message(STATUS ">>> SOURCE PATH: ${SOURCE_PATH}")
 
 vcpkg_execute_build_process(
-    COMMAND "${BUILD_SCRIPT_PATH}" "${PYTHON3}" --build_shared_lib --parallel --use_dml --compile_no_warning_as_error --skip_submodule_sync --skip_tests --config RelWithDebInfo
+    COMMAND "${BUILD_SCRIPT_PATH}" "${PYTHON3}" ${ONNXRUNTIME_BUILD_ARGS}
     WORKING_DIRECTORY "${SOURCE_PATH}"
     LOGNAME "build-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
 )
