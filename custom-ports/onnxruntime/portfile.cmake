@@ -10,8 +10,8 @@ vcpkg_from_github(
 )
 
 # --- Find Python (Host Dependency) ---
-#vcpkg_find_acquire_program(PYTHON3)
-#message(STATUS "Using Python3 from: ${PYTHON3}")
+vcpkg_find_acquire_program(PYTHON3)
+message(STATUS "Using Python3 from: ${PYTHON3}")
 
 
 # --- Check for enabled features ---
@@ -99,7 +99,7 @@ message(STATUS ">>> ONNXRuntime build.bat arguments: ${ONNXRUNTIME_BUILD_ARGS}")
 message(STATUS ">>> SOURCE PATH: ${SOURCE_PATH}")
 
 vcpkg_execute_build_process(
-    COMMAND "${BUILD_SCRIPT_PATH}" "C:/Users/m.malburg/AppData/Local/Programs/Python/Python312/python.exe" --build_shared_lib --skip_submodule_sync
+    COMMAND "${BUILD_SCRIPT_PATH}" "${PYTHON3}" ${ONNXRUNTIME_BUILD_ARGS}
     WORKING_DIRECTORY "${SOURCE_PATH}"
     LOGNAME "build-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
 )
