@@ -66,9 +66,6 @@ endif()
 if(ENABLE_SKIP_TESTS)
     list(APPEND ONNXRUNTIME_BUILD_ARGS --skip_tests)
 endif()
-if(VCPKG_TARGET_IS_WINDOWS)
-    list(APPEND ONNXRUNTIME_BUILD_ARGS --use_vcpkg)
-endif()
 
 # Add macOS Universal Architecture if applicable
 if(VCPKG_TARGET_IS_OSX)
@@ -99,7 +96,7 @@ message(STATUS ">>> ONNXRuntime build.bat arguments: ${ONNXRUNTIME_BUILD_ARGS}")
 message(STATUS ">>> SOURCE PATH: ${SOURCE_PATH}")
 
 vcpkg_execute_build_process(
-    COMMAND "${BUILD_SCRIPT_PATH}" "${PYTHON3}" ${ONNXRUNTIME_BUILD_ARGS}
+    COMMAND "${BUILD_SCRIPT_PATH}" "${PYTHON3}" --build_shared_lib --parallel --use_dml --compile_no_warning_as_error --skip_submodule_sync --skip_tests --config RelWithDebInfo
     WORKING_DIRECTORY "${SOURCE_PATH}"
     LOGNAME "build-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
 )
