@@ -171,13 +171,13 @@
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "74ec888e385d189b42d6b398d0bbaa6f1b1d3b0e"
+        "vcpkgHash": "2025.04.09"
       },
       "win": {
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "74ec888e385d189b42d6b398d0bbaa6f1b1d3b0e"
+        "vcpkgHash": "2025.04.09"
       }
     },
     {
