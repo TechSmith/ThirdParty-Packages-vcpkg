@@ -368,6 +368,32 @@
           "debug": true
         }
       }
+    },
+    {
+      "name": "onnxruntime",
+      "mac": {
+        "package": "onnxruntime",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "onnxruntime",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "directml",
+      "mac": {
+        "package": "directml",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "directml",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
