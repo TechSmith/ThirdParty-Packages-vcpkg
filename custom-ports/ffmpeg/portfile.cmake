@@ -43,6 +43,11 @@ list(PREPEND OPTIONS --disable-everything) # Start with "everything" disabled, a
 list(APPEND OPTIONS --disable-securetransport) # To avoid AppStore rejection by disabling the use of private API SecIdentityCreate()
 list(APPEND OPTIONS --enable-protocol=file) # Only enable file protocol
 
+# STV-AV1 codec support
+if("stv-av1" IN_LIST FEATURES)
+    set(APPEND OPTIONS --enable-stv-av1)
+endif()
+
 # === Add extra options for emscripten builds ===
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     # Remove some options that we don't want for the emscripten build

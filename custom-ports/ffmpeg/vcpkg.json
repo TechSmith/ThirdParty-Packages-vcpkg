@@ -2621,6 +2621,12 @@
     "filter-aresample": { "description": "" },
     "filter-asetrate": { "description": "" },
     "filter-atempo": { "description": "" },
-    "filter-scale": { "description": "" }   
+    "filter-scale": { "description": "" },
+    "stv-av1": { 
+      "description": "Build with option --enable-libstv-av1",
+      "dependencies": [
+        "stv-av1"
+      ]
+    }
   }
 }
