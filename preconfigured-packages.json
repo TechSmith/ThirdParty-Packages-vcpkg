@@ -276,6 +276,19 @@
       }
     },
     {
+      "name": "stv-av1",
+      "mac": {
+        "package": "stv-av1",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "stv-av1",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "whispercpp",
       "mac": {
         "package": "whispercpp",
