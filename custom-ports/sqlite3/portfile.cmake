@@ -67,6 +67,16 @@ file(COPY "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt" DESTINATION "${SOURCE_PATH}
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/sqlite3.pc.in" DESTINATION "${SOURCE_PATH}")
 configure_file("${CMAKE_CURRENT_LIST_DIR}/sqlite3-vcpkg-config.h.in" "${SOURCE_PATH}/sqlite3-vcpkg-config.h" @ONLY)
 
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    # Enable -fPIC and -pthread
+    list(APPEND ADDITIONAL_SQLITE_OPTIONS
+         "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+         "-DCMAKE_C_FLAGS=-pthread"
+         "-DCMAKE_CXX_FLAGS=-pthread"
+         "-DCMAKE_EXE_LINKER_FLAGS=-pthread"
+      )
+endif()
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
