@@ -256,6 +256,25 @@
       }
     },
     {
+      "name": "sqlite3-session",
+      "mac": {
+        "package": "sqlite3[session]",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "sqlite3[session]",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "wasm": {
+        "package": "sqlite3[session]",
+        "linkType": "static",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten"
+      }
+    },
+    {
       "name": "sqlite-modern-cpp",
       "mac": {
         "package": "sqlite-modern-cpp",
