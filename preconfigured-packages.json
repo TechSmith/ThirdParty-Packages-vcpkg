@@ -256,7 +256,7 @@
       }
     },
     {
-      "name": "sqlite3-session",
+      "name": "ASDF",
       "mac": {
         "package": "sqlite3[session]",
         "linkType": "static",
