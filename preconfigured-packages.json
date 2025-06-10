@@ -239,25 +239,6 @@
     {
       "name": "sqlite3",
       "mac": {
-        "package": "sqlite3",
-        "linkType": "static",
-        "buildType": "release"
-      },
-      "win": {
-        "package": "sqlite3",
-        "linkType": "static",
-        "buildType": "release"
-      },
-      "wasm": {
-        "package": "sqlite3",
-        "linkType": "static",
-        "buildType": "release",
-        "customTriplet": "wasm32-emscripten"
-      }
-    },
-    {
-      "name": "ASDF",
-      "mac": {
         "package": "sqlite3[session]",
         "linkType": "static",
         "buildType": "release"
