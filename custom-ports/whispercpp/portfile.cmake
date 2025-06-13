@@ -10,6 +10,11 @@ vcpkg_from_github(
 set(VCPKG_POLICY_SKIP_MISPLACED_CMAKE_FILES_CHECK enabled)
 set(VCPKG_POLICY_SKIP_LIB_CMAKE_MERGE_CHECK enabled)
 
+# Make git path available for the whispercpp project cmake files
+vcpkg_find_acquire_program(GIT)
+get_filename_component(GIT_DIR "${GIT}" DIRECTORY)
+vcpkg_add_to_path("${GIT_DIR}")
+
 if(VCPKG_HOST_IS_OSX)
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
