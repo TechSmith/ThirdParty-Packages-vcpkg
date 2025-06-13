@@ -5,6 +5,8 @@ vcpkg_from_github(
     REF "v${VERSION}"
     SHA512 35efd976f60261e108972e3af7b322d723e36be30f5265db3be63752caaed0b52b9da3ece02975da2b83ff30f1eb32663e77fbaaf15f3037e35a525939071c0b
     HEAD_REF master
+    PATCHES
+        0001-only-build-whisper-lib-shared.patch
 )
 
 set(VCPKG_POLICY_SKIP_MISPLACED_CMAKE_FILES_CHECK enabled)
