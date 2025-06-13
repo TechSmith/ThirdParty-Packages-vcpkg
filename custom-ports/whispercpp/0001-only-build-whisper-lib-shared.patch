@@ -1,0 +1,39 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index be6db903..1388bbc4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -49,7 +49,7 @@ else()
+     if (MINGW)
+         set(BUILD_SHARED_LIBS_DEFAULT OFF)
+     else()
+-        set(BUILD_SHARED_LIBS_DEFAULT ON)
++        set(BUILD_SHARED_LIBS_DEFAULT OFF)
+     endif()
+ endif()
+ 
+diff --git a/ggml/CMakeLists.txt b/ggml/CMakeLists.txt
+index d33f843b..bdb7325a 100644
+--- a/ggml/CMakeLists.txt
++++ b/ggml/CMakeLists.txt
+@@ -28,7 +28,7 @@ else()
+     if (MINGW)
+         set(BUILD_SHARED_LIBS_DEFAULT OFF)
+     else()
+-        set(BUILD_SHARED_LIBS_DEFAULT ON)
++        set(BUILD_SHARED_LIBS_DEFAULT OFF)
+     endif()
+ endif()
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index a091e66a..d1a15138 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -100,7 +100,7 @@ endif()
+ 
+ # whisper
+ 
+-add_library(whisper
++add_library(whisper SHARED
+             ../include/whisper.h
+             whisper-arch.h
+             whisper.cpp
