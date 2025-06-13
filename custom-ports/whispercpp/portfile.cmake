@@ -6,41 +6,68 @@ vcpkg_from_github(
     SHA512 35efd976f60261e108972e3af7b322d723e36be30f5265db3be63752caaed0b52b9da3ece02975da2b83ff30f1eb32663e77fbaaf15f3037e35a525939071c0b
     HEAD_REF master
     PATCHES
-        0001-only-build-whisper-lib-shared.patch
+        0001-tsc-override-whisper-shared.patch
 )
 
 set(VCPKG_POLICY_SKIP_MISPLACED_CMAKE_FILES_CHECK enabled)
 set(VCPKG_POLICY_SKIP_LIB_CMAKE_MERGE_CHECK enabled)
+
+# Specify configuration options
+set(TSC_CMAKE_CONFIGURE_OPTIONS
+    "-DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT_DIR}/scripts/buildsystems/vcpkg.cmake"
+    "-DCMAKE_INSTALL_PREFIX=${CURRENT_PACKAGES_DIR}"
+    "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+    -DBUILD_SHARED_LIBS=OFF
+    -DWHISPER_BUILD_TESTS=OFF
+    -DWHISPER_BUILD_EXAMPLES=OFF
+)
+if(VCPKG_HOST_IS_OSX)
+    list(APPEND TSC_CMAKE_CONFIGURE_OPTIONS
+        -DGGML_METAL_EMBED_LIBRARY=ON
+        -DGGML_METAL_NDEBUG=ON
+    )
+endif()
+
+# Peform manaul cmake configure, build and install
+#   We had some issues building this as a one-dll build, using the built-in vcpkg support
+#   It passes in some stuff by default that we want to override, and it was too much of a hassle to deal with making it work with the build-in stuff
+set(CMAKE_BUILD_DIR_RELEASE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel")
+file(MAKE_DIRECTORY "${CMAKE_BUILD_DIR_RELEASE}")
 
 # Make git path available for the whispercpp project cmake files
 vcpkg_find_acquire_program(GIT)
 get_filename_component(GIT_DIR "${GIT}" DIRECTORY)
 vcpkg_add_to_path("${GIT_DIR}")
 
-if(VCPKG_HOST_IS_OSX)
-    vcpkg_cmake_configure(
-        SOURCE_PATH ${SOURCE_PATH}
-        OPTIONS
-            -DGGML_METAL_EMBED_LIBRARY=ON
-            -DGGML_METAL_NDEBUG=ON
-    )
-else()
-    vcpkg_cmake_configure(
-        SOURCE_PATH ${SOURCE_PATH}
-    )
-endif()
+message(STATUS ">> Configuring...")
+vcpkg_execute_build_process(
+    COMMAND "${CMAKE_COMMAND}"
+        -S "${SOURCE_PATH}"
+        -B "${CMAKE_BUILD_DIR_RELEASE}"
+        ${TSC_CMAKE_CONFIGURE_OPTIONS}
+    WORKING_DIRECTORY "${CMAKE_BUILD_DIR_RELEASE}"
+    LOGNAME "config-${TARGET_TRIPLET}-release"
+)
 
-vcpkg_install_cmake()
+message(STATUS ">> Building...")
+vcpkg_execute_build_process(
+    COMMAND "${CMAKE_COMMAND}"
+        --build "${CMAKE_BUILD_DIR_RELEASE}"
+        --config "RelWithDebInfo"
+    WORKING_DIRECTORY "${CMAKE_BUILD_DIR_RELEASE}"
+    LOGNAME "build-${TARGET_TRIPLET}-release"
+)
+
+message(STATUS ">> Installing...")
+vcpkg_execute_build_process(
+    COMMAND "${CMAKE_COMMAND}"
+        --install "${CMAKE_BUILD_DIR_RELEASE}"
+        --config "RelWithDebInfo"
+    WORKING_DIRECTORY "${CMAKE_BUILD_DIR_RELEASE}"
+    LOGNAME "install-${TARGET_TRIPLET}-release"
+)
+
+message(STATUS ">> Finishing packaging...")
 vcpkg_copy_pdbs()
-
-# Store all .libs in the root lib directory.  For Windows SHARED builds, these will be import libraries (not static libs).
-file(GLOB_RECURSE LIB_FILES "${CURRENT_PACKAGES_DIR}/lib/static/*.lib")
-foreach(LIB_FILE ${LIB_FILES})
-    get_filename_component(LIB_NAME ${LIB_FILE} NAME)
-    file(RENAME ${LIB_FILE} "${CURRENT_PACKAGES_DIR}/lib/${LIB_NAME}")
-endforeach()
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/static")
-
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
-
 vcpkg_fixup_pkgconfig()
