@@ -368,6 +368,25 @@
           "debug": true
         }
       }
+    },
+    {
+      "name": "buildcache",
+      "mac": {
+        "package": "buildcache",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "buildcache",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "tools": true
+        }
+      }
     }
   ]
 }
