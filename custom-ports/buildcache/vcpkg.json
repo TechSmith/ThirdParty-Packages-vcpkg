@@ -1,0 +1,17 @@
+{
+  "name": "buildcache",
+  "version": "0.31.3",
+  "port-version": 1,
+  "description": "An advanced build cache for speeding up build processes",
+  "homepage": "https://gitlab.com/bits-n-bites/buildcache",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
+}
