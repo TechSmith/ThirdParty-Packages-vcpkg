@@ -376,6 +376,10 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
           "tools": true
         }
       },
@@ -384,6 +388,10 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
           "tools": true
         }
       }
