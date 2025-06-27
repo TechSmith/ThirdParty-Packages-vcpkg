@@ -1,21 +1,21 @@
 parameters:
 - name: packageName
-  displayName: The package name to use
+  displayName: The package name to use, from preconfigured-packages.json
   type: string
   default:
 
-- name: package
-  displayName: The package name and feature flags to build the package with (ex. ""somepackage" or "somepackage[feature1,feature2]")
+- name: portAndFeatures
+  displayName: The port name and feature flags to build the package with (ex. ""someport" or "someport[feature1,feature2]")
   type: string
   default:
 
 - name: linkType
-  displayName: Type of linking to use for libs in package (dynamic or static)
+  displayName: Type of linking to use for libs in port (dynamic or static)
   type: string
   default:
 
 - name: buildType
-  displayName: Type of build to use for libs in package (release or debug)
+  displayName: Type of build to use for libs in port (release or debug)
   type: string
   default:
 
@@ -88,7 +88,7 @@ stages:
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 
     - pwsh: |
-        ./invoke-build.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
+        ./scripts/build-port.ps1 -PortAndFeatures "${{ parameters.portAndFeatures }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (custom)'
       condition: and(succeeded(), ${{ parameters.isCustomBuild }})
 
