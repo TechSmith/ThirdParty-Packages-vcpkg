@@ -395,6 +395,33 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "ccache",
+      "mac": {
+        "package": "ccache",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "ccache",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      }
     }
   ]
 }

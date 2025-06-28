@@ -1,0 +1,21 @@
+{
+  "name": "ccache",
+  "version": "4.11.3",
+  "port-version": 1,
+  "description": "Ccache is a compiler cache. It speeds up recompilation by caching previous compilations and detecting when the same compilation is being done again.",
+  "homepage": "https://ccache.dev/",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    "xxhash",
+    "zstd",
+    "doctest",
+    "hiredis"
+  ]
+}

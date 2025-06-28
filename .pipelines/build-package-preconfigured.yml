@@ -11,6 +11,7 @@ parameters:
   type: string
   values:
   - buildcache
+  - ccache
   - dawn
   - ffmpeg-cloud-gpl
   - ffmpeg-desktop-base
