@@ -176,9 +176,9 @@ function Run-ScriptIfExists {
 
 function Get-Features {
    param(
-      [string]$packageAndFeatures
+      [string]$portAndFeatures
    )
-   if($packageAndFeatures -match '\[(.*?)\]')
+   if($portAndFeatures -match '\[(.*?)\]')
    {
       return ($matches[1] -split ",")
    }

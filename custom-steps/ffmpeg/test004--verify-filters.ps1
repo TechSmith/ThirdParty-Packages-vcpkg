@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
-    [Parameter(Mandatory=$true)][string]$PackageAndFeatures,
+    [Parameter(Mandatory=$true)][string]$PortAndFeatures,
     [Parameter(Mandatory=$true)][string]$ModulesRoot,
     [Parameter(Mandatory=$true)][string]$FFMpegExePath,
     [Parameter(Mandatory=$false)][string]$OutputDir = "test-output"
@@ -20,7 +20,7 @@ if (-Not (Test-Path $OutputDir)) {
 
 $ffmpegExe = "$FFMpegExePath -hide_banner"
 $tests = @()
-$features = Get-Features $PackageAndFeatures
+$features = Get-Features $PortAndFeatures
 $resourcesDir = "$PSScriptRoot/../../resources" 
 $voiceClip = "$resourcesDir/AIVoiceAudioClip.mp3"
 

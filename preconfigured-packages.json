@@ -3,7 +3,7 @@
     {
       "name": "ffmpeg-desktop-base",
       "mac": {
-        "package": "ffmpeg[tsc-desktop-mac]",
+        "portAndFeatures": "ffmpeg[tsc-desktop-mac]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -16,7 +16,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[tsc-desktop-win]",
+        "portAndFeatures": "ffmpeg[tsc-desktop-win]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -32,7 +32,7 @@
     {
       "name": "ffmpeg-desktop-hevc",
       "mac": {
-        "package": "ffmpeg[tsc-desktop-mac,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc,parser-hevc]",
+        "portAndFeatures": "ffmpeg[tsc-desktop-mac,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc,parser-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -45,7 +45,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[tsc-desktop-win,encoder-hevc-mf,encoder-hevc-qsv,decoder-hevc,decoder-hevc-qsv,demuxer-hevc,parser-hevc]",
+        "portAndFeatures": "ffmpeg[tsc-desktop-win,encoder-hevc-mf,encoder-hevc-qsv,decoder-hevc,decoder-hevc-qsv,demuxer-hevc,parser-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -61,7 +61,7 @@
     {
       "name": "ffmpeg-wasm-base",
       "wasm": {
-        "package": "ffmpeg[tsc-wasm-base]",
+        "portAndFeatures": "ffmpeg[tsc-wasm-base]",
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
@@ -71,7 +71,7 @@
     {
       "name": "ffmpeg-wasm-image2video",
       "wasm": {
-        "package": "ffmpeg[tsc-wasm-image2video]",
+        "portAndFeatures": "ffmpeg[tsc-wasm-image2video]",
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
@@ -81,7 +81,7 @@
     {
       "name": "ffmpeg-cloud-gpl",
       "win": {
-        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
+        "portAndFeatures": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
@@ -94,7 +94,7 @@
         }
       },
       "linux": {
-        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
+        "portAndFeatures": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
@@ -110,12 +110,12 @@
     {
       "name": "hunspell",
       "mac": {
-        "package": "hunspell[core]",
+        "portAndFeatures": "hunspell[core]",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "hunspell[core]",
+        "portAndFeatures": "hunspell[core]",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -123,7 +123,7 @@
     {
       "name": "hunspell-debug",
       "mac": {
-        "package": "hunspell[core]",
+        "portAndFeatures": "hunspell[core]",
         "linkType": "dynamic",
         "buildType": "debug",
         "publish": {
@@ -131,7 +131,7 @@
         }
       },
       "win": {
-        "package": "hunspell[core]",
+        "portAndFeatures": "hunspell[core]",
         "linkType": "dynamic",
         "buildType": "debug",
         "publish": {
@@ -142,12 +142,12 @@
     {
       "name": "libpng",
       "mac": {
-        "package": "libpng",
+        "portAndFeatures": "libpng",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "libpng",
+        "portAndFeatures": "libpng",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -155,12 +155,12 @@
     {
       "name": "openssl-static",
       "mac": {
-        "package": "openssl",
+        "portAndFeatures": "openssl",
         "linkType": "static",
         "buildType": "release"
       },
       "win": {
-        "package": "openssl",
+        "portAndFeatures": "openssl",
         "linkType": "static",
         "buildType": "release"
       }
@@ -168,13 +168,13 @@
     {
       "name": "pango-desktop",
       "mac": {
-        "package": "pango",
+        "portAndFeatures": "pango",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "74ec888e385d189b42d6b398d0bbaa6f1b1d3b0e"
       },
       "win": {
-        "package": "pango",
+        "portAndFeatures": "pango",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "74ec888e385d189b42d6b398d0bbaa6f1b1d3b0e"
@@ -183,12 +183,12 @@
     {
       "name": "opencv4",
       "mac": {
-        "package": "opencv4[core,dnn,quirc]",
+        "portAndFeatures": "opencv4[core,dnn,quirc]",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "opencv4[core,dnn,quirc]",
+        "portAndFeatures": "opencv4[core,dnn,quirc]",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -196,13 +196,13 @@
     {
       "name": "libzip-static",
       "mac": {
-        "package": "libzip[core]",
+        "portAndFeatures": "libzip[core]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       },
       "win": {
-        "package": "libzip[core]",
+        "portAndFeatures": "libzip[core]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
@@ -211,13 +211,13 @@
     {
       "name": "libzip-dynamic",
       "mac": {
-        "package": "libzip[core]",
+        "portAndFeatures": "libzip[core]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
       },
       "win": {
-        "package": "libzip[core]",
+        "portAndFeatures": "libzip[core]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
@@ -226,12 +226,12 @@
     {
       "name": "skia",
       "mac": {
-        "package": "skia[core,harfbuzz]",
+        "portAndFeatures": "skia[core,harfbuzz]",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "skia[core,harfbuzz]",
+        "portAndFeatures": "skia[core,harfbuzz]",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -239,12 +239,12 @@
     {
       "name": "sqlite3",
       "mac": {
-        "package": "sqlite3",
+        "portAndFeatures": "sqlite3",
         "linkType": "static",
         "buildType": "release"
       },
       "win": {
-        "package": "sqlite3",
+        "portAndFeatures": "sqlite3",
         "linkType": "static",
         "buildType": "release"
       }
@@ -252,12 +252,12 @@
     {
       "name": "sqlite-modern-cpp",
       "mac": {
-        "package": "sqlite-modern-cpp",
+        "portAndFeatures": "sqlite-modern-cpp",
         "linkType": "static",
         "buildType": "release"
       },
       "win": {
-        "package": "sqlite-modern-cpp",
+        "portAndFeatures": "sqlite-modern-cpp",
         "linkType": "static",
         "buildType": "release"
       }
@@ -265,12 +265,12 @@
     {
       "name": "tinyxml",
       "mac": {
-        "package": "tinyxml",
+        "portAndFeatures": "tinyxml",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "tinyxml",
+        "portAndFeatures": "tinyxml",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -278,12 +278,12 @@
     {
       "name": "whispercpp",
       "mac": {
-        "package": "whispercpp",
+        "portAndFeatures": "whispercpp",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "whispercpp",
+        "portAndFeatures": "whispercpp",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -291,12 +291,12 @@
     {
       "name": "whispercpp-basic",
       "mac": {
-        "package": "whispercpp-basic",
+        "portAndFeatures": "whispercpp-basic",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "whispercpp-basic",
+        "portAndFeatures": "whispercpp-basic",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -304,12 +304,12 @@
     {
       "name": "minizip",
       "mac": {
-        "package": "minizip",
+        "portAndFeatures": "minizip",
         "linkType": "dynamic",
         "buildType": "release"
       },
       "win": {
-        "package": "minizip",
+        "portAndFeatures": "minizip",
         "linkType": "dynamic",
         "buildType": "release"
       }
@@ -317,7 +317,7 @@
     {
       "name": "openblas",
       "win": {
-        "package": "openblas",
+        "portAndFeatures": "openblas",
         "customTriplet": "x64-windows-static-md",
         "publish": {
           "debug": true
@@ -327,12 +327,12 @@
     {
       "name": "kaldi",
       "mac": {
-        "package": "kaldi",
+        "portAndFeatures": "kaldi",
         "linkType": "static",
         "buildType": "release"
       },
       "win": {
-        "package": "kaldi",
+        "portAndFeatures": "kaldi",
         "customTriplet": "x64-windows-static-md",
         "publish": {
           "debug": true
@@ -342,12 +342,12 @@
     {
       "name": "glslang",
       "mac": {
-        "package": "glslang",
+        "portAndFeatures": "glslang",
         "linkType": "static",
         "buildType": "release"
       },
       "win": {
-        "package": "glslang",
+        "portAndFeatures": "glslang",
         "customTriplet": "x64-windows-static-md",
         "publish": {
           "debug": true
@@ -357,12 +357,12 @@
     {
       "name": "dawn",
       "mac": {
-        "package": "dawn",
+        "portAndFeatures": "dawn",
         "linkType": "static",
         "buildType": "release"
       },
       "win": {
-        "package": "dawn",
+        "portAndFeatures": "dawn",
         "customTriplet": "x64-windows-static-md",
         "publish": {
           "debug": true
@@ -372,7 +372,7 @@
     {
       "name": "buildcache",
       "mac": {
-        "package": "buildcache",
+        "portAndFeatures": "buildcache",
         "linkType": "static",
         "buildType": "release",
         "publish": {
@@ -384,7 +384,7 @@
         }
       },
       "win": {
-        "package": "buildcache",
+        "portAndFeatures": "buildcache",
         "linkType": "static",
         "buildType": "release",
         "publish": {

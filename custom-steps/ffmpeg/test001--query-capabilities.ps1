@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
-    [Parameter(Mandatory=$true)][string]$PackageAndFeatures,
+    [Parameter(Mandatory=$true)][string]$PortAndFeatures,
     [Parameter(Mandatory=$true)][string]$ModulesRoot,
     [Parameter(Mandatory=$true)][string]$FFMpegExePath,
     [Parameter(Mandatory=$false)][string]$OutputDir = "test-output"
@@ -216,7 +216,7 @@ $tests = @(
     }
 )
 
-$features = Get-Features $PackageAndFeatures
+$features = Get-Features $PortAndFeatures
 $tests += 
 @{
    Name = "EncodersMacH264"
