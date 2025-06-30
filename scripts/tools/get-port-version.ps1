@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory=$true)]
     [string]$PackageName,
+    [string]$TargetPlatform,
     [string]$OverlayPortsPath = 'custom-ports'
 )
 
