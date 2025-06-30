@@ -36,25 +36,25 @@
     {
       "filename": "bin/cairo-2.dll",
       "fileDescription": "Multi-platform 2D graphics library",
-      "fileVersion": "1.18.2",
+      "fileVersion": "1.18.4",
       "productName": "Cairo",
-      "productVersion": "1.18.2",
+      "productVersion": "1.18.4",
       "copyright": "Copyright (c) 2003-2025 The Cairo Authors"
     },
     {
       "filename": "bin/cairo-gobject-2.dll",
       "fileDescription": "Cairo gobject",
-      "fileVersion": "1.18.2",
+      "fileVersion": "1.18.4",
       "productName": "Cairo",
-      "productVersion": "1.18.2",
+      "productVersion": "1.18.4",
       "copyright": "Copyright (c) 2003-2025 The Cairo Authors"
     },
     {
       "filename": "bin/cairo-script-interpreter-2.dll",
       "fileDescription": "Cairo script interpreter",
-      "fileVersion": "1.18.2",
+      "fileVersion": "1.18.4",
       "productName": "Cairo",
-      "productVersion": "1.18.2",
+      "productVersion": "1.18.4",
       "copyright": "Copyright (c) 2003-2025 The Cairo Authors"
     },
     {
@@ -62,15 +62,15 @@
       "fileDescription": "libcharset",
       "fileVersion": "1.5.0",
       "productName": "libiconv: character set conversion library",
-      "productVersion": "1.17.0.0",
+      "productVersion": "1.18",
       "copyright": "Copyright (C) 1999-2022"
     },
     {
       "filename": "bin/ffi-8.dll",
       "fileDescription": "libffi",
-      "fileVersion": "3.4.6",
+      "fileVersion": "3.5.1",
       "productName": "libffi: The portable foreign function interface library",
-      "productVersion": "3.4.6",
+      "productVersion": "3.5.1",
       "copyright": "Copyright (c) 1996-2024  Anthony Green, Red Hat, Inc and others."
     },
     {
@@ -100,49 +100,49 @@
     {
       "filename": "bin/gio-2.0-0.dll",
       "fileDescription": "Gio",
-      "fileVersion": "2.80.0",
+      "fileVersion": "2.84.2",
       "productName": "GLib",
-      "productVersion": "2.80.0",
+      "productVersion": "2.84.2",
       "copyright": "Copyright 2006-2011 Red Hat, Inc. and others."
     },
     {
       "filename": "bin/girepository-2.0-0.dll",
       "fileDescription": "GObject Introspection repository parser",
-      "fileVersion": "2.80.0",
+      "fileVersion": "2.84.2",
       "productName": "GLib",
-      "productVersion": "2.80.0",
+      "productVersion": "2.84.2",
       "copyright": "Copyright (C) 2005-2025 Matthias Clasen, Red Hat, Inc. and others"
     },
     {
       "filename": "bin/glib-2.0-0.dll",
       "fileDescription": "GLib",
-      "fileVersion": "2.80.0",
+      "fileVersion": "2.84.2",
       "productName": "GLib",
-      "productVersion": "2.80.0",
+      "productVersion": "2.84.2",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/gmodule-2.0-0.dll",
       "fileDescription": "GModule",
-      "fileVersion": "2.80.0",
+      "fileVersion": "2.84.2",
       "productName": "GLib",
-      "productVersion": "2.80.0",
+      "productVersion": "22.84.2",
       "copyright": "Copyright 1998-2011 Tim Janik and others."
     },
     {
       "filename": "bin/gobject-2.0-0.dll",
       "fileDescription": "GObject",
-      "fileVersion": "2.80.0",
+      "fileVersion": "2.84.2",
       "productName": "GLib",
-      "productVersion": "2.80.0",
+      "productVersion": "2.84.2",
       "copyright": "Copyright 1998-2011 Tim Janik, Red Hat, Inc. and others"
     },
     {
       "filename": "bin/gthread-2.0-0.dll",
       "fileDescription": "GThread",
-      "fileVersion": "2.80.0",
+      "fileVersion": "2.84.2",
       "productName": "GLib",
-      "productVersion": "2.80.0",
+      "productVersion": "2.84.2",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald, Sebastian Wilhelmi and others."
     },
     {
@@ -164,9 +164,9 @@
     {
       "filename": "bin/iconv-2.dll",
       "fileDescription": "LGPLed libiconv for Windows",
-      "fileVersion": "1.17.0",
+      "fileVersion": "1.18",
       "productName": "libiconv: character set conversion library",
-      "productVersion": "1.17",
+      "productVersion": "1.18",
       "copyright": "Copyright (C) 1999-2022"
     },
     {
@@ -180,17 +180,17 @@
     {
       "filename": "bin/libexpat.dll",
       "fileDescription": "Expat XML parser",
-      "fileVersion": "2.6.4",
+      "fileVersion": "2.7.1",
       "productName": "Expat",
-      "productVersion": "2.6.4.0",
+      "productVersion": "2.7.1",
       "copyright": "Copyright (c) 2001-2022 Expat maintainers"
     },
     {
       "filename": "bin/libpng16.dll",
       "fileDescription": "Loads and saves PNG files",
-      "fileVersion": "1.6.45",
+      "fileVersion": "1.6.47",
       "productName": "libpng",
-      "productVersion": "1.6.45",
+      "productVersion": "1.6.47",
       "copyright": "Copyright (c) 1995-2025 The PNG Reference Library Authors."
     },
     {
@@ -260,9 +260,9 @@
     {
       "filename": "bin/pixman-1-0.dll",
       "fileDescription": "The pixman library (version 1)",
-      "fileVersion": "0.43.4",
+      "fileVersion": "0.44.2",
       "productName": "Pixman",
-      "productVersion": "0.43.4",
+      "productVersion": "0.44.2",
       "copyright": "Copyright (c) 1997-2010 Red Hat, Inc. and others"
     },
     {
