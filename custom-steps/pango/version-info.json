@@ -1,9 +1,10 @@
 {
+  "buildNumber": 101,
   "files": [
     {
       "filename": "bin/brotlicommon.dll",
       "fileDescription": "Brotli common dictionary library",
-      "fileVersion": "1.1.0.100",
+      "fileVersion": "1.1.0",
       "productName": "Brotli",
       "productVersion": "1.1.0",
       "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
@@ -11,7 +12,7 @@
     {
       "filename": "bin/brotlidec.dll",
       "fileDescription": "Brotli decoder library",
-      "fileVersion": "1.1.0.100",
+      "fileVersion": "1.1.0",
       "productName": "Brotli",
       "productVersion": "1.1.0",
       "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
@@ -19,7 +20,7 @@
     {
       "filename": "bin/brotlienc.dll",
       "fileDescription": "Brotli encoder library",
-      "fileVersion": "1.1.0.100",
+      "fileVersion": "1.1.0",
       "productName": "Brotli",
       "productVersion": "1.1.0",
       "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
@@ -27,7 +28,7 @@
     {
       "filename": "bin/bz2.dll",
       "fileDescription": "A program and library for lossless, block-sorting data compression",
-      "fileVersion": "1.0.8.100",
+      "fileVersion": "1.0.8",
       "productName": "Bzip2",
       "productVersion": "1.0.8",
       "copyright": "Copyright (C) 1996-2019 Julian R Seward"
@@ -59,7 +60,7 @@
     {
       "filename": "bin/charset-1.dll",
       "fileDescription": "libcharset",
-      "fileVersion": "1.5.0.100",
+      "fileVersion": "1.5.0",
       "productName": "libiconv: character set conversion library",
       "productVersion": "1.17.0.0",
       "copyright": "Copyright (C) 1999-2022"
@@ -99,7 +100,7 @@
     {
       "filename": "bin/gio-2.0-0.dll",
       "fileDescription": "Gio",
-      "fileVersion": "2.80.0.0",
+      "fileVersion": "2.80.0",
       "productName": "GLib",
       "productVersion": "2.80.0",
       "copyright": "Copyright 2006-2011 Red Hat, Inc. and others."
@@ -107,7 +108,7 @@
     {
       "filename": "bin/girepository-2.0-0.dll",
       "fileDescription": "GObject Introspection repository parser",
-      "fileVersion": "2.80.0.0",
+      "fileVersion": "2.80.0",
       "productName": "GLib",
       "productVersion": "2.80.0",
       "copyright": "Copyright (C) 2005-2025 Matthias Clasen, Red Hat, Inc. and others"
@@ -115,7 +116,7 @@
     {
       "filename": "bin/glib-2.0-0.dll",
       "fileDescription": "GLib",
-      "fileVersion": "2.80.0.0",
+      "fileVersion": "2.80.0",
       "productName": "GLib",
       "productVersion": "2.80.0",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
@@ -123,7 +124,7 @@
     {
       "filename": "bin/gmodule-2.0-0.dll",
       "fileDescription": "GModule",
-      "fileVersion": "2.80.0.0",
+      "fileVersion": "2.80.0",
       "productName": "GLib",
       "productVersion": "2.80.0",
       "copyright": "Copyright 1998-2011 Tim Janik and others."
@@ -131,7 +132,7 @@
     {
       "filename": "bin/gobject-2.0-0.dll",
       "fileDescription": "GObject",
-      "fileVersion": "2.80.0.0",
+      "fileVersion": "2.80.0",
       "productName": "GLib",
       "productVersion": "2.80.0",
       "copyright": "Copyright 1998-2011 Tim Janik, Red Hat, Inc. and others"
@@ -139,7 +140,7 @@
     {
       "filename": "bin/gthread-2.0-0.dll",
       "fileDescription": "GThread",
-      "fileVersion": "2.80.0.0",
+      "fileVersion": "2.80.0",
       "productName": "GLib",
       "productVersion": "2.80.0",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald, Sebastian Wilhelmi and others."
@@ -163,7 +164,7 @@
     {
       "filename": "bin/iconv-2.dll",
       "fileDescription": "LGPLed libiconv for Windows",
-      "fileVersion": "1.17.0.100",
+      "fileVersion": "1.17.0",
       "productName": "libiconv: character set conversion library",
       "productVersion": "1.17",
       "copyright": "Copyright (C) 1999-2022"
@@ -179,7 +180,7 @@
     {
       "filename": "bin/libexpat.dll",
       "fileDescription": "Expat XML parser",
-      "fileVersion": "2.6.4.0",
+      "fileVersion": "2.6.4",
       "productName": "Expat",
       "productVersion": "2.6.4.0",
       "copyright": "Copyright (c) 2001-2022 Expat maintainers"
@@ -195,7 +196,7 @@
     {
       "filename": "bin/pango-1.0-0.dll",
       "fileDescription": "Pango",
-      "fileVersion": "1.56.1.0",
+      "fileVersion": "1.56.1",
       "productName": "Pango",
       "productVersion": "1.56.1",
       "copyright": "Copyright 1999 Red Hat Software."
@@ -203,7 +204,7 @@
     {
       "filename": "bin/pangocairo-1.0-0.dll",
       "fileDescription": "PangoCairo",
-      "fileVersion": "1.56.1.0",
+      "fileVersion": "1.56.1",
       "productName": "PangoCairo",
       "productVersion": "1.56.1",
       "copyright": "Copyright 2010 Red Hat Software."
@@ -211,7 +212,7 @@
     {
       "filename": "bin/pangoft2-1.0-0.dll",
       "fileDescription": "PangoFT2",
-      "fileVersion": "1.56.1.0",
+      "fileVersion": "1.56.1",
       "productName": "PangoFT2",
       "productVersion": "1.56.1",
       "copyright": "Copyright 1999 Red Hat Software. Copyright 2000 Tor Lillqvist"
@@ -219,7 +220,7 @@
     {
       "filename": "bin/pangowin32-1.0-0.dll",
       "fileDescription": "PangoWin32",
-      "fileVersion": "1.56.1.0",
+      "fileVersion": "1.56.1",
       "productName": "PangoWin32",
       "productVersion": "1.56.1",
       "copyright": "Copyright 1999 Red Hat Software. Copyright 2000 Tor Lillqvist"
@@ -267,31 +268,31 @@
     {
       "filename": "bin/pthreadVC3.dll",
       "fileDescription": "MS C x64",
-      "fileVersion": "3, 0, 0, 100",
+      "fileVersion": "3.0.0",
       "productName": "POSIX Threads for Windows",
-      "productVersion": "3, 0, 0, 0",
+      "productVersion": "3.0.0",
       "copyright": "Copyright - Project contributors 1999-2016"
     },
     {
       "filename": "bin/pthreadVCE3.dll",
       "fileDescription": "MS C++ x64",
-      "fileVersion": "3, 0, 0, 100",
+      "fileVersion": "3.0.0",
       "productName": "POSIX Threads for Windows",
-      "productVersion": "3, 0, 0, 0",
+      "productVersion": "3.0.0",
       "copyright": "Copyright - Project contributors 1999-2016"
     },
     {
       "filename": "bin/pthreadVSE3.dll",
       "fileDescription": "MS C SEH x64",
-      "fileVersion": "3, 0, 0, 100",
+      "fileVersion": "3.0.0",
       "productName": "POSIX Threads for Windows",
-      "productVersion": "3, 0, 0, 0",
+      "productVersion": "3.0.0",
       "copyright": "Copyright - Project contributors 1999-2016"
     },
     {
       "filename": "bin/zlib1.dll",
       "fileDescription": "zlib data compression library",
-      "fileVersion": "1.3.1.100",
+      "fileVersion": "1.3.1",
       "productName": "zlib",
       "productVersion": "1.3.1",
       "copyright": "(C) 1995-2022 Jean-loup Gailly & Mark Adler"
