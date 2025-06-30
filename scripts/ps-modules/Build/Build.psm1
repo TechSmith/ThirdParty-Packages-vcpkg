@@ -174,6 +174,54 @@ function Get-PackageInfo
     return $pkg.$targetPlatform
 }
 
+function Get-VcpkgPortVersion {
+    param(
+        [Parameter(Mandatory=$true)][string]$portName,
+        [string]$overlayPortsPath
+    )
+
+    try {
+        # Build the arguments for the vcpkg command
+        $vcpkgArgs = @("search", $PortName)
+        if (-not [string]::IsNullOrEmpty($overlayPortsPath)) {
+            $vcpkgArgs += "--overlay-ports=$overlayPortsPath"
+        }
+
+        # Execute vcpkg search and capture the output, including any errors
+        $searchOutput = & $(Get-VcPkgExe) $vcpkgArgs 2>&1
+
+        # Escape the port name to handle special regex characters safely.
+        $escapedPortName = [regex]::Escape($portName)
+
+        # Find the line that exactly matches the port name at the beginning.
+        # This avoids partial matches (e.g., searching "cli" and matching "clipp").
+        # We also check that the object is a string to avoid errors on ErrorRecord objects.
+        $portLine = $searchOutput | Where-Object { $_ -is [string] -and $_.TrimStart() -match "^$escapedPortName\s+" }
+
+        if ($portLine) {
+            # The output is space-delimited. Split the line by one or more whitespace characters.
+            $parts = $portLine.Trim() -split '\s+'
+
+            # The version is the second part of the output.
+            # Example: "10.0.0#1"
+            $versionWithHash = $parts[1]
+
+            # Strip off the hash and anything after it by splitting on '#' and taking the first part.
+            $version = $versionWithHash.Split('#')[0]
+
+            return $version
+        } else {
+            Write-Warning "Port '$portName' not found."
+            return $null
+        }
+    }
+    catch {
+        Write-Error "An error occurred while running 'vcpkg search'. Make sure vcpkg is in your PATH."
+        Write-Error $_.Exception.Message
+        return $null
+    }
+}
+
 function Run-WriteParamsStep {
    param(
       [string]$portAndFeatures,
