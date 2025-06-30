@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
-    [Parameter(Mandatory=$false)][string]$PackageAndFeatures,
+    [Parameter(Mandatory=$false)][string]$PortAndFeatures,
     [Parameter(Mandatory=$false)][string]$LinkType,
     [Parameter(Mandatory=$false)][string]$BuildType,
     [Parameter(Mandatory=$false)][string]$ModulesRoot,
@@ -13,5 +13,5 @@ if(-not (Get-Module -Name $moduleName)) {
 }
 
 if((Get-IsOnWindowsOS)) {
-    Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+    Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json" -buildNumber $BuildNumber
 }

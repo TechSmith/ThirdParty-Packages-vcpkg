@@ -5,20 +5,20 @@ Import-Module "$PSScriptRoot/../../ps-modules/Util" -Force -DisableNameChecking
 ##################################################
 function Install-FromVcpkg {
     param(
-        [string]$packageAndFeatures,
+        [string]$portAndFeatures,
         [string]$triplet
     )
 
-    $pkgToInstall = "${packageAndFeatures}:${triplet}"
+    $pkgToInstall = "${portAndFeatures}:${triplet}"
     Write-Message "Installing package: `"$pkgToInstall`""
     Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
 }
 
-function Get-PackageNameOnly {
+function Get-PortNameOnly {
    param(
-      [string]$packageAndFeatures
+      [string]$portAndFeatures
    )
-   return ($packageAndFeatures -replace '\[.*$', '')
+   return ($portAndFeatures -replace '\[.*$', '')
 }
 
 function Get-Triplets {
@@ -58,14 +58,14 @@ function Get-VcPkgExe {
 function Get-ArtifactName {
    param(
       [string]$packageName,
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
       [string]$customTriplet
    )
 
    if( $packageName -eq "") {
-      $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+      $packageNameOnly = (Get-PortNameOnly $portAndFeatures)
       $packageName = "$packageNameOnly-$linkType"
    }
 
@@ -174,12 +174,60 @@ function Get-PackageInfo
     return $pkg.$targetPlatform
 }
 
+function Get-VcpkgPortVersion {
+    param(
+        [Parameter(Mandatory=$true)][string]$portName,
+        [string]$overlayPortsPath
+    )
+
+    try {
+        # Build the arguments for the vcpkg command
+        $vcpkgArgs = @("search", $PortName)
+        if (-not [string]::IsNullOrEmpty($overlayPortsPath)) {
+            $vcpkgArgs += "--overlay-ports=$overlayPortsPath"
+        }
+
+        # Execute vcpkg search and capture the output, including any errors
+        $searchOutput = & $(Get-VcPkgExe) $vcpkgArgs 2>&1
+
+        # Escape the port name to handle special regex characters safely.
+        $escapedPortName = [regex]::Escape($portName)
+
+        # Find the line that exactly matches the port name at the beginning.
+        # This avoids partial matches (e.g., searching "cli" and matching "clipp").
+        # We also check that the object is a string to avoid errors on ErrorRecord objects.
+        $portLine = $searchOutput | Where-Object { $_ -is [string] -and $_.TrimStart() -match "^$escapedPortName\s+" }
+
+        if ($portLine) {
+            # The output is space-delimited. Split the line by one or more whitespace characters.
+            $parts = $portLine.Trim() -split '\s+'
+
+            # The version is the second part of the output.
+            # Example: "10.0.0#1"
+            $versionWithHash = $parts[1]
+
+            # Strip off the hash and anything after it by splitting on '#' and taking the first part.
+            $version = $versionWithHash.Split('#')[0]
+
+            return $version
+        } else {
+            Write-Warning "Port '$portName' not found."
+            return $null
+        }
+    }
+    catch {
+        Write-Error "An error occurred while running 'vcpkg search'. Make sure vcpkg is in your PATH."
+        Write-Error $_.Exception.Message
+        return $null
+    }
+}
+
 function Run-WriteParamsStep {
    param(
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [PSObject]$scriptArgs
    )
-   Write-Banner -Level 2 -Title "Starting vcpkg install for: $packageAndFeatures"
+   Write-Banner -Level 2 -Title "Starting vcpkg install for: $portAndFeatures"
    Write-Message "Params:"
    Write-Message (Get-PSObjectAsFormattedList -Object $scriptArgs)
 }
@@ -243,9 +291,9 @@ function Run-SetupVcpkgStep {
 
 function Run-PreBuildStep {
    param(
-      [string]$packageAndFeatures
+      [string]$portAndFeatures
    )
-   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+   $packageNameOnly = (Get-PortNameOnly $portAndFeatures)
    Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
 }
 
@@ -298,14 +346,14 @@ function Run-InstallCompilerIfNecessary {
 function Run-InstallPackageStep
 {
    param(
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string[]]$triplets
    )
-   Write-Banner -Level 3 -Title "Install package step: $packageAndFeatures"
+   Write-Banner -Level 3 -Title "Install package step: $portAndFeatures"
 
    foreach ($triplet in $triplets) {
       Write-Message "> Installing for triplet: $triplet..."
-      Install-FromVcPkg -packageAndFeatures $packageAndFeatures -triplet $triplet
+      Install-FromVcPkg -portAndFeatures $portAndFeatures -triplet $triplet
       Exit-IfError $LASTEXITCODE
    }
 }
@@ -400,20 +448,22 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
 
 function Run-PostBuildStep {
    param(
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string[]]$triplets
+      [string[]]$triplets,
+      [string]$buildNumber
    )
-   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+   $packageNameOnly = (Get-PortNameOnly $portAndFeatures)
    $preStagePath = (Get-PreStagePath)
    $scriptArgs = @{
       BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/')
-      PackageAndFeatures = ($packageAndFeatures -replace ',', '`,')
+      PortAndFeatures = ($portAndFeatures -replace ',', '`,')
       LinkType = "$linkType"
       BuildType = "$buildType"
       ModulesRoot = "$PSScriptRoot/../../ps-modules"
       Triplets = $triplets
+      BuildNumber = $buildNumber
    }
    Run-ScriptIfExists -title "Post-build step" -script "custom-steps/$packageNameOnly/post-build.ps1" -scriptArgs $scriptArgs
    Exit-IfError $LASTEXITCODE
@@ -422,7 +472,7 @@ function Run-PostBuildStep {
 function Run-StageBuildArtifactsStep {
    param(
       [string]$packageName,
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
       [string]$customTriplet,
@@ -434,7 +484,7 @@ function Run-StageBuildArtifactsStep {
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -portAndFeatures $portAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
@@ -444,7 +494,7 @@ function Run-StageBuildArtifactsStep {
    $packageInfoFilename = "package.json"
    Write-Message "Generating: `"$packageInfoFilename`"..."
    $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactSubDir/$artifactName/$dependenciesFilename" | ConvertFrom-Json
-   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+   $packageNameOnly = (Get-PortNameOnly $portAndFeatures)
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
    Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
 
@@ -479,7 +529,7 @@ function Run-StageBuildArtifactsStep {
 function Run-StageSourceArtifactsStep {
    param(
       [string]$packageName,
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
       [string]$customTriplet,
@@ -489,7 +539,7 @@ function Run-StageSourceArtifactsStep {
    Write-Banner -Level 3 -Title "Stage source code artifacts"
 
    $sourceCodeRootDir = "./vcpkg/buildtrees/"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-src"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -portAndFeatures $portAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-src"
    $stagedArtifactSubDir = "$stagedArtifactsPath/src"
    $artifactPath = "$stagedArtifactSubDir/$artifactName"
 
@@ -529,7 +579,7 @@ function Resolve-Symlink {
 }
 
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Get-VcpkgPortVersion, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force
