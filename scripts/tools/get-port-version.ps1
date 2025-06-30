@@ -13,7 +13,8 @@ $pkg = Get-PackageInfo -PackageName $PackageName -TargetPlatform $TargetPlatform
 $portName = (Get-PortNameOnly $pkg.package)
 Write-Host "> PortName is: $portName"
 
-$portVersion = Get-VcpkgPortVersion -portName $portName -overlayPortsPath $myOverlayPath
+$pathToVcpkgExe = $(Get-VcPkgExe)
+$portVersion = Get-VcpkgPortVersion -portName $portName -pathToVcpkgExe $pathToVcpkgExe -overlayPortsPath $myOverlayPath
 if ($portVersion) {
     Write-Host $portVersion
 }

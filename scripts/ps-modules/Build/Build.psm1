@@ -177,7 +177,8 @@ function Get-PackageInfo
 function Get-VcpkgPortVersion {
     param(
         [Parameter(Mandatory=$true)][string]$portName,
-        [string]$overlayPortsPath
+        [string]$overlayPortsPath,
+        [string]$pathToVcpkgExe
     )
 
     try {
@@ -189,8 +190,7 @@ function Get-VcpkgPortVersion {
 
         # Execute vcpkg search and capture the output, including any errors
         Write-Host "> vcpkg.exe on the next line..."
-        Write-Host $(Get-VcPkgExe)
-        $searchOutput = & $(Get-VcPkgExe) $vcpkgArgs 2>&1
+        $searchOutput = & $($pathToVcpkgExe) $vcpkgArgs 2>&1
 
         # Escape the port name to handle special regex characters safely.
         $escapedPortName = [regex]::Escape($portName)
