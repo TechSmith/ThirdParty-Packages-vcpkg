@@ -59,18 +59,18 @@ stages:
           imageName: ''
           poolName: 'VMSS_CommonCpp_VS2022'
           osName: win
-        mac:
-          imageName: macOS-14
-          poolName: ''
-          osName: mac
-        linux:
-          imageName: ubuntu-latest
-          poolName: ''
-          osName: linux
-        wasm:
-          imageName: ubuntu-latest
-          poolName: ''
-          osName: wasm
+        # mac:
+        #   imageName: macOS-14
+        #   poolName: ''
+        #   osName: mac
+        # linux:
+        #   imageName: ubuntu-latest
+        #   poolName: ''
+        #   osName: linux
+        # wasm:
+        #   imageName: ubuntu-latest
+        #   poolName: ''
+        #   osName: wasm
       maxParallel: 4
 
     pool:
