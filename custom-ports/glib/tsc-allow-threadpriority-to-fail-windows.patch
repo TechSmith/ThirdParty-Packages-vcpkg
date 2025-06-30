@@ -1,8 +1,8 @@
 diff --git a/glib/gthread-win32.c b/glib/gthread-win32.c
-index fc5697d..88d50a4 100644
+index f0f8ca04e..407120865 100644
 --- a/glib/gthread-win32.c
 +++ b/glib/gthread-win32.c
-@@ -494,11 +494,8 @@ g_system_thread_new (GThreadFunc proxy,
+@@ -495,11 +495,8 @@ g_system_thread_new (GThreadFunc proxy,
        goto error;
      }
  
