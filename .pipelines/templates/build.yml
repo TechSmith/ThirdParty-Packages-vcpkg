@@ -83,7 +83,7 @@ stages:
     - template: steps/full-checkout.yml
 
     - pwsh: |
-        $version = & "$(Build.SourcesDirectory)/scripts/tools/get-port-version.ps1" -PackageName "${{ parameters.packageName }}" -OverlayPortsPath "$(Build.SourcesDirectory)/custom-ports"
+        $version = & "$(Build.SourcesDirectory)/scripts/tools/get-port-version.ps1" -PackageName "${{ parameters.packageName }}" -TargetPlatform $(osName) -OverlayPortsPath "$(Build.SourcesDirectory)/custom-ports"
         if ([string]::IsNullOrWhiteSpace($version)) {
             Write-Error "Failed to retrieve a version number from the script for port '$(vcpkgPortName)'."
             exit 1
