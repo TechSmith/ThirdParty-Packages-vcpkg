@@ -174,22 +174,26 @@ function Get-PackageInfo
     return $pkg.$targetPlatform
 }
 
-function Get-VcpkgPortVersion {
+function Get-PackageMainPortVersion {
     param(
-        [Parameter(Mandatory=$true)][string]$portName,
-        [string]$overlayPortsPath,
-        [string]$pathToVcpkgExe
+        [Parameter(Mandatory=$true)][string]$packageName,
+        [Parameter(Mandatory=$true)][string]$targetPlatform,
+        [string]$overlayPortsPath = 'custom-ports'
     )
 
     try {
+       $pkg = Get-PackageInfo -packageName $packageName -targetPlatform $(Get-OSType)
+       $portName = (Get-PortNameOnly $pkg.package)
+
         # Build the arguments for the vcpkg command
-        $vcpkgArgs = @("search", $PortName)
+        $vcpkgArgs = @("search", $portName)
         if (-not [string]::IsNullOrEmpty($overlayPortsPath)) {
+            $overlayPortsPath = Join-Path $PSScriptRoot "../../../$overlayPortsPath"
             $vcpkgArgs += "--overlay-ports=$overlayPortsPath"
         }
 
         # Execute vcpkg search and capture the output, including any errors
-        Write-Host "> vcpkg.exe on the next line..."
+        $pathToVcpkgExe = Join-Path $PSScriptRoot "../../../$(Get-VcPkgExe)"
         $searchOutput = & $($pathToVcpkgExe) $vcpkgArgs 2>&1
 
         # Escape the port name to handle special regex characters safely.
@@ -581,7 +585,7 @@ function Resolve-Symlink {
 }
 
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-PortNameOnly, Get-VcPkgExe, Get-VcpkgPortVersion, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-PortNameOnly, Get-VcPkgExe, Get-PackageMainPortVersion, Resolve-Symlink
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force

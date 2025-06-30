@@ -83,18 +83,12 @@ stages:
     - template: steps/full-checkout.yml
 
     - pwsh: |
-        $version = & "$(Build.SourcesDirectory)/scripts/tools/get-port-version.ps1" -PackageName "${{ parameters.packageName }}" -TargetPlatform $(osName) -OverlayPortsPath "$(Build.SourcesDirectory)/custom-ports"
-        if ([string]::IsNullOrWhiteSpace($version)) {
-            Write-Error "Failed to retrieve a version number from the script for port '$(vcpkgPortName)'."
-            exit 1
-          }
-          Write-Host "##vso[task.setvariable variable=portVersion;]$version"
-          Write-Host "Successfully set pipeline variable 'portVersion' to '$version'"
+        & "$(Build.SourcesDirectory)/scripts/tools/get-port-version.ps1" -PackageName "${{ parameters.packageName }}" -TargetPlatform $(osName)
       displayName: 'Run: Get primary port version'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 
     - pwsh: |
-        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)
+        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName) -RunCleanup $false
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 

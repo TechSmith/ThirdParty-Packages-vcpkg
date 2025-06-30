@@ -7,16 +7,19 @@ param(
     [string]$StagedArtifactsPath = "StagedArtifacts",        # Output path to stage these artifacts to
     [string]$VcpkgHash = "",                                 # The hash of vcpkg to checkout (if applicable)
     [PSObject]$PublishInfo = $false,                         # Optional info on what to publish or not publish to the final artifact
-    [switch]$ShowDebug = $false                              # Show additional debugging information
+    [switch]$ShowDebug = $false,                             # Show additional debugging information
+    [string]$OverlayPortsPath = 'custom-ports',              # Path to the overlay ports directory
+    [PSObject]$RunCleanup = $true                            # If true, will cleanup files from previous runs and re-clone vcpkg
 )
 
 $global:showDebug = $ShowDebug
 Import-Module "$PSScriptRoot/scripts/ps-modules/Build" -Force -DisableNameChecking
 Run-WriteParamsStep -portAndFeatures $PortAndFeatures -scriptArgs $PSBoundParameters
-Run-CleanupStep
-Run-SetupVcPkgStep $VcPkgHash
+if($RunCleanup) {
+    Run-CleanupStep
+    Run-SetupVcPkgStep $VcPkgHash
+}
 Run-PreBuildStep $PortAndFeatures
-
 $triplets = Get-Triplets -linkType $linkType -buildType $BuildType -customTriplet $CustomTriplet
 Run-InstallCompilerIfNecessary -triplets $triplets
 Run-InstallPackageStep -portAndFeatures $PortAndFeatures -triplets $triplets

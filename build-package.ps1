@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory=$true)][string]$PackageName, # Name of package from preconfigured-packages.json
     [string]$StagedArtifactsPath = "StagedArtifacts", # Output path to stage these artifacts to
     [switch]$ShowDebug = $false,
-    [string]$TargetPlatform = ""
+    [string]$TargetPlatform = "",
+    [PSObject]$RunCleanup = $true                     # If true, will cleanup files from previous runs and re-clone vcpkg
 )
 
 Import-Module "$PSScriptRoot/scripts/ps-modules/Build" -Force -DisableNameChecking
@@ -21,4 +22,4 @@ if ($pkg -eq $null) {
 }
 
 Write-Message "$(NL)Running invoke-build.ps1...$(NL)"
-./invoke-build.ps1 -PackageName $PackageName -PortAndFeatures $pkg.package -CustomTriplet $pkg.customTriplet -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug
+./invoke-build.ps1 -PackageName $PackageName -PortAndFeatures $pkg.package -CustomTriplet $pkg.customTriplet -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug -RunCleanup $RunCleanup
