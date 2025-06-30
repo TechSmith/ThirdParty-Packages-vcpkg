@@ -7,8 +7,7 @@ param(
     [string]$StagedArtifactsPath = "StagedArtifacts",        # Output path to stage these artifacts to
     [string]$VcpkgHash = "",                                 # The hash of vcpkg to checkout (if applicable)
     [PSObject]$PublishInfo = $false,                         # Optional info on what to publish or not publish to the final artifact
-    [switch]$ShowDebug = $false,                             # Show additional debugging information
-    [string]$BuildNumber = ""                                # Optional build number to use for the build (if applicable)
+    [switch]$ShowDebug = $false                              # Show additional debugging information
 )
 
 $global:showDebug = $ShowDebug
