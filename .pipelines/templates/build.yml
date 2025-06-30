@@ -88,7 +88,8 @@ stages:
       condition: succeeded()
 
     - pwsh: |
-        Write-Host "mainPortVersion: $(mainPortVersion)"
+        $version = "$(mainPortVersion)"
+        Write-Host "The mainPortVersion is: $version"
       displayName: 'Set BuildNumber'
       condition: succeeded()
 
