@@ -84,10 +84,15 @@ stages:
 
     - pwsh: |
         & "$(Build.SourcesDirectory)/scripts/tools/get-port-version.ps1" -PackageName "${{ parameters.packageName }}" -TargetPlatform $(osName)
-      displayName: 'Run: Get primary port version'
-      condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
+      displayName: 'Run: Setup vcpkg'
+      condition: succeeded()
 
     - pwsh: |
+        Write-Host "mainPortVersion: $(mainPortVersion)"
+      displayName: 'Set BuildNumber'
+      condition: succeeded()
+
+      - pwsh: |
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName) -RunCleanup $false
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
