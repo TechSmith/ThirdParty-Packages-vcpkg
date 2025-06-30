@@ -14,4 +14,4 @@ if($RunCleanup) {
 }
 $portVersion = Get-PackageMainPortVersion -packageName $PackageName -targetPlatform $targetPlatform -overlayPortsPath $OverlayPortsPath
 Write-Host "> Main port version for $PackageName is: $portVersion"
-Write-Host "##vso[task.setvariable variable=mainPortVersion]$mainPortVersion"
+Write-Host "##vso[task.setvariable variable=portVersion]$portVersion"
