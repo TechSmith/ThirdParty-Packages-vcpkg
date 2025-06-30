@@ -92,7 +92,7 @@ stages:
       displayName: 'Set BuildNumber'
       condition: succeeded()
 
-      - pwsh: |
+    - pwsh: |
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName) -RunCleanup $false
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
