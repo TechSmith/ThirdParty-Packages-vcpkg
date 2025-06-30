@@ -13,7 +13,9 @@ $pkg = Get-PackageInfo -PackageName $PackageName -TargetPlatform $TargetPlatform
 $portName = (Get-PortNameOnly $pkg.package)
 Write-Host "> PortName is: $portName"
 
-$pathToVcpkgExe = $(Get-VcPkgExe)
+$pathToVcpkgExe = Join-Path $PSScriptRoot "../../$(Get-VcPkgExe)"
+Write-Host "> Path to vcpkg.exe is: $pathToVcpkgExe"
+
 $portVersion = Get-VcpkgPortVersion -portName $portName -pathToVcpkgExe $pathToVcpkgExe -overlayPortsPath $myOverlayPath
 if ($portVersion) {
     Write-Host $portVersion
