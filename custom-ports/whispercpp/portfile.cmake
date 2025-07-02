@@ -41,18 +41,21 @@ get_filename_component(GIT_DIR "${GIT}" DIRECTORY)
 vcpkg_add_to_path("${GIT_DIR}")
 
 message(STATUS ">> Configuring...")
-set(CMAKE_C_FLAGS_INITIAL "${VCPKG_C_FLAGS}")
-set(CMAKE_CXX_FLAGS_INITIAL "${VCPKG_CXX_FLAGS}")
-set(CMAKE_LINKER_FLAGS_INITIAL "${VCPKG_LINKER_FLAGS}")
+
+# Update mion macos version to 13, to fix this error: "warning: 'cblas_sgemm' is only available on macOS 13.3 or newer"
+string(REPLACE "-mmacosx-version-min=11.0" "-mmacosx-version-min=13.0" CMAKE_C_FLAGS_INITIAL "${VCPKG_C_FLAGS}")
+string(REPLACE "-mmacosx-version-min=11.0" "-mmacosx-version-min=13.0" CMAKE_CXX_FLAGS_INITIAL "${VCPKG_CXX_FLAGS}")
+string(REPLACE "-mmacosx-version-min=11.0" "-mmacosx-version-min=13.0" CMAKE_LINKER_FLAGS_INITIAL "${VCPKG_LINKER_FLAGS}")
+
 vcpkg_execute_build_process(
     COMMAND "${CMAKE_COMMAND}"
         -S "${SOURCE_PATH}"
         -B "${CMAKE_BUILD_DIR_RELEASE}"
         -DCMAKE_SYSTEM_NAME=${VCPKG_CMAKE_SYSTEM_NAME}
-        -DCMAKE_C_FLAGS_INIT="${CMAKE_C_FLAGS_INITIAL}"
-        -DCMAKE_CXX_FLAGS_INIT="${CMAKE_CXX_FLAGS_INITIAL}"
-        -DCMAKE_EXE_LINKER_FLAGS_INIT="${CMAKE_LINKER_FLAGS_INITIAL}"
-        -DCMAKE_SHARED_LINKER_FLAGS_INIT="${CMAKE_LINKER_FLAGS_INITIAL}"
+        -DCMAKE_C_FLAGS_INIT=${CMAKE_C_FLAGS_INITIAL}
+        -DCMAKE_CXX_FLAGS_INIT=${CMAKE_CXX_FLAGS_INITIAL}
+        -DCMAKE_EXE_LINKER_FLAGS_INIT=${CMAKE_LINKER_FLAGS_INITIAL}
+        -DCMAKE_SHARED_LINKER_FLAGS_INIT=${CMAKE_LINKER_FLAGS_INITIAL}
         ${TSC_CMAKE_CONFIGURE_OPTIONS}
     WORKING_DIRECTORY "${CMAKE_BUILD_DIR_RELEASE}"
     LOGNAME "config-${TARGET_TRIPLET}-release"
