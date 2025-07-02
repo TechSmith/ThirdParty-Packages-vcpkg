@@ -33,6 +33,15 @@ function Set-DllVersionInfo {
     }
 }
 
+function Set-VersionBuildNumber {
+    param(
+        [string]$VersionString,
+        [string]$BuildNumber
+    )
+    $parts = ($VersionString + ".0.0").Split('.')
+    return "{0}.{1}.{2}.{3}" -f $parts[0], $parts[1], $parts[2], $BuildNumber
+}
+
 function Update-VersionInfoForDlls {
     param (
         [string]$buildArtifactsPath,
@@ -46,8 +55,16 @@ function Update-VersionInfoForDlls {
 
     $versionInfo = Get-Content $versionInfoJsonPath | ConvertFrom-Json
     $files = $versionInfo.files
+    $buildNumber = $versionInfo.buildNumber
+    $hasBuildNumber = $false
+    if (-not [string]::IsNullOrWhiteSpace($buildNumber)) {
+        $hasBuildNumber = $true
+    }
     foreach ($fileInfo in $files) {
         $filePath = Join-Path $buildArtifactsPath $fileInfo.filename
+        if($hasBuildNumber) {
+           $fileInfo.fileVersion = Set-VersionBuildNumber -VersionString $fileInfo.fileVersion -BuildNumber $buildNumber 
+        }
 
         # Convert $fileInfo to a hashtable
         $fileInfoHashtable = @{
