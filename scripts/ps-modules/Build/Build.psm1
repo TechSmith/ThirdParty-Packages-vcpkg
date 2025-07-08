@@ -5,20 +5,20 @@ Import-Module "$PSScriptRoot/../../ps-modules/Util" -Force -DisableNameChecking
 ##################################################
 function Install-FromVcpkg {
     param(
-        [string]$packageAndFeatures,
+        [string]$portAndFeatures,
         [string]$triplet
     )
 
-    $pkgToInstall = "${packageAndFeatures}:${triplet}"
+    $pkgToInstall = "${portAndFeatures}:${triplet}"
     Write-Message "Installing package: `"$pkgToInstall`""
     Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
 }
 
 function Get-PackageNameOnly {
    param(
-      [string]$packageAndFeatures
+      [string]$portAndFeatures
    )
-   return ($packageAndFeatures -replace '\[.*$', '')
+   return ($portAndFeatures -replace '\[.*$', '')
 }
 
 function Get-Triplets {
@@ -58,14 +58,14 @@ function Get-VcPkgExe {
 function Get-ArtifactName {
    param(
       [string]$packageName,
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
       [string]$customTriplet
    )
 
    if( $packageName -eq "") {
-      $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+      $packageNameOnly = (Get-PackageNameOnly $portAndFeatures)
       $packageName = "$packageNameOnly-$linkType"
    }
 
@@ -176,10 +176,10 @@ function Get-PackageInfo
 
 function Run-WriteParamsStep {
    param(
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [PSObject]$scriptArgs
    )
-   Write-Banner -Level 2 -Title "Starting vcpkg install for: $packageAndFeatures"
+   Write-Banner -Level 2 -Title "Starting vcpkg install for: $portAndFeatures"
    Write-Message "Params:"
    Write-Message (Get-PSObjectAsFormattedList -Object $scriptArgs)
 }
@@ -243,9 +243,9 @@ function Run-SetupVcpkgStep {
 
 function Run-PreBuildStep {
    param(
-      [string]$packageAndFeatures
+      [string]$portAndFeatures
    )
-   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+   $packageNameOnly = (Get-PackageNameOnly $portAndFeatures)
    Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
 }
 
@@ -298,14 +298,14 @@ function Run-InstallCompilerIfNecessary {
 function Run-InstallPackageStep
 {
    param(
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string[]]$triplets
    )
-   Write-Banner -Level 3 -Title "Install package step: $packageAndFeatures"
+   Write-Banner -Level 3 -Title "Install package step: $portAndFeatures"
 
    foreach ($triplet in $triplets) {
       Write-Message "> Installing for triplet: $triplet..."
-      Install-FromVcPkg -packageAndFeatures $packageAndFeatures -triplet $triplet
+      Install-FromVcPkg -portAndFeatures $portAndFeatures -triplet $triplet
       Exit-IfError $LASTEXITCODE
    }
 }
@@ -400,16 +400,16 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
 
 function Run-PostBuildStep {
    param(
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
       [string[]]$triplets
    )
-   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+   $packageNameOnly = (Get-PackageNameOnly $portAndFeatures)
    $preStagePath = (Get-PreStagePath)
    $scriptArgs = @{
       BuildArtifactsPath = ((Resolve-Path $preStagePath).Path -replace '\\', '/')
-      PackageAndFeatures = ($packageAndFeatures -replace ',', '`,')
+      PortAndFeatures = ($portAndFeatures -replace ',', '`,')
       LinkType = "$linkType"
       BuildType = "$buildType"
       ModulesRoot = "$PSScriptRoot/../../ps-modules"
@@ -422,7 +422,7 @@ function Run-PostBuildStep {
 function Run-StageBuildArtifactsStep {
    param(
       [string]$packageName,
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
       [string]$customTriplet,
@@ -434,7 +434,7 @@ function Run-StageBuildArtifactsStep {
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -portAndFeatures $portAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
@@ -444,7 +444,7 @@ function Run-StageBuildArtifactsStep {
    $packageInfoFilename = "package.json"
    Write-Message "Generating: `"$packageInfoFilename`"..."
    $dependenciesJson = Get-Content -Raw -Path "$stagedArtifactSubDir/$artifactName/$dependenciesFilename" | ConvertFrom-Json
-   $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+   $packageNameOnly = (Get-PackageNameOnly $portAndFeatures)
    $packageVersion = ($dependenciesJson.PSObject.Properties.Value | Where-Object { $_.package_name -eq $packageNameOnly } | Select-Object -First 1).version
    Write-ReleaseInfoJson -packageName $packageName -version $packageVersion -pathToJsonFile "$stagedArtifactSubDir/$artifactName/$packageInfoFilename"
 
@@ -479,7 +479,7 @@ function Run-StageBuildArtifactsStep {
 function Run-StageSourceArtifactsStep {
    param(
       [string]$packageName,
-      [string]$packageAndFeatures,
+      [string]$portAndFeatures,
       [string]$linkType,
       [string]$buildType,
       [string]$customTriplet,
@@ -489,7 +489,7 @@ function Run-StageSourceArtifactsStep {
    Write-Banner -Level 3 -Title "Stage source code artifacts"
 
    $sourceCodeRootDir = "./vcpkg/buildtrees/"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-src"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -portAndFeatures $portAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-src"
    $stagedArtifactSubDir = "$stagedArtifactsPath/src"
    $artifactPath = "$stagedArtifactSubDir/$artifactName"
 

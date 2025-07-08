@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
-    [Parameter(Mandatory=$true)][string]$PackageAndFeatures,
+    [Parameter(Mandatory=$true)][string]$PortAndFeatures,
     [Parameter(Mandatory=$true)][string]$ModulesRoot,
     [Parameter(Mandatory=$true)][string]$FFMpegExePath,
     [Parameter(Mandatory=$false)][string]$OutputDir = "test-output"
@@ -23,7 +23,7 @@ $ffmpegExe = "$FFMpegExePath -hide_banner"
 $ffmpegCmd = "$ffmpegExe -i `"$inputVideo`" -r 30 -b:a 192k"
 
 # Define the encoding commands with explicit format specification
-$features = ($PackageAndFeatures -match '\[(.*?)\]')[1] -split ','
+$features = ($PortAndFeatures -match '\[(.*?)\]')[1] -split ','
 $tests = @(
     # --- M4A Tests ---
     @{

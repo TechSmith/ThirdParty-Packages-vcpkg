@@ -20,5 +20,5 @@ if ($pkg -eq $null) {
     exit 0
 }
 
-Write-Message "$(NL)Running invoke-build.ps1...$(NL)"
-./invoke-build.ps1 -PackageName $PackageName -PackageAndFeatures $pkg.package -CustomTriplet $pkg.customTriplet -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug
+Write-Message "$(NL)Running scripts/invoke-build.ps1...$(NL)"
+./scripts/invoke-build.ps1 -PackageName $PackageName -PortAndFeatures $pkg.portAndFeatures -CustomTriplet $pkg.customTriplet -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug
