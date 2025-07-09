@@ -184,6 +184,21 @@
       "name": "opencv4",
       "mac": {
         "package": "opencv4[core,dnn,quirc]",
+        "customTriplet": "arm64-osx-dynamic-release-nonneon",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "opencv4[core,dnn,quirc]",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
+      "name": "opencv4-ci",
+      "mac": {
+        "package": "opencv4[core,dnn,quirc]",
+        "customTriplet": "arm64-osx-dynamic-release-nonneon",
         "linkType": "dynamic",
         "buildType": "release"
       },
