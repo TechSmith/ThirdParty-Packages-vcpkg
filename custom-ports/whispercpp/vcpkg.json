@@ -13,5 +13,10 @@
       "name": "vcpkg-cmake-config",
       "host": true
     }
-  ]
+  ],
+  "features": {
+    "cpu-acceleration": {
+      "description": "Build with CPU acceleration (AVX, AVX2, FMA, F16C). Note that this requires a CPU that supports these instructions."
+    }
+  }
 }
