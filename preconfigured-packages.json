@@ -276,29 +276,29 @@
       }
     },
     {
+      "name": "whispercpp-cpuaccel",
+      "mac": {
+        "package": "whispercpp[cpu-acceleration]",
+        "linkType": "dynamic",
+        "buildType": "debug"
+      },
+      "win": {
+        "package": "whispercpp[cpu-acceleration]",
+        "linkType": "dynamic",
+        "buildType": "debug"
+      }
+    },
+    {
       "name": "whispercpp",
       "mac": {
         "package": "whispercpp",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "debug"
       },
       "win": {
         "package": "whispercpp",
         "linkType": "dynamic",
-        "buildType": "release"
-      }
-    },
-    {
-      "name": "whispercpp-basic",
-      "mac": {
-        "package": "whispercpp-basic",
-        "linkType": "dynamic",
-        "buildType": "release"
-      },
-      "win": {
-        "package": "whispercpp-basic",
-        "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "debug"
       }
     },
     {

@@ -1,6 +1,6 @@
 {
   "name": "whispercpp",
-  "version": "1.7.1",
+  "version": "1.7.6",
   "port-version": 1,
   "description": "A high-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.",
   "homepage": "https://github.com/ggerganov/whisper.cpp",
@@ -13,5 +13,10 @@
       "name": "vcpkg-cmake-config",
       "host": true
     }
-  ]
+  ],
+  "features": {
+    "cpu-acceleration": {
+      "description": "Build with CPU acceleration (AVX, AVX2, FMA, F16C). Note that this requires a CPU that supports these instructions."
+    }
+  }
 }

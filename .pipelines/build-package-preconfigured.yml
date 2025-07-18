@@ -33,17 +33,22 @@ parameters:
   - sqlite-modern-cpp
   - tinyxml
   - whispercpp
-  - whispercpp-basic
+  - whispercpp-cpuaccel
 
 - name: publishToGitHubRelease
-  displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
+  displayName: "Publish to GitHub Release: If checked, publishes artifacts to a release in the GitHub repo, using the preconfigured package name and version (ex. \"somepackage-1.2.3\")."
   type: boolean
   default: true
 
-- name: appendStringToGitHubRelease
-  displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
+- name: appendFeatureString
+  displayName: "Append Version String: If specified, appends an additional string to a GitHub release's version tag (ex. If \"somefeature\" is specified , then \"--somefeature\" is appended to the version tag)."
   type: string
   default: ' '
+
+- name: isFinalBuild
+  displayName: "Is Final Build: If NOT checked, marks this as a pre-release build in GitHub, and will have \"--prerelease-YYYYMMDD-HHmmss\" appended to the version tag."
+  type: boolean
+  default: false
 
 stages:
 - template: templates/build.yml
@@ -51,5 +56,6 @@ stages:
     packageName: ${{ parameters.packageName }}
     publishToPipelineArtifacts: true
     publishToGitHubRelease: ${{ parameters.publishToGitHubRelease }}
-    appendStringToGitHubRelease: ${{parameters.appendStringToGitHubRelease}}
+    appendFeatureString: ${{parameters.appendFeatureString}}
+    isFinalBuild: ${{ parameters.isFinalBuild }}
     isPreconfiguredBuild: true
