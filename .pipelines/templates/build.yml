@@ -25,14 +25,20 @@ parameters:
   default: false
 
 - name: publishToGitHubRelease
-  displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
+  displayName: "Publish to GitHub Release: If checked, publishes artifacts to a release in the GitHub repo, using the preconfigured package name and version (ex. \"somepackage-1.2.3\")."
   type: boolean
   default: false
 
-- name: appendStringToGitHubRelease
-  displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
+- name: appendFeatureString
+  displayName: "Append Version String: If specified, appends an additional string to a GitHub release's version tag (ex. If \"somefeature\" is specified , then \"--somefeature\" is appended to the version tag)."
   type: string
-  default:
+  default: 
+
+- name: isFinalBuild
+  displayName: "Is Final Build: If NOT checked, marks this as a pre-release build in GitHub, and will have \"--prerelease-YYYYMMDD-HHmmss\" appended to the version tag."
+  type: boolean
+  default: false
+
 
 - name: isPreconfiguredBuild
   displayName: isPreconfiguredBuild
@@ -200,7 +206,6 @@ stages:
           tar -xzvf $artifactZip -C $artifactsUnzippedDir
           Push-Location $artifactsUnzippedDir
           $gitReleaseTagName = ""
-          $gitReleaseTagSuffix = "${{ parameters.appendStringToGitHubRelease }}".Trim()
           if (Test-Path -Path $packageInfoJsonFile -PathType Leaf) {
               $jsonContent = Get-Content -Path $packageInfoJsonFile -Raw | ConvertFrom-Json
               $version = $jsonContent.version
@@ -208,8 +213,13 @@ stages:
               $gitReleaseTagName = "$packageName-$version"
           }
           Pop-Location
+          $gitReleaseTagSuffix = "${{ parameters.appendFeatureString }}".Trim()
           if( $gitReleaseTagSuffix -ne "") {
              $gitReleaseTagName += "--$gitReleaseTagSuffix"
+          }
+          if( "${{ parameters.isFinalBuild }}" -eq "false") {
+             $currentDateTime = Get-Date -Format "yyyyMMdd-HHmmss"
+             $gitReleaseTagName += "--prerelease-$currentDateTime"
           }
           Write-Host "##vso[task.setvariable variable=gitReleaseTagName]$gitReleaseTagName"
           Write-Host "##vso[task.setvariable variable=gitReleaseNotes]$gitReleaseNotes"
@@ -229,7 +239,7 @@ stages:
           $(gitReleaseNotes)
         addChangeLog: false
         isDraft: false
-        isPreRelease: false
+        isPreRelease: ${{ eq(parameters.isFinalBuild, false) }}
         assets: |
           $(Build.ArtifactStagingDirectory)/*
       condition: and(succeeded(), ${{ parameters.publishToGitHubRelease }})
