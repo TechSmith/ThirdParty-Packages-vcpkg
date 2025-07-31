@@ -280,12 +280,12 @@
       "mac": {
         "package": "whispercpp[cpu-acceleration]",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "release"
       },
       "win": {
         "package": "whispercpp[cpu-acceleration]",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "release"
       }
     },
     {
@@ -293,12 +293,12 @@
       "mac": {
         "package": "whispercpp",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "release"
       },
       "win": {
         "package": "whispercpp",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "release"
       }
     },
     {
