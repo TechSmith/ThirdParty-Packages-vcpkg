@@ -1,13 +1,54 @@
 diff --git a/ggml/src/CMakeLists.txt b/ggml/src/CMakeLists.txt
-index 286bec2..d6e57e0 100644
+index 9cb2c228..27abbfc3 100644
 --- a/ggml/src/CMakeLists.txt
 +++ b/ggml/src/CMakeLists.txt
-@@ -1319,7 +1319,7 @@ endif()
+@@ -187,7 +187,7 @@ if (GGML_BACKEND_DL AND NOT BUILD_SHARED_LIBS)
+     message(FATAL_ERROR "GGML_BACKEND_DL requires BUILD_SHARED_LIBS")
+ endif()
  
- # ggml
- 
--add_library(ggml
-+add_library(ggml STATIC
+-add_library(ggml-base
++add_library(ggml-base STATIC
              ../include/ggml.h
              ../include/ggml-alloc.h
              ../include/ggml-backend.h
+@@ -210,7 +210,7 @@ if (GGML_BACKEND_DL)
+     target_compile_definitions(ggml-base PUBLIC GGML_BACKEND_DL)
+ endif()
+ 
+-add_library(ggml
++add_library(ggml STATIC
+             ggml-backend-reg.cpp)
+ add_library(ggml::ggml ALIAS ggml)
+ 
+@@ -229,15 +229,16 @@ function(ggml_add_backend_library backend)
+         add_dependencies(ggml ${backend})
+         install(TARGETS ${backend} LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR})
+     else()
+-        add_library(${backend} ${ARGN})
++        # Force STATIC build for all ggml backend libraries
++        add_library(${backend} STATIC ${ARGN})
+         target_link_libraries(ggml PUBLIC ${backend})
+-        install(TARGETS ${backend} LIBRARY)
++        install(TARGETS ${backend} ARCHIVE)
+     endif()
+ 
+     target_link_libraries(${backend} PRIVATE ggml-base)
+     target_include_directories(${backend} PRIVATE ..)
+ 
+-    if (${BUILD_SHARED_LIBS})
++    if (FALSE)  # Never build ggml backends as shared libraries
+         target_compile_definitions(${backend} PRIVATE GGML_BACKEND_BUILD)
+         target_compile_definitions(${backend} PUBLIC  GGML_BACKEND_SHARED)
+     endif()
+@@ -395,7 +396,10 @@ if(CMAKE_SYSTEM_NAME MATCHES "visionOS")
+     target_compile_definitions(ggml-base PUBLIC _DARWIN_C_SOURCE)
+ endif()
+ 
+-if (BUILD_SHARED_LIBS)
++# Force static build for ggml components even when BUILD_SHARED_LIBS is ON
++# This ensures whisper.dll includes all ggml code statically
++# Do NOT define GGML_SHARED when building statically
++if (FALSE)  # Never build ggml as shared libraries
+     foreach (target ggml-base ggml)
+         set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+         target_compile_definitions(${target} PRIVATE GGML_BUILD)
