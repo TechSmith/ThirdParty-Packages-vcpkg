@@ -3,7 +3,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggerganov/whisper.cpp
     REF "v${VERSION}"
-    SHA512 944d8a6e4a770462e77139d918fd1d5b93efca377051d83a584d91164ec73fa50b5bfbc7d85014151b3b5c80fa59cfd386e456960401f8b3c66a9788585cac46
+    SHA512 7e0ec9d6afe234afaaa83d7d69051504252c27ecdacbedf3d70992429801bcd1078794a0bb76cf4dafb74131dd0f506bd24c3f3100815c35b8ac2b12336492ef
     HEAD_REF master
     PATCHES
         0001-BuildGgmlAsStatic.patch
