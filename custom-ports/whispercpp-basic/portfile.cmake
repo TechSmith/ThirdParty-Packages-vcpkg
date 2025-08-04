@@ -49,6 +49,16 @@ foreach(LIB_FILE ${LIB_FILES})
 endforeach()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/static")
 
+# Move tools to proper directory
+vcpkg_copy_tools(
+    TOOL_NAMES
+        vad-speech-segments
+        whisper-bench
+        whisper-cli
+        whisper-server
+    AUTO_CLEAN
+)
+
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 
 vcpkg_fixup_pkgconfig()
