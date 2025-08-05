@@ -49,6 +49,14 @@ foreach(LIB_FILE ${LIB_FILES})
 endforeach()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/static")
 
+# If debug build, move things up a level and remove debug folder
+if(VCPKG_BUILD_TYPE STREQUAL "debug")
+    if(EXISTS "${CURRENT_PACKAGES_DIR}/debug")
+        file(COPY "${CURRENT_PACKAGES_DIR}/debug/" DESTINATION "${CURRENT_PACKAGES_DIR}")
+        file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")
+    endif()
+endif()
+
 # Move tools to proper directory
 vcpkg_copy_tools(
     TOOL_NAMES
