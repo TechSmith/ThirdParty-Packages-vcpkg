@@ -163,6 +163,12 @@
         "package": "openssl",
         "linkType": "static",
         "buildType": "release"
+      },
+      "wasm": {
+        "package": "openssl",
+        "linkType": "static",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten"
       }
     },
     {
