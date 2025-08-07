@@ -7,7 +7,6 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         0001-BuildGgmlAsStatic.patch
-        0002-UpdateTargetName.patch
 )
 
 set(VCPKG_POLICY_SKIP_MISPLACED_CMAKE_FILES_CHECK enabled)
@@ -32,9 +31,10 @@ else()
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
         OPTIONS
-            -DGGML_AVX=OFF
-            -DGGML_AVX2=OFF
-            -DGGML_FMA=OFF
+            -DWHISPER_AVX=OFF
+            -DWHISPER_AVX2=OFF
+            -DWHISPER_AVX512=OFF
+            -DWHISPER_FMA=OFF
 )
 endif()
 

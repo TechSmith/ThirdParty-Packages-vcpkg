@@ -1,3 +1,69 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 36eef350..1d29f6df 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -77,6 +77,12 @@ option(WHISPER_BUILD_TESTS    "whisper: build tests"          ${WHISPER_STANDALO
+ option(WHISPER_BUILD_EXAMPLES "whisper: build examples"       ${WHISPER_STANDALONE})
+ option(WHISPER_BUILD_SERVER   "whisper: build server example" ${WHISPER_STANDALONE})
+ 
++# CPU instruction set options
++option(WHISPER_AVX    "whisper: enable AVX intrinsics"    ON)
++option(WHISPER_AVX2   "whisper: enable AVX2 intrinsics"   ON)
++option(WHISPER_AVX512 "whisper: enable AVX512 intrinsics" OFF)
++option(WHISPER_FMA    "whisper: enable FMA intrinsics"    ON)
++
+ # 3rd party libs
+ option(WHISPER_CURL "whisper: use libcurl to download model from an URL" OFF)
+ option(WHISPER_SDL2 "whisper: support for libSDL2" OFF)
+@@ -137,6 +143,48 @@ if (NOT TARGET ggml)
+         add_library(ggml ALIAS ggml::ggml)
+     else()
+         add_subdirectory(ggml)
++        
++        # Debug: Show GGML CPU instruction set flags after ggml subdirectory is processed
++        message(STATUS "GGML CPU instruction set configuration (after ggml processing):")
++        message(STATUS "  GGML_AVX: ${GGML_AVX}")
++        message(STATUS "  GGML_AVX2: ${GGML_AVX2}")
++        message(STATUS "  GGML_AVX512: ${GGML_AVX512}")
++        message(STATUS "  GGML_AVX512_VBMI: ${GGML_AVX512_VBMI}")
++        message(STATUS "  GGML_AVX512_VNNI: ${GGML_AVX512_VNNI}")
++        message(STATUS "  GGML_AVX512_BF16: ${GGML_AVX512_BF16}")
++        message(STATUS "  GGML_FMA: ${GGML_FMA}")
++        message(STATUS "  GGML_F16C: ${GGML_F16C}")
++        
++        # Re-apply overrides after ggml subdirectory processing (in case ggml changed them)
++        if (NOT WHISPER_AVX)
++            set(GGML_AVX OFF CACHE BOOL "Disable AVX" FORCE)
++        endif()
++        if (NOT WHISPER_AVX2)
++            set(GGML_AVX2 OFF CACHE BOOL "Disable AVX2" FORCE)
++            set(GGML_FMA OFF CACHE BOOL "Disable FMA" FORCE)
++            set(GGML_F16C OFF CACHE BOOL "Disable F16C" FORCE)
++        endif()
++        if (NOT WHISPER_AVX512)
++            set(GGML_AVX512 OFF CACHE BOOL "Disable AVX512" FORCE)
++            set(GGML_AVX512_VBMI OFF CACHE BOOL "Disable AVX512-VBMI" FORCE)
++            set(GGML_AVX512_VNNI OFF CACHE BOOL "Disable AVX512-VNNI" FORCE)
++            set(GGML_AVX512_BF16 OFF CACHE BOOL "Disable AVX512-BF16" FORCE)
++        endif()
++        if (NOT WHISPER_FMA)
++            set(GGML_FMA OFF CACHE BOOL "Disable FMA" FORCE)
++        endif()
++        
++        # Debug: Show final values after re-applying overrides
++        message(STATUS "GGML CPU instruction set configuration (final):")
++        message(STATUS "  GGML_AVX: ${GGML_AVX}")
++        message(STATUS "  GGML_AVX2: ${GGML_AVX2}")
++        message(STATUS "  GGML_AVX512: ${GGML_AVX512}")
++        message(STATUS "  GGML_AVX512_VBMI: ${GGML_AVX512_VBMI}")
++        message(STATUS "  GGML_AVX512_VNNI: ${GGML_AVX512_VNNI}")
++        message(STATUS "  GGML_AVX512_BF16: ${GGML_AVX512_BF16}")
++        message(STATUS "  GGML_FMA: ${GGML_FMA}")
++        message(STATUS "  GGML_F16C: ${GGML_F16C}")
++        
+         if(WIN32)
+             # The following adds a _DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR macro and is a workaround for
+             # the Windows C++ standard library which does not support constexpr mutexes.
 diff --git a/ggml/src/CMakeLists.txt b/ggml/src/CMakeLists.txt
 index 9cb2c228..27abbfc3 100644
 --- a/ggml/src/CMakeLists.txt
@@ -52,3 +118,15 @@ index 9cb2c228..27abbfc3 100644
      foreach (target ggml-base ggml)
          set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
          target_compile_definitions(${target} PRIVATE GGML_BUILD)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 2eae0c66..42a1c85f 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -110,6 +110,7 @@ add_library(whisper
+ 
+ # Set the version numbers
+ set_target_properties(whisper PROPERTIES
++    OUTPUT_NAME "whisper-basic"
+     VERSION ${PROJECT_VERSION}
+     SOVERSION ${SOVERSION}
+ )
