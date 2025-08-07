@@ -280,12 +280,26 @@
       "mac": {
         "package": "whispercpp",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "debug",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       },
       "win": {
         "package": "whispercpp",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "debug",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
@@ -293,12 +307,26 @@
       "mac": {
         "package": "whispercpp-basic",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "debug",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       },
       "win": {
         "package": "whispercpp-basic",
         "linkType": "dynamic",
-        "buildType": "debug"
+        "buildType": "debug",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
