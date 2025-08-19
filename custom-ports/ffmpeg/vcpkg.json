@@ -830,7 +830,8 @@
             "encoder-vp9-qsv",
             "decoder-av1-qsv",
             "decoder-vp8-qsv",
-            "decoder-vp9-qsv"
+            "decoder-vp9-qsv",
+            "hwaccel-hevc-d3d11va"
           ]
         }
       ]
