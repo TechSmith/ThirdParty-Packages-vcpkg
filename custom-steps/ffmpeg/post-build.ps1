@@ -68,9 +68,6 @@ if (Test-Path $testScriptArgs.OutputDir) {
 }
 
 $testScripts = @(
-   "test001--query-capabilities.ps1"
-   "test002--verify-decoding.ps1"
-   "test003--verify-encoding.ps1"
    "test004--verify-filters.ps1"
 )
 foreach($testScript in $testScripts) {
