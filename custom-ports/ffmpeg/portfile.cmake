@@ -239,8 +239,8 @@ SET(ENCODER_NAMES
     ass                     h263p                   libopenh264             mpeg4                   pcm_u16le               ssa                     yuv4
     asv1                    h264_amf                libopenjpeg             mpeg4_mediacodec        pcm_u24be               subrip                  zlib
     asv2                    h264_mediacodec         libopus                 mpeg4_omx               pcm_u24le               sunrast                 zmbv
-    av1_amf                 h264_mf                 librav1e                mpeg4_v4l2m2m           pcm_u32be               svq1
-    av1_mediacodec          h264_nvenc              libshine                msmpeg4v2               pcm_u32le               targa
+    av1_amf                 h264_mf                 librav1e                mpeg4_v4l2m2m           pcm_u32be               svq1                    av1_mf
+    av1_mediacodec          h264_nvenc              libshine                msmpeg4v2               pcm_u32le               targa                   av1_d3d12va
     av1_nvenc               h264_omx                libspeex                msmpeg4v3               pcm_u8                  text
     av1_qsv                 h264_qsv                libsvtav1               msrle                   pcm_vidc                tiff
 )
