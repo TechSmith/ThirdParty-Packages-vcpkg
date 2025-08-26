@@ -45,7 +45,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[tsc-desktop-win,encoder-hevc-mf,encoder-hevc-qsv,decoder-hevc,decoder-hevc-qsv,demuxer-hevc,parser-hevc]",
+        "package": "ffmpeg[tsc-desktop-win,encoder-hevc-mf,encoder-av1-mf,encoder-hevc-d3d12va,encoder-av1-d3d12va,encoder-hevc-qsv,decoder-hevc,decoder-hevc-qsv,demuxer-hevc,parser-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
