@@ -3,6 +3,8 @@ vcpkg_from_git(
    URL https://github.com/kaldi-asr/kaldi.git
    REF 4a8b7f673275597fef8a15b160124bd0985b59bd # latest as of October 4th
    HEAD_REF main
+   PATCHES
+      00001-fix-build.patch
 )
 # Set this so it doesn't try and use git to find the version
 # This is what get_version() inside of the kaldi CMakelists.txt calculated

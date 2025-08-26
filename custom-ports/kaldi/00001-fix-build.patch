@@ -1,0 +1,16 @@
+diff --git a/cmake/third_party/openfst.cmake b/cmake/third_party/openfst.cmake
+index f9fff8a54..4bdaa3da0 100644
+--- a/cmake/third_party/openfst.cmake
++++ b/cmake/third_party/openfst.cmake
+@@ -3,8 +3,8 @@ include(FetchContent)
+
+ FetchContent_Declare(
+         openfst
+-        GIT_REPOSITORY  https://github.com/kkm000/openfst
+-        GIT_TAG         338225416178ac36b8002d70387f5556e44c8d05 # tag win/1.7.2.1
++        GIT_REPOSITORY  https://github.com/TechSmith/openfst.git
++        GIT_TAG         56899e1f22ee91e7adfd55c5173bb0630bd2d131 # includes compilation fix for VectorHashBiTable
+ )
+
+ FetchContent_GetProperties(openfst)
+
