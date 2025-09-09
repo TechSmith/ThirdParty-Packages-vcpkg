@@ -3,10 +3,10 @@
         {
             "filename": "bin/zip.dll",
             "fileDescription": "library for handling zip archives",
-            "fileVersion": "1.9.2",
+            "fileVersion": "1.11.4",
             "productName": "libzip",
-            "productVersion": "1.9.2",
-            "copyright": "Copyright (C) 1999-2021 Dieter Baron and Thomas Klausner"
+            "productVersion": "1.11.4",
+            "copyright": "Copyright (C) 1999-2025 Dieter Baron and Thomas Klausner"
         }
     ]
 }

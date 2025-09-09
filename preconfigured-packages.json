@@ -199,13 +199,13 @@
         "package": "libzip[core]",
         "linkType": "static",
         "buildType": "release",
-        "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+        "vcpkgHash": "2025.08.27"
       },
       "win": {
         "package": "libzip[core]",
         "linkType": "static",
         "buildType": "release",
-        "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+        "vcpkgHash": "2025.08.27"
       }
     },
     {
@@ -214,13 +214,13 @@
         "package": "libzip[core]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+        "vcpkgHash": "2025.08.27"
       },
       "win": {
         "package": "libzip[core]",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31"
+        "vcpkgHash": "2025.08.27"
       }
     },
     {
