@@ -51,7 +51,6 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
          --enable-runtime-cpudetect
     )
     list(APPEND OPTIONS
-         "--extra-cflags=-s EXPORTED_FUNCTIONS=[\"_av_opt_set_int\"]"
          --logfile=configure.log
          --prefix=${CURRENT_PACKAGES_DIR}
          --target-os=none
@@ -82,6 +81,7 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
          --extra-ldflags=-sSIDE_MODULE=1
          --extra-ldflags=-sWASM_BIGINT
          --extra-ldflags=-pthread
+         --extra-ldflags=-sEXPORTED-FUNCTIONS=[\"_av_opt_set_int\"]
          --extra-ldflags=-sINITIAL_MEMORY=33554432)
 endif()
 
