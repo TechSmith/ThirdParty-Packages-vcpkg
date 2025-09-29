@@ -51,6 +51,7 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
          --enable-runtime-cpudetect
     )
     list(APPEND OPTIONS
+         "--extra-cflags=-s EXPORTED_FUNCTIONS=[\"_av_opt_set_int\"]"
          --logfile=configure.log
          --prefix=${CURRENT_PACKAGES_DIR}
          --target-os=none
