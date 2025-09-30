@@ -84,7 +84,7 @@
         "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
-        "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
+        "vcpkgHash": "2025.09.17",
         "publish": {
           "include": false,
           "lib": false,
@@ -97,7 +97,7 @@
         "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
-        "vcpkgHash": "6db51d86a9c2796581d74c9a7eb46e52ee8cb7eb",
+        "vcpkgHash": "2025.09.17",
         "publish": {
           "include": false,
           "lib": false,
