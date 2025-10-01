@@ -32,6 +32,14 @@ function Get-Triplets {
        return @($customTriplet)
    }
 
+   # Set defaults for empty parameters
+   if ([string]::IsNullOrEmpty($linkType)) {
+       $linkType = "dynamic"
+   }
+   if ([string]::IsNullOrEmpty($buildType)) {
+       $buildType = "release"
+   }
+
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
    } elseif (Get-IsOnLinux) {
@@ -390,7 +398,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
        $destUniversalLibDir = "$preStagePath/lib"
        Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64LibDir" -x64Dir "$destX64LibDir" -universalDir "$destUniversalLibDir"
      }
-     
+
      if($publishInfo.tools -eq $true) {
        $destUniversalToolsDir = "$preStagePath/tools"
        Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64ToolsDir" -x64Dir "$destX64ToolsDir" -universalDir "$destUniversalToolsDir" -filenameFilter @("*")
