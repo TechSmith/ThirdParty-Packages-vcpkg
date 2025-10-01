@@ -19,7 +19,7 @@ if((Get-IsOnWindowsOS)) {
 }
 
 if((Get-IsOnLinux)) {
-    Get-ChildItem $buildArtifactsPath -Recurse -Include ffmpeg, ffprobe, lame -File | Move-Item -Destination $buildArtifactsPath
+    Get-ChildItem $buildArtifactsPath -Recurse -Include ffmpeg, ffprobe, lame -File | Move-Item -Destination $buildArtifactsPath -Force
     Remove-Item -Recurse -Force "$buildArtifactsPath/tools"
 }
 
