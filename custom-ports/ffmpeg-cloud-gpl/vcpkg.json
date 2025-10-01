@@ -381,7 +381,7 @@
       "description": "Enable the drawtext filter",
       "dependencies": [
         {
-          "name": "ffmpeg",
+          "name": "ffmpeg-cloud-gpl",
           "default-features": false,
           "features": [
             "freetype"
@@ -394,7 +394,7 @@
       "description": "DVD-Video demuxer",
       "dependencies": [
         {
-          "name": "ffmpeg",
+          "name": "ffmpeg-cloud-gpl",
           "default-features": false,
           "features": [
             "gpl"
