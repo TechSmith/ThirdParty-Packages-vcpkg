@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$BuildArtifactsPath,
-    [Parameter(Mandatory=$true)][string]$PackageAndFeatures,
+    [Parameter(Mandatory=$true)][string]$PortAndFeatures,
     [Parameter(Mandatory=$true)][string]$ModulesRoot,
     [Parameter(Mandatory=$true)][string]$FFMpegExePath,
     [Parameter(Mandatory=$false)][string]$OutputDir = "test-output"
@@ -20,11 +20,11 @@ if (-Not (Test-Path $OutputDir)) {
 
 $ffmpegExe = "$FFMpegExePath -hide_banner"
 $tests = @()
-$features = Get-Features $PackageAndFeatures
+$features = Get-Features $PortAndFeatures
 $resourcesDir = "$PSScriptRoot/../../resources" 
 
 # H.264 decode tests
-$features = Get-Features $PackageAndFeatures
+$features = Get-Features $PortAndFeatures
 $inputH264Video = "$PSScriptRoot/../../resources/BigBuckBunnyClip-h264-240p.mp4"
 $ffmpegDecodeH264FrameCmd = "$ffmpegExe -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1"
 $tests += 
