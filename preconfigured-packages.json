@@ -395,6 +395,19 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "replxx",
+      "mac": {
+        "package": "replxx",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "replxx",
+        "linkType": "static",
+        "buildType": "release"
+      }
     }
   ]
 }
