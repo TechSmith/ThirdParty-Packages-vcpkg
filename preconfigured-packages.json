@@ -405,7 +405,10 @@
       },
       "win": {
         "package": "replxx",
-        "customTriplet": "x64-windows-static-md"
+        "customTriplet": "x64-windows-static-md",
+        "publish": {
+          "debug": true
+        }
       }
     }
   ]
