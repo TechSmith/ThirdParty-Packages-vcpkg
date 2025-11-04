@@ -40,6 +40,10 @@ if(NOT CLANG_CL_EXECUTABLE)
     find_program(CLANG_CL_EXECUTABLE NAMES clang-cl)
 endif()
 
+if(CLANG_CL_EXECUTABLE)
+    message(STATUS "Found clang-cl for soundpipe: ${CLANG_CL_EXECUTABLE}")
+endif()
+
 # Build using our custom script
 # vcpkg's build environment has MSVC tools (cl.exe, lib.exe) in PATH
 vcpkg_execute_build_process(

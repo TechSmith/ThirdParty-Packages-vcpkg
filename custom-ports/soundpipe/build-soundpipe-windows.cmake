@@ -262,10 +262,18 @@ message(STATUS "  Target architecture: ${TARGET_ARCH}")
 message(STATUS "  VC directory: ${VC_DIR}")
 
 # Check if CLANG_CL_HINT was provided (from portfile)
-if(CLANG_CL_HINT AND EXISTS "${CLANG_CL_HINT}")
-   set(CLANG_CL_PATH "${CLANG_CL_HINT}")
-   message(STATUS "  ✓ Using clang-cl from hint: ${CLANG_CL_PATH}")
-else()
+message(STATUS "  CLANG_CL_HINT value: '${CLANG_CL_HINT}'")
+if(CLANG_CL_HINT)
+   if(NOT CLANG_CL_HINT MATCHES "NOTFOUND")
+      set(CLANG_CL_PATH "${CLANG_CL_HINT}")
+      message(STATUS "  ✓ Using clang-cl from hint: ${CLANG_CL_PATH}")
+   else()
+      message(STATUS "  CLANG_CL_HINT was NOTFOUND, searching manually...")
+   endif()
+endif()
+
+# If no hint or hint was NOTFOUND, search for clang-cl
+if(NOT CLANG_CL_PATH OR NOT EXISTS "${CLANG_CL_PATH}")
    # Try VS 2022/2019 structure: VC/Tools/Llvm/<arch>/bin/clang-cl.exe
    set(CLANG_CL_PATH "${VC_DIR}/Tools/Llvm/${TARGET_ARCH}/bin/clang-cl.exe")
    message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
