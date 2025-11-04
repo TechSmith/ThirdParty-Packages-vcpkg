@@ -34,12 +34,12 @@ file(APPEND "${SOURCE_PATH}/h/soundpipe.h" "#endif\n")
 # Use CMake script to build soundpipe with proven Windows build approach
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/build-soundpipe-windows.cmake" DESTINATION "${SOURCE_PATH}")
 
-# Build using our custom script
+# Build using our custom script - cl.exe and lib.exe should be in PATH from vcpkg's environment
 vcpkg_execute_build_process(
     COMMAND "${CMAKE_COMMAND}" 
         -DSOUNDPIPE_SOURCE_DIR="${SOURCE_PATH}"
-        -DCMAKE_C_COMPILER="${VCPKG_DETECTED_CMAKE_C_COMPILER}"
-        -DCMAKE_AR="${VCPKG_DETECTED_CMAKE_AR}"
+        -DCMAKE_C_COMPILER=cl.exe
+        -DCMAKE_AR=lib.exe
         -DCMAKE_BUILD_TYPE=Release
         -P "${SOURCE_PATH}/build-soundpipe-windows.cmake"
     WORKING_DIRECTORY "${SOURCE_PATH}"

@@ -1,11 +1,13 @@
 # Build script for Soundpipe on Windows
-# Called at build time (not configure time) via ExternalProject_Add_Step
+# Called at build time (not configure time) via ExternalProject_Add_Step or vcpkg
 
 if(NOT SOUNDPIPE_SOURCE_DIR)
    message(FATAL_ERROR "SOUNDPIPE_SOURCE_DIR not set")
 endif()
 
-set(SP_ROOT "${SOUNDPIPE_SOURCE_DIR}")
+# Normalize the path and remove any quotes
+string(REPLACE "\"" "" SOUNDPIPE_SOURCE_DIR "${SOUNDPIPE_SOURCE_DIR}")
+file(TO_CMAKE_PATH "${SOUNDPIPE_SOURCE_DIR}" SP_ROOT)
 
 # Verify the source directory exists
 if(NOT EXISTS "${SP_ROOT}")
