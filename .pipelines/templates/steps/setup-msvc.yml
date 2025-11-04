@@ -1,0 +1,7 @@
+steps:
+- task: BatchScript@1
+  displayName: 'Setup MSVC Developer Command Prompt'  
+  inputs:
+    filename: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat'
+    modifyEnvironment: true
+  condition: and(succeeded(), eq(variables['osName'], 'win'))

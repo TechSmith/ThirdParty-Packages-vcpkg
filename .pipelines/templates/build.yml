@@ -82,6 +82,8 @@ stages:
 
     - template: steps/full-checkout.yml
 
+    - template: steps/setup-msvc.yml
+
     - pwsh: |
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)
       displayName: 'Run: install & stage (preconfigured)'
