@@ -786,6 +786,7 @@
             "decoder-vorbis",
             "decoder-vp8",
             "decoder-vp9",
+            "decoder-wrapped-avframe",
             "encoder-aac",
             "encoder-libaom-av1",
             "encoder-libmp3lame",
@@ -794,8 +795,12 @@
             "encoder-libvpx-vp8",
             "encoder-libvpx-vp9",
             "encoder-opus",
+            "encoder-pcm-s16le",
+            "encoder-pcm-s16le-planar",
             "encoder-png",
+            "encoder-rawvideo",
             "encoder-vorbis",
+            "encoder-wrapped-avframe",
             "demuxer-aac",
             "demuxer-image2",
             "demuxer-matroska",
@@ -811,6 +816,8 @@
             "muxer-mp4",
             "muxer-mpegts",
             "muxer-mkvtimestamp-v2",
+            "muxer-null",
+            "muxer-rawvideo",
             "muxer-rtp-mpegts",
             "muxer-webm",
             "parser-aac",
@@ -828,6 +835,10 @@
             "filter-aresample",
             "filter-asetrate",
             "filter-atempo",
+            "filter-hwdownload",
+            "filter-hwmap",
+            "filter-hwupload",
+            "filter-format",
             "filter-scale"
           ]
         }
@@ -2639,6 +2650,10 @@
     "filter-aresample": { "description": "" },
     "filter-asetrate": { "description": "" },
     "filter-atempo": { "description": "" },
+    "filter-format": { "description": "" },
+    "filter-hwdownload": { "description": "" },
+    "filter-hwmap": { "description": "" },
+    "filter-hwupload": { "description": "" },
     "filter-scale": { "description": "" }   
   }
 }
