@@ -6,8 +6,7 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-# For Windows, use the proven build approach from CommonCpp
-# Generate soundpipe.h first
+# Generate soundpipe.h by concatenating all module headers
 set(ALL_MODULES
     base ftbl tevent adsr allpass atone autowah bal bar biquad biscale blsaw
     blsquare bltriangle fold bitcrush brown butbp butbr buthp butlp clip clock
@@ -31,41 +30,53 @@ foreach(MODULE ${ALL_MODULES})
 endforeach()
 file(APPEND "${SOURCE_PATH}/h/soundpipe.h" "#endif\n")
 
-# Use CMake script to build soundpipe with proven Windows build approach
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/build-soundpipe-windows.cmake" DESTINATION "${SOURCE_PATH}")
+# Platform-specific build
+if(VCPKG_TARGET_IS_WINDOWS)
+    # Windows uses custom build script due to MSVC C99 limitations
+    file(COPY "${CMAKE_CURRENT_LIST_DIR}/build-soundpipe-windows.cmake" DESTINATION "${SOURCE_PATH}")
 
-# Check if clang-cl exists and prefer it over cl.exe for C99 support
-find_program(CLANG_CL_EXECUTABLE NAMES clang-cl PATHS "C:/Program Files/LLVM/bin" NO_DEFAULT_PATH)
-if(NOT CLANG_CL_EXECUTABLE)
-    find_program(CLANG_CL_EXECUTABLE NAMES clang-cl)
+    # Check if clang-cl exists and prefer it over cl.exe for C99 support
+    find_program(CLANG_CL_EXECUTABLE NAMES clang-cl PATHS "C:/Program Files/LLVM/bin" NO_DEFAULT_PATH)
+    if(NOT CLANG_CL_EXECUTABLE)
+        find_program(CLANG_CL_EXECUTABLE NAMES clang-cl)
+    endif()
+
+    if(CLANG_CL_EXECUTABLE)
+        message(STATUS "Found clang-cl for soundpipe: ${CLANG_CL_EXECUTABLE}")
+    endif()
+
+    vcpkg_execute_build_process(
+        COMMAND "${CMAKE_COMMAND}" 
+            -DSOUNDPIPE_SOURCE_DIR="${SOURCE_PATH}"
+            -DCMAKE_C_COMPILER=cl.exe
+            -DCMAKE_AR=lib.exe
+            -DCLANG_CL_HINT="${CLANG_CL_EXECUTABLE}"
+            -DCMAKE_BUILD_TYPE=Release
+            -P "${SOURCE_PATH}/build-soundpipe-windows.cmake"
+        WORKING_DIRECTORY "${SOURCE_PATH}"
+        LOGNAME build
+    )
+
+    file(INSTALL "${SOURCE_PATH}/soundpipe.lib" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
+        file(INSTALL "${SOURCE_PATH}/soundpipe.lib" DESTINATION "${CURRENT_PACKAGES_DIR}/debug/lib")
+    endif()
+else()
+    # Mac/Linux/WASM use standard CMake build with proper C99 compiler support
+    file(COPY "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt" DESTINATION "${SOURCE_PATH}")
+    
+    vcpkg_cmake_configure(
+        SOURCE_PATH "${SOURCE_PATH}"
+    )
+    
+    vcpkg_cmake_install()
+    vcpkg_cmake_config_fixup(PACKAGE_NAME soundpipe CONFIG_PATH lib/cmake/soundpipe)
+    
+    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 endif()
 
-if(CLANG_CL_EXECUTABLE)
-    message(STATUS "Found clang-cl for soundpipe: ${CLANG_CL_EXECUTABLE}")
-endif()
-
-# Build using our custom script
-# vcpkg's build environment has MSVC tools (cl.exe, lib.exe) in PATH
-vcpkg_execute_build_process(
-    COMMAND "${CMAKE_COMMAND}" 
-        -DSOUNDPIPE_SOURCE_DIR="${SOURCE_PATH}"
-        -DCMAKE_C_COMPILER=cl.exe
-        -DCMAKE_AR=lib.exe
-        -DCLANG_CL_HINT="${CLANG_CL_EXECUTABLE}"
-        -DCMAKE_BUILD_TYPE=Release
-        -P "${SOURCE_PATH}/build-soundpipe-windows.cmake"
-    WORKING_DIRECTORY "${SOURCE_PATH}"
-    LOGNAME build
-)
-
-# Install the library and headers
-file(INSTALL "${SOURCE_PATH}/soundpipe.lib" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+# Install headers (common for all platforms)
 file(INSTALL "${SOURCE_PATH}/h/soundpipe.h" DESTINATION "${CURRENT_PACKAGES_DIR}/include")
-
-# For debug builds (if needed)
-if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
-    file(INSTALL "${SOURCE_PATH}/soundpipe.lib" DESTINATION "${CURRENT_PACKAGES_DIR}/debug/lib")
-endif()
 
 vcpkg_copy_pdbs()
 

@@ -4,7 +4,6 @@
   "description": "A lightweight music DSP library written in C",
   "homepage": "https://github.com/shybyte/soundpipe",
   "license": "MIT",
-  "supports": "windows",
   "dependencies": [
     {
       "name": "vcpkg-cmake",

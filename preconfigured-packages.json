@@ -402,6 +402,16 @@
         "package": "soundpipe",
         "linkType": "static",
         "buildType": "release"
+      },
+      "mac": {
+        "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "wasm": {
+        "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release"
       }
     }
   ]

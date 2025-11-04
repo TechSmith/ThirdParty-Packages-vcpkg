@@ -4,13 +4,22 @@ This is a custom vcpkg port for the soundpipe library (https://github.com/shybyt
 
 ## Status
 
-Windows-only port currently. The port uses a custom build script (`build-soundpipe-windows.cmake`) 
-adapted from CommonCpp's proven Windows build approach to handle soundpipe's C99 requirements.
+Multi-platform support:
+- ✅ **Windows**: Uses custom build script with clang-cl for C99 support
+- ✅ **Mac**: Uses standard CMake build with Clang C99 support
+- ✅ **WASM**: Uses standard CMake build with Emscripten C99 support
 
-## Challenges
+## Build Approach
 
-Soundpipe requires C99 features (particularly void pointer arithmetic) that MSVC's cl.exe doesn't support.
-The build script compiles as C++ with compatibility wrappers to work around this.
+### Windows
+- Installs LLVM/clang-cl via Chocolatey for proper C99 support
+- Uses custom `build-soundpipe-windows.cmake` script
+- Handles MSVC C99 limitations with clang-cl compiler
+
+### Mac/Linux/WASM
+- Uses standard CMake build (`CMakeLists.txt`)
+- Relies on native C99 compiler support (GCC/Clang/Emscripten)
+- No special workarounds needed
 
 ## Testing
 
@@ -19,6 +28,9 @@ To test locally:
 .\build-package.ps1 -PackageName soundpipe
 ```
 
-## Integration
+## Integration with CommonCpp
 
-Once the package builds successfully in CI, CommonCpp can consume it via find_package(soundpipe).
+Once the package builds successfully in CI, CommonCpp's `AddSoundpipe.cmake` can:
+- Use `find_package(soundpipe)` to locate the pre-built vcpkg package
+- Fall back to building from source if vcpkg package not found
+
