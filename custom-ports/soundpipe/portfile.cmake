@@ -22,6 +22,11 @@ set(ALL_MODULES
 )
 
 file(WRITE "${SOURCE_PATH}/h/soundpipe.h" "#ifndef SOUNDPIPE_H\n#define SOUNDPIPE_H\n")
+# Include spa.h first since sparec depends on it
+if(EXISTS "${SOURCE_PATH}/lib/spa/spa.h")
+    file(READ "${SOURCE_PATH}/lib/spa/spa.h" SPA_HEADER_CONTENT)
+    file(APPEND "${SOURCE_PATH}/h/soundpipe.h" "${SPA_HEADER_CONTENT}\n")
+endif()
 foreach(MODULE ${ALL_MODULES})
     if(EXISTS "${SOURCE_PATH}/h/${MODULE}.h")
         file(READ "${SOURCE_PATH}/h/${MODULE}.h" MODULE_HEADER_CONTENT)
