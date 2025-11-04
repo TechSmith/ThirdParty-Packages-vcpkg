@@ -4,10 +4,11 @@ vcpkg_from_github(
     REF 7384294519b250c68a94804c9d79901b73941824
     SHA512 06e8b330f410d668f935d2858a1360430f9da0b9345615aab53e3593c2f36fd43af4eb0b164c2531d9d16d1b9f564d2db307f9d46304d072fe84dce96e447fad
     HEAD_REF master
+    PATCHES
+        include-spa-header.patch
 )
 
 # Generate soundpipe.h by concatenating all module headers
-# Note: 'spa' is a library (lib/spa/), not a module, so it's not in h/
 set(ALL_MODULES
     base ftbl tevent adsr allpass atone autowah bal bar biquad biscale blsaw
     blsquare bltriangle fold bitcrush brown butbp butbr buthp butlp clip clock
@@ -17,7 +18,7 @@ set(ALL_MODULES
     pan2 panst pareq paulstretch pdhalf peaklim phaser phasor pinknoise pitchamdf
     pluck port posc3 progress prop pshift ptrack randh randi randmt random reverse
     reson revsc rms rpt rspline saturator samphold scale scrambler sdelay slice
-    smoothdelay sparec streson switch tabread tadsr talkbox tblrec tbvcf tdiv
+    smoothdelay spa sparec streson switch tabread tadsr talkbox tblrec tbvcf tdiv
     tenv tenv2 tenvx tgate thresh timer tin tone trand tseg tseq vdelay voc
     vocoder waveset wpkorg35 zitarev fftwrapper padsynth
 )
