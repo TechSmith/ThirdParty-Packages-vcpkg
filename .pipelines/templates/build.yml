@@ -83,6 +83,11 @@ stages:
     - template: steps/full-checkout.yml
 
     - template: steps/setup-msvc.yml
+    
+    - script: |
+        choco install llvm -y --no-progress --force
+      displayName: 'Install LLVM/clang-cl for C99 support'
+      condition: and(succeeded(), eq(variables['osName'], 'win'))
 
     - pwsh: |
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)

@@ -5,8 +5,3 @@ steps:
     filename: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat'
     modifyEnvironment: true
   condition: and(succeeded(), eq(variables['osName'], 'win'))
-
-- script: |
-    choco install llvm -y --no-progress
-  displayName: 'Install LLVM/clang-cl for C99 support'
-  condition: and(succeeded(), eq(variables['osName'], 'win'))
