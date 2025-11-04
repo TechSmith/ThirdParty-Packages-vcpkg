@@ -265,40 +265,51 @@ message(STATUS "  VC directory: ${VC_DIR}")
 message(STATUS "  CLANG_CL_HINT value: '${CLANG_CL_HINT}'")
 if(CLANG_CL_HINT)
    if(NOT CLANG_CL_HINT MATCHES "NOTFOUND")
-      set(CLANG_CL_PATH "${CLANG_CL_HINT}")
+      # Strip quotes from the path
+      string(REPLACE "\"" "" CLANG_CL_PATH "${CLANG_CL_HINT}")
       message(STATUS "  ✓ Using clang-cl from hint: ${CLANG_CL_PATH}")
+      # Verify it exists
+      if(EXISTS "${CLANG_CL_PATH}")
+         message(STATUS "  ✓✓ Verified clang-cl exists at: ${CLANG_CL_PATH}")
+         # Skip the search loop below
+         set(CLANG_CL_FOUND TRUE)
+      else()
+         message(STATUS "  ✗ clang-cl from hint does not exist, will search...")
+      endif()
    else()
       message(STATUS "  CLANG_CL_HINT was NOTFOUND, searching manually...")
    endif()
 endif()
 
 # If no hint or hint was NOTFOUND, search for clang-cl
-if(NOT CLANG_CL_PATH OR NOT EXISTS "${CLANG_CL_PATH}")
+if(NOT CLANG_CL_FOUND)
    # Try VS 2022/2019 structure: VC/Tools/Llvm/<arch>/bin/clang-cl.exe
    set(CLANG_CL_PATH "${VC_DIR}/Tools/Llvm/${TARGET_ARCH}/bin/clang-cl.exe")
    message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
 endif()
 
-if(NOT EXISTS "${CLANG_CL_PATH}")
-   set(CLANG_CL_PATH "${VC_DIR}/Tools/Llvm/bin/clang-cl.exe")
-   message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
-endif()
-
-# Fallback: try same directory as cl.exe
-if(NOT EXISTS "${CLANG_CL_PATH}")
-   set(CLANG_CL_PATH "${MSVC_BIN_DIR}/clang-cl.exe")
-   message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
-endif()
-
-# Fallback: search for clang-cl in PATH or common installation locations
-if(NOT EXISTS "${CLANG_CL_PATH}")
-   message(STATUS "  Searching for clang-cl in system PATH and common locations...")
-   find_program(CLANG_CL_FOUND clang-cl)
-   if(CLANG_CL_FOUND)
-      set(CLANG_CL_PATH "${CLANG_CL_FOUND}")
-      message(STATUS "  Found clang-cl at: ${CLANG_CL_PATH}")
+if(NOT CLANG_CL_FOUND)
+   if(NOT EXISTS "${CLANG_CL_PATH}")
+      set(CLANG_CL_PATH "${VC_DIR}/Tools/Llvm/bin/clang-cl.exe")
+      message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
    endif()
-   unset(CLANG_CL_FOUND CACHE)
+
+   # Fallback: try same directory as cl.exe
+   if(NOT EXISTS "${CLANG_CL_PATH}")
+      set(CLANG_CL_PATH "${MSVC_BIN_DIR}/clang-cl.exe")
+      message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
+   endif()
+
+   # Fallback: search for clang-cl in PATH or common installation locations
+   if(NOT EXISTS "${CLANG_CL_PATH}")
+      message(STATUS "  Searching for clang-cl in system PATH and common locations...")
+      find_program(CLANG_CL_FOUND_PROG clang-cl)
+      if(CLANG_CL_FOUND_PROG)
+         set(CLANG_CL_PATH "${CLANG_CL_FOUND_PROG}")
+         message(STATUS "  Found clang-cl at: ${CLANG_CL_PATH}")
+      endif()
+      unset(CLANG_CL_FOUND_PROG CACHE)
+   endif()
 endif()
 
 if(EXISTS "${CLANG_CL_PATH}")
