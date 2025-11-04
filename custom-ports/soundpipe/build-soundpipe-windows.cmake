@@ -261,9 +261,15 @@ get_filename_component(VC_DIR "${VC_TOOLS_DIR}" DIRECTORY)
 message(STATUS "  Target architecture: ${TARGET_ARCH}")
 message(STATUS "  VC directory: ${VC_DIR}")
 
-# Try VS 2022/2019 structure: VC/Tools/Llvm/<arch>/bin/clang-cl.exe
-set(CLANG_CL_PATH "${VC_DIR}/Tools/Llvm/${TARGET_ARCH}/bin/clang-cl.exe")
-message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
+# Check if CLANG_CL_HINT was provided (from portfile)
+if(CLANG_CL_HINT AND EXISTS "${CLANG_CL_HINT}")
+   set(CLANG_CL_PATH "${CLANG_CL_HINT}")
+   message(STATUS "  ✓ Using clang-cl from hint: ${CLANG_CL_PATH}")
+else()
+   # Try VS 2022/2019 structure: VC/Tools/Llvm/<arch>/bin/clang-cl.exe
+   set(CLANG_CL_PATH "${VC_DIR}/Tools/Llvm/${TARGET_ARCH}/bin/clang-cl.exe")
+   message(STATUS "  Checking for clang-cl at: ${CLANG_CL_PATH}")
+endif()
 
 if(NOT EXISTS "${CLANG_CL_PATH}")
    set(CLANG_CL_PATH "${VC_DIR}/Tools/Llvm/bin/clang-cl.exe")

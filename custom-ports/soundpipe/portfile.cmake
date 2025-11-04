@@ -34,6 +34,12 @@ file(APPEND "${SOURCE_PATH}/h/soundpipe.h" "#endif\n")
 # Use CMake script to build soundpipe with proven Windows build approach
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/build-soundpipe-windows.cmake" DESTINATION "${SOURCE_PATH}")
 
+# Check if clang-cl exists and prefer it over cl.exe for C99 support
+find_program(CLANG_CL_EXECUTABLE NAMES clang-cl PATHS "C:/Program Files/LLVM/bin" NO_DEFAULT_PATH)
+if(NOT CLANG_CL_EXECUTABLE)
+    find_program(CLANG_CL_EXECUTABLE NAMES clang-cl)
+endif()
+
 # Build using our custom script
 # vcpkg's build environment has MSVC tools (cl.exe, lib.exe) in PATH
 vcpkg_execute_build_process(
@@ -41,6 +47,7 @@ vcpkg_execute_build_process(
         -DSOUNDPIPE_SOURCE_DIR="${SOURCE_PATH}"
         -DCMAKE_C_COMPILER=cl.exe
         -DCMAKE_AR=lib.exe
+        -DCLANG_CL_HINT="${CLANG_CL_EXECUTABLE}"
         -DCMAKE_BUILD_TYPE=Release
         -P "${SOURCE_PATH}/build-soundpipe-windows.cmake"
     WORKING_DIRECTORY "${SOURCE_PATH}"
