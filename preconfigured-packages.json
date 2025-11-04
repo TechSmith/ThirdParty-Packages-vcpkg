@@ -401,17 +401,32 @@
       "win": {
         "package": "soundpipe",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "share": true
+        }
       },
       "mac": {
         "package": "soundpipe",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "share": true
+        }
       },
       "wasm": {
         "package": "soundpipe",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "share": true
+        }
       }
     }
   ]
