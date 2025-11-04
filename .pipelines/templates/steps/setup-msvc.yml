@@ -1,0 +1,37 @@
+steps:
+- pwsh: |
+    $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+    
+    if (-not (Test-Path $vswhere)) {
+      Write-Error "vswhere.exe not found - Visual Studio not installed"
+      exit 1
+    }
+    
+    $installPath = & $vswhere -latest -products * `
+      -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+      -property installationPath
+    
+    if (-not $installPath) {
+      Write-Error "No Visual Studio installation with C++ tools found"
+      exit 1
+    }
+    
+    $vcvars64 = Join-Path $installPath "VC\Auxiliary\Build\vcvars64.bat"
+    
+    if (-not (Test-Path $vcvars64)) {
+      Write-Error "vcvars64.bat not found at: $vcvars64"
+      exit 1
+    }
+    
+    Write-Host "Found Visual Studio at: $installPath"
+    Write-Host "Using vcvars64.bat: $vcvars64"
+    Write-Host "##vso[task.setvariable variable=VCVARS64_PATH]$vcvars64"
+  displayName: 'Locate MSVC installation'
+  condition: and(succeeded(), eq(variables['osName'], 'win'))
+
+- task: BatchScript@1
+  displayName: 'Setup MSVC Developer Command Prompt'  
+  inputs:
+    filename: '$(VCVARS64_PATH)'
+    modifyEnvironment: true
+  condition: and(succeeded(), eq(variables['osName'], 'win'))
