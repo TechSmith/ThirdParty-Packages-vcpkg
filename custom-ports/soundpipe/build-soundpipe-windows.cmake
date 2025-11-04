@@ -335,6 +335,9 @@ else()
    file(APPEND "${CPP_COMPAT_H}" "#endif\n")
 
    # Compile as C++ to support void pointer arithmetic
+   # Convert paths to native format for MSVC
+   file(TO_NATIVE_PATH "${SP_ROOT}/h/cpp_malloc_compat.h" CPP_COMPAT_H_NATIVE)
+   
    set(COMPILE_FLAGS
        /TP
        /nologo
@@ -343,7 +346,7 @@ else()
        /std:c++14
        /DSP_VERSION=1.7.0
        /DNO_LIBSNDFILE
-       /FI${SP_ROOT}/h/cpp_malloc_compat.h
+       "/FI${CPP_COMPAT_H_NATIVE}"
        /I${SP_ROOT}/h
        /I${SP_ROOT}/lib/inih
        /I${SP_ROOT}/lib/faust
