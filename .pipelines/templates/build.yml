@@ -84,8 +84,12 @@ stages:
 
     - template: steps/setup-msvc.yml
     
-    - script: |
+    - pwsh: |
         choco install llvm -y --no-progress --force
+        $env:PATH = "C:\Program Files\LLVM\bin;$env:PATH"
+        Write-Host "##vso[task.setvariable variable=PATH]C:\Program Files\LLVM\bin;$env:PATH"
+        Write-Host "LLVM installed, clang-cl location:"
+        Get-Command clang-cl -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
       displayName: 'Install LLVM/clang-cl for C99 support'
       condition: and(succeeded(), eq(variables['osName'], 'win'))
 
