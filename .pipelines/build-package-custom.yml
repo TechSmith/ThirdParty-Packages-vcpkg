@@ -24,6 +24,11 @@ parameters:
   - release
   - debug
 
+- name: publishToGitHubRelease
+  displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
+  type: boolean
+  default: false
+
 stages:
 - template: templates/build.yml
   parameters:
@@ -31,5 +36,5 @@ stages:
     linkType: ${{ parameters.linkType }}
     buildType: ${{ parameters.buildType }}
     publishToPipelineArtifacts: true
-    publishToGitHubRelease: false
+    publishToGitHubRelease: ${{ parameters.publishToGitHubRelease }}
     isCustomBuild: true
