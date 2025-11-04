@@ -1,0 +1,13 @@
+diff --git a/modules/revsc.c b/modules/revsc.c
+index 1234567..abcdef 100644
+--- a/modules/revsc.c
++++ b/modules/revsc.c
+@@ -72,7 +72,7 @@ int sp_revsc_init(sp_data *sp, sp_revsc *p)
+         p->iCounter = 0;
+         p->sampleRate = sp->sr;
+         p->initDone = 1;
+-        p->auxData = malloc(nBytes);
++        p->auxData = (char*)malloc(nBytes);
+         memset(p->auxData, 0, nBytes);
+         p->p1 = (sp_revsc_dl*) (p->auxData);
+         p->p2 = (sp_revsc_dl*) ((char*) p->auxData + sizeof(sp_revsc_dl) * 8);

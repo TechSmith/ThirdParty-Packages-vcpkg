@@ -395,6 +395,14 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "soundpipe",
+      "win": {
+        "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release"
+      }
     }
   ]
 }
