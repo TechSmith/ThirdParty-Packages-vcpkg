@@ -437,6 +437,12 @@ function Run-StageBuildArtifactsStep {
    $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
+   # Ensure packageName is set for release info (construct it if not provided)
+   if ($packageName -eq "") {
+      $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+      $packageName = "$packageNameOnly-$linkType"
+   }
+
    $dependenciesFilename = "dependencies.json"
    Write-Message "Generating: `"$dependenciesFilename`"..."
    Invoke-Expression "./$(Get-VcPkgExe) list --x-json > $stagedArtifactSubDir/$artifactName/$dependenciesFilename"
