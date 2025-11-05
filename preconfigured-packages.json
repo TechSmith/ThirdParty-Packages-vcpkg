@@ -420,8 +420,6 @@
       },
       "wasm": {
         "package": "soundpipe",
-        "linkType": "static",
-        "buildType": "release",
         "publish": {
           "include": true,
           "lib": true,
