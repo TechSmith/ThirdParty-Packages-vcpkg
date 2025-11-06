@@ -1,0 +1,21 @@
+diff --git a/build.sh b/build.sh
+index 00000000..11111111 100755
+--- a/build.sh
++++ b/build.sh
+@@ -1,6 +1,17 @@
+ #!/bin/bash
+ set -e -o -x
+ 
+-# Requires a Python install to be available in your PATH
++# Accept the path to Python executable as first argument if provided
++if [ -n "$1" ] && [ -x "$1" ]; then
++    PYTHON_EXE="$1"
++    shift
++else
++    PYTHON_EXE="python3"
++fi
++
++# All arguments are passed to build.py
+ SOURCE_ROOT=$(realpath $(dirname $0))
+-python3 $SOURCE_ROOT/tools/ci_build/build.py "$@"
++"$PYTHON_EXE" "$SOURCE_ROOT/tools/ci_build/build.py" "$@"

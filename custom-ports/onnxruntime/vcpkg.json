@@ -25,7 +25,7 @@
     "skip-tests",
     {
       "name": "ep-dml",
-      "platform": "windows"
+      "platform": "windows & !emscripten"
     },
     {
       "name": "ep-coreml",
