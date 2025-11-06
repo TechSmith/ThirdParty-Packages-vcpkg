@@ -59,6 +59,39 @@ else
    }
 }
 
+# VP9: CPU Decode
+$inputVP9Video = "$PSScriptRoot/../../resources/BigBuckBunnyClip-vp9-240p.mp4"
+$ffmpegDecodeVP9FrameCmd = "$ffmpegExe -hwaccel none -i `"$inputVP9Video`" -ss 00:00:04.5 -frames:v 1 -update 1"
+$tests += 
+@{
+    Name = "Verify decoding succeeds - WEBM: VP9 (CPU)"
+    OutFilename = "vp9-frame-cpu.png"
+    CmdPrefix = "$ffmpegDecodeVP9FrameCmd"
+    ExpectedReturnCode = 0
+}
+
+# VP9: Windows GPU Decode
+# This test may not work on the build server, as there may be no GPU to support it.  Uncomment this to test it locally.
+# $ffmpegDecodeVP9FrameCmd = "$ffmpegExe -hwaccel d3d11va -i `"$inputVP9Video`" -ss 00:00:04.5 -frames:v 1 -update 1"
+# $tests += 
+# @{
+#     Name = "Verify decoding succeeds - WEBM: VP9 (GPU, via d3d11va)"
+#     OutFilename = "vp9-frame-gpu.png"
+#     CmdPrefix = "$ffmpegDecodeVP9FrameCmd"
+#     ExpectedReturnCode = 0
+# }
+
+# VP9: Mac GPU Decode
+# This test may not work on the build server, as there may be no GPU to support it.  Uncomment this to test it locally.
+# $ffmpegDecodeVP9FrameCmd = "$ffmpegExe -hwaccel videotoolbox -i `"$inputVP9Video`" -ss 00:00:04.5 -frames:v 1 -update 1"
+# $tests += 
+# @{
+#     Name = "Verify decoding succeeds - WEBM: VP9 (GPU, via videotoolbox)"
+#     OutFilename = "vp9-frame-gpu.png"
+#     CmdPrefix = "$ffmpegDecodeVP9FrameCmd"
+#     ExpectedReturnCode = 0
+# }
+
 $runMsg     = " RUN      "
 $successMsg = "       OK "
 $failMsg    = "     FAIL "
