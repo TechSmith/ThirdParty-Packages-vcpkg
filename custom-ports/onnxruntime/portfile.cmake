@@ -7,6 +7,8 @@ vcpkg_from_github(
     HEAD_REF main
     PATCHES
         "1000-tsc-accept-python-path.patch"
+        "1001-tsc-eigen-sha.patch"
+        "1002-tsc-accept-python-path-unix.patch"
 )
 
 # --- Find Python (Host Dependency) ---
@@ -31,7 +33,21 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
 # --- Assemble Build Arguments for build.py ---
 set(ONNXRUNTIME_BUILD_ARGS)
 
-if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+# Platform-specific configurations
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    # WASM-specific build arguments
+    list(APPEND ONNXRUNTIME_BUILD_ARGS 
+        --build_wasm
+        --skip_submodule_sync
+        --disable_wasm_exception_catching
+        --disable_rtti
+    )
+    # Always build shared for WASM
+    if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+        message(WARNING "Static linking not recommended for WASM, using dynamic")
+    endif()
+    list(APPEND ONNXRUNTIME_BUILD_ARGS --build_shared_lib)
+elseif(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     list(APPEND ONNXRUNTIME_BUILD_ARGS --build_static_lib)
 else()
     list(APPEND ONNXRUNTIME_BUILD_ARGS --build_shared_lib)
@@ -72,6 +88,16 @@ if(VCPKG_TARGET_IS_OSX)
     string(APPEND CMAKE_EXTRA_DEFINES_STRING " CMAKE_OSX_ARCHITECTURES=x86_64;arm64")
 endif()
 
+# Add WASM-specific CMake defines
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    list(APPEND ONNXRUNTIME_BUILD_ARGS 
+        --cmake_extra_defines
+        CMAKE_TOOLCHAIN_FILE=${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}
+        onnxruntime_ENABLE_WEBASSEMBLY_SIMD=ON
+        onnxruntime_ENABLE_WEBASSEMBLY_THREADS=ON
+    )
+endif()
+
 # --- Add required general arguments for build.py ---
 #list(APPEND ONNXRUNTIME_BUILD_ARGS --build)
 
@@ -90,16 +116,28 @@ list(APPEND ONNXRUNTIME_BUILD_ARGS --config ${ONNXRUNTIME_CONFIG})
 # list(APPEND ONNXRUNTIME_BUILD_ARGS --build_dir "${ONNXRUNTIME_BUILD_DIR_PATH}")
 
 # --- Execute Build ---
-set(BUILD_SCRIPT_PATH "${SOURCE_PATH}/build.bat")
-message(STATUS ">>> ONNXRuntime build.bat arguments: ${ONNXRUNTIME_BUILD_ARGS}")
-
-message(STATUS ">>> SOURCE PATH: ${SOURCE_PATH}")
-
-vcpkg_execute_build_process(
-    COMMAND "${BUILD_SCRIPT_PATH}" "${PYTHON3}" ${ONNXRUNTIME_BUILD_ARGS}
-    WORKING_DIRECTORY "${SOURCE_PATH}"
-    LOGNAME "build-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
-)
+if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+    set(BUILD_SCRIPT_PATH "${SOURCE_PATH}/build.bat")
+    message(STATUS ">>> ONNXRuntime build.bat arguments: ${ONNXRUNTIME_BUILD_ARGS}")
+    message(STATUS ">>> SOURCE PATH: ${SOURCE_PATH}")
+    
+    vcpkg_execute_build_process(
+        COMMAND "${BUILD_SCRIPT_PATH}" "${PYTHON3}" ${ONNXRUNTIME_BUILD_ARGS}
+        WORKING_DIRECTORY "${SOURCE_PATH}"
+        LOGNAME "build-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
+    )
+else()
+    # Use build.sh for Unix-like systems (macOS, Linux, WASM)
+    set(BUILD_SCRIPT_PATH "${SOURCE_PATH}/build.sh")
+    message(STATUS ">>> ONNXRuntime build.sh arguments: ${PYTHON3} ${ONNXRUNTIME_BUILD_ARGS}")
+    message(STATUS ">>> SOURCE PATH: ${SOURCE_PATH}")
+    
+    vcpkg_execute_build_process(
+        COMMAND ${BUILD_SCRIPT_PATH} ${PYTHON3} ${ONNXRUNTIME_BUILD_ARGS}
+        WORKING_DIRECTORY "${SOURCE_PATH}"
+        LOGNAME "build-${TARGET_TRIPLET}-${ONNXRUNTIME_CONFIG}"
+    )
+endif()
 
 # # --- Post-Build Processing ---
 # vcpkg_copy_pdbs()
