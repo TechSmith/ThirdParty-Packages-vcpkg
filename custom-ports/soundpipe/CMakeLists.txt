@@ -69,6 +69,7 @@ install(TARGETS soundpipe
     EXPORT soundpipe-targets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
 )
 
 install(FILES h/soundpipe.h
@@ -76,7 +77,27 @@ install(FILES h/soundpipe.h
 )
 
 install(EXPORT soundpipe-targets
-    FILE soundpipe-config.cmake
+    FILE soundpipe-targets.cmake
     NAMESPACE soundpipe::
-    DESTINATION lib/cmake/soundpipe
+    DESTINATION share/soundpipe
+)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_LIST_DIR}/soundpipe-config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/soundpipe-config.cmake"
+    INSTALL_DESTINATION share/soundpipe
+)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/soundpipe-config-version.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/soundpipe-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/soundpipe-config-version.cmake"
+    DESTINATION share/soundpipe
 )

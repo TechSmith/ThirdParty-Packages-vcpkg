@@ -66,13 +66,14 @@ if(VCPKG_TARGET_IS_WINDOWS)
 else()
     # Mac/Linux/WASM use standard CMake build with proper C99 compiler support
     file(COPY "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt" DESTINATION "${SOURCE_PATH}")
+    file(COPY "${CMAKE_CURRENT_LIST_DIR}/soundpipe-config.cmake.in" DESTINATION "${SOURCE_PATH}")
     
     vcpkg_cmake_configure(
         SOURCE_PATH "${SOURCE_PATH}"
     )
     
     vcpkg_cmake_install()
-    vcpkg_cmake_config_fixup(PACKAGE_NAME soundpipe CONFIG_PATH lib/cmake/soundpipe)
+    vcpkg_cmake_config_fixup(PACKAGE_NAME soundpipe CONFIG_PATH share/soundpipe)
     
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 endif()
