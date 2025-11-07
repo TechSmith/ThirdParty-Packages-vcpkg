@@ -26,7 +26,7 @@ $resourcesDir = "$PSScriptRoot/../../resources"
 # H.264 decode tests
 $features = Get-Features $PackageAndFeatures
 $inputH264Video = "$PSScriptRoot/../../resources/BigBuckBunnyClip-h264-240p.mp4"
-$ffmpegDecodeH264FrameCmd = "$ffmpegExe -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1"
+$ffmpegDecodeH264FrameCmd = "$ffmpegExe -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1 -update 1"
 $tests += 
 @{
    Name = "Verify decoding fails - MP4: h.264"
@@ -37,7 +37,7 @@ $tests +=
 
 # HEVC decode tests
 $inputVideo = "$resourcesDir/BigBuckBunnyClip-hevc-240p.mp4"
-$ffmpegCmd = "$ffmpegExe -i `"$inputVideo`" -ss 00:00:04.5 -frames:v 1"
+$ffmpegCmd = "$ffmpegExe -i `"$inputVideo`" -ss 00:00:04.5 -frames:v 1 -update 1"
 if($features -contains "decoder-hevc")
 {
    $tests += 
