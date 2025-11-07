@@ -45,9 +45,8 @@ $tests = @(
         CmdOption = "-encoders"
         ExpectedValues = @(
             "aac_mf"
-            "mp3_mf"
             "h264_mf"
-            "vp9_qsv"
+            "mp3_mf"
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnWindowsOS)
@@ -134,17 +133,6 @@ $tests = @(
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnMacOS)
-    },
-    @{
-        Name = "DecodersWin"
-        CmdOption = "-decoders"
-        ExpectedValues = @(
-            " av1_qsv "
-            " vp8_qsv "
-            " vp9_qsv "
-        )
-        NotExpectedValues = @()
-        IsEnabled = (Get-IsOnWindowsOS)
     },
     @{
         Name = "Muxers"
@@ -246,13 +234,6 @@ $tests +=
    NotExpectedValues = ($features -contains "encoder-hevc-mf") ? @() : @( " hevc_mf " )
    IsEnabled = (Get-IsOnMacOS)
 },
-@{
-   Name = "EncodersWinHEVCQSV"
-   CmdOption = "-encoders"
-   ExpectedValues = ($features -contains "encoder-hevc-qsv") ? @( " hevc_qsv " ) : @()
-   NotExpectedValues = ($features -contains "encoder-hevc-qsv") ? @() : @( " hevc_qsv " )
-   IsEnabled = (Get-IsOnMacOS)
-},
 {
    Name = "DecodersHEVC"
    CmdOption = "-decoders"
@@ -265,13 +246,6 @@ $tests +=
    CmdOption = "-decoders"
    ExpectedValues = ($features -contains "decoder-hevc-mf") ? @( " hevc_mf " ) : @()
    NotExpectedValues = ($features -contains "decoder-hevc-mf") ? @() : @( " hevc_mf " )
-   IsEnabled = (Get-IsOnWindowsOS)
-},
-{
-   Name = "DecodersWinHEVCQSV"
-   CmdOption = "-decoders"
-   ExpectedValues = ($features -contains "decoder-hevc-qsv") ? @( " hevc_qsv " ) : @()
-   NotExpectedValues = ($features -contains "decoder-hevc-qsv") ? @() : @( " hevc_qsv " )
    IsEnabled = (Get-IsOnWindowsOS)
 },
 {

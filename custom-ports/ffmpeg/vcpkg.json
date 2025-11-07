@@ -852,14 +852,9 @@
           "default-features": false,
           "features": [
             "tsc-desktop-base",
-            "qsv",
             "encoder-aac-mf",
             "encoder-h264-mf",
-            "encoder-mp3-mf",
-            "encoder-vp9-qsv",
-            "decoder-av1-qsv",
-            "decoder-vp8-qsv",
-            "decoder-vp9-qsv"
+            "encoder-mp3-mf"
           ]
         }
       ]
