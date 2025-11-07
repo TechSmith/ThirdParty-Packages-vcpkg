@@ -6,6 +6,7 @@ vcpkg_from_git(
     PATCHES
         aom-rename-static.diff
         aom-uninitialized-pointer.diff
+        1001-tsc-fix-nasm-error.patch
 )
 
 vcpkg_find_acquire_program(NASM)
