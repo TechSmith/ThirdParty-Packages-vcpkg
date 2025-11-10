@@ -118,8 +118,8 @@
         },
         {
             "filename": "bin/zlib1.dll",
-            "fileVersion": "1.3.1.102",
-            "productVersion": "1.3.1.101"
+            "fileVersion": "1.3.1.103",
+            "productVersion": "1.3.1.103"
         }
     ]
 }
