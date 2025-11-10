@@ -103,9 +103,9 @@
         {
             "filename": "bin/vorbisenc.dll",
             "fileDescription": "A BSD-style license library that provides a simple, programmatic encoding setup interface",
-            "fileVersion": "2.0.12.2",
+            "fileVersion": "2.0.12.3",
             "productName": "libvorbisenc",
-            "productVersion": "2.0.12.1",
+            "productVersion": "2.0.12.3",
             "copyright": "Copyright (c) 2002-2020 Xiph.org Foundation"
         },
         {
