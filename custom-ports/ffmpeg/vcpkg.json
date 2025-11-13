@@ -854,7 +854,11 @@
             "tsc-desktop-base",
             "encoder-aac-mf",
             "encoder-h264-mf",
-            "encoder-mp3-mf"
+            "encoder-mp3-mf",
+            "hwaccel-vp9-d3d11va",
+            "hwaccel-vp9-d3d11va2",
+            "hwaccel-vp9-d3d12va",
+            "hwaccel-vp9-dxva2"
           ]
         }
       ]
@@ -869,7 +873,8 @@
             "tsc-desktop-base",
             "encoder-aac-at",
             "encoder-h264-videotoolbox",
-            "decoder-aac-at"
+            "decoder-aac-at",
+            "hwaccel-vp9-videotoolbox"
           ]
         }
       ]
