@@ -1,6 +1,6 @@
 {
   "name": "ffmpeg",
-  "version": "7.1.1",
+  "version": "7.1.2",
   "port-version": 1,
   "description": [
     "A library to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created.",
@@ -62,6 +62,7 @@
             "theora",
             "vorbis",
             "vpx",
+            "vulkan",
             "webp",
             "xml2",
             "zlib"
@@ -647,6 +648,17 @@
         "libtheora"
       ]
     },
+    "vaapi": {
+      "description": "VAAPI video decoding/encoding acceleration",
+      "supports": "linux",
+      "dependencies": [
+        {
+          "name": "libva",
+          "default-features": false,
+          "platform": "linux"
+        }
+      ]
+    },
     "version3": {
       "description": "Upgrade (L)GPL to version 3"
     },
@@ -667,6 +679,12 @@
           ]
         },
         "libvpx"
+      ]
+    },
+    "vulkan": {
+      "description": "H.264, HEVC and AV1 de/encoding via Vulkan",
+      "dependencies": [
+        "vulkan-headers"
       ]
     },
     "webp": {
@@ -768,6 +786,7 @@
             "decoder-vorbis",
             "decoder-vp8",
             "decoder-vp9",
+            "decoder-wrapped-avframe",
             "encoder-aac",
             "encoder-libaom-av1",
             "encoder-libmp3lame",
@@ -776,8 +795,12 @@
             "encoder-libvpx-vp8",
             "encoder-libvpx-vp9",
             "encoder-opus",
+            "encoder-pcm-s16le",
+            "encoder-pcm-s16le-planar",
             "encoder-png",
+            "encoder-rawvideo",
             "encoder-vorbis",
+            "encoder-wrapped-avframe",
             "demuxer-aac",
             "demuxer-image2",
             "demuxer-matroska",
@@ -793,6 +816,8 @@
             "muxer-mp4",
             "muxer-mpegts",
             "muxer-mkvtimestamp-v2",
+            "muxer-null",
+            "muxer-rawvideo",
             "muxer-rtp-mpegts",
             "muxer-webm",
             "parser-aac",
@@ -810,6 +835,10 @@
             "filter-aresample",
             "filter-asetrate",
             "filter-atempo",
+            "filter-hwdownload",
+            "filter-hwmap",
+            "filter-hwupload",
+            "filter-format",
             "filter-scale"
           ]
         }
@@ -823,14 +852,13 @@
           "default-features": false,
           "features": [
             "tsc-desktop-base",
-            "qsv",
             "encoder-aac-mf",
             "encoder-h264-mf",
             "encoder-mp3-mf",
-            "encoder-vp9-qsv",
-            "decoder-av1-qsv",
-            "decoder-vp8-qsv",
-            "decoder-vp9-qsv"
+            "hwaccel-vp9-d3d11va",
+            "hwaccel-vp9-d3d11va2",
+            "hwaccel-vp9-d3d12va",
+            "hwaccel-vp9-dxva2"
           ]
         }
       ]
@@ -845,7 +873,8 @@
             "tsc-desktop-base",
             "encoder-aac-at",
             "encoder-h264-videotoolbox",
-            "decoder-aac-at"
+            "decoder-aac-at",
+            "hwaccel-vp9-videotoolbox"
           ]
         }
       ]
@@ -2621,6 +2650,10 @@
     "filter-aresample": { "description": "" },
     "filter-asetrate": { "description": "" },
     "filter-atempo": { "description": "" },
+    "filter-format": { "description": "" },
+    "filter-hwdownload": { "description": "" },
+    "filter-hwmap": { "description": "" },
+    "filter-hwupload": { "description": "" },
     "filter-scale": { "description": "" }   
   }
 }
