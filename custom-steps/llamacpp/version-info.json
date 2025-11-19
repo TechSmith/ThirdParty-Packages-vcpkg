@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "filename": "bin/llama.dll",
+      "fileDescription": "Port of Facebook's LLaMA model in C/C++",
+      "fileVersion": "1.0.0",
+      "productName": "LlamaCpp",
+      "productVersion": "1.0.0",
+      "copyright": "Copyright (c) 2023-2025 The ggml authors"
+    }
+  ]
+}

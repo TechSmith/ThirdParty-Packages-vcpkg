@@ -302,6 +302,19 @@
       }
     },
     {
+      "name": "llamacpp",
+      "mac": {
+        "package": "llamacpp",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "llamacpp",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
+    },
+    {
       "name": "minizip",
       "mac": {
         "package": "minizip",
