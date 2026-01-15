@@ -395,6 +395,15 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "onnxruntime-cuda",
+      "win": {
+        "package": "onnxruntime[cuda]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.12.12"
+      }
     }
   ]
 }
