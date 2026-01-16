@@ -52,6 +52,7 @@ stages:
 
   jobs:
   - job: Build
+    timeoutInMinutes: 300  # 5hr timeout for very long builds, such as onnxruntime with CUDA support (took 4.2 hours to build locally)
     condition: succeeded()
     strategy:
       matrix:
@@ -134,6 +135,7 @@ stages:
 
   jobs:
   - job: PublishToGitHubRelease
+    timeoutInMinutes: 60
     pool:
       vmImage: ubuntu-latest
 
