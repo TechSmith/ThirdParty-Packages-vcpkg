@@ -28,7 +28,10 @@ parameters:
   - openblas
   - openssl-static
   - opencv4
+  - onnxruntime
   - onnxruntime-cuda
+  - onnxruntime-directml
+  - onnxruntime-openvino
   - pango-desktop
   - sqlite3
   - sqlite-modern-cpp
