@@ -1,3 +1,7 @@
+param(
+    [string]$PackageAndFeatures = ""
+)
+
 # This script is here just for testing purposes
 Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 

@@ -246,7 +246,10 @@ function Run-PreBuildStep {
       [string]$packageAndFeatures
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
-   Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
+   $scriptArgs = @{
+      PackageAndFeatures = $packageAndFeatures
+   }
+   Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1" -scriptArgs $scriptArgs
 }
 
 function Check-IsEmscriptenBuild {

@@ -1,3 +1,7 @@
+param(
+    [string]$PackageAndFeatures = ""
+)
+
 Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 
 if (Get-IsOnMacOS) {
