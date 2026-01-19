@@ -49,7 +49,6 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         tensorrt  onnxruntime_USE_TENSORRT
         tensorrt  onnxruntime_USE_TENSORRT_BUILTIN_PARSER
         directml  onnxruntime_USE_DML
-        directml  onnxruntime_USE_CUSTOM_DIRECTML
         winml     onnxruntime_USE_WINML
         coreml    onnxruntime_USE_COREML
         mimalloc  onnxruntime_USE_MIMALLOC
