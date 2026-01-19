@@ -75,6 +75,10 @@
         "nvidia-cutlass"
       ]
     },
+    "directml": {
+      "description": "Build with DirectML support for GPU acceleration on Windows",
+      "supports": "windows & !static"
+    },
     "framework": {
       "description": "Build a macOS/iOS framework, Objective-C library",
       "supports": "osx | ios"
