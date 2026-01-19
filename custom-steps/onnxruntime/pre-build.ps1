@@ -4,12 +4,19 @@ param(
 
 Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 
-if (Get-IsOnMacOS) {
-    Write-Message "CUDA installation not needed on macOS, skipping..."
-    exit
+$features = Get-Features $PackageAndFeatures
+$cudaEnabled = $features -contains "cuda"
+if (-not $cudaEnabled) {
+    Write-Message "CUDA feature not enabled, skipping CUDA installation..."
+    exit 0
 }
 
-Write-Message "Checking for CUDA installation..."
+if (-not (Get-IsOnWindowsOS)) {
+    Write-Message "CUDA installation only needed on Windows, skipping..."
+    exit 0
+}
+
+Write-Message "CUDA feature enabled. Checking for CUDA installation..."
 
 # Helper function to set environment variables in current scope AND persist them
 function Set-CudaEnvironment {
