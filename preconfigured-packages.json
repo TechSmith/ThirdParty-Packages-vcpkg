@@ -420,6 +420,9 @@
       },
       "wasm": {
         "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-static",
         "publish": {
           "include": true,
           "lib": true,
