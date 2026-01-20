@@ -63,6 +63,7 @@ target_compile_definitions(soundpipe PRIVATE
 set_target_properties(soundpipe PROPERTIES
     C_STANDARD 99
     C_STANDARD_REQUIRED ON
+    POSITION_INDEPENDENT_CODE ON
 )
 
 install(TARGETS soundpipe
