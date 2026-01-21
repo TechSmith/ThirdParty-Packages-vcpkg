@@ -7,7 +7,6 @@ vcpkg_from_github(
     HEAD_REF main
     PATCHES
         "1000-tsc-accept-python-path.patch"
-        "1001-tsc-eigen-sha.patch"
         "1002-tsc-accept-python-path-unix.patch"
 )
 
