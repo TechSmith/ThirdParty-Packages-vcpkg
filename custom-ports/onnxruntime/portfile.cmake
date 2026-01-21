@@ -8,6 +8,7 @@ vcpkg_from_github(
     PATCHES
         "1000-tsc-accept-python-path.patch"
         "1002-tsc-accept-python-path-unix.patch"
+        "1003-tsc-skip-emsdk-install-if-env-set.patch"
 )
 
 # --- Find Python (Host Dependency) ---
