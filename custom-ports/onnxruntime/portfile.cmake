@@ -3,7 +3,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO microsoft/onnxruntime
     REF "v${VERSION}"
-    SHA512 32310215a3646c64ff5e0a309c3049dbe02ae9dd5bda8c89796bd9f86374d0f43443aed756b941d9af20ef1758bb465981ac517bbe8ac33661a292d81c59b152
+    SHA512 373c51575ada457b8aead5d195a5f3eba62fb747b6370a2a9889fff875c40ea30af8fd49104d58cc86f79247410e829086b0979f37ca8635c6dd34960e9cc424
     HEAD_REF main
     PATCHES
         "1000-tsc-accept-python-path.patch"
@@ -139,16 +139,100 @@ else()
     )
 endif()
 
-# # --- Post-Build Processing ---
-# vcpkg_copy_pdbs()
-# vcpkg_cmake_config_fixup(PACKAGE_NAME onnxruntime CONFIG_PATH "lib/cmake/onnxruntime")
-# vcpkg_fixup_pkgconfig()
-# file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include" "${CURRENT_PACKAGES_DIR}/debug/share")
-# vcpkg_install_copyright(FILE_PATH "${SOURCE_PATH}/LICENSE")
-# file(WRITE "${CURRENT_PACKAGES_DIR}/share/${PORT}/usage"
-#     "To use onnxruntime in your CMake project, add the following to your CMakeLists.txt:\n"
-#     "    find_package(onnxruntime CONFIG REQUIRED)\n"
-#     "    target_link_libraries(your_target PRIVATE onnxruntime::onnxruntime)\n"
-# )
+# --- Post-Build Processing ---
 
-# message(STATUS "onnxruntime build and installation complete.")
+# Determine build output directory
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/wasm/${ONNXRUNTIME_CONFIG}")
+elseif(VCPKG_TARGET_IS_WINDOWS)
+    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Windows/${ONNXRUNTIME_CONFIG}")
+elseif(VCPKG_TARGET_IS_OSX)
+    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/MacOS/${ONNXRUNTIME_CONFIG}")
+else()
+    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Linux/${ONNXRUNTIME_CONFIG}")
+endif()
+
+message(STATUS "Looking for build artifacts in: ${BUILD_OUTPUT_DIR}")
+
+# Install libraries
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    # WASM: Find and install all library files
+    file(GLOB_RECURSE WASM_LIBS 
+        "${BUILD_OUTPUT_DIR}/*.a"
+        "${BUILD_OUTPUT_DIR}/*.so"
+        "${BUILD_OUTPUT_DIR}/*.wasm"
+    )
+    if(NOT WASM_LIBS)
+        message(FATAL_ERROR "No library files found in ${BUILD_OUTPUT_DIR}")
+    endif()
+    
+    list(LENGTH WASM_LIBS WASM_LIBS_COUNT)
+    message(STATUS "Found ${WASM_LIBS_COUNT} WASM library files")
+    foreach(LIB ${WASM_LIBS})
+        file(INSTALL "${LIB}" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+    endforeach()
+else()
+    # Desktop platforms: Install appropriate library types
+    if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+        file(GLOB LIBS "${BUILD_OUTPUT_DIR}/*.lib" "${BUILD_OUTPUT_DIR}/*.a")
+    else()
+        file(GLOB LIBS 
+            "${BUILD_OUTPUT_DIR}/*.lib"
+            "${BUILD_OUTPUT_DIR}/*.so"
+            "${BUILD_OUTPUT_DIR}/*.dylib"
+            "${BUILD_OUTPUT_DIR}/*.dll"
+        )
+    endif()
+    
+    if(LIBS)
+        file(INSTALL ${LIBS} DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+    endif()
+    
+    # Install debug libraries if building debug
+    if(EXISTS "${BUILD_OUTPUT_DIR}/Debug")
+        file(GLOB DEBUG_LIBS "${BUILD_OUTPUT_DIR}/Debug/*")
+        if(DEBUG_LIBS)
+            file(INSTALL ${DEBUG_LIBS} DESTINATION "${CURRENT_PACKAGES_DIR}/debug/lib")
+        endif()
+    endif()
+endif()
+
+# Install headers
+file(INSTALL 
+    "${SOURCE_PATH}/include/onnxruntime/core/session/"
+    DESTINATION "${CURRENT_PACKAGES_DIR}/include/onnxruntime/core"
+    FILES_MATCHING PATTERN "*.h"
+)
+
+# Install additional required headers
+if(EXISTS "${SOURCE_PATH}/include/onnxruntime/core/providers")
+    file(INSTALL 
+        "${SOURCE_PATH}/include/onnxruntime/core/providers/"
+        DESTINATION "${CURRENT_PACKAGES_DIR}/include/onnxruntime/core/providers"
+        FILES_MATCHING PATTERN "*.h"
+    )
+endif()
+
+# Install CMake config if available
+if(EXISTS "${BUILD_OUTPUT_DIR}/onnxruntime-config.cmake")
+    file(INSTALL 
+        "${BUILD_OUTPUT_DIR}/onnxruntime-config.cmake"
+        DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}"
+    )
+    vcpkg_cmake_config_fixup(PACKAGE_NAME onnxruntime CONFIG_PATH "share/${PORT}")
+endif()
+
+# Install license
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+
+# Remove debug headers (not needed)
+if(EXISTS "${CURRENT_PACKAGES_DIR}/debug/include")
+    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+endif()
+
+# Copy PDBs for Windows debugging
+if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_EMSCRIPTEN)
+    vcpkg_copy_pdbs()
+endif()
+
+message(STATUS "✓ onnxruntime ${VERSION} installation complete for ${TARGET_TRIPLET}")
