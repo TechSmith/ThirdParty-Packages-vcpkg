@@ -36,17 +36,14 @@ set(ONNXRUNTIME_BUILD_ARGS)
 # Platform-specific configurations
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     # WASM-specific build arguments
+    # Build static library first, then wrap it as SIDE_MODULE
     list(APPEND ONNXRUNTIME_BUILD_ARGS 
         --build_wasm
+        --build_wasm_static_lib
         --skip_submodule_sync
         --disable_wasm_exception_catching
         --disable_rtti
     )
-    # Always build shared for WASM
-    if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
-        message(WARNING "Static linking not recommended for WASM, using dynamic")
-    endif()
-    list(APPEND ONNXRUNTIME_BUILD_ARGS --build_shared_lib)
 elseif(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     list(APPEND ONNXRUNTIME_BUILD_ARGS --build_static_lib)
 else()
@@ -139,38 +136,123 @@ else()
     )
 endif()
 
+# --- Build SIDE_MODULE Wrapper for WASM ---
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    message(STATUS "Building SIDE_MODULE wrapper for ONNX Runtime WASM")
+    
+    # Determine build output directory for the static lib
+    # Note: ONNX Runtime uses the host OS name (MacOS/Linux) even for WASM builds
+    if(VCPKG_HOST_IS_WINDOWS)
+        set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Windows/${ONNXRUNTIME_CONFIG}")
+    elseif(VCPKG_HOST_IS_OSX)
+        set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/MacOS/${ONNXRUNTIME_CONFIG}")
+    else()
+        set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Linux/${ONNXRUNTIME_CONFIG}")
+    endif()
+    message(STATUS "ONNX Runtime static lib location: ${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly.a")
+    
+    # Verify the static library was built
+    if(NOT EXISTS "${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly.a")
+        message(FATAL_ERROR "ONNX Runtime static library not found at: ${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly.a")
+    endif()
+    
+    # Deduplicate the static library archive (ONNX Runtime's bundle creates duplicates)
+    message(STATUS "Deduplicating static library archive...")
+    
+    # Use Emscripten's emar for LLVM-format archives (system ar cannot handle them)
+    set(EMAR "$ENV{EMSDK}/upstream/emscripten/emar")
+    
+    set(TEMP_EXTRACT_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}/temp-extract")
+    file(REMOVE_RECURSE "${TEMP_EXTRACT_DIR}")
+    file(MAKE_DIRECTORY "${TEMP_EXTRACT_DIR}")
+    
+    # Extract all object files
+    execute_process(
+        COMMAND "${EMAR}" x "${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly.a"
+        WORKING_DIRECTORY "${TEMP_EXTRACT_DIR}"
+        RESULT_VARIABLE AR_EXTRACT_RESULT
+    )
+    if(NOT AR_EXTRACT_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to extract static library")
+    endif()
+    
+    # Get unique list of object files
+    file(GLOB_RECURSE OBJECT_FILES "${TEMP_EXTRACT_DIR}/*.o")
+    list(REMOVE_DUPLICATES OBJECT_FILES)
+    
+    # Create new archive with deduplicated objects
+    set(DEDUP_LIBRARY "${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly_dedup.a")
+    execute_process(
+        COMMAND "${EMAR}" rcs "${DEDUP_LIBRARY}" ${OBJECT_FILES}
+        WORKING_DIRECTORY "${TEMP_EXTRACT_DIR}"
+        RESULT_VARIABLE AR_CREATE_RESULT
+    )
+    if(NOT AR_CREATE_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to create deduplicated static library")
+    endif()
+    
+    # Replace original with deduplicated version
+    file(REMOVE "${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly.a")
+    file(RENAME "${DEDUP_LIBRARY}" "${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly.a")
+    message(STATUS "✓ Static library deduplicated")
+    
+    # Copy wrapper files to build directory
+    set(WRAPPER_SOURCE_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}/wrapper-src")
+    file(COPY "${CMAKE_CURRENT_LIST_DIR}/wasm-wrapper/" DESTINATION "${WRAPPER_SOURCE_DIR}/")
+    
+    # Configure wrapper build
+    set(WRAPPER_BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}/wrapper-build")
+    
+    vcpkg_cmake_configure(
+        SOURCE_PATH "${WRAPPER_SOURCE_DIR}"
+        OPTIONS
+            -DONNX_BUILD_DIR=${BUILD_OUTPUT_DIR}
+            -DCMAKE_BUILD_TYPE=${ONNXRUNTIME_CONFIG}
+    )
+    
+    vcpkg_cmake_build()
+    
+    # The .so file should be in the wrapper build directory
+    set(SIDE_MODULE_LIB "${WRAPPER_BUILD_DIR}/libonnxruntime.so")
+    if(NOT EXISTS "${SIDE_MODULE_LIB}")
+        message(FATAL_ERROR "SIDE_MODULE library not created at: ${SIDE_MODULE_LIB}")
+    endif()
+    
+    message(STATUS "✓ SIDE_MODULE built successfully: ${SIDE_MODULE_LIB}")
+endif()
+
 # --- Post-Build Processing ---
 
-# Determine build output directory
-if(VCPKG_TARGET_IS_EMSCRIPTEN)
-    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/wasm/${ONNXRUNTIME_CONFIG}")
-elseif(VCPKG_TARGET_IS_WINDOWS)
-    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Windows/${ONNXRUNTIME_CONFIG}")
-elseif(VCPKG_TARGET_IS_OSX)
-    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/MacOS/${ONNXRUNTIME_CONFIG}")
-else()
-    set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Linux/${ONNXRUNTIME_CONFIG}")
+# Determine build output directory (unless already set by wrapper build for WASM)
+if(NOT DEFINED BUILD_OUTPUT_DIR)
+    if(VCPKG_TARGET_IS_WINDOWS)
+        set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Windows/${ONNXRUNTIME_CONFIG}")
+    elseif(VCPKG_TARGET_IS_OSX)
+        set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/MacOS/${ONNXRUNTIME_CONFIG}")
+    else()
+        set(BUILD_OUTPUT_DIR "${SOURCE_PATH}/build/Linux/${ONNXRUNTIME_CONFIG}")
+    endif()
 endif()
 
 message(STATUS "Looking for build artifacts in: ${BUILD_OUTPUT_DIR}")
 
 # Install libraries
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
-    # WASM: Find and install all library files
-    file(GLOB_RECURSE WASM_LIBS 
-        "${BUILD_OUTPUT_DIR}/*.a"
-        "${BUILD_OUTPUT_DIR}/*.so"
-        "${BUILD_OUTPUT_DIR}/*.wasm"
-    )
-    if(NOT WASM_LIBS)
-        message(FATAL_ERROR "No library files found in ${BUILD_OUTPUT_DIR}")
+    # Install the SIDE_MODULE .so file (primary output for dynamic linking)
+    if(NOT EXISTS "${SIDE_MODULE_LIB}")
+        message(FATAL_ERROR "SIDE_MODULE library not found: ${SIDE_MODULE_LIB}")
     endif()
+    file(INSTALL "${SIDE_MODULE_LIB}" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+    message(STATUS "Installed SIDE_MODULE: libonnxruntime.so")
     
-    list(LENGTH WASM_LIBS WASM_LIBS_COUNT)
-    message(STATUS "Found ${WASM_LIBS_COUNT} WASM library files")
-    foreach(LIB ${WASM_LIBS})
-        file(INSTALL "${LIB}" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
-    endforeach()
+    # Also install the bundled static library (for potential static builds or debugging)
+    set(STATIC_LIB "${BUILD_OUTPUT_DIR}/libonnxruntime_webassembly.a")
+    if(EXISTS "${STATIC_LIB}")
+        file(INSTALL "${STATIC_LIB}" DESTINATION "${CURRENT_PACKAGES_DIR}/lib")
+        message(STATUS "Installed static library: libonnxruntime_webassembly.a")
+    else()
+        message(WARNING "Static library not found at: ${STATIC_LIB}")
+    endif()
 else()
     # Desktop platforms: Install appropriate library types
     if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
