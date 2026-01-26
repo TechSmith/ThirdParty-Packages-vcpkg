@@ -3,3 +3,4 @@ vcpkg/
 PreStage/
 StagedArtifacts/
 logs/
+_private/
