@@ -25,6 +25,12 @@
       "description": "Enable Metal support for GPU acceleration on macOS",
       "supports": "osx"
     },
+    "openblas": {
+      "description": "Enable OpenBLAS support for CPU acceleration",
+      "dependencies": [
+        "openblas"
+      ]
+    },
     "vulkan": {
       "description": "Enable Vulkan support for GPU acceleration",
       "dependencies": [

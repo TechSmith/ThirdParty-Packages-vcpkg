@@ -37,6 +37,10 @@ vcpkg_from_github(
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
+    metal GGML_METAL
+    vulkan GGML_VULKAN
+    cuda GGML_CUDA
+    openblas GGML_BLAS
     avx GGML_AVX
     avx2 GGML_AVX2
     fma GGML_FMA
@@ -47,13 +51,10 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     avx512 GGML_AVX512_BF16
 )
 
-vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
-    FEATURES
-    avx512 GGML_AVX512
-    avx512 GGML_AVX512_VBMI
-    avx512 GGML_AVX512_VNNI
-    avx512 GGML_AVX512_BF16
-)
+# vcpkg_check_features doesn't map this variant, so we handle it manually
+if("openblas" IN_LIST FEATURES)
+    list(APPEND FEATURE_OPTIONS -DGGML_BLAS_VENDOR=OpenBLAS)
+endif()
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
