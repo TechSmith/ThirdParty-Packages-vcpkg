@@ -17,6 +17,15 @@ list(APPEND WHISPER_PATCHES
     1004-tsc-respect-explicit-avx512-off.diff
 )
 
+# TSC: Conditionally add DLL renaming patches
+if("rename-whisper-basic" IN_LIST FEATURES)
+    list(APPEND WHISPER_PATCHES 1005-tsc-rename-target-whisper-basic.diff)
+endif()
+
+if("rename-whisper-vulkan" IN_LIST FEATURES)
+    list(APPEND WHISPER_PATCHES 1006-tsc-rename-target-whisper-vulkan.diff)
+endif()
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggml-org/whisper.cpp
@@ -62,9 +71,20 @@ vcpkg_copy_pdbs()
 vcpkg_cmake_config_fixup(CONFIG_PATH "lib/cmake/whisper")
 
 # TSC: Modify whisper.pc to not link ggml since it's statically embedded
-file(READ "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" _contents)
-string(REPLACE "-lggml -lggml-base -lwhisper" "-lwhisper" _contents "${_contents}")
-file(WRITE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" "${_contents}")
+# Also update library name if renamed
+if("rename-whisper-basic" IN_LIST FEATURES)
+    file(READ "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" _contents)
+    string(REPLACE "-lggml -lggml-base -lwhisper-basic" "-lwhisper-basic" _contents "${_contents}")
+    file(WRITE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" "${_contents}")
+elseif("rename-whisper-vulkan" IN_LIST FEATURES)
+    file(READ "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" _contents)
+    string(REPLACE "-lggml -lggml-base -lwhisper-vulkan" "-lwhisper-vulkan" _contents "${_contents}")
+    file(WRITE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" "${_contents}")
+else()
+    file(READ "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" _contents)
+    string(REPLACE "-lggml -lggml-base -lwhisper" "-lwhisper" _contents "${_contents}")
+    file(WRITE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" "${_contents}")
+endif()
 
 vcpkg_fixup_pkgconfig()
 

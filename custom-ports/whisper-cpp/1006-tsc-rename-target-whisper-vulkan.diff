@@ -1,0 +1,12 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 2eae0c6..8f7e9a1 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -110,6 +110,7 @@ add_library(whisper
+ 
+ # Set the version numbers
+ set_target_properties(whisper PROPERTIES
++    OUTPUT_NAME "whisper-vulkan"
+     VERSION ${PROJECT_VERSION}
+     SOVERSION ${SOVERSION}
+ )
