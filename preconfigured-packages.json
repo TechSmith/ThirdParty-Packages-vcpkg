@@ -276,29 +276,77 @@
       }
     },
     {
-      "name": "whispercpp",
+      "name": "whisper-cpp-basic",
       "mac": {
-        "package": "whispercpp",
+        "package": "whisper-cpp[rename-whisper-basic]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2025.10.17",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       },
       "win": {
-        "package": "whispercpp",
+        "package": "whisper-cpp[rename-whisper-basic]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2025.10.17",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
-      "name": "whispercpp-basic",
-      "mac": {
-        "package": "whispercpp-basic",
-        "linkType": "dynamic",
-        "buildType": "release"
-      },
+      "name": "whisper-cpp",
       "win": {
-        "package": "whispercpp-basic",
+        "package": "whisper-cpp[avx,avx2,fma,f16c]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2025.10.17",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "mac": {
+        "package": "whisper-cpp[metal]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.10.17",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "whisper-cpp-vulkan",
+      "win": {
+        "package": "whisper-cpp[vulkan,rename-whisper-vulkan]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.10.17",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
