@@ -37,6 +37,10 @@ vcpkg_from_github(
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
+    avx GGML_AVX
+    avx2 GGML_AVX2
+    fma GGML_FMA
+    f16c GGML_F16C
     avx512 GGML_AVX512
     avx512 GGML_AVX512_VBMI
     avx512 GGML_AVX512_VNNI
