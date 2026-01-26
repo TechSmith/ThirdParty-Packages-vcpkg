@@ -61,9 +61,10 @@ vcpkg_cmake_configure(
     DISABLE_PARALLEL_CONFIGURE
     OPTIONS
         -DBUILD_SHARED_LIBS=ON
+        -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
         ${FEATURE_OPTIONS}
         -DWHISPER_ALL_WARNINGS=OFF
-        -DWHISPER_BUILD_EXAMPLES=OFF
+        -DWHISPER_BUILD_EXAMPLES=ON
         -DWHISPER_BUILD_SERVER=OFF
         -DWHISPER_BUILD_TESTS=OFF
         -DWHISPER_CCACHE=OFF
@@ -93,9 +94,11 @@ endif()
 
 vcpkg_fixup_pkgconfig()
 
-file(INSTALL "${SOURCE_PATH}/models/convert-pt-to-ggml.py" DESTINATION "${CURRENT_PACKAGES_DIR}/tools/${PORT}")
+# Copy example executables to tools directory
+vcpkg_copy_tools(TOOL_NAMES whisper-cli AUTO_CLEAN)
 
+# Delete debug dirs
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
-
+    
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
