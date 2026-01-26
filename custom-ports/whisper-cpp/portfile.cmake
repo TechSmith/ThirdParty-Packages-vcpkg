@@ -11,6 +11,12 @@ list(APPEND WHISPER_PATCHES
     1002-tsc-cmake-ggml.diff
 )
 
+# TSC: Add patches to control AVX-512 auto-vectorization
+list(APPEND WHISPER_PATCHES
+    1003-tsc-disable-auto-avx512.diff
+    1004-tsc-respect-explicit-avx512-off.diff
+)
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggml-org/whisper.cpp
@@ -20,11 +26,28 @@ vcpkg_from_github(
     PATCHES ${WHISPER_PATCHES}
 )
 
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    FEATURES
+    avx512 GGML_AVX512
+    avx512 GGML_AVX512_VBMI
+    avx512 GGML_AVX512_VNNI
+    avx512 GGML_AVX512_BF16
+)
+
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    FEATURES
+    avx512 GGML_AVX512
+    avx512 GGML_AVX512_VBMI
+    avx512 GGML_AVX512_VNNI
+    avx512 GGML_AVX512_BF16
+)
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     DISABLE_PARALLEL_CONFIGURE
     OPTIONS
         -DBUILD_SHARED_LIBS=ON
+        ${FEATURE_OPTIONS}
         -DWHISPER_ALL_WARNINGS=OFF
         -DWHISPER_BUILD_EXAMPLES=OFF
         -DWHISPER_BUILD_SERVER=OFF

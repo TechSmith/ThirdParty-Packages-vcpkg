@@ -31,6 +31,9 @@
         "vulkan",
         "vulkan-headers"
       ]
+    },
+    "avx512": {
+      "description": "Enable AVX-512 instruction set support (includes VBMI and VNNI)"
     }
   }
 }
