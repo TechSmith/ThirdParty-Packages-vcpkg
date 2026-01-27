@@ -60,7 +60,7 @@ stages:
           poolName: 'VMSS_CommonCpp_VS2022'
           osName: win
         mac:
-          imageName: macOS-14
+          imageName: macOS-15-arm64
           poolName: ''
           osName: mac
         linux:
