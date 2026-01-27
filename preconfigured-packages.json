@@ -266,32 +266,6 @@
       }
     },
     {
-      "name": "whispercpp",
-      "mac": {
-        "package": "whispercpp",
-        "linkType": "dynamic",
-        "buildType": "release"
-      },
-      "win": {
-        "package": "whispercpp",
-        "linkType": "dynamic",
-        "buildType": "release"
-      }
-    },
-    {
-      "name": "whispercpp-basic",
-      "mac": {
-        "package": "whispercpp-basic",
-        "linkType": "dynamic",
-        "buildType": "release"
-      },
-      "win": {
-        "package": "whispercpp-basic",
-        "linkType": "dynamic",
-        "buildType": "release"
-      }
-    },
-    {
       "name": "whisper-cpp",
       "mac": {
         "package": "whisper-cpp[avx,avx2,fma,f16c]",
