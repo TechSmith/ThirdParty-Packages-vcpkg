@@ -19,6 +19,11 @@ if(NOT "avx512" IN_LIST FEATURES)
     )
 endif()
 
+# TSC patch to rename dll/dylib to whisper-basic for fallback dll
+if("rename-whisper-basic" IN_LIST FEATURES)
+    list(APPEND WHISPER_PATCHES 1005-tsc-rename-target-whisper-basic.diff)
+endif()
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggml-org/whisper.cpp
@@ -68,6 +73,13 @@ vcpkg_copy_pdbs()
 vcpkg_cmake_config_fixup(CONFIG_PATH "lib/cmake/whisper")
 
 # <TechSmith Customizations>
+# Rename dll/dylib to whisper-basic for fallback dll (ex. User machine does not support AVX2)
+if("rename-whisper-basic" IN_LIST FEATURES)
+    set(WHISPER_LIB_NAME "whisper-basic")
+else()
+    set(WHISPER_LIB_NAME "whisper")
+endif()
+
 # Modify whisper.pc to not link ggml since it's statically embedded
 if(EXISTS "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc")
     file(READ "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" _contents)
@@ -75,10 +87,10 @@ if(EXISTS "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc")
     string(REGEX REPLACE "Requires:[^\n]*ggml[^\n]*\n" "" _contents "${_contents}")
     string(REGEX REPLACE "Requires\\.private:[^\n]*ggml[^\n]*\n" "" _contents "${_contents}")
     # Fix Libs field to only reference whisper library
-    string(REPLACE "-lggml -lggml-base -lwhisper" "-lwhisper" _contents "${_contents}")
-    string(REPLACE "-lggml-base -lggml -lwhisper" "-lwhisper" _contents "${_contents}")
-    string(REPLACE "-lggml -lwhisper" "-lwhisper" _contents "${_contents}")
-    string(REPLACE "-lggml-base -lwhisper" "-lwhisper" _contents "${_contents}")
+    string(REPLACE "-lggml -lggml-base -l${WHISPER_LIB_NAME}" "-l${WHISPER_LIB_NAME}" _contents "${_contents}")
+    string(REPLACE "-lggml-base -lggml -l${WHISPER_LIB_NAME}" "-l${WHISPER_LIB_NAME}" _contents "${_contents}")
+    string(REPLACE "-lggml -l${WHISPER_LIB_NAME}" "-l${WHISPER_LIB_NAME}" _contents "${_contents}")
+    string(REPLACE "-lggml-base -l${WHISPER_LIB_NAME}" "-l${WHISPER_LIB_NAME}" _contents "${_contents}")
     file(WRITE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" "${_contents}")
 endif()
 # </TechSmith Customizations>
