@@ -1,3 +1,7 @@
+param (
+    [Parameter(Mandatory=$false)][string]$PackageAndFeatures
+)
+
 Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 
 # Apply patch to vcpkg's pango portfile to add Objective-C language support for macOS
