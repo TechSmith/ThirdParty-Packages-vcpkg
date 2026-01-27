@@ -19,6 +19,10 @@
     }
   ],
   "features": {
+    "accelerate": {
+      "description": "Enable Apple Accelerate framework on macOS for BLAS acceleration",
+      "supports": "osx"
+    },
     "avx": {
       "description": "Enable AVX instruction set support"
     },
