@@ -32,6 +32,7 @@ parameters:
   - sqlite-modern-cpp
   - tinyxml
   - test-whisper-cpp-accelerate
+  - test-whisper-cpp-avx2
   - whisper-cpp
   - whisper-cpp-basic
   - whispercpp
