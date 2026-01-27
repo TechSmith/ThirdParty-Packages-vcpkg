@@ -31,6 +31,7 @@ parameters:
   - sqlite3
   - sqlite-modern-cpp
   - tinyxml
+  - test-whisper-cpp-accelerate
   - whisper-cpp
   - whisper-cpp-basic
   - whispercpp

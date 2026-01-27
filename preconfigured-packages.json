@@ -350,6 +350,22 @@
       }
     },
     {
+      "name": "test-whisper-cpp-accelerate",
+      "mac": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c,blas,accelerate]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "minizip",
       "mac": {
         "package": "minizip",
