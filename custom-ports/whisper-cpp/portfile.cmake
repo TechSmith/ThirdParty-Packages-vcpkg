@@ -48,6 +48,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     fma GGML_FMA
     metal GGML_METAL
     metal GGML_METAL_NDEBUG
+    vulkan GGML_VULKAN
 )
 
 # Link options
