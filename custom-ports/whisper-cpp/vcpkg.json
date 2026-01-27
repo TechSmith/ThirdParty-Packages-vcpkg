@@ -5,7 +5,6 @@
   "homepage": "https://github.com/ggml-org/whisper.cpp",
   "license": "MIT",
   "dependencies": [
-    "ggml",
     {
       "name": "vcpkg-cmake",
       "host": true
@@ -19,36 +18,16 @@
     "cuda": {
       "description": "Enable CUDA support for GPU acceleration",
       "dependencies": [
-        "cuda",
-        {
-          "name": "ggml",
-          "features": [
-            "cuda"
-          ]
-        }
+        "cuda"
       ]
     },
     "metal": {
       "description": "Enable Metal support for GPU acceleration on macOS",
-      "supports": "osx",
-      "dependencies": [
-        {
-          "name": "ggml",
-          "features": [
-            "metal"
-          ]
-        }
-      ]
+      "supports": "osx"
     },
     "vulkan": {
       "description": "Enable Vulkan support for GPU acceleration",
       "dependencies": [
-        {
-          "name": "ggml",
-          "features": [
-            "vulkan"
-          ]
-        },
         "vulkan",
         "vulkan-headers"
       ]
