@@ -44,6 +44,8 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     avx512 GGML_AVX512_BF16
     f16c GGML_F16C
     fma GGML_FMA
+    metal GGML_METAL
+    metal GGML_METAL_NDEBUG
 )
 
 # Link options
