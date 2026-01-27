@@ -31,10 +31,14 @@ vcpkg_from_github(
 # Map vcpkg features to cmake configure flags
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
+    avx GGML_AVX
+    avx2 GGML_AVX2
     avx512 GGML_AVX512
     avx512 GGML_AVX512_VBMI
     avx512 GGML_AVX512_VNNI
     avx512 GGML_AVX512_BF16
+    f16c GGML_F16C
+    fma GGML_FMA
 )
 
 # Link options
