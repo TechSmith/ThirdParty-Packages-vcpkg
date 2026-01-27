@@ -58,7 +58,7 @@ vcpkg_cmake_configure(
     DISABLE_PARALLEL_CONFIGURE # updating bindings/javascript/package.json
     OPTIONS
         -DWHISPER_ALL_WARNINGS=OFF
-        -DWHISPER_BUILD_EXAMPLES=OFF
+        -DWHISPER_BUILD_EXAMPLES=ON
         -DWHISPER_BUILD_SERVER=OFF
         -DWHISPER_BUILD_TESTS=OFF
         -DWHISPER_CCACHE=OFF
@@ -93,6 +93,9 @@ if(EXISTS "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc")
     string(REPLACE "-lggml-base -l${WHISPER_LIB_NAME}" "-l${WHISPER_LIB_NAME}" _contents "${_contents}")
     file(WRITE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/whisper.pc" "${_contents}")
 endif()
+
+# Copy example executables to tools directory
+vcpkg_copy_tools(TOOL_NAMES whisper-cli vad-speech-segments whisper-bench whisper-server AUTO_CLEAN)
 # </TechSmith Customizations>
 
 vcpkg_fixup_pkgconfig()
