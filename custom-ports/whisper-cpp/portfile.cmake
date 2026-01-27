@@ -11,6 +11,14 @@ list(APPEND WHISPER_PATCHES
     1002-tsc-cmake-ggml.diff
 )
 
+# TSC patches to control AVX-512 auto-vectorization
+if(NOT "avx512" IN_LIST FEATURES)
+    list(APPEND WHISPER_PATCHES
+        1003-tsc-disable-auto-avx512.diff
+        1004-tsc-respect-explicit-avx512-off.diff
+    )
+endif()
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggml-org/whisper.cpp
@@ -18,6 +26,15 @@ vcpkg_from_github(
     SHA512 d858509b22183b885735415959fc996f0f5ca315aaf40b8640593c4ce881c88fec3fcd16e9a3adda8d1177feed01947fb4c1beaf32d7e4385c5f35a024329ef5
     HEAD_REF master
     PATCHES ${WHISPER_PATCHES}
+)
+
+# Map vcpkg features to cmake configure flags
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    FEATURES
+    avx512 GGML_AVX512
+    avx512 GGML_AVX512_VBMI
+    avx512 GGML_AVX512_VNNI
+    avx512 GGML_AVX512_BF16
 )
 
 # Link options
@@ -38,6 +55,7 @@ vcpkg_cmake_configure(
         -DWHISPER_CCACHE=OFF
         -DWHISPER_USE_SYSTEM_GGML=OFF
         ${WHISPER_LINK_OPTIONS}
+        ${FEATURE_OPTIONS}
 )
 # </TechSmith Customizations>
 

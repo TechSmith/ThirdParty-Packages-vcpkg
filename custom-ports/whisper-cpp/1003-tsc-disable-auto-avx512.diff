@@ -1,0 +1,31 @@
+diff --git a/ggml/src/ggml-cpu/CMakeLists.txt b/ggml/src/ggml-cpu/CMakeLists.txt
+index 42041b71..1fedb30c 100644
+--- a/ggml/src/ggml-cpu/CMakeLists.txt
++++ b/ggml/src/ggml-cpu/CMakeLists.txt
+@@ -285,6 +285,13 @@ function(ggml_add_cpu_backend_variant_impl tag_name)
+             elseif (GGML_AVX2)
+                 list(APPEND ARCH_FLAGS /arch:AVX2)
+                 list(APPEND ARCH_DEFINITIONS GGML_AVX2 GGML_FMA GGML_F16C)
++                # TSC: Prevent MSVC from using AVX-512 code paths when building for AVX2 only
++                # Explicitly undefine AVX-512 feature test macros to prevent compile-time AVX-512 code paths
++                if (NOT GGML_AVX512)
++                    list(APPEND ARCH_FLAGS /U__AVX512F__ /U__AVX512CD__ /U__AVX512BW__ /U__AVX512DQ__ /U__AVX512VL__)
++                    list(APPEND ARCH_FLAGS /U__AVX512VBMI__ /U__AVX512VNNI__ /U__AVX512BF16__)
++                    list(APPEND ARCH_FLAGS /U__AMX_TILE__ /U__AMX_INT8__ /U__AMX_BF16__)
++                endif()
+             elseif (GGML_AVX)
+                 list(APPEND ARCH_FLAGS /arch:AVX)
+                 list(APPEND ARCH_DEFINITIONS GGML_AVX)
+@@ -326,6 +333,12 @@ function(ggml_add_cpu_backend_variant_impl tag_name)
+                 if (GGML_AVX2)
+                     list(APPEND ARCH_FLAGS -mavx2)
+                     list(APPEND ARCH_DEFINITIONS GGML_AVX2)
++                    # TSC: GCC/Clang: Explicitly disable AVX-512 to prevent auto-vectorization when AVX512 is not requested
++                    if (NOT GGML_AVX512)
++                        list(APPEND ARCH_FLAGS -mno-avx512f -mno-avx512cd -mno-avx512vl -mno-avx512dq -mno-avx512bw)
++                        list(APPEND ARCH_FLAGS -mno-avx512vbmi -mno-avx512vnni -mno-avx512bf16)
++                        list(APPEND ARCH_FLAGS -mno-amx-tile -mno-amx-int8 -mno-amx-bf16)
++                    endif()
+                 endif()
+                 if (GGML_AVX_VNNI)
+                     list(APPEND ARCH_FLAGS -mavxvnni)
