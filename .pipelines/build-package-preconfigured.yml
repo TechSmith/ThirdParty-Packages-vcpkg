@@ -33,6 +33,7 @@ parameters:
   - tinyxml
   - test-whisper-cpp-accelerate
   - test-whisper-cpp-avx2
+  - test-whisper-cpp-blas
   - whisper-cpp
   - whisper-cpp-basic
   - whispercpp
