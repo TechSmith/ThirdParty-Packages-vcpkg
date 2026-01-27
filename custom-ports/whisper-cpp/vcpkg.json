@@ -40,6 +40,9 @@
       "description": "Enable Metal support for GPU acceleration on macOS",
       "supports": "osx"
     },
+    "rename-whisper-basic": {
+      "description": "Rename the output library to whisper-basic (for whisper-cpp-basic variant)"
+    },
     "vulkan": {
       "description": "Enable Vulkan support for GPU acceleration",
       "dependencies": [
