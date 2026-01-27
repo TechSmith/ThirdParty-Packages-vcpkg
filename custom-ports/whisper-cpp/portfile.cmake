@@ -36,6 +36,7 @@ vcpkg_from_github(
 # Map vcpkg features to cmake configure flags
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
+    accelerate GGML_ACCELERATE
     avx GGML_AVX
     avx2 GGML_AVX2
     avx512 GGML_AVX512
