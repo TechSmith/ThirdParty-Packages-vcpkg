@@ -12,6 +12,10 @@
     {
       "name": "vcpkg-cmake-config",
       "host": true
+    },
+    {
+      "name": "pkgconf",
+      "host": true
     }
   ],
   "features": {
@@ -23,6 +27,12 @@
     },
     "avx512": {
       "description": "Enable AVX-512 instruction set support (includes VBMI and VNNI)"
+    },
+    "blas": {
+      "description": "Enable BLAS support for CPU acceleration",
+      "dependencies": [
+        "blas"
+      ]
     },
     "cuda": {
       "description": "Enable CUDA support for GPU acceleration",
