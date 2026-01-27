@@ -15,6 +15,12 @@
     }
   ],
   "features": {
+    "avx": {
+      "description": "Enable AVX instruction set support"
+    },
+    "avx2": {
+      "description": "Enable AVX2 instruction set support"
+    },
     "avx512": {
       "description": "Enable AVX-512 instruction set support (includes VBMI and VNNI)"
     },
@@ -23,6 +29,12 @@
       "dependencies": [
         "cuda"
       ]
+    },
+    "f16c": {
+      "description": "Enable F16C (half-precision) instruction set support"
+    },
+    "fma": {
+      "description": "Enable FMA (Fused Multiply-Add) instruction set support"
     },
     "metal": {
       "description": "Enable Metal support for GPU acceleration on macOS",
