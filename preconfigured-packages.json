@@ -321,6 +321,35 @@
       }
     },
     {
+      "name": "whisper-cpp-basic",
+      "mac": {
+        "package": "whisper-cpp[rename-whisper-basic]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "whisper-cpp[rename-whisper-basic]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "minizip",
       "mac": {
         "package": "minizip",
