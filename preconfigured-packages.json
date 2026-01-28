@@ -59,19 +59,9 @@
       }
     },
     {
-      "name": "ffmpeg-wasm-base",
+      "name": "ffmpeg-wasm",
       "wasm": {
         "package": "ffmpeg[tsc-wasm-base]",
-        "linkType": "dynamic",
-        "buildType": "release",
-        "customTriplet": "wasm32-emscripten-dynamic",
-        "vcpkgHash": "2025.04.09"
-      }
-    },
-    {
-      "name": "ffmpeg-wasm-image2video",
-      "wasm": {
-        "package": "ffmpeg[tsc-wasm-image2video]",
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
