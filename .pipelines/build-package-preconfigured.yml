@@ -15,8 +15,7 @@ parameters:
   - ffmpeg-cloud-gpl
   - ffmpeg-desktop-base
   - ffmpeg-desktop-hevc
-  - ffmpeg-wasm-base
-  - ffmpeg-wasm-image2video
+  - ffmpeg-wasm
   - glslang
   - hunspell
   - hunspell-debug

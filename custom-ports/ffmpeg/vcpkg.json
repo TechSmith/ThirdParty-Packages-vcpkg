@@ -864,9 +864,13 @@
             "decoder-aac-latm",
             "decoder-vp9",
             "decoder-libopus",
+            "decoder-mp3-all",
+            "decoder-pcm-all",
             "encoder-aac",
             "encoder-libopus",
             "demuxer-mov",
+            "demuxer-mp3",
+            "demuxer-wav",
             "muxer-mov",
             "muxer-mp4",
             "parser-aac",
@@ -874,22 +878,6 @@
             "parser-opus",
             "filter-aresample",
             "filter-scale"
-          ]
-        }
-      ]
-    },
-    "tsc-wasm-image2video": {
-      "description": "The set of features for the image to video microapp",
-      "dependencies": [
-        {
-          "name": "ffmpeg",
-          "default-features": false,
-          "features": [
-            "tsc-wasm-base",
-            "decoder-mp3-all",
-            "decoder-pcm-all",
-            "demuxer-mp3",
-            "demuxer-wav"
           ]
         }
       ]
@@ -2621,6 +2609,6 @@
     "filter-aresample": { "description": "" },
     "filter-asetrate": { "description": "" },
     "filter-atempo": { "description": "" },
-    "filter-scale": { "description": "" }   
+    "filter-scale": { "description": "" }
   }
 }
