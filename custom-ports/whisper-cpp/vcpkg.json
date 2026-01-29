@@ -38,6 +38,14 @@
         "blas"
       ]
     },
+    "coreml": {
+      "description": "Enable CoreML support for GPU acceleration on macOS",
+      "supports": "osx"
+    },
+    "coreml-allow-fallback": {
+      "description": "Enable non-CoreML fallback on macOS",
+      "supports": "osx"
+    },
     "cuda": {
       "description": "Enable CUDA support for GPU acceleration",
       "dependencies": [

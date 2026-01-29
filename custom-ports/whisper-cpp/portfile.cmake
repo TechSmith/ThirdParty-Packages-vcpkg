@@ -24,6 +24,11 @@ if("rename-whisper-basic" IN_LIST FEATURES)
     list(APPEND WHISPER_PATCHES 1005-tsc-rename-target-whisper-basic.diff)
 endif()
 
+# TSC patch to install whisper.coreml library (fixes missing dylib issue)
+if("coreml" IN_LIST FEATURES)
+    list(APPEND WHISPER_PATCHES 1006-tsc-install-coreml-library.diff)
+endif()
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggml-org/whisper.cpp
@@ -44,6 +49,8 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     avx512 GGML_AVX512_VNNI
     avx512 GGML_AVX512_BF16
     blas GGML_BLAS
+    coreml WHISPER_COREML
+    coreml-allow-fallback WHISPER_COREML_ALLOW_FALLBACK
     cuda GGML_CUDA
     f16c GGML_F16C
     fma GGML_FMA

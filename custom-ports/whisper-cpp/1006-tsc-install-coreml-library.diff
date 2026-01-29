@@ -1,0 +1,16 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 2eae0c66..7446346d 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -78,6 +78,11 @@ if (WHISPER_COREML)
+         XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
+         )
+ 
++    # TSC: Install whisper.coreml library when building shared libraries
++    if (BUILD_SHARED_LIBS)
++        install(TARGETS ${TARGET} LIBRARY RUNTIME)
++    endif()
++
+     set_target_properties(${TARGET} PROPERTIES FOLDER "libs")
+ endif()
+ 
