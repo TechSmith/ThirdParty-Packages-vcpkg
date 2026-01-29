@@ -161,13 +161,13 @@
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2025.06.13"
+        "vcpkgHash": "2026.01.16"
       },
       "win": {
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2025.06.13"
+        "vcpkgHash": "2026.01.16"
       }
     },
     {
