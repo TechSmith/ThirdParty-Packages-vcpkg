@@ -266,29 +266,167 @@
       }
     },
     {
-      "name": "whispercpp",
+      "name": "whisper-cpp",
       "mac": {
-        "package": "whispercpp",
+        "package": "whisper-cpp[avx,avx2,fma,f16c]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       },
       "win": {
-        "package": "whispercpp",
+        "package": "whisper-cpp[avx,avx2,fma,f16c]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
-      "name": "whispercpp-basic",
+      "name": "whisper-cpp-basic",
       "mac": {
-        "package": "whispercpp-basic",
+        "package": "whisper-cpp[rename-whisper-basic]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       },
       "win": {
-        "package": "whispercpp-basic",
+        "package": "whisper-cpp[rename-whisper-basic]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "test-whisper-cpp-accelerate",
+      "mac": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c,blas,accelerate]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "test-whisper-cpp-avx2",
+      "win": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "mac": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "test-whisper-cpp-blas",
+      "win": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c,blas]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "mac": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c,blas]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "test-whisper-cpp-coreml",
+      "mac": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c,blas,accelerate,coreml,coreml-allow-fallback,metal]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "test-whisper-cpp-vulkan",
+      "win": {
+        "package": "whisper-cpp[avx,avx2,fma,f16c,blas,vulkan]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
