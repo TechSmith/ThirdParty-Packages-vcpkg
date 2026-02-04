@@ -148,17 +148,17 @@
     {
       "filename": "bin/harfbuzz-subset.dll",
       "fileDescription": "HarfBuzz font subsetter",
-      "fileVersion": "10.2.0",
+      "fileVersion": "12.3.0",
       "productName": "Harfbuzz",
-      "productVersion": "10.2.0",
+      "productVersion": "12.3.0",
       "copyright": "Copyright © 2010-2022 Google, Inc. and others"
     },
     {
       "filename": "bin/harfbuzz.dll",
       "fileDescription": "HarfBuzz text shaping library",
-      "fileVersion": "10.3.0",
+      "fileVersion": "12.3.0",
       "productName": "Harfbuzz",
-      "productVersion": "10.3.0",
+      "productVersion": "12.3.0",
       "copyright": "Copyright © 2010-2022 Google, Inc. and others"
     },
     {
