@@ -4,6 +4,7 @@
                   {
                       "filename":  "bin/brotlicommon.dll",
                       "fileDescription":  "Brotli common dictionary library",
+                      "versionSource":  "ports/brotli/vcpkg.json",
                       "fileVersion":  "1.1.0",
                       "productName":  "Brotli",
                       "productVersion":  "1.1.0",
@@ -12,6 +13,7 @@
                   {
                       "filename":  "bin/brotlidec.dll",
                       "fileDescription":  "Brotli decoder library",
+                      "versionSource":  "ports/brotli/vcpkg.json",
                       "fileVersion":  "1.1.0",
                       "productName":  "Brotli",
                       "productVersion":  "1.1.0",
@@ -20,6 +22,7 @@
                   {
                       "filename":  "bin/brotlienc.dll",
                       "fileDescription":  "Brotli encoder library",
+                      "versionSource":  "ports/brotli/vcpkg.json",
                       "fileVersion":  "1.1.0",
                       "productName":  "Brotli",
                       "productVersion":  "1.1.0",
@@ -28,6 +31,7 @@
                   {
                       "filename":  "bin/bz2.dll",
                       "fileDescription":  "A program and library for lossless, block-sorting data compression",
+                      "versionSource":  "ports/bzip2/vcpkg.json",
                       "fileVersion":  "1.0.8",
                       "productName":  "Bzip2",
                       "productVersion":  "1.0.8",
@@ -36,6 +40,7 @@
                   {
                       "filename":  "bin/cairo-2.dll",
                       "fileDescription":  "Multi-platform 2D graphics library",
+                      "versionSource":  "ports/cairo/vcpkg.json",
                       "fileVersion":  "1.18.4",
                       "productName":  "Cairo",
                       "productVersion":  "1.18.4",
@@ -44,6 +49,7 @@
                   {
                       "filename":  "bin/cairo-gobject-2.dll",
                       "fileDescription":  "Cairo gobject",
+                      "versionSource":  "ports/cairo/vcpkg.json",
                       "fileVersion":  "1.18.4",
                       "productName":  "Cairo",
                       "productVersion":  "1.18.4",
@@ -52,6 +58,7 @@
                   {
                       "filename":  "bin/cairo-script-interpreter-2.dll",
                       "fileDescription":  "Cairo script interpreter",
+                      "versionSource":  "ports/cairo/vcpkg.json",
                       "fileVersion":  "1.18.4",
                       "productName":  "Cairo",
                       "productVersion":  "1.18.4",
@@ -60,6 +67,7 @@
                   {
                       "filename":  "bin/charset-1.dll",
                       "fileDescription":  "libcharset",
+                      "versionSource":  "ports/libiconv/vcpkg.json",
                       "fileVersion":  "1.5.0",
                       "productName":  "libiconv: character set conversion library",
                       "productVersion":  "1.18",
@@ -68,6 +76,7 @@
                   {
                       "filename":  "bin/ffi-8.dll",
                       "fileDescription":  "libffi",
+                      "versionSource":  "ports/libffi/vcpkg.json",
                       "fileVersion":  "3.5.1",
                       "productName":  "libffi: The portable foreign function interface library",
                       "productVersion":  "3.5.1",
@@ -76,6 +85,7 @@
                   {
                       "filename":  "bin/fontconfig-1.dll",
                       "fileDescription":  "Fontconfig",
+                      "versionSource":  "ports/fontconfig/vcpkg.json",
                       "fileVersion":  "2.15.0",
                       "productName":  "Font configuration and customization library",
                       "productVersion":  "2.15.0",
@@ -84,6 +94,7 @@
                   {
                       "filename":  "bin/freetype.dll",
                       "fileDescription":  "Font Rendering Library",
+                      "versionSource":  "ports/freetype/vcpkg.json",
                       "fileVersion":  "2.13.3",
                       "productName":  "FreeType",
                       "productVersion":  "2.13.3",
@@ -92,6 +103,7 @@
                   {
                       "filename":  "bin/fribidi-0.dll",
                       "fileDescription":  "Unicode Bidirectional Algorithm Library",
+                      "versionSource":  "ports/fribidi/vcpkg.json",
                       "fileVersion":  "1.0.16",
                       "productName":  "GNU FriBidi",
                       "productVersion":  "1.0.16",
@@ -100,6 +112,7 @@
                   {
                       "filename":  "bin/gio-2.0-0.dll",
                       "fileDescription":  "Gio",
+                      "versionSource":  "ports/glib/vcpkg.json",
                       "fileVersion":  "2.84.2",
                       "productName":  "GLib",
                       "productVersion":  "2.84.2",
@@ -108,6 +121,7 @@
                   {
                       "filename":  "bin/girepository-2.0-0.dll",
                       "fileDescription":  "GObject Introspection repository parser",
+                      "versionSource":  "ports/glib/vcpkg.json",
                       "fileVersion":  "2.84.2",
                       "productName":  "GLib",
                       "productVersion":  "2.84.2",
@@ -116,6 +130,7 @@
                   {
                       "filename":  "bin/glib-2.0-0.dll",
                       "fileDescription":  "GLib",
+                      "versionSource":  "ports/glib/vcpkg.json",
                       "fileVersion":  "2.84.2",
                       "productName":  "GLib",
                       "productVersion":  "2.84.2",
@@ -124,6 +139,7 @@
                   {
                       "filename":  "bin/gmodule-2.0-0.dll",
                       "fileDescription":  "GModule",
+                      "versionSource":  "ports/glib/vcpkg.json",
                       "fileVersion":  "2.84.2",
                       "productName":  "GLib",
                       "productVersion":  "22.84.2",
@@ -132,6 +148,7 @@
                   {
                       "filename":  "bin/gobject-2.0-0.dll",
                       "fileDescription":  "GObject",
+                      "versionSource":  "ports/glib/vcpkg.json",
                       "fileVersion":  "2.84.2",
                       "productName":  "GLib",
                       "productVersion":  "2.84.2",
@@ -140,6 +157,7 @@
                   {
                       "filename":  "bin/gthread-2.0-0.dll",
                       "fileDescription":  "GThread",
+                      "versionSource":  "ports/glib/vcpkg.json",
                       "fileVersion":  "2.84.2",
                       "productName":  "GLib",
                       "productVersion":  "2.84.2",
@@ -148,6 +166,7 @@
                   {
                       "filename":  "bin/harfbuzz-subset.dll",
                       "fileDescription":  "HarfBuzz font subsetter",
+                      "versionSource":  "ports/harfbuzz/vcpkg.json",
                       "fileVersion":  "10.2.0",
                       "productName":  "Harfbuzz",
                       "productVersion":  "10.2.0",
@@ -156,6 +175,7 @@
                   {
                       "filename":  "bin/harfbuzz.dll",
                       "fileDescription":  "HarfBuzz text shaping library",
+                      "versionSource":  "ports/harfbuzz/vcpkg.json",
                       "fileVersion":  "10.2.0",
                       "productName":  "Harfbuzz",
                       "productVersion":  "10.2.0",
@@ -164,6 +184,7 @@
                   {
                       "filename":  "bin/iconv-2.dll",
                       "fileDescription":  "LGPLed libiconv for Windows",
+                      "versionSource":  "ports/libiconv/vcpkg.json",
                       "fileVersion":  "1.18",
                       "productName":  "libiconv: character set conversion library",
                       "productVersion":  "1.18",
@@ -172,6 +193,7 @@
                   {
                       "filename":  "bin/intl-8.dll",
                       "fileDescription":  "LGPLed libintl for Windows",
+                      "versionSource":  "ports/gettext-libintl/vcpkg.json",
                       "fileVersion":  "0.22.5",
                       "productName":  "GNU libintl: accessing NLS message catalogs",
                       "productVersion":  "0.22.5",
@@ -180,6 +202,7 @@
                   {
                       "filename":  "bin/libexpat.dll",
                       "fileDescription":  "Expat XML parser",
+                      "versionSource":  "ports/expat/vcpkg.json",
                       "fileVersion":  "2.7.1",
                       "productName":  "Expat",
                       "productVersion":  "2.7.1",
@@ -188,6 +211,7 @@
                   {
                       "filename":  "bin/libpng16.dll",
                       "fileDescription":  "Loads and saves PNG files",
+                      "versionSource":  "ports/libpng/vcpkg.json",
                       "fileVersion":  "1.6.47",
                       "productName":  "libpng",
                       "productVersion":  "1.6.47",
@@ -196,6 +220,7 @@
                   {
                       "filename":  "bin/pango-1.0-0.dll",
                       "fileDescription":  "Pango",
+                      "versionSource":  "ports/pango/vcpkg.json",
                       "fileVersion":  "1.56.1",
                       "productName":  "Pango",
                       "productVersion":  "1.56.1",
@@ -204,6 +229,7 @@
                   {
                       "filename":  "bin/pangocairo-1.0-0.dll",
                       "fileDescription":  "PangoCairo",
+                      "versionSource":  "ports/pango/vcpkg.json",
                       "fileVersion":  "1.56.1",
                       "productName":  "PangoCairo",
                       "productVersion":  "1.56.1",
@@ -212,6 +238,7 @@
                   {
                       "filename":  "bin/pangoft2-1.0-0.dll",
                       "fileDescription":  "PangoFT2",
+                      "versionSource":  "ports/pango/vcpkg.json",
                       "fileVersion":  "1.56.1",
                       "productName":  "PangoFT2",
                       "productVersion":  "1.56.1",
@@ -220,6 +247,7 @@
                   {
                       "filename":  "bin/pangowin32-1.0-0.dll",
                       "fileDescription":  "PangoWin32",
+                      "versionSource":  "ports/pango/vcpkg.json",
                       "fileVersion":  "1.56.1",
                       "productName":  "PangoWin32",
                       "productVersion":  "1.56.1",
@@ -228,6 +256,7 @@
                   {
                       "filename":  "bin/pcre2-16.dll",
                       "fileDescription":  "PCRE2 - Perl compatible regular expressions C library (2nd API) with 16 bit character support",
+                      "versionSource":  "ports/pcre2/vcpkg.json",
                       "fileVersion":  "12.0.2",
                       "productName":  "libpcre2-16",
                       "productVersion":  "12.0.2",
@@ -236,6 +265,7 @@
                   {
                       "filename":  "bin/pcre2-32.dll",
                       "fileDescription":  "PCRE2 - Perl compatible regular expressions C library (2nd API) with 32 bit character support",
+                      "versionSource":  "ports/pcre2/vcpkg.json",
                       "fileVersion":  "12.0.2",
                       "productName":  "libpcre2-32",
                       "productVersion":  "12.0.2",
@@ -244,6 +274,7 @@
                   {
                       "filename":  "bin/pcre2-8.dll",
                       "fileDescription":  "PCRE2 - Perl compatible regular expressions C library (2nd API) with 8 bit character support",
+                      "versionSource":  "ports/pcre2/vcpkg.json",
                       "fileVersion":  "12.0.2",
                       "productName":  "libpcre2-8",
                       "productVersion":  "12.0.2",
@@ -252,6 +283,7 @@
                   {
                       "filename":  "bin/pcre2-posix.dll",
                       "fileDescription":  "Posix compatible interface to libpcre2-8",
+                      "versionSource":  "ports/pcre2/vcpkg.json",
                       "fileVersion":  "3.5.0",
                       "productName":  "libpcre2-posix",
                       "productVersion":  "3.5.0",
@@ -260,6 +292,7 @@
                   {
                       "filename":  "bin/pixman-1-0.dll",
                       "fileDescription":  "The pixman library (version 1)",
+                      "versionSource":  "ports/pixman/vcpkg.json",
                       "fileVersion":  "0.44.2",
                       "productName":  "Pixman",
                       "productVersion":  "0.44.2",
@@ -268,6 +301,7 @@
                   {
                       "filename":  "bin/pthreadVC3.dll",
                       "fileDescription":  "MS C x64",
+                      "versionSource":  "ports/pthread/vcpkg.json",
                       "fileVersion":  "3.0.0",
                       "productName":  "POSIX Threads for Windows",
                       "productVersion":  "3.0.0",
@@ -276,6 +310,7 @@
                   {
                       "filename":  "bin/pthreadVCE3.dll",
                       "fileDescription":  "MS C++ x64",
+                      "versionSource":  "ports/pthread/vcpkg.json",
                       "fileVersion":  "3.0.0",
                       "productName":  "POSIX Threads for Windows",
                       "productVersion":  "3.0.0",
@@ -284,6 +319,7 @@
                   {
                       "filename":  "bin/pthreadVSE3.dll",
                       "fileDescription":  "MS C SEH x64",
+                      "versionSource":  "ports/pthread/vcpkg.json",
                       "fileVersion":  "3.0.0",
                       "productName":  "POSIX Threads for Windows",
                       "productVersion":  "3.0.0",
@@ -292,6 +328,7 @@
                   {
                       "filename":  "bin/zlib1.dll",
                       "fileDescription":  "zlib data compression library",
+                      "versionSource":  "ports/zlib/vcpkg.json",
                       "fileVersion":  "1.3.1",
                       "productName":  "zlib",
                       "productVersion":  "1.3.1",
