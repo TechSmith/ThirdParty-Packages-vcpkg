@@ -5,27 +5,27 @@
                       "filename":  "bin/brotlicommon.dll",
                       "fileDescription":  "Brotli common dictionary library",
                       "versionSource":  "ports/brotli/vcpkg.json",
-                      "fileVersion":  "1.1.0",
+                      "fileVersion":  "1.2.0",
                       "productName":  "Brotli",
-                      "productVersion":  "1.1.0",
+                      "productVersion":  "1.2.0",
                       "copyright":  "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
                   },
                   {
                       "filename":  "bin/brotlidec.dll",
                       "fileDescription":  "Brotli decoder library",
                       "versionSource":  "ports/brotli/vcpkg.json",
-                      "fileVersion":  "1.1.0",
+                      "fileVersion":  "1.2.0",
                       "productName":  "Brotli",
-                      "productVersion":  "1.1.0",
+                      "productVersion":  "1.2.0",
                       "copyright":  "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
                   },
                   {
                       "filename":  "bin/brotlienc.dll",
                       "fileDescription":  "Brotli encoder library",
                       "versionSource":  "ports/brotli/vcpkg.json",
-                      "fileVersion":  "1.1.0",
+                      "fileVersion":  "1.2.0",
                       "productName":  "Brotli",
-                      "productVersion":  "1.1.0",
+                      "productVersion":  "1.2.0",
                       "copyright":  "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
                   },
                   {
@@ -68,7 +68,7 @@
                       "filename":  "bin/charset-1.dll",
                       "fileDescription":  "libcharset",
                       "versionSource":  "ports/libiconv/vcpkg.json",
-                      "fileVersion":  "1.5.0",
+                      "fileVersion":  "1.18",
                       "productName":  "libiconv: character set conversion library",
                       "productVersion":  "1.18",
                       "copyright":  "Copyright (C) 1999-2022"
@@ -77,18 +77,18 @@
                       "filename":  "bin/ffi-8.dll",
                       "fileDescription":  "libffi",
                       "versionSource":  "ports/libffi/vcpkg.json",
-                      "fileVersion":  "3.5.1",
+                      "fileVersion":  "3.5.2",
                       "productName":  "libffi: The portable foreign function interface library",
-                      "productVersion":  "3.5.1",
+                      "productVersion":  "3.5.2",
                       "copyright":  "Copyright (c) 1996-2024  Anthony Green, Red Hat, Inc and others."
                   },
                   {
                       "filename":  "bin/fontconfig-1.dll",
                       "fileDescription":  "Fontconfig",
                       "versionSource":  "ports/fontconfig/vcpkg.json",
-                      "fileVersion":  "2.15.0",
+                      "fileVersion":  "2.17.1",
                       "productName":  "Font configuration and customization library",
-                      "productVersion":  "2.15.0",
+                      "productVersion":  "2.17.1",
                       "copyright":  "Copyright (c) 2000-2020 Keith Packard, Patrick Lam and others"
                   },
                   {
@@ -113,72 +113,72 @@
                       "filename":  "bin/gio-2.0-0.dll",
                       "fileDescription":  "Gio",
                       "versionSource":  "ports/glib/vcpkg.json",
-                      "fileVersion":  "2.84.2",
+                      "fileVersion":  "2.86.3",
                       "productName":  "GLib",
-                      "productVersion":  "2.84.2",
+                      "productVersion":  "2.86.3",
                       "copyright":  "Copyright 2006-2011 Red Hat, Inc. and others."
                   },
                   {
                       "filename":  "bin/girepository-2.0-0.dll",
                       "fileDescription":  "GObject Introspection repository parser",
                       "versionSource":  "ports/glib/vcpkg.json",
-                      "fileVersion":  "2.84.2",
+                      "fileVersion":  "2.86.3",
                       "productName":  "GLib",
-                      "productVersion":  "2.84.2",
+                      "productVersion":  "2.86.3",
                       "copyright":  "Copyright (C) 2005-2025 Matthias Clasen, Red Hat, Inc. and others"
                   },
                   {
                       "filename":  "bin/glib-2.0-0.dll",
                       "fileDescription":  "GLib",
                       "versionSource":  "ports/glib/vcpkg.json",
-                      "fileVersion":  "2.84.2",
+                      "fileVersion":  "2.86.3",
                       "productName":  "GLib",
-                      "productVersion":  "2.84.2",
+                      "productVersion":  "2.86.3",
                       "copyright":  "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
                   },
                   {
                       "filename":  "bin/gmodule-2.0-0.dll",
                       "fileDescription":  "GModule",
                       "versionSource":  "ports/glib/vcpkg.json",
-                      "fileVersion":  "2.84.2",
+                      "fileVersion":  "2.86.3",
                       "productName":  "GLib",
-                      "productVersion":  "22.84.2",
+                      "productVersion":  "2.86.3",
                       "copyright":  "Copyright 1998-2011 Tim Janik and others."
                   },
                   {
                       "filename":  "bin/gobject-2.0-0.dll",
                       "fileDescription":  "GObject",
                       "versionSource":  "ports/glib/vcpkg.json",
-                      "fileVersion":  "2.84.2",
+                      "fileVersion":  "2.86.3",
                       "productName":  "GLib",
-                      "productVersion":  "2.84.2",
+                      "productVersion":  "2.86.3",
                       "copyright":  "Copyright 1998-2011 Tim Janik, Red Hat, Inc. and others"
                   },
                   {
                       "filename":  "bin/gthread-2.0-0.dll",
                       "fileDescription":  "GThread",
                       "versionSource":  "ports/glib/vcpkg.json",
-                      "fileVersion":  "2.84.2",
+                      "fileVersion":  "2.86.3",
                       "productName":  "GLib",
-                      "productVersion":  "2.84.2",
+                      "productVersion":  "2.86.3",
                       "copyright":  "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald, Sebastian Wilhelmi and others."
                   },
                   {
                       "filename":  "bin/harfbuzz-subset.dll",
                       "fileDescription":  "HarfBuzz font subsetter",
                       "versionSource":  "ports/harfbuzz/vcpkg.json",
-                      "fileVersion":  "10.2.0",
+                      "fileVersion":  "12.3.2",
                       "productName":  "Harfbuzz",
-                      "productVersion":  "10.2.0",
+                      "productVersion":  "12.3.2",
                       "copyright":  "Copyright © 2010-2022 Google, Inc. and others"
                   },
                   {
                       "filename":  "bin/harfbuzz.dll",
                       "fileDescription":  "HarfBuzz text shaping library",
                       "versionSource":  "ports/harfbuzz/vcpkg.json",
-                      "fileVersion":  "10.2.0",
+                      "fileVersion":  "12.3.2",
                       "productName":  "Harfbuzz",
-                      "productVersion":  "10.2.0",
+                      "productVersion":  "12.3.2",
                       "copyright":  "Copyright © 2010-2022 Google, Inc. and others"
                   },
                   {
@@ -203,54 +203,54 @@
                       "filename":  "bin/libexpat.dll",
                       "fileDescription":  "Expat XML parser",
                       "versionSource":  "ports/expat/vcpkg.json",
-                      "fileVersion":  "2.7.1",
+                      "fileVersion":  "2.7.4",
                       "productName":  "Expat",
-                      "productVersion":  "2.7.1",
+                      "productVersion":  "2.7.4",
                       "copyright":  "Copyright (c) 2001-2022 Expat maintainers"
                   },
                   {
                       "filename":  "bin/libpng16.dll",
                       "fileDescription":  "Loads and saves PNG files",
                       "versionSource":  "ports/libpng/vcpkg.json",
-                      "fileVersion":  "1.6.47",
+                      "fileVersion":  "1.6.54",
                       "productName":  "libpng",
-                      "productVersion":  "1.6.47",
+                      "productVersion":  "1.6.54",
                       "copyright":  "Copyright (c) 1995-2025 The PNG Reference Library Authors."
                   },
                   {
                       "filename":  "bin/pango-1.0-0.dll",
                       "fileDescription":  "Pango",
                       "versionSource":  "ports/pango/vcpkg.json",
-                      "fileVersion":  "1.56.1",
+                      "fileVersion":  "1.57.0",
                       "productName":  "Pango",
-                      "productVersion":  "1.56.1",
+                      "productVersion":  "1.57.0",
                       "copyright":  "Copyright 1999 Red Hat Software."
                   },
                   {
                       "filename":  "bin/pangocairo-1.0-0.dll",
                       "fileDescription":  "PangoCairo",
                       "versionSource":  "ports/pango/vcpkg.json",
-                      "fileVersion":  "1.56.1",
+                      "fileVersion":  "1.57.0",
                       "productName":  "PangoCairo",
-                      "productVersion":  "1.56.1",
+                      "productVersion":  "1.57.0",
                       "copyright":  "Copyright 2010 Red Hat Software."
                   },
                   {
                       "filename":  "bin/pangoft2-1.0-0.dll",
                       "fileDescription":  "PangoFT2",
                       "versionSource":  "ports/pango/vcpkg.json",
-                      "fileVersion":  "1.56.1",
+                      "fileVersion":  "1.57.0",
                       "productName":  "PangoFT2",
-                      "productVersion":  "1.56.1",
+                      "productVersion":  "1.57.0",
                       "copyright":  "Copyright 1999 Red Hat Software. Copyright 2000 Tor Lillqvist"
                   },
                   {
                       "filename":  "bin/pangowin32-1.0-0.dll",
                       "fileDescription":  "PangoWin32",
                       "versionSource":  "ports/pango/vcpkg.json",
-                      "fileVersion":  "1.56.1",
+                      "fileVersion":  "1.57.0",
                       "productName":  "PangoWin32",
-                      "productVersion":  "1.56.1",
+                      "productVersion":  "1.57.0",
                       "copyright":  "Copyright 1999 Red Hat Software. Copyright 2000 Tor Lillqvist"
                   },
                   {
@@ -284,18 +284,18 @@
                       "filename":  "bin/pcre2-posix.dll",
                       "fileDescription":  "Posix compatible interface to libpcre2-8",
                       "versionSource":  "ports/pcre2/vcpkg.json",
-                      "fileVersion":  "3.5.0",
+                      "fileVersion":  "10.47",
                       "productName":  "libpcre2-posix",
-                      "productVersion":  "3.5.0",
+                      "productVersion":  "10.47",
                       "copyright":  "Copyright (c) 1997-2024 University of Cambridge and others"
                   },
                   {
                       "filename":  "bin/pixman-1-0.dll",
                       "fileDescription":  "The pixman library (version 1)",
                       "versionSource":  "ports/pixman/vcpkg.json",
-                      "fileVersion":  "0.44.2",
+                      "fileVersion":  "0.46.4",
                       "productName":  "Pixman",
-                      "productVersion":  "0.44.2",
+                      "productVersion":  "0.46.4",
                       "copyright":  "Copyright (c) 1997-2010 Red Hat, Inc. and others"
                   },
                   {
