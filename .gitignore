@@ -1,5 +1,8 @@
 .vs/
+.idea/
 vcpkg/
 PreStage/
 StagedArtifacts/
 logs/
+emsdk/
+output/

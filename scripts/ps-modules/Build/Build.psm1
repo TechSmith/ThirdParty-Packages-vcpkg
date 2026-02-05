@@ -385,13 +385,13 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
 
    # Finalize artifacts (Mac-only)
-   if(($isUniversalBinary) -and ((Test-Path $destArm64LibDir) -or (Test-Path $destArm64ToolsDir))) {
-     if($publishInfo.lib -eq $true) {
+   if($isUniversalBinary) {
+     if((Test-Path $destArm64LibDir) -and (($publishInfo.lib -eq $true) -or ($null -eq $publishInfo) -or ($publishInfo -eq $false))) {
        $destUniversalLibDir = "$preStagePath/lib"
        Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64LibDir" -x64Dir "$destX64LibDir" -universalDir "$destUniversalLibDir"
      }
      
-     if($publishInfo.tools -eq $true) {
+     if((Test-Path $destArm64ToolsDir) -and (($publishInfo.tools -eq $true) -or ($null -eq $publishInfo) -or ($publishInfo -eq $false))) {
        $destUniversalToolsDir = "$preStagePath/tools"
        Create-FinalizedMacBuildArtifacts -arm64Dir "$destArm64ToolsDir" -x64Dir "$destX64ToolsDir" -universalDir "$destUniversalToolsDir" -filenameFilter @("*")
      }
@@ -436,6 +436,12 @@ function Run-StageBuildArtifactsStep {
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
    $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+
+   # Ensure packageName is set for release info (construct it if not provided)
+   if ($packageName -eq "") {
+      $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
+      $packageName = "$packageNameOnly-$linkType"
+   }
 
    $dependenciesFilename = "dependencies.json"
    Write-Message "Generating: `"$dependenciesFilename`"..."

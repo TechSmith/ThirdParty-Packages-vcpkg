@@ -28,6 +28,7 @@ parameters:
   - openssl-static
   - opencv4
   - pango-desktop
+  - soundpipe
   - sqlite3
   - sqlite-modern-cpp
   - tinyxml
