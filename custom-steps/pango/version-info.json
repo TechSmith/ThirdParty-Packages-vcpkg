@@ -256,7 +256,7 @@
                   {
                       "filename":  "bin/pcre2-16.dll",
                       "fileDescription":  "PCRE2 - Perl compatible regular expressions C library (2nd API) with 16 bit character support",
-                      "versionSource":  "ports/pcre2/vcpkg.json",
+                      "__comment__versionSource":  "ports/pcre2/vcpkg.json",
                       "fileVersion":  "12.0.2",
                       "productName":  "libpcre2-16",
                       "productVersion":  "12.0.2",
@@ -265,7 +265,7 @@
                   {
                       "filename":  "bin/pcre2-32.dll",
                       "fileDescription":  "PCRE2 - Perl compatible regular expressions C library (2nd API) with 32 bit character support",
-                      "versionSource":  "ports/pcre2/vcpkg.json",
+                      "__comment__versionSource":  "ports/pcre2/vcpkg.json",
                       "fileVersion":  "12.0.2",
                       "productName":  "libpcre2-32",
                       "productVersion":  "12.0.2",
@@ -274,7 +274,7 @@
                   {
                       "filename":  "bin/pcre2-8.dll",
                       "fileDescription":  "PCRE2 - Perl compatible regular expressions C library (2nd API) with 8 bit character support",
-                      "versionSource":  "ports/pcre2/vcpkg.json",
+                      "__comment__versionSource":  "ports/pcre2/vcpkg.json",
                       "fileVersion":  "12.0.2",
                       "productName":  "libpcre2-8",
                       "productVersion":  "12.0.2",
