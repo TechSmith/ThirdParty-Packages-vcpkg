@@ -25,11 +25,13 @@ if((Get-IsOnMacOS)) {
         
         if ($state -eq "INSTALLED") {
             Write-Message "Uninstalling setuptools (was installed by pre-build)..."
-            python3 -m pip uninstall -y setuptools
+            python3 -m pip uninstall -y setuptools 2>&1 | Out-Null
             if ($LASTEXITCODE -eq 0) {
                 Write-Message "> setuptools uninstalled successfully"
             } else {
-                Write-Message "> Warning: setuptools uninstallation failed"
+                Write-Message "> Warning: setuptools uninstallation failed (exit code: $LASTEXITCODE)"
+                # Reset exit code to prevent build failure
+                $global:LASTEXITCODE = 0
             }
         } elseif ($state -eq "PREEXISTING") {
             Write-Message "Skipping setuptools cleanup (was pre-existing)"
