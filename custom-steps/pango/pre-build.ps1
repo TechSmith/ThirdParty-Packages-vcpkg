@@ -9,6 +9,15 @@ if (-not $patchSuccess) {
 }
 
 if ((Get-IsOnMacOS)) {
+    Write-Message "Installing build tools via Homebrew..."
+    
+    # Install build tool prerequisites: autoconf, autoconf-archive, automake, and libtool
+    # On the Mac, there is not a clean way to do this with vcpkg.json like there is on Windows.
+    # The  dependency tree for these tools is somewhat circular and complex on Mac/Linux, and the 
+    # vcpkg maintainers have decided to just assume these tools exist on these environments rather
+    # than building them.  See: https://github.com/microsoft/vcpkg/issues/34723#issuecomment-1824852084
+    brew install autoconf autoconf-archive automake libtool
+    
     Write-Message "Installing setuptools..."
     python3 -m pip install setuptools
 }
