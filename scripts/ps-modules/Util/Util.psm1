@@ -97,6 +97,11 @@ param ($($paramArray -join ", "))
     }
 
     Invoke-Command -ScriptBlock $scriptBlock -ArgumentList $namedParams
+    
+    # Check if the script exited with an error code
+    if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
+        throw "Script '$FilePath' exited with code $LASTEXITCODE"
+    }
 }
 
 function Write-Banner {

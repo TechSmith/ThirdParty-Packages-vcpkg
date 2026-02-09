@@ -528,8 +528,83 @@ function Resolve-Symlink {
    return $currentPath.FullName
 }
 
+function Apply-VcpkgPortPatch {
+    <#
+    .SYNOPSIS
+    Applies a patch file to a vcpkg port.
+    
+    .DESCRIPTION
+    Applies a git patch to a vcpkg port's files (typically portfile.cmake).
+    Useful for making TechSmith-specific modifications without maintaining
+    full custom port overlays.
+    
+    .PARAMETER PortName
+    The name of the vcpkg port to patch (e.g., "pango")
+    
+    .PARAMETER PatchFile
+    Path to the patch file to apply
+    
+    .PARAMETER WorkingDirectory
+    Optional. The directory to run git apply from. Defaults to the port directory.
+    
+    .EXAMPLE
+    Apply-VcpkgPortPatch -PortName "pango" -PatchFile "$PSScriptRoot/add-objc-support.patch"
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$PortName,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$PatchFile,
+        
+        [Parameter(Mandatory=$false)]
+        [string]$WorkingDirectory = $null
+    )
+    
+    $vcpkgPortDir = "$PSScriptRoot/../../../vcpkg/ports/$PortName"
+    
+    if (-not (Test-Path $vcpkgPortDir)) {
+        Write-Message "> vcpkg port directory not found: $vcpkgPortDir" -Warning
+        return $false
+    }
+    
+    if (-not (Test-Path $PatchFile)) {
+        Write-Message "> Patch file not found: $PatchFile" -Warning
+        return $false
+    }
+    
+    $workDir = if ($WorkingDirectory) { $WorkingDirectory } else { $vcpkgPortDir }
+    
+    Write-Message "> Applying patch to $PortName port: $(Split-Path -Leaf $PatchFile)"
+    
+    Push-Location $workDir
+    try {
+        $output = git apply --unidiff-zero --inaccurate-eof --ignore-space-change --ignore-whitespace --whitespace=nowarn "$PatchFile" 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Message "> Patch applied successfully"
+            return $true
+        } else {
+            # Check if patch is already applied
+            $checkOutput = git apply --reverse --check --ignore-whitespace "$PatchFile" 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Message "> Patch appears to be already applied (skipping)"
+                return $true
+            } else {
+                Write-Message "> FAILED to apply patch to $PortName port" -Error
+                Write-Message "> Git apply exit code: $LASTEXITCODE" -Error
+                Write-Message "> Git apply output: $output" -Error
+                Write-Message "> Patch file: $PatchFile" -Error
+                Write-Message "> Working directory: $workDir" -Error
+                return $false
+            }
+        }
+    } finally {
+        Pop-Location
+    }
+}
+
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink, Apply-VcpkgPortPatch
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force

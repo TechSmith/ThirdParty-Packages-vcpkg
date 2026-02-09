@@ -1,5 +1,7 @@
 .vs/
 vcpkg/
+vcpkg2/
 PreStage/
 StagedArtifacts/
 logs/
+_temp/
