@@ -1,0 +1,68 @@
+{
+  "name": "whisper-cpp",
+  "version": "1.8.2",
+  "description": "Port of OpenAI's Whisper model in C/C++",
+  "homepage": "https://github.com/ggml-org/whisper.cpp",
+  "license": "MIT",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    {
+      "name": "pkgconf",
+      "host": true
+    }
+  ],
+  "features": {
+    "accelerate": {
+      "description": "Enable Apple Accelerate framework on macOS for BLAS acceleration",
+      "supports": "osx"
+    },
+    "avx": {
+      "description": "Enable AVX instruction set support"
+    },
+    "avx2": {
+      "description": "Enable AVX2 instruction set support"
+    },
+    "avx512": {
+      "description": "Enable AVX-512 instruction set support (includes VBMI and VNNI)"
+    },
+    "blas": {
+      "description": "Enable BLAS support for CPU acceleration",
+      "dependencies": [
+        "blas"
+      ]
+    },
+    "cuda": {
+      "description": "Enable CUDA support for GPU acceleration",
+      "dependencies": [
+        "cuda"
+      ]
+    },
+    "f16c": {
+      "description": "Enable F16C (half-precision) instruction set support"
+    },
+    "fma": {
+      "description": "Enable FMA (Fused Multiply-Add) instruction set support"
+    },
+    "metal": {
+      "description": "Enable Metal support for GPU acceleration on macOS",
+      "supports": "osx"
+    },
+    "rename-whisper-basic": {
+      "description": "Rename the output library to whisper-basic (for whisper-cpp-basic variant)"
+    },
+    "vulkan": {
+      "description": "Enable Vulkan support for GPU acceleration",
+      "dependencies": [
+        "vulkan",
+        "vulkan-headers"
+      ]
+    }
+  }
+}

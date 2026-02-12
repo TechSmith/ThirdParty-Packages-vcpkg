@@ -1,7 +1,8 @@
 .vs/
-vcpkg/
-vcpkg2/
+_private/
+_temp/
+logs/
 PreStage/
 StagedArtifacts/
-logs/
-_temp/
+tools/
+vcpkg/

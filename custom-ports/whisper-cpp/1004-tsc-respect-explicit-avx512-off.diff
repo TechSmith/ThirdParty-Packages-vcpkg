@@ -1,0 +1,26 @@
+diff --git a/ggml/src/ggml-cpu/cmake/FindSIMD.cmake b/ggml/src/ggml-cpu/cmake/FindSIMD.cmake
+index 5533668..44dc105 100644
+--- a/ggml/src/ggml-cpu/cmake/FindSIMD.cmake
++++ b/ggml/src/ggml-cpu/cmake/FindSIMD.cmake
+@@ -93,8 +93,18 @@ else()
+ endif()
+ 
+ check_sse("AVX512" " ;/arch:AVX512")
+-if (NOT ${AVX512_FOUND})
+-    set(GGML_AVX512 OFF)
++# TSC: Only auto-enable AVX512 if explicitly requested by the user
++# Default to OFF to prevent auto-detection from enabling AVX512 on capable build machines
++# This ensures builds are portable to non-AVX512 CPUs unless explicitly opted in
++if (NOT DEFINED GGML_AVX512)
++    # User did not explicitly set GGML_AVX512, default to OFF for maximum compatibility
++    set(GGML_AVX512 OFF CACHE BOOL "" FORCE)
+ else()
+-    set(GGML_AVX512 ON)
++    # User explicitly set GGML_AVX512, validate their choice against CPU capabilities
++    if (GGML_AVX512 AND NOT ${AVX512_FOUND})
++        message(WARNING "GGML_AVX512 was explicitly enabled but AVX512 is not supported on this system, disabling")
++        set(GGML_AVX512 OFF CACHE BOOL "" FORCE)
++    elseif(NOT GGML_AVX512)
++        message(STATUS "GGML_AVX512 explicitly disabled")
++    endif()
+ endif()
