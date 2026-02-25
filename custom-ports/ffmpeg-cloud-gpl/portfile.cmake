@@ -19,6 +19,14 @@ vcpkg_from_github(
         0042-fix-arm64-linux.patch #https://github.com/FFmpeg/FFmpeg/commit/fcfd17dbb4a6cf270cdd82e91c21a5efdc878d12
 )
 
+# MAXDEBUG: try static linking
+if(VCPKG_TARGET_IS_LINUX)
+    set(VCPKG_TARGET_ARCHITECTURE x64)
+    set(VCPKG_CRT_LINKAGE static)
+    set(VCPKG_LIBRARY_LINKAGE static)
+    set(VCPKG_BUILD_TYPE release)
+endif()
+
 if(SOURCE_PATH MATCHES " ")
     message(FATAL_ERROR "Error: ffmpeg will not build with spaces in the path. Please use a directory with no spaces")
 endif()
