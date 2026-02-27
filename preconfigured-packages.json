@@ -100,7 +100,7 @@
     {
       "name": "ffmpeg-cloud-leap",
       "win": {
-        "package": "ffmpeg-cloud-leap[ffmpeg,ffprobe]",
+        "package": "ffmpeg[ffmpeg,ffprobe]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "2026.01.16",
@@ -113,7 +113,7 @@
         }
       },
       "linux": {
-        "package": "ffmpeg-cloud-leap[ffmpeg,ffprobe]",
+        "package": "ffmpeg[ffmpeg,ffprobe]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "2026.01.16",
