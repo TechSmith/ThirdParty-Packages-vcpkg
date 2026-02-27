@@ -3,7 +3,7 @@
     {
       "name": "ffmpeg-desktop-base",
       "mac": {
-        "package": "ffmpeg[tsc-desktop-mac]",
+        "package": "ffmpeg-desktop[tsc-desktop-mac]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -16,7 +16,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[tsc-desktop-win]",
+        "package": "ffmpeg-desktop[tsc-desktop-win]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -32,7 +32,7 @@
     {
       "name": "ffmpeg-desktop-hevc",
       "mac": {
-        "package": "ffmpeg[tsc-desktop-mac,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc,parser-hevc]",
+        "package": "ffmpeg-desktop[tsc-desktop-mac,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc,parser-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -45,7 +45,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[tsc-desktop-win,encoder-hevc-mf,encoder-hevc-qsv,decoder-hevc,decoder-hevc-qsv,demuxer-hevc,parser-hevc]",
+        "package": "ffmpeg-desktop[tsc-desktop-win,encoder-hevc-mf,encoder-hevc-qsv,decoder-hevc,decoder-hevc-qsv,demuxer-hevc,parser-hevc]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2025.04.09",
@@ -61,7 +61,7 @@
     {
       "name": "ffmpeg-wasm",
       "wasm": {
-        "package": "ffmpeg[tsc-wasm-base]",
+        "package": "ffmpeg-desktop[tsc-wasm-base]",
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
@@ -88,6 +88,35 @@
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "2025.09.17",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
+      "name": "ffmpeg-cloud-leap",
+      "win": {
+        "package": "ffmpeg-cloud-leap[ffmpeg,ffprobe]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": true,
+          "tools": true
+        }
+      },
+      "linux": {
+        "package": "ffmpeg-cloud-leap[ffmpeg,ffprobe]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
         "publish": {
           "include": false,
           "lib": false,
