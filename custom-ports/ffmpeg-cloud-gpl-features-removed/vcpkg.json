@@ -1,0 +1,45 @@
+{
+  "name": "ffmpeg-cloud-gpl-features-removed",
+  "version": "0.0.1",
+  "port-version": 1,
+  "description": [
+    "A small vcpkg wrapper arround ffmpeg, to build a patched version of ffmpeg with features disabled"
+  ],
+  "homepage": "https://ffmpeg.org",
+  "license": null,
+  "dependencies": [
+  ],
+  "default-features": [
+  ],
+  "features": {
+    "cloudffmpegbinary": {
+      "description": "Build ffmpeg with features disabled and certain encoders enabled. Equivalent of building ffmpeg[ffprobe,ffmpeg,mp3lame,fdk-aac,x264,x265,gpl,avcodec]",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "version>=": "8.0.1#1",
+          "features": [
+            "ffprobe",
+            "ffmpeg",
+            "mp3lame",
+            "fdk-aac",
+            "x264",
+            "x265",
+            "gpl",
+            "avcodec",
+            "nonfree",
+            "opus",
+            "vorbis",
+            "vpx",
+            "dav1d",
+            "aom",
+            "qsv",
+            "zlib",
+            "bzip2"
+          ]
+        }
+      ]
+    }
+  }
+}

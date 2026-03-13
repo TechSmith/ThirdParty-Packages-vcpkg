@@ -98,6 +98,36 @@
       }
     },
     {
+      "name": "ffmpeg-cloud-gpl-features-removed",
+      "description": "A cloud ffmpeg build with minimal changes on top of the upstream. Features are turned off for security, and it includes basic features for common encoders to work with audio and video conversion.",
+      "win": {
+        "package": "ffmpeg-cloud-gpl-features-removed[cloudffmpegbinary]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": false,
+          "tools": true
+        }
+      },
+      "linux": {
+        "package": "ffmpeg-cloud-gpl-features-removed[cloudffmpegbinary]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.01.16",
+        "publish": {
+          "include": false,
+          "lib": false,
+          "bin": false,
+          "share": false,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "hunspell",
       "mac": {
         "package": "hunspell[core]",
