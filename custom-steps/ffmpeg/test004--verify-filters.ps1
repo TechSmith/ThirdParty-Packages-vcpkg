@@ -14,6 +14,8 @@ foreach( $moduleName in $moduleNames ) {
     }
 }
 
+Import-Module "$PSScriptRoot/../ffmpeg-shared/FFmpegBuildTests" -Force -DisableNameChecking
+
 if (-Not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir
 }
@@ -201,36 +203,6 @@ if($features -contains "filter-asetrate" -and $features -contains "filter-atempo
    }
 }
 
-
-$runMsg     = " RUN      "
-$successMsg = "       OK "
-$failMsg    = "     FAIL "
-$finalExitCode = 0
-Write-Host "Running decoding tests..."
-foreach ($test in $tests) {
-    $OutFilePath = "$OutputDir/$($test.OutFilename)"
-    $cmd = "$($test.CmdPrefix) `"$OutFilePath`""
-    Write-Host "[ $runMsg ] $($test.Name) ==> $OutFilePath"
-    $startTime = Get-Date
-
-    #Write-Host ">> Executing FFMpeg command"
-    #Write-Host "$cmd"
-    Invoke-Expression $cmd
-    $cmdExitCode = $LASTEXITCODE
-
-    $expectedReturnCode = if ($test.ContainsKey('ExpectedReturnCode')) { $test.ExpectedReturnCode } else { 0 }
-    Write-Host ">> Expected return code = $expectedReturnCode.  Actual return code = $cmdExitCode"
-
-    $isSuccess = ($cmdExitCode -eq $expectedReturnCode)
-    if ( ($finalExitCode -eq 0) -and (-not $isSuccess) ) {
-        $finalExitCode = $cmdExitCode
-    }
-    $statusMsg = ($isSuccess ? $successMsg : $failMsg)
-    $failSuffix = ($isSuccess ? "" : " | CMD EXIT CODE = $cmdExitCode")
-    $totalTime = (Get-Date) - $startTime
-    Write-Host "[ $statusMsg ] $($test.Name) ($($totalTime.TotalMilliseconds) ms)$failSuffix" -ForegroundColor ($isSuccess ? "Green" : "Red")
-}
-
-Write-Host "`nEncoding tests complete."
+$finalExitCode = Run-FFmpeg-Filters-Tests -tests $tests -OutputDir $OutputDir
 
 Exit $finalExitCode

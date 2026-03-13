@@ -14,6 +14,8 @@ foreach( $moduleName in $moduleNames ) {
     }
 }
 
+Import-Module "$PSScriptRoot/../ffmpeg-shared/FFmpegBuildTests" -Force -DisableNameChecking
+
 if (-Not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir
 }
@@ -282,64 +284,6 @@ $tests +=
    IsEnabled = $true
 }
 
-$runMsg     = " RUN      "
-$successMsg = "       OK "
-$failMsg    = "     FAIL "
-$finalExitCode = 0
-Write-Host "Running capabilities tests..."
-foreach($test in $tests) {
-    if(-not $test.IsEnabled) {
-        continue
-    }
-
-    $outFile = "$OutputDir/$($test.Name).txt"
-    $cmd = "$ffmpegExe $($test.CmdOption) > $outFile"
-    
-    Write-Host ""
-    Write-Host "--------------------------------------------------"
-    Write-Host "Test Group: $($test.Name)"
-    Write-Host "--------------------------------------------------"
-    #Write-Host "> Executing: $cmd"
-    Invoke-Expression $cmd
-    $fileContent = Get-Content -Path $outFile -Raw
-    
-    #Write-Host "`n> Inspecting $outFile for expected values..."
-    foreach($expectedValue in $test.ExpectedValues) {
-        $testName = "$($test.Name) - '$($expectedValue)' exists"
-        Write-Host "[ $runMsg ] $testName"
-        $startTime = Get-Date
-
-        $isSuccess = $fileContent.Contains($expectedValue)
-
-        $totalTime = (Get-Date) - $startTime
-        $statusMsg = ($isSuccess ? $successMsg : $failMsg)
-        Write-Host "[ $statusMsg ] $testName ($($totalTime.TotalMilliseconds) ms)" -ForegroundColor ($isSuccess ? "Green" : "Red")
-        if ( ($finalExitCode -eq 0) -and (-not $isSuccess) ) {
-            $finalExitCode = -1
-        }
-    }
-    
-    if( -not $test.NotExpectedValues ) {
-        continue
-    }
-    #Write-Host "`n> Inspecting $outFile for not expected values..."
-    foreach($notExpectedValue in $test.NotExpectedValues) {
-        $testName = "$($test.Name) - '$($notExpectedValue)' does NOT exist"
-        Write-Host "[ $runMsg ] $testName"
-        $startTime = Get-Date
-
-        $isSuccess = ( -not ($fileContent.Contains($notExpectedValue)) )
-        
-        $totalTime = (Get-Date) - $startTime
-        $statusMsg = ($isSuccess ? $successMsg : $failMsg)
-        Write-Host "[ $statusMsg ] $testName ($($totalTime.TotalMilliseconds) ms)" -ForegroundColor ($isSuccess ? "Green" : "Red")
-        if ( ($finalExitCode -eq 0) -and (-not $isSuccess) ) {
-            $finalExitCode = -1
-        }
-    }
-}
-
-Write-Host "`nCapabilities tests complete"
-#Write-Host "Exit $finalExitCode"
+$finalExitCode = Run-FFmpeg-Capabilities-Tests -tests $tests -OutputDir $OutputDir -ffmpegExe $ffmpegExe
 
 Exit $finalExitCode
