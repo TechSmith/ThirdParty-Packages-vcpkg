@@ -450,13 +450,27 @@
         "package": "onnxruntime",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2026.03.18"
+        "vcpkgHash": "2026.03.18",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
       },
       "win": {
         "package": "onnxruntime",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2026.03.18"
+        "vcpkgHash": "2026.03.18",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
       }
     }
   ]
