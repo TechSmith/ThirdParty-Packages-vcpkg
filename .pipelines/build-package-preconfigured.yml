@@ -6,7 +6,7 @@ parameters:
 
 # We could map this parameter to a combination of default triplets for Mac and windows, as well as the default feature flags to pass to each
 # for example, ffmpeg might map to: ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib,dav1d]
-- name: packageName
+  - name: packageName
   displayName: Package to install (builds as a dynamic library, unless otherwise specified)
   type: string
   values:
@@ -24,6 +24,7 @@ parameters:
   - libzip-static
   - libzip-dynamic
   - minizip
+  - onnxruntime
   - openblas
   - openssl-static
   - opencv4
