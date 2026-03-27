@@ -86,6 +86,13 @@
       "description": "Build with CoreML execution provider (macOS/iOS only)",
       "supports": "osx | ios"
     },
+    "cppwinrt": {
+      "description": "Build with C++/WinRT projection headers (Windows only)",
+      "supports": "windows",
+      "dependencies": [
+        "cppwinrt"
+      ]
+    },
     "cuda": {
       "description": "Build with CUDA support",
       "supports": "(x64 & windows & !static) | (x64 & linux)",
