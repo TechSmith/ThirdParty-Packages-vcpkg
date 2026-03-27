@@ -103,6 +103,13 @@
         "directml"
       ]
     },
+    "directx-headers": {
+      "description": "Build with DirectX headers (Windows only)",
+      "supports": "windows",
+      "dependencies": [
+        "directx-headers"
+      ]
+    },
     "dnnl": {
       "description": "Build with oneDNN (DNNL) execution provider",
       "supports": "!android & !ios"
