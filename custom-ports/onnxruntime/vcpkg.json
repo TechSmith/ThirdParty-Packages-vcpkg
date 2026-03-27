@@ -11,6 +11,14 @@
       "platform": "windows"
     },
     {
+      "name": "directx-headers",
+      "platform": "windows"
+    },
+    {
+      "name": "cppwinrt",
+      "platform": "windows"
+    },
+    {
       "name": "coreml",
       "platform": "osx | ios"
     }
