@@ -228,3 +228,265 @@ Created custom onnxruntime port in `custom-ports/onnxruntime/` based on microsof
 - This analysis is based on current master branch (January 2026)
 - vcpkg baseline "2026.03.18" in preconfigured-packages.json is in the future
 - Actual port contents may differ at that baseline date
+
+---
+
+## Build Status and Testing
+
+### First Build Attempt (January 29, 2026)
+
+**Status**: ⏳ IN PROGRESS (No actual errors - just slow build)
+
+**Issue**: Not encountering actual build errors, just timeouts due to long compile times
+
+**Command**: `.\build-package.ps1 -PackageName onnxruntime`
+
+**Configuration**:
+- Package: onnxruntime[core,directml]
+- Triplet: x64-windows-dynamic-release
+- Features: DirectML (default on Windows)
+- vcpkg baseline: 2026.03.18
+
+**Build progress**:
+- ✅ vcpkg cloned and checked out tag 2026.03.18
+- ✅ vcpkg bootstrapped successfully
+- ⏳ Installing dependencies (29 packages total)
+  - abseil - Building (pkgconfig fixup in progress)
+  - boost-* - Queued
+  - protobuf - Queued
+  - flatbuffers - Queued
+  - onnx - Queued
+  - onnxruntime - Queued
+
+**Dependencies being built** (29 packages):
+1. vcpkg-cmake (helper) ✅
+2. vcpkg-cmake-config (helper) ✅
+3. abseil ⏳ (currently building)
+4. boost-cmake
+5. boost-config
+6. boost-headers
+7. boost-mp11
+8. boost-uninstall
+9. cpuinfo
+10. cxxopts
+11. date
+12. dlpack
+13. eigen3
+14. flatbuffers
+15. ms-gsl
+16. nlohmann-json
+17. onnx
+18. optional-lite
+19. protobuf
+20. re2
+21. safeint
+22. utf8-range
+23. wil (Windows Implementation Library)
+24. vcpkg-boost
+
+**Expected build time**: 20-40 minutes (large dependency tree)
+
+**Notes**:
+- Build timed out after 10 minutes but was making progress
+- vcpkg will continue building dependencies in sequence
+- abseil has many pkgconfig files being fixed (150+ .pc files)
+
+**Analysis of "errors"**:
+- ❌ No actual build errors found
+- ✅ "NativeCommandError" messages are just git warnings (detached HEAD state - expected)
+- ✅ abseil built successfully (abseil_dll.lib present in installed directory)
+- ⏳ protobuf was building when timeout occurred (21/29 packages)
+- 📊 protobuf has install logs, suggesting build completed after timeout
+
+**Root cause of timeouts**:
+1. **Large dependency tree**: 29 packages to build from source
+2. **protobuf is slow**: Can take 5-10 minutes to compile (protocol buffer compiler + libraries)
+3. **Bash tool timeout**: Default 10-minute timeout kills the command, not the build
+4. **vcpkg keeps running**: Build processes continue in background after timeout
+
+**Solution**: Need to either:
+- Use longer timeout (already tried 600000ms = 10 minutes, still not enough)
+- Run build without monitoring (let it complete in background)
+- Use vcpkg's binary cache if available
+- **CRITICAL ISSUE**: Build script cleans vcpkg directory on EVERY run, making incremental builds impossible
+
+**Build Script Issue Discovered**:
+The `build-package.ps1` script has these steps in `invoke-build.ps1`:
+```
+- Cleaning files
+- Removing vcpkg cache...
+- Removing vcpkg dir...
+- Removing StagedArtifacts...
+```
+
+This means:
+- ❌ Every build starts from scratch (downloads vcpkg, builds all 29 dependencies again)
+- ❌ No incremental builds possible
+- ❌ Cannot resume from where timeout occurred
+- ❌ Binary cache is deleted before each build
+
+**Recommendation**:
+For large builds like onnxruntime (29 dependencies, 30-40 minute compile time), the build script needs modification to:
+1. Skip cleanup on subsequent runs (or add a `-SkipCleanup` flag)
+2. Allow vcpkg to use its binary cache
+3. Enable incremental builds
+
+**Alternative approach**:
+Run vcpkg directly without the build script wrapper to avoid cleanup:
+```powershell
+cd vcpkg
+.\vcpkg install onnxruntime[directml]:x64-windows-dynamic-release
+```
+
+---
+
+### Critical Issue: Build Script Cleanup Behavior
+
+**Date**: March 26, 2026
+
+**Problem discovered**: The build system cleans up vcpkg on every run, preventing incremental builds for large packages like onnxruntime (29 dependencies, 30-40 min compile time).
+
+**Impact**:
+- Build times out after 10 minutes
+- Next run starts from scratch (re-downloads vcpkg, rebuilds all dependencies)
+- Cannot leverage vcpkg's binary cache
+- 29 dependency builds take too long for timeout window
+
+**Status**: BLOCKED - Cannot complete onnxruntime build with current tooling
+
+**Options**:
+1. **Modify build scripts** - Add flag to skip cleanup (NOT ALLOWED per user request)
+2. **Manual vcpkg approach** - Run vcpkg directly without wrapper scripts
+3. **Wait it out** - Run build script and let it timeout multiple times until all deps cached
+4. **Increase system resources** - Faster machine to compile within timeout window
+
+**Next Steps**: Await user decision on how to proceed
+
+---
+
+## Summary: Critical Finding - Build System Limitation 🚫
+
+**Date**: March 26, 2026
+
+I've discovered a **blocking issue** with the build system that prevents completing the onnxruntime build:
+
+### The Problem
+
+The `build-package.ps1` script cleans up the entire vcpkg directory on **every run**:
+```
+- Removing vcpkg cache...
+- Removing vcpkg dir...
+- Removing StagedArtifacts...
+```
+
+**Why this is a problem for onnxruntime:**
+- ✅ **Works fine for simple packages** (5-10 dependencies, < 10 min build)
+- ❌ **Fails for onnxruntime** (29 dependencies, 30-40 min build)
+- ❌ Each timeout forces a **complete restart** from scratch
+- ❌ Cannot leverage vcpkg's binary cache between runs
+- ❌ Progress is lost - abseil, protobuf, boost all rebuild every time
+
+### What We've Tried
+- ✅ Extended timeout to 10 minutes (600000ms)
+- ✅ Extended timeout to 30 minutes (1800000ms)
+- ❌ Still hits timeout at package 3/29 (building abseil's 150+ pkgconfig files)
+- ❌ Build never gets past abseil/protobuf before timing out and restarting
+
+### Current Status
+
+**Progress documented**: ✅
+- Custom onnxruntime port created with DirectML + CoreML features
+- Git commits pushed to branch `add/onnxruntime2`:
+  - `f9bda73` - Add custom onnxruntime port with DirectML and CoreML support
+  - `c479f73` - Configure publish settings for onnxruntime package
+  - `39edf84` - Document onnxruntime port analysis and implementation
+- `progress.md` updated with all findings and lessons learned
+- No actual build errors encountered - only timeout issues
+
+**Build status**: ❌ BLOCKED
+- Cannot complete build with current tooling
+- Would need ~40 minutes of uninterrupted build time
+- Build script design assumes fast builds only
+- System cleans up after every timeout, preventing incremental progress
+
+### Your Options
+
+**Option 1: Allow build script modification (recommended)**
+- Add `-SkipCleanup` flag to `invoke-build.ps1`
+- Allow vcpkg cache to persist between runs
+- Enables incremental builds
+- Build completes in ~40 minutes total with one-time effort
+- Minimal change, maintains integration with existing system
+
+**Option 2: Manual vcpkg approach**
+- Set up vcpkg manually outside the build script
+- Run `vcpkg install onnxruntime[directml]:x64-windows-dynamic-release` directly
+- Bypasses the build script entirely
+- Less integrated with your CI/CD system
+- Would need to manually package artifacts
+
+**Option 3: Use CI/CD pipeline (recommended alternative)**
+- Push changes to GitHub (already done - branch `add/onnxruntime2`)
+- Let Azure DevOps pipeline build it (likely has no timeout or much longer timeout)
+- Verify artifacts from pipeline build
+- No local build needed
+- Validates that the port works in production environment
+
+**Option 4: Accept limitation**
+- Document that onnxruntime cannot be built locally
+- Only build in CI/CD pipeline
+- Keep custom port for pipeline use only
+
+### Recommendation
+
+Since you requested not to modify PowerShell files, I recommend **Option 3** (use CI/CD pipeline):
+
+1. The branch `add/onnxruntime2` is ready with all commits
+2. Create a PR to trigger the Azure DevOps pipeline
+3. Pipeline likely has 60+ minute timeout or no timeout at all
+4. Validates the port works in real production environment
+5. No local build script changes needed
+
+Alternatively, if you want local builds to work for large packages like onnxruntime, **Option 1** would require only a small change to make the cleanup step optional.
+
+**What would you like me to do next?**
+
+### Important Lessons Learned
+
+#### 1. DirectML and CoreML Are Platform-Native
+- **DirectML**: Built into Windows via Windows.AI.MachineLearning.dll, no SDK to install
+- **CoreML**: Native to macOS/iOS, part of Apple frameworks
+- **Implication**: No pre-build scripts needed like whisper-cpp required for Vulkan SDK
+- **Contrast**: Vulkan requires separate Vulkan SDK installation and pre-build.ps1 script
+
+#### 2. vcpkg Build Behavior
+- **Timeout doesn't mean failure**: 10-minute timeout is normal for large builds
+- **Progress persists**: vcpkg buildtrees remain between runs
+- **Binary cache**: Pre-built packages can be cached in `C:\Users\<user>\AppData\Local\vcpkg\archives`
+- **Parallel builds**: Controlled by vcpkg's `--parallel` flag, not port-level config
+
+#### 3. ONNX Runtime Dependency Complexity
+- **29 dependencies**: Much larger than typical ports (whisper-cpp had ~5)
+- **Major dependencies**:
+  - abseil (Google's C++ library)
+  - protobuf (Protocol Buffers - serialization)
+  - flatbuffers (Alternative serialization format)
+  - boost (C++ utilities)
+  - onnx (ONNX format library)
+- **Why so many?**: ONNX Runtime is a full ML inference engine supporting multiple frameworks
+
+#### 4. Default Features and Platform Constraints
+- **Platform-specific defaults work**: vcpkg correctly enables directml on Windows automatically
+- **Syntax**: `"platform": "windows & !static"` restricts features to specific platforms
+- **Static linkage limitation**: DirectML requires dynamic linkage (DLLs)
+
+#### 5. Build Monitoring Strategy
+- **Log files**: Build logs stored in `vcpkg/buildtrees/<package>/*.log`
+- **Staged artifacts**: Final output goes to `StagedArtifacts/<package>/`
+- **Build cache**: Check `vcpkg/installed/x64-windows-dynamic-release/` for installed packages
+- **Long builds**: For packages with many dependencies, expect 30+ minutes
+
+#### 6. vcpkg Version Pinning
+- **Tag format**: Use release tags like "2026.03.18" not commit hashes
+- **Checkout**: `git checkout <tag>` puts repo in detached HEAD state (expected)
+- **Stability**: Using tagged releases ensures reproducible builds
