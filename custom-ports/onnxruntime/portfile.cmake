@@ -43,6 +43,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         python    onnxruntime_ENABLE_PYTHON
         training  onnxruntime_ENABLE_TRAINING
         training  onnxruntime_ENABLE_TRAINING_APIS
+        training  onnxruntime_ENABLE_TRAINING_OPS
         cuda      onnxruntime_USE_CUDA
         cuda      onnxruntime_USE_CUDA_NHWC_OPS
         openvino  onnxruntime_USE_OPENVINO
@@ -63,6 +64,16 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         framework onnxruntime_BUILD_APPLE_FRAMEWORK
         framework onnxruntime_BUILD_OBJC
         nccl      onnxruntime_USE_NCCL
+        dnnl      onnxruntime_USE_DNNL
+        qnn       onnxruntime_USE_QNN
+        snpe      onnxruntime_USE_SNPE
+        rknpu     onnxruntime_USE_RKNPU
+        vsinpu    onnxruntime_USE_VSINPU
+        vitisai   onnxruntime_USE_VITISAI
+        migraphx  onnxruntime_USE_MIGRAPHX
+        cann      onnxruntime_USE_CANN
+        webnn     onnxruntime_USE_WEBNN
+        telemetry onnxruntime_USE_TELEMETRY
     INVERTED_FEATURES
         cuda      onnxruntime_USE_MEMORY_EFFICIENT_ATTENTION
 )
@@ -115,6 +126,7 @@ vcpkg_cmake_configure(
         -Donnxruntime_ENABLE_LAZY_TENSOR=OFF
         -Donnxruntime_DISABLE_RTTI=OFF
         -Donnxruntime_DISABLE_ABSEIL=OFF
+        -Donnxruntime_PARALLEL_COMPILE=ON
         # some other customizations ...
         --compile-no-warning-as-error
     OPTIONS_DEBUG
