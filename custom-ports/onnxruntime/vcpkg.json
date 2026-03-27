@@ -43,13 +43,9 @@
     "eigen3",
     {
       "name": "flatbuffers",
-      "host": true,
-      "version>=": "23.5.26"
+      "host": true
     },
-    {
-      "name": "flatbuffers",
-      "version>=": "23.5.26"
-    },
+    "flatbuffers",
     "ms-gsl",
     "nlohmann-json",
     {
