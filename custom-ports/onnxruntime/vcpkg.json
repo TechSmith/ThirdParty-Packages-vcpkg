@@ -98,7 +98,10 @@
     },
     "directml": {
       "description": "Build with DirectML execution provider (Windows only)",
-      "supports": "windows & !uwp"
+      "supports": "windows & !uwp",
+      "dependencies": [
+        "directml"
+      ]
     },
     "dnnl": {
       "description": "Build with oneDNN (DNNL) execution provider",
