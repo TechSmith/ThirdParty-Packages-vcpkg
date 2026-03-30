@@ -17,10 +17,6 @@
     {
       "name": "cppwinrt",
       "platform": "windows"
-    },
-    {
-      "name": "coreml",
-      "platform": "osx | ios"
     }
   ],
   "dependencies": [
