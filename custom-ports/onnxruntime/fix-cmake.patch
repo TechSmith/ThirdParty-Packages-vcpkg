@@ -22,6 +22,36 @@ index eede60a..07f5f77 100644
  absl::fixed_array
  absl::variant
  absl::meta
+diff --git a/cmake/onnxruntime_providers_coreml.cmake b/cmake/onnxruntime_providers_coreml.cmake
+index 0000000..1111111 100644
+--- a/cmake/onnxruntime_providers_coreml.cmake
++++ b/cmake/onnxruntime_providers_coreml.cmake
+@@ -19,8 +19,25 @@ if(LINUX)
+   endif()
+ endif()
+ 
++if(onnxruntime_USE_VCPKG)
++  # When using vcpkg, download coremltools to get proto files
++  include(FetchContent)
++  FetchContent_Declare(
++    coremltools
++    URL https://github.com/apple/coremltools/archive/refs/tags/7.1.zip
++    URL_HASH SHA1=f1bab0f30966f2e217d8e01207d518f230a1641a
++  )
++  FetchContent_GetProperties(coremltools)
++  if(NOT coremltools_POPULATED)
++    FetchContent_Populate(coremltools)
++  endif()
++  set(COREML_PROTO_ROOT ${coremltools_SOURCE_DIR}/mlmodel/format)
++else()
+ # Compile CoreML proto definition to ${CMAKE_CURRENT_BINARY_DIR}/coreml_proto
+ set(COREML_PROTO_ROOT ${coremltools_SOURCE_DIR}/mlmodel/format)
++endif()
++
++# Common proto compilation for both vcpkg and non-vcpkg builds
+ file(GLOB coreml_proto_srcs "${COREML_PROTO_ROOT}/*.proto")
+ 
+ onnxruntime_add_static_library(coreml_proto ${coreml_proto_srcs})
 diff --git a/cmake/onnxruntime_webassembly.cmake b/cmake/onnxruntime_webassembly.cmake
 index ffe8661..a3e9b4f 100644
 --- a/cmake/onnxruntime_webassembly.cmake
