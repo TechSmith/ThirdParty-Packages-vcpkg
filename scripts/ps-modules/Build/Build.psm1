@@ -108,7 +108,7 @@ function Copy-ItemWithSymlinks {
       New-Item -ItemType Container -Path $destination | Out-Null
    }
 
-   $items = Get-ChildItem -Path $source
+   $items = Get-ChildItem -LiteralPath $source
    foreach ($item in $items) {
        $relativePath = $item.FullName.Substring($source.Length + 1)
        $destPath = Join-Path -Path $destination -ChildPath $relativePath
@@ -121,7 +121,7 @@ function Copy-ItemWithSymlinks {
             Copy-ItemWithSymlinks -source $item.FullName -destination $destPath
          }
          else {
-            Copy-Item -Path "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
+            Copy-Item -LiteralPath "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
          }
        }
    }
@@ -497,7 +497,7 @@ function Run-StageSourceArtifactsStep {
    if (-not (Test-Path -Path $artifactPath)) {
        New-Item -ItemType Directory -Path $artifactPath | Out-Null
    }
-   $buildTreesSubDirs = Get-ChildItem -Path $sourceCodeRootDir -Directory
+   $buildTreesSubDirs = Get-ChildItem -LiteralPath $sourceCodeRootDir -Directory
    foreach ($buildTreesSubDir in $buildTreesSubDirs) {
        $srcDir = Join-Path -Path $buildTreesSubDir.FullName -ChildPath "src"
        if (Test-Path -Path $srcDir) {
