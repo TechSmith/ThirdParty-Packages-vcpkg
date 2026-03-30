@@ -7,43 +7,43 @@ parameters:
 # We could map this parameter to a combination of default triplets for Mac and windows, as well as the default feature flags to pass to each
 # for example, ffmpeg might map to: ffmpeg[avcodec,avdevice,avfilter,avformat,avresample,postproc,swscale,swresample,mp3lame,sdl2,zlib,dav1d]
   - name: packageName
-  displayName: Package to install (builds as a dynamic library, unless otherwise specified)
-  type: string
-  values:
-  - buildcache
-  - dawn
-  - ffmpeg-cloud-gpl
-  - ffmpeg-desktop-base
-  - ffmpeg-desktop-hevc
-  - ffmpeg-wasm
-  - glslang
-  - hunspell
-  - hunspell-debug
-  - kaldi
-  - libpng
-  - libzip-static
-  - libzip-dynamic
-  - minizip
-  - onnxruntime
-  - openblas
-  - openssl-static
-  - opencv4
-  - pango-desktop
-  - sqlite3
-  - sqlite-modern-cpp
-  - tinyxml
-  - whispercpp
-  - whispercpp-basic
+    displayName: Package to install (builds as a dynamic library, unless otherwise specified)
+    type: string
+    values:
+    - buildcache
+    - dawn
+    - ffmpeg-cloud-gpl
+    - ffmpeg-desktop-base
+    - ffmpeg-desktop-hevc
+    - ffmpeg-wasm
+    - glslang
+    - hunspell
+    - hunspell-debug
+    - kaldi
+    - libpng
+    - libzip-static
+    - libzip-dynamic
+    - minizip
+    - onnxruntime
+    - openblas
+    - openssl-static
+    - opencv4
+    - pango-desktop
+    - sqlite3
+    - sqlite-modern-cpp
+    - tinyxml
+    - whispercpp
+    - whispercpp-basic
 
-- name: publishToGitHubRelease
-  displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
-  type: boolean
-  default: true
+  - name: publishToGitHubRelease
+    displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
+    type: boolean
+    default: true
 
-- name: appendStringToGitHubRelease
-  displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
-  type: string
-  default: ' '
+  - name: appendStringToGitHubRelease
+    displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
+    type: string
+    default: ' '
 
 stages:
 - template: templates/build.yml
