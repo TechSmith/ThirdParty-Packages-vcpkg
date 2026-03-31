@@ -82,7 +82,13 @@ function Get-ArtifactName {
    }
 
    if($null -ne $customTriplet) {
-       $buildName = $customTriplet
+       # Extract just the triplet name from subdirectory paths like "onnxruntime/x64-windows-dynamic-release"
+       # The subdirectory prefix is only needed for vcpkg overlay-triplets, not for artifact naming
+       if ($customTriplet -match '^.+?/(.+)$') {
+           $buildName = $Matches[1]  # Use only the triplet filename (e.g., "x64-windows-dynamic-release")
+       } else {
+           $buildName = $customTriplet  # No subdirectory, use as-is
+       }
    } else {
        $buildName = $buildType
    }
