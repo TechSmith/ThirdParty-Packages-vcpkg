@@ -388,12 +388,6 @@
     },
     {
       "name": "onnxruntime",
-      "mac": {
-        "package": "onnxruntime",
-        "linkType": "dynamic",
-        "buildType": "release",
-        "vcpkgHash": "2026.03.18"
-      },
       "win": {
         "package": "onnxruntime",
         "linkType": "dynamic",
