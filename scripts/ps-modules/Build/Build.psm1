@@ -365,6 +365,11 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
    else {
       $firstTriplet = $triplets | Select-Object -First 1
+      # Strip subdirectory prefix if present (e.g., "onnxruntime/x64-windows-dynamic-release" -> "x64-windows-dynamic-release")
+      # This matches the behavior in Install-FromVcpkg where vcpkg installs using only the triplet name
+      if ($firstTriplet -match '^.+?/(.+)$') {
+         $firstTriplet = $Matches[1]
+      }
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
          "$mainSrcDir/include" = "$preStagePath/include"
