@@ -396,8 +396,7 @@
       },
       "win": {
         "package": "onnxruntime",
-        "linkType": "dynamic",
-        "buildType": "release",
+        "customTriplet": "onnxruntime/x64-windows-dynamic-release-static-deps",
         "vcpkgHash": "2026.03.18"
       }
     }
