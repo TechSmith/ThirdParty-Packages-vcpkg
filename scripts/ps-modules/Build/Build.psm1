@@ -9,9 +9,21 @@ function Install-FromVcpkg {
         [string]$triplet
     )
 
-    $pkgToInstall = "${packageAndFeatures}:${triplet}"
+    # Extract subdirectory from triplet if it contains a path separator
+    # e.g., "onnxruntime/x64-windows-dynamic-release-static-deps" -> overlay-triplets="custom-triplets/onnxruntime"
+    $overlayTripletsPath = "custom-triplets"
+    if ($triplet -match '^(.+?)/(.+)$') {
+        $tripletSubdir = $Matches[1]
+        $tripletName = $Matches[2]
+        $overlayTripletsPath = "custom-triplets/$tripletSubdir"
+    } else {
+        $tripletName = $triplet
+    }
+
+    $pkgToInstall = "${packageAndFeatures}:${tripletName}"
     Write-Message "Installing package: `"$pkgToInstall`""
-    Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
+    Write-Message "Using overlay-triplets path: `"$overlayTripletsPath`""
+    Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"$overlayTripletsPath`" --overlay-ports=`"custom-ports`""
 }
 
 function Get-PackageNameOnly {
