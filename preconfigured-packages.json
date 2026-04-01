@@ -399,6 +399,19 @@
         "customTriplet": "onnxruntime/x64-windows-dynamic-release",
         "vcpkgHash": "2026.03.18"
       }
+    },
+    {
+      "name": "boost",
+      "mac": {
+        "package": "boost",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "boost",
+        "linkType": "static",
+        "buildType": "release"
+      }
     }
   ]
 }
