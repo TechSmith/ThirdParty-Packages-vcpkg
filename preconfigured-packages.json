@@ -412,7 +412,7 @@
       },
       "win": {
         "package": "boost-minimal",
-        "customTriplet": "x64-windows-static-md-release",
+        "customTriplet": "boost/x64-windows-static-md-release",
         "publish": {
           "debug": true
         }
