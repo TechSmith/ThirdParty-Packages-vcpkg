@@ -401,24 +401,14 @@
       }
     },
     {
-      "name": "boost",
-      "mac": {
-        "package": "boost",
-        "linkType": "static",
-        "buildType": "release"
-      },
-      "win": {
-        "package": "boost",
-        "linkType": "static",
-        "buildType": "release"
-      }
-    },
-    {
       "name": "boost-minimal",
       "mac": {
         "package": "boost-minimal",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "publish": {
+          "debug": true
+        }
       },
       "win": {
         "package": "boost-minimal",
