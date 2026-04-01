@@ -412,6 +412,22 @@
         "linkType": "static",
         "buildType": "release"
       }
+    },
+    {
+      "name": "boost-minimal",
+      "mac": {
+        "package": "boost-minimal",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "boost-minimal",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "debug": true
+        }
+      }
     }
   ]
 }

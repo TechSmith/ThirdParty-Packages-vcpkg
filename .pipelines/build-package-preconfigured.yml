@@ -11,6 +11,7 @@ parameters:
     type: string
     values:
     - boost
+    - boost-minimal
     - buildcache
     - dawn
     - ffmpeg-cloud-gpl
