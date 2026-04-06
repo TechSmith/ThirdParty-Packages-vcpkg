@@ -5,3 +5,5 @@ PreStage/
 StagedArtifacts/
 logs/
 _temp/
+staging/
+_private/
