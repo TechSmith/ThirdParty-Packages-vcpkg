@@ -7,3 +7,5 @@ logs/
 _temp/
 /agent.md
 /progress.md
+staging/
+_private/
