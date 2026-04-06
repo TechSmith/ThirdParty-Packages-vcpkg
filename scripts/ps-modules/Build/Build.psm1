@@ -344,8 +344,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    $binDir = "bin"
    $toolsDir = "tools"
 
-   # If we're on MacOS and we didn't specify a custom triplet, we're building a universal binary
-   # If we specify a custom triplet, we can only build one architecture at a time
+   # Universal binary: on macOS with two triplets (x64 + arm64), we lipo them together
    $isUniversalBinary = ((Get-IsOnMacOS) -and ($triplets.Count -eq 2))
 
    # Get dirs to copy
