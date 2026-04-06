@@ -103,6 +103,43 @@ endif()
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" BUILD_SHARED)
 
+# Pre-download dependencies for CoreML EP (needed because vcpkg sets FETCHCONTENT_FULLY_DISCONNECTED=ON
+# which blocks FetchContent downloads at configure time)
+if("coreml" IN_LIST FEATURES)
+    # coremltools: provides .proto files for CoreML model format
+    vcpkg_download_distfile(COREMLTOOLS_ARCHIVE
+        URLS "https://github.com/apple/coremltools/archive/refs/tags/7.1.tar.gz"
+        FILENAME "apple-coremltools-7.1.tar.gz"
+        SHA512 64a8f9f9a47266d58b5c19fb7ad21458a481ea7d11309bd46ffc3390771f70c7ccb958abfdeedad86e7785fe320d532928441cc120d0e3570e96d149ec458b72
+    )
+    vcpkg_extract_source_archive(COREMLTOOLS_SOURCE
+        ARCHIVE "${COREMLTOOLS_ARCHIVE}"
+    )
+    list(APPEND FEATURE_OPTIONS "-DFETCHCONTENT_SOURCE_DIR_COREMLTOOLS=${COREMLTOOLS_SOURCE}")
+
+    # fp16: half-precision floating point conversion (used by coremltools MILBlob)
+    vcpkg_download_distfile(FP16_ARCHIVE
+        URLS "https://github.com/Maratyszcza/FP16/archive/0a92994d729ff76a58f692d3028ca1b64b145d91.zip"
+        FILENAME "maratyszcza-fp16-0a92994d.zip"
+        SHA512 f7f61c40e13128068f1ee10e6273ed2ebe626a89b3eebbe8d479ae7ab346119404ea0c2a7caa80ea441d80b8ca9c5bd8acffb79fb3499c38f50bb52ebe441efe
+    )
+    vcpkg_extract_source_archive(FP16_SOURCE
+        ARCHIVE "${FP16_ARCHIVE}"
+    )
+    list(APPEND FEATURE_OPTIONS "-DFETCHCONTENT_SOURCE_DIR_FP16=${FP16_SOURCE}")
+
+    # psimd: portable SIMD intrinsics (dependency of fp16)
+    vcpkg_download_distfile(PSIMD_ARCHIVE
+        URLS "https://github.com/Maratyszcza/psimd/archive/072586a71b55b7f8c584153d223e95687148a900.zip"
+        FILENAME "maratyszcza-psimd-072586a7.zip"
+        SHA512 98c9e13f1e79db84289f48f1e1699852a54d3a7f1b07144008c67cf73c8b4487e9647755f6fe2a2d519419d669248b37a85d8aa3f6ad2f8fdf8e97d2de7ed7c4
+    )
+    vcpkg_extract_source_archive(PSIMD_SOURCE
+        ARCHIVE "${PSIMD_ARCHIVE}"
+    )
+    list(APPEND FEATURE_OPTIONS "-DFETCHCONTENT_SOURCE_DIR_PSIMD=${PSIMD_SOURCE}")
+endif()
+
 # see tools/ci_build/build.py
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}/cmake"
@@ -138,6 +175,7 @@ vcpkg_cmake_configure(
         onnxruntime_NVCC_THREADS
         CMAKE_CUDA_FLAGS
         onnxruntime_USE_CUSTOM_DIRECTML
+        onnxruntime_PARALLEL_COMPILE
 )
 if("cuda" IN_LIST FEATURES)
     vcpkg_cmake_build(TARGET onnxruntime_providers_cuda LOGFILE_BASE build-cuda)
