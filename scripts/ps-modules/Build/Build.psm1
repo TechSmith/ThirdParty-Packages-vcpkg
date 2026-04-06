@@ -9,9 +9,21 @@ function Install-FromVcpkg {
         [string]$triplet
     )
 
-    $pkgToInstall = "${packageAndFeatures}:${triplet}"
+    # Extract subdirectory from triplet if it contains a path separator
+    # e.g., "onnxruntime/x64-windows-dynamic-release-static-deps" -> overlay-triplets="custom-triplets/onnxruntime"
+    $overlayTripletsPath = "custom-triplets"
+    if ($triplet -match '^(.+?)/(.+)$') {
+        $tripletSubdir = $Matches[1]
+        $tripletName = $Matches[2]
+        $overlayTripletsPath = "custom-triplets/$tripletSubdir"
+    } else {
+        $tripletName = $triplet
+    }
+
+    $pkgToInstall = "${packageAndFeatures}:${tripletName}"
     Write-Message "Installing package: `"$pkgToInstall`""
-    Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
+    Write-Message "Using overlay-triplets path: `"$overlayTripletsPath`""
+    Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"$overlayTripletsPath`" --overlay-ports=`"custom-ports`""
 }
 
 function Get-PackageNameOnly {
@@ -25,12 +37,17 @@ function Get-Triplets {
    param(
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet
+      [string[]]$customTriplets = @()
    )
 
-   if ( -not [string]::IsNullOrEmpty($customTriplet) ) {
-       return @($customTriplet)
-   }
+   # Filter out any null/empty values that may result from JSON deserialization
+   if($customTriplets -ne $null)
+   {
+	   $customTriplets = @($customTriplets | Where-Object { -not [string]::IsNullOrEmpty($_) })
+	   if ($customTriplets.Count -gt 0) {
+	       return $customTriplets
+	   }
+  }
 
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
@@ -61,7 +78,7 @@ function Get-ArtifactName {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet
+      [string[]]$customTriplets = @()
    )
 
    if( $packageName -eq "") {
@@ -69,8 +86,15 @@ function Get-ArtifactName {
       $packageName = "$packageNameOnly-$linkType"
    }
 
-   if($null -ne $customTriplet) {
-       $buildName = $customTriplet
+   if($customTriplets -ne $null -and $customTriplets.Count -gt 0) {
+       $firstTriplet = $customTriplets[0]
+       # Extract just the triplet name from subdirectory paths like "onnxruntime/x64-windows-dynamic-release"
+       # The subdirectory prefix is only needed for vcpkg overlay-triplets, not for artifact naming
+       if ($firstTriplet -match '^.+?/(.+)$') {
+           $buildName = $Matches[1]  # Use only the triplet filename (e.g., "x64-windows-dynamic-release")
+       } else {
+           $buildName = $firstTriplet  # No subdirectory, use as-is
+       }
    } else {
        $buildName = $buildType
    }
@@ -323,15 +347,28 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    $binDir = "bin"
    $toolsDir = "tools"
 
-   # If we're on MacOS and we didn't specify a custom triplet, we're building a universal binary
-   # If we specify a custom triplet, we can only build one architecture at a time
+   # Universal binary: on macOS with two triplets (x64 + arm64), we lipo them together
    $isUniversalBinary = ((Get-IsOnMacOS) -and ($triplets.Count -eq 2))
 
    # Get dirs to copy
    $srcToDestDirs = @{}
    if($isUniversalBinary) {
-      $srcX64Dir = "./vcpkg/installed/$($triplets[0])"
-      $srcArm64Dir = "./vcpkg/installed/$($triplets[1])"
+      # Identify x64 vs arm64 triplets by name rather than relying on array ordering.
+      # Strip subdirectory prefix if present (e.g., "onnxruntime/x64-osx-dynamic-release" -> "x64-osx-dynamic-release")
+      # since vcpkg installs to just the triplet name, not the overlay-triplets subdirectory path.
+      $tripletX64 = $null
+      $tripletArm64 = $null
+      foreach ($t in $triplets) {
+         $stripped = $t
+         if ($t -match '^.+?/(.+)$') { $stripped = $Matches[1] }
+         if ($stripped -like "x64-*") { $tripletX64 = $stripped }
+         elseif ($stripped -like "arm64-*") { $tripletArm64 = $stripped }
+      }
+      if ($null -eq $tripletX64 -or $null -eq $tripletArm64) {
+         throw "Universal binary build requires one x64 and one arm64 triplet, got: $($triplets -join ', ')"
+      }
+      $srcX64Dir = "./vcpkg/installed/$tripletX64"
+      $srcArm64Dir = "./vcpkg/installed/$tripletArm64"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
       $destArm64ToolsDir = "$preStagePath/arm64Tools"
@@ -347,6 +384,11 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
    else {
       $firstTriplet = $triplets | Select-Object -First 1
+      # Strip subdirectory prefix if present (e.g., "onnxruntime/x64-windows-dynamic-release" -> "x64-windows-dynamic-release")
+      # This matches the behavior in Install-FromVcpkg where vcpkg installs using only the triplet name
+      if ($firstTriplet -match '^.+?/(.+)$') {
+         $firstTriplet = $Matches[1]
+      }
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
          "$mainSrcDir/include" = "$preStagePath/include"
@@ -425,7 +467,7 @@ function Run-StageBuildArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet,
+      [string[]]$customTriplets = @(),
       [string]$stagedArtifactsPath,
       [PSObject]$publishInfo,
       [bool]$deletePrestageDir = $true
@@ -434,7 +476,7 @@ function Run-StageBuildArtifactsStep {
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplets $customTriplets))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
@@ -482,14 +524,14 @@ function Run-StageSourceArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet,
+      [string[]]$customTriplets = @(),
       [string]$stagedArtifactsPath
    )
 
    Write-Banner -Level 3 -Title "Stage source code artifacts"
 
    $sourceCodeRootDir = "./vcpkg/buildtrees/"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-src"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplets $customTriplets))-src"
    $stagedArtifactSubDir = "$stagedArtifactsPath/src"
    $artifactPath = "$stagedArtifactSubDir/$artifactName"
 
