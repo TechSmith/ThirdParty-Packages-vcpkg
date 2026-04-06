@@ -17,6 +17,6 @@ set(VCPKG_CMAKE_CONFIGURE_OPTIONS "-DCMAKE_CXX_STANDARD=20")
 # Force ORT dependencies to static linkage so they're embedded into libonnxruntime.dylib.
 # This avoids shipping separate libprotobuf.dylib, libre2.dylib, etc.
 # Matches the pattern used in onnxruntime/x64-windows-dynamic-release.cmake.
-if(PORT MATCHES "^(protobuf|abseil|re2|date|onnx|utf8-range)$")
+if(PORT MATCHES "^(protobuf|abseil|re2|date|onnx|utf8-range|cpuinfo)$")
     set(VCPKG_LIBRARY_LINKAGE static)
 endif()
