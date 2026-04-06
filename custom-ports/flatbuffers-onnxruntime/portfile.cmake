@@ -8,6 +8,7 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         fix-uwp-build.patch
+        1001-tsc-disable-hardcoded-msvc-runtime-flags.patch
 )
 
 set(options "")
