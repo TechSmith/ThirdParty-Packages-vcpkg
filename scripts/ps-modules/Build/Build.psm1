@@ -351,12 +351,20 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    # Get dirs to copy
    $srcToDestDirs = @{}
    if($isUniversalBinary) {
+      # Identify x64 vs arm64 triplets by name rather than relying on array ordering.
       # Strip subdirectory prefix if present (e.g., "onnxruntime/x64-osx-dynamic-release" -> "x64-osx-dynamic-release")
-      # vcpkg installs to just the triplet name, not the overlay-triplets subdirectory path
-      $tripletX64 = $triplets[0]
-      $tripletArm64 = $triplets[1]
-      if ($tripletX64 -match '^.+?/(.+)$') { $tripletX64 = $Matches[1] }
-      if ($tripletArm64 -match '^.+?/(.+)$') { $tripletArm64 = $Matches[1] }
+      # since vcpkg installs to just the triplet name, not the overlay-triplets subdirectory path.
+      $tripletX64 = $null
+      $tripletArm64 = $null
+      foreach ($t in $triplets) {
+         $stripped = $t
+         if ($t -match '^.+?/(.+)$') { $stripped = $Matches[1] }
+         if ($stripped -like "x64-*") { $tripletX64 = $stripped }
+         elseif ($stripped -like "arm64-*") { $tripletArm64 = $stripped }
+      }
+      if ($null -eq $tripletX64 -or $null -eq $tripletArm64) {
+         throw "Universal binary build requires one x64 and one arm64 triplet, got: $($triplets -join ', ')"
+      }
       $srcX64Dir = "./vcpkg/installed/$tripletX64"
       $srcArm64Dir = "./vcpkg/installed/$tripletArm64"
       $destArm64LibDir = "$preStagePath/arm64Lib"
