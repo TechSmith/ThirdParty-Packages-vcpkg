@@ -385,6 +385,19 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "onnxruntime",
+      "mac": {
+        "package": "onnxruntime",
+        "customTriplets": ["onnxruntime/x64-osx-dynamic-release", "onnxruntime/arm64-osx-dynamic-release"],
+        "vcpkgHash": "2026.03.18"
+      },
+      "win": {
+        "package": "onnxruntime",
+        "customTriplets": ["onnxruntime/x64-windows-dynamic-release"],
+        "vcpkgHash": "2026.03.18"
+      }
     }
   ]
 }
