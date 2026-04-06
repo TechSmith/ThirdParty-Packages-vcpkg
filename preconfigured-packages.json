@@ -64,7 +64,7 @@
         "package": "ffmpeg[tsc-wasm-base]",
         "linkType": "dynamic",
         "buildType": "release",
-        "customTriplet": "wasm32-emscripten-dynamic",
+        "customTriplets": ["wasm32-emscripten-dynamic"],
         "vcpkgHash": "2025.04.09"
       }
     },
@@ -308,7 +308,7 @@
       "name": "openblas",
       "win": {
         "package": "openblas",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -323,7 +323,7 @@
       },
       "win": {
         "package": "kaldi",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -338,7 +338,7 @@
       },
       "win": {
         "package": "glslang",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -353,7 +353,7 @@
       },
       "win": {
         "package": "dawn",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -383,6 +383,37 @@
           "bin": false,
           "share": true,
           "tools": true
+        }
+      }
+    },
+    {
+      "name": "onnxruntime",
+      "mac": {
+        "package": "onnxruntime",
+        "customTriplets": ["onnxruntime/x64-osx-dynamic-release", "onnxruntime/arm64-osx-dynamic-release"],
+        "vcpkgHash": "2026.03.18"
+      },
+      "win": {
+        "package": "onnxruntime",
+        "customTriplets": ["onnxruntime/x64-windows-dynamic-release"],
+        "vcpkgHash": "2026.03.18"
+      }
+    },
+    {
+      "name": "boost-minimal",
+      "mac": {
+        "package": "boost-minimal",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "debug": true
+        }
+      },
+      "win": {
+        "package": "boost-minimal",
+        "customTriplets": ["boost/x64-windows-static-md-release"],
+        "publish": {
+          "debug": true
         }
       }
     }

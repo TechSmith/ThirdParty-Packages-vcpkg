@@ -1,0 +1,67 @@
+diff --git a/cmake/onnxruntime_framework.cmake b/cmake/onnxruntime_framework.cmake
+index 15f3105..af6609b 100644
+--- a/cmake/onnxruntime_framework.cmake
++++ b/cmake/onnxruntime_framework.cmake
+@@ -122,5 +122,5 @@ else()
+             ARCHIVE   DESTINATION ${CMAKE_INSTALL_LIBDIR}
+             LIBRARY   DESTINATION ${CMAKE_INSTALL_LIBDIR}
+             RUNTIME   DESTINATION ${CMAKE_INSTALL_BINDIR}
+-            FRAMEWORK DESTINATION ${CMAKE_INSTALL_BINDIR})
++            FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ endif()
+diff --git a/cmake/external/abseil-cpp.cmake b/cmake/external/abseil-cpp.cmake
+index eede60a..07f5f77 100644
+--- a/cmake/external/abseil-cpp.cmake
++++ b/cmake/external/abseil-cpp.cmake
+@@ -122,7 +122,7 @@ absl::absl_check
+ absl::hash_function_defaults
+ absl::function_ref
+ absl::city
+-absl::low_level_hash
++# absl::low_level_hash # abseil 20250814.1+
+ absl::fixed_array
+ absl::variant
+ absl::meta
+diff --git a/cmake/onnxruntime_providers_coreml.cmake b/cmake/onnxruntime_providers_coreml.cmake
+index 0000000..1111111 100644
+--- a/cmake/onnxruntime_providers_coreml.cmake
++++ b/cmake/onnxruntime_providers_coreml.cmake
+@@ -19,8 +19,25 @@ if(LINUX)
+   endif()
+ endif()
+ 
++if(onnxruntime_USE_VCPKG)
++  # When using vcpkg, download coremltools to get proto files
++  include(FetchContent)
++  FetchContent_Declare(
++    coremltools
++    URL https://github.com/apple/coremltools/archive/refs/tags/7.1.zip
++    URL_HASH SHA1=f1bab0f30966f2e217d8e01207d518f230a1641a
++  )
++  FetchContent_GetProperties(coremltools)
++  if(NOT coremltools_POPULATED)
++    FetchContent_Populate(coremltools)
++  endif()
++  set(COREML_PROTO_ROOT ${coremltools_SOURCE_DIR}/mlmodel/format)
++else()
+ # Compile CoreML proto definition to ${CMAKE_CURRENT_BINARY_DIR}/coreml_proto
+ set(COREML_PROTO_ROOT ${coremltools_SOURCE_DIR}/mlmodel/format)
++endif()
++
++# Common proto compilation for both vcpkg and non-vcpkg builds
+ file(GLOB coreml_proto_srcs "${COREML_PROTO_ROOT}/*.proto")
+ 
+ onnxruntime_add_static_library(coreml_proto ${coreml_proto_srcs})
+diff --git a/cmake/onnxruntime_webassembly.cmake b/cmake/onnxruntime_webassembly.cmake
+index ffe8661..a3e9b4f 100644
+--- a/cmake/onnxruntime_webassembly.cmake
++++ b/cmake/onnxruntime_webassembly.cmake
+@@ -94,7 +94,7 @@ if (NOT onnxruntime_ENABLE_WEBASSEMBLY_THREADS)
+   )
+ 
+   # Override re2 compiler options to remove -pthread
+-  set_property(TARGET re2 PROPERTY COMPILE_OPTIONS )
++  # set_property(TARGET re2 PROPERTY COMPILE_OPTIONS )
+ endif()
+ 
+ if (NOT onnxruntime_USE_VCPKG)

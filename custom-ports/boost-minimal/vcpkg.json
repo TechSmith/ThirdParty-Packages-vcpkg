@@ -1,0 +1,16 @@
+{
+  "name": "boost-minimal",
+  "version": "1.90.0",
+  "description": "TechSmith minimal boost subset (9 libraries)",
+  "dependencies": [
+    "boost-atomic",
+    "boost-chrono",
+    "boost-date-time",
+    "boost-filesystem",
+    "boost-program-options",
+    "boost-regex",
+    "boost-serialization",
+    "boost-system",
+    "boost-thread"
+  ]
+}

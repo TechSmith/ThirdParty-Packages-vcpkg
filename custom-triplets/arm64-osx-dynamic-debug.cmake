@@ -7,6 +7,6 @@ set(VCPKG_OSX_ARCHITECTURES arm64)
 
 set(VCPKG_BUILD_TYPE debug)
 
-set(VCPKG_C_FLAGS "-mmacosx-version-min=11.0 -g -gdwarf-2")
-set(VCPKG_CXX_FLAGS "-mmacosx-version-min=11.0 -g -gdwarf-2")
+set(VCPKG_C_FLAGS -mmacosx-version-min=11.0)
+set(VCPKG_CXX_FLAGS -mmacosx-version-min=11.0)
 set(VCPKG_LINKER_FLAGS -mmacosx-version-min=11.0)
