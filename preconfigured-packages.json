@@ -390,8 +390,7 @@
       "name": "onnxruntime",
       "mac": {
         "package": "onnxruntime",
-        "linkType": "dynamic",
-        "buildType": "release",
+        "customTriplets": ["onnxruntime/x64-osx-dynamic-release", "onnxruntime/arm64-osx-dynamic-release"],
         "vcpkgHash": "2026.03.18"
       },
       "win": {
