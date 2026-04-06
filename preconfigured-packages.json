@@ -64,7 +64,7 @@
         "package": "ffmpeg[tsc-wasm-base]",
         "linkType": "dynamic",
         "buildType": "release",
-        "customTriplet": "wasm32-emscripten-dynamic",
+        "customTriplets": ["wasm32-emscripten-dynamic"],
         "vcpkgHash": "2025.04.09"
       }
     },
@@ -308,7 +308,7 @@
       "name": "openblas",
       "win": {
         "package": "openblas",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -323,7 +323,7 @@
       },
       "win": {
         "package": "kaldi",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -338,7 +338,7 @@
       },
       "win": {
         "package": "glslang",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -353,7 +353,7 @@
       },
       "win": {
         "package": "dawn",
-        "customTriplet": "x64-windows-static-md",
+        "customTriplets": ["x64-windows-static-md"],
         "publish": {
           "debug": true
         }
@@ -396,7 +396,7 @@
       },
       "win": {
         "package": "onnxruntime",
-        "customTriplet": "onnxruntime/x64-windows-dynamic-release",
+        "customTriplets": ["onnxruntime/x64-windows-dynamic-release"],
         "vcpkgHash": "2026.03.18"
       }
     },
@@ -412,7 +412,7 @@
       },
       "win": {
         "package": "boost-minimal",
-        "customTriplet": "boost/x64-windows-static-md-release",
+        "customTriplets": ["boost/x64-windows-static-md-release"],
         "publish": {
           "debug": true
         }

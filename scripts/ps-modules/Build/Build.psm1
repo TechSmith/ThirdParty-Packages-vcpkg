@@ -37,11 +37,13 @@ function Get-Triplets {
    param(
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet
+      [string[]]$customTriplets = @()
    )
 
-   if ( -not [string]::IsNullOrEmpty($customTriplet) ) {
-       return @($customTriplet)
+   # Filter out any null/empty values that may result from JSON deserialization
+   $customTriplets = @($customTriplets | Where-Object { -not [string]::IsNullOrEmpty($_) })
+   if ($customTriplets.Count -gt 0) {
+       return $customTriplets
    }
 
    if (Get-IsOnWindowsOS) {
@@ -73,7 +75,7 @@ function Get-ArtifactName {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet
+      [string[]]$customTriplets = @()
    )
 
    if( $packageName -eq "") {
@@ -81,13 +83,14 @@ function Get-ArtifactName {
       $packageName = "$packageNameOnly-$linkType"
    }
 
-   if($null -ne $customTriplet) {
+   if($customTriplets.Count -gt 0) {
+       $firstTriplet = $customTriplets[0]
        # Extract just the triplet name from subdirectory paths like "onnxruntime/x64-windows-dynamic-release"
        # The subdirectory prefix is only needed for vcpkg overlay-triplets, not for artifact naming
-       if ($customTriplet -match '^.+?/(.+)$') {
+       if ($firstTriplet -match '^.+?/(.+)$') {
            $buildName = $Matches[1]  # Use only the triplet filename (e.g., "x64-windows-dynamic-release")
        } else {
-           $buildName = $customTriplet  # No subdirectory, use as-is
+           $buildName = $firstTriplet  # No subdirectory, use as-is
        }
    } else {
        $buildName = $buildType
@@ -348,8 +351,14 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    # Get dirs to copy
    $srcToDestDirs = @{}
    if($isUniversalBinary) {
-      $srcX64Dir = "./vcpkg/installed/$($triplets[0])"
-      $srcArm64Dir = "./vcpkg/installed/$($triplets[1])"
+      # Strip subdirectory prefix if present (e.g., "onnxruntime/x64-osx-dynamic-release" -> "x64-osx-dynamic-release")
+      # vcpkg installs to just the triplet name, not the overlay-triplets subdirectory path
+      $tripletX64 = $triplets[0]
+      $tripletArm64 = $triplets[1]
+      if ($tripletX64 -match '^.+?/(.+)$') { $tripletX64 = $Matches[1] }
+      if ($tripletArm64 -match '^.+?/(.+)$') { $tripletArm64 = $Matches[1] }
+      $srcX64Dir = "./vcpkg/installed/$tripletX64"
+      $srcArm64Dir = "./vcpkg/installed/$tripletArm64"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
       $destArm64ToolsDir = "$preStagePath/arm64Tools"
@@ -448,7 +457,7 @@ function Run-StageBuildArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet,
+      [string[]]$customTriplets = @(),
       [string]$stagedArtifactsPath,
       [PSObject]$publishInfo,
       [bool]$deletePrestageDir = $true
@@ -457,7 +466,7 @@ function Run-StageBuildArtifactsStep {
    Write-Banner -Level 3 -Title "Stage build artifacts"
 
    $stagedArtifactSubDir = "$stagedArtifactsPath/bin"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-bin"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplets $customTriplets))-bin"
    New-Item -Path $stagedArtifactSubDir/$artifactName -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
 
    $dependenciesFilename = "dependencies.json"
@@ -505,14 +514,14 @@ function Run-StageSourceArtifactsStep {
       [string]$packageAndFeatures,
       [string]$linkType,
       [string]$buildType,
-      [string]$customTriplet,
+      [string[]]$customTriplets = @(),
       [string]$stagedArtifactsPath
    )
 
    Write-Banner -Level 3 -Title "Stage source code artifacts"
 
    $sourceCodeRootDir = "./vcpkg/buildtrees/"
-   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplet $customTriplet))-src"
+   $artifactName = "$((Get-ArtifactName -packageName $packageName -packageAndFeatures $packageAndFeatures -linkType $linkType -buildType $buildType -customTriplets $customTriplets))-src"
    $stagedArtifactSubDir = "$stagedArtifactsPath/src"
    $artifactPath = "$stagedArtifactSubDir/$artifactName"
 

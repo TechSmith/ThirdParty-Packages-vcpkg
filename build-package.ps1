@@ -21,4 +21,5 @@ if ($pkg -eq $null) {
 }
 
 Write-Message "$(NL)Running invoke-build.ps1...$(NL)"
-./invoke-build.ps1 -PackageName $PackageName -PackageAndFeatures $pkg.package -CustomTriplet $pkg.customTriplet -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug
+$customTriplets = if ($null -ne $pkg.customTriplets) { @($pkg.customTriplets) } else { @() }
+./invoke-build.ps1 -PackageName $PackageName -PackageAndFeatures $pkg.package -CustomTriplets $customTriplets -LinkType $pkg.linkType -BuildType $pkg.buildType -StagedArtifactsPath $StagedArtifactsPath -VcpkgHash $pkg.vcpkgHash -Publish $pkg.publish -ShowDebug:$ShowDebug
