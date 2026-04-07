@@ -24,14 +24,10 @@
     "dlpack",
     "eigen3",
     {
-      "name": "flatbuffers",
-      "host": true,
-      "version>=": "23.5.26"
+      "name": "flatbuffers-onnxruntime",
+      "host": true
     },
-    {
-      "name": "flatbuffers",
-      "version>=": "23.5.26"
-    },
+    "flatbuffers-onnxruntime",
     "ms-gsl",
     "nlohmann-json",
     {
