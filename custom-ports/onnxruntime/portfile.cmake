@@ -142,6 +142,12 @@ if("coreml" IN_LIST FEATURES)
     list(APPEND FEATURE_OPTIONS "-DFETCHCONTENT_SOURCE_DIR_PSIMD=${PSIMD_SOURCE}")
 endif()
 
+# Add WindowsApp.lib for WinML builds on Windows to provide WinRT exception functions
+set(WINML_LINKER_FLAGS "")
+if(VCPKG_TARGET_IS_WINDOWS AND "winml" IN_LIST FEATURES)
+    set(WINML_LINKER_FLAGS "/DEFAULTLIB:WindowsApp.lib")
+endif()
+
 # see tools/ci_build/build.py
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}/cmake"
@@ -166,6 +172,7 @@ vcpkg_cmake_configure(
         -Donnxruntime_DISABLE_RTTI=OFF
         -Donnxruntime_DISABLE_ABSEIL=OFF
         -Donnxruntime_PARALLEL_COMPILE=ON
+        "-DCMAKE_SHARED_LINKER_FLAGS=${WINML_LINKER_FLAGS}"
         # some other customizations ...
         --compile-no-warning-as-error
     OPTIONS_DEBUG
@@ -178,6 +185,7 @@ vcpkg_cmake_configure(
         CMAKE_CUDA_FLAGS
         onnxruntime_USE_CUSTOM_DIRECTML
         onnxruntime_PARALLEL_COMPILE
+        CMAKE_SHARED_LINKER_FLAGS
 )
 if("cuda" IN_LIST FEATURES)
     vcpkg_cmake_build(TARGET onnxruntime_providers_cuda LOGFILE_BASE build-cuda)
