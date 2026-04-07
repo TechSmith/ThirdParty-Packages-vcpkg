@@ -52,6 +52,7 @@ stages:
 
   jobs:
   - job: Build
+    timeoutInMinutes: 240
     condition: succeeded()
     strategy:
       matrix:
