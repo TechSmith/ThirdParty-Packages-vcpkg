@@ -19,6 +19,10 @@
       "platform": "windows"
     },
     {
+      "name": "winml",
+      "platform": "windows"
+    },
+    {
       "name": "coreml",
       "platform": "osx | ios"
     }
