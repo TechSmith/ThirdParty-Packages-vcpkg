@@ -1,0 +1,14 @@
+diff --git a/ports/onnx/portfile.cmake b/ports/onnx/portfile.cmake
+index 9a34e56d..47819fe4 100644
+--- a/ports/onnx/portfile.cmake
++++ b/ports/onnx/portfile.cmake
+@@ -38,6 +38,9 @@ vcpkg_cmake_configure(
+         -DONNX_USE_MSVC_STATIC_RUNTIME=${USE_STATIC_RUNTIME}
+         -DONNX_BUILD_TESTS=OFF
+         -DONNX_BUILD_CUSTOM_PROTOBUF=OFF
++        # <TechSmith Customization>
++        -DONNX_DISABLE_STATIC_REGISTRATION=ON
++        # </TechSmith Customization>
+     MAYBE_UNUSED_VARIABLES
+         ONNX_USE_MSVC_STATIC_RUNTIME
+         Python_EXECUTABLE
