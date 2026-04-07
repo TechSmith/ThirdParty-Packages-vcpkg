@@ -1,0 +1,20 @@
+diff --git a/cmake/winml.cmake b/cmake/winml.cmake
+index f2651d0..0215e62 100644
+--- a/cmake/winml.cmake
++++ b/cmake/winml.cmake
+@@ -1,9 +1,12 @@
+ # Copyright (c) Microsoft Corporation. All rights reserved.
+ # Licensed under the MIT License.
+ 
+-if (CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
+-  message(FATAL_ERROR "WinML is only supported on WCOS")
+-endif()
++# TechSmith patch: Remove obsolete WCOS-only check. WCOS was an abandoned Microsoft
++# internal project. WinML works fine on standard Windows 10/11 with DirectML.
++# Original check incorrectly rejected standard Windows builds:
++#   if (CMAKE_CXX_STANDARD_LIBRARIES MATCHES kernel32.lib)
++#     message(FATAL_ERROR "WinML is only supported on WCOS")
++#   endif()
+ 
+ include(precompiled_header.cmake)
+ include(target_delayload.cmake)
