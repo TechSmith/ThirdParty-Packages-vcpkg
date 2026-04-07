@@ -20,7 +20,7 @@ vcpkg_from_github(
 find_program(PROTOC NAMES protoc PATHS "${CURRENT_HOST_INSTALLED_DIR}/tools/protobuf" REQUIRED NO_DEFAULT_PATH NO_CMAKE_PATH)
 message(STATUS "Using protoc: ${PROTOC}")
 
-find_program(FLATC NAMES flatc PATHS "${CURRENT_HOST_INSTALLED_DIR}/tools/flatbuffers" REQUIRED NO_DEFAULT_PATH NO_CMAKE_PATH)
+find_program(FLATC NAMES flatc PATHS "${CURRENT_HOST_INSTALLED_DIR}/tools/flatbuffers-onnxruntime" REQUIRED NO_DEFAULT_PATH NO_CMAKE_PATH)
 message(STATUS "Using flatc: ${FLATC}")
 
 vcpkg_find_acquire_program(PYTHON3)
