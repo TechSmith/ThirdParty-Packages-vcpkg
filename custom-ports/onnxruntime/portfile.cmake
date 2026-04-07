@@ -16,6 +16,7 @@ vcpkg_from_github(
         fix-cmake.patch # .framework install, external library workarounds(abseil-cpp, eigen3)
         fix-cmake-cuda.patch
         1001-tsc-fix-coreml.patch # Fix CoreML proto file handling when using vcpkg
+        1002-tsc-fix-winml-wcos-check.patch # Remove obsolete WCOS-only check that blocks WinML on standard Windows
 )
 
 find_program(PROTOC NAMES protoc PATHS "${CURRENT_HOST_INSTALLED_DIR}/tools/protobuf" REQUIRED NO_DEFAULT_PATH NO_CMAKE_PATH)
