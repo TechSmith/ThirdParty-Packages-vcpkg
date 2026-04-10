@@ -261,7 +261,7 @@
       },
       "win": {
         "package": "tinyxml",
-        "linkType": "dynamic",
+        "linkType": "dynamicxxx",
         "buildType": "release"
       }
     },
