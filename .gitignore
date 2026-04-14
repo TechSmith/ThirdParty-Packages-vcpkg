@@ -5,3 +5,5 @@ PreStage/
 StagedArtifacts/
 logs/
 _temp/
+/agent.md
+/progress.md
