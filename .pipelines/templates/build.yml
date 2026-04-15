@@ -57,7 +57,7 @@ stages:
       matrix:
         windows:
           imageName: ''
-          poolName: 'VMSS_CommonCpp_VS2022'
+          poolName: 'VMSS_CommonCpp'
           osName: win
         mac:
           imageName: macOS-14
