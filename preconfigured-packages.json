@@ -396,6 +396,19 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "rlottie",
+      "mac": {
+        "package": "rlottie",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "rlottie",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
