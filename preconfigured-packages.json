@@ -254,10 +254,21 @@
     },
     {
       "name": "tinyxml",
+      "linux": {
+        "package": "tinyxml",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
       "mac": {
         "package": "tinyxml",
         "linkType": "dynamic",
         "buildType": "release"
+      },
+      "wasm": {
+        "package": "tinyxml",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-dynamic"
       },
       "win": {
         "package": "tinyxml",
