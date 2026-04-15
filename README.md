@@ -64,3 +64,109 @@ pwsh
 ```
 
 _† Note: Given that WSL is quite slow when reading / writing files between Linux and Windows, it is actually best to run builds directly within a Linux mounted file location (for example, in wsl you may want to clone this repo to `~/code/ThirdParty-Packages-vcpkg` and use this instead of using the Windows-mounted location of something like `/mnt/c/code/ThirdParty-Packages-vcpkg`)._
+
+## Managing Version Information for Windows DLLs
+
+For Windows builds, packages can include version information metadata in their DLL files. This is managed through `version-info.json` files located in `custom-steps/<port-name>/` directories.
+
+### version-info.json File Structure
+
+A `version-info.json` file contains metadata for all DLLs in a package. Here's an example structure:
+
+```json
+{
+  "buildNumber": 103,
+  "files": [
+    {
+      "filename": "bin/mylib.dll",
+      "fileDescription": "My Library - Core functionality",
+      "fileVersion": "2.1.0",
+      "productName": "My Library",
+      "productVersion": "2.1.0",
+      "copyright": "Copyright (c) 2026 Example Corp"
+    },
+    {
+      "filename": "bin/helper.dll",
+      "fileDescription": "Helper utilities library",
+      "fileVersion": "1.5.3",
+      "productName": "Helper",
+      "productVersion": "1.5.3",
+      "copyright": "Copyright (c) 2026 Example Corp"
+    }
+  ]
+}
+```
+
+**Field Descriptions:**
+
+- **`buildNumber`** (top-level): A monotonically increasing integer that is **automatically incremented** each time you regenerate the file using `update-version-info-json.ps1`. This is critical because some TechSmith installers have issues updating DLLs that have a different file hash but the same version number. The script increments this value automatically when:
+  - Regenerating the version-info.json file
+  - Updating any library versions
+  - Rebuilding the package for any reason
+  
+- **`files`** (top-level): Array of DLL metadata objects
+
+For each file entry:
+- **`filename`**: Relative path to the DLL (usually `bin/<dllname>.dll`)
+- **`fileDescription`**: Brief description of the library (automatically enriched from vcpkg metadata)
+- **`fileVersion`**: The file version to stamp into the DLL (automatically extracted from vcpkg manifests)
+- **`productName`**: Product name shown in Windows properties (automatically enriched from vcpkg metadata)
+- **`productVersion`**: Product version shown in Windows properties (automatically extracted from vcpkg manifests)
+- **`copyright`**: Copyright notice (automatically enriched from vcpkg copyright files)
+
+### Creating or Updating a version-info.json File
+
+When setting up a new package or updating an existing package that needs DLL version information on Windows, use the `update-version-info-json.ps1` script to generate or regenerate the `version-info.json` file:
+
+**Prerequisites:**
+1. **You must build the package locally on Windows first** to generate the DLLs and vcpkg metadata
+2. The build process creates package metadata files in `vcpkg/installed/vcpkg/info/` that the script uses to map DLLs to their source ports
+
+```powershell
+# Step 1: Build your package locally on Windows to generate DLLs and metadata
+./build-package.ps1 -PackageName mypackage
+
+# Step 2: Generate or update the version-info.json from the built DLLs
+# The script will automatically enrich metadata from vcpkg sources
+./scripts/tools/update-version-info-json.ps1 `
+    -InputDllDir "./vcpkg/installed/x64-windows-dynamic-release/bin" `
+    -OutputJsonFile "./custom-steps/mypackage/version-info.json" `
+    -VcpkgRoot "./vcpkg" `
+    -Triplet "x64-windows-dynamic-release"
+```
+
+This script will:
+1. Scan all DLL files in the input directory
+2. Read vcpkg's package installation metadata (the `.list` files in `vcpkg/installed/vcpkg/info/`)
+3. Map each DLL to its source vcpkg port
+4. Enrich metadata by reading:
+   - **Descriptions** from `vcpkg.json` files (in `custom-ports/` or `vcpkg/ports/`)
+   - **Versions** from `vcpkg.json` files (supports `version`, `version-semver`, `version-string`)
+   - **Product names** from port names
+   - **Copyright information** from `vcpkg/installed/<triplet>/share/<portname>/copyright` files
+5. **Automatically increment `buildNumber`** if the file already exists (reads existing value and adds 1)
+6. Create or overwrite the `version-info.json` file with enriched metadata
+
+**Key Features:**
+- **No manual `versionSource` tracking**: The script directly reads vcpkg metadata at generation time
+- **Automatic buildNumber increment**: Ensures proper versioning for TechSmith installers
+- **Automatic metadata enrichment**: Pulls descriptions, versions, and copyright from vcpkg sources
+- **Triplet auto-detection**: If `-Triplet` is omitted and only one triplet exists, it's auto-detected
+
+After generation, you should:
+1. Review the generated file to verify all metadata is correct
+2. Manually update any fields that need correction (rare, as metadata comes from vcpkg)
+3. Commit the `version-info.json` file to the repository
+
+**Important Notes:**
+- The script requires a local Windows build first to generate the vcpkg metadata it relies on
+- If you're creating the file for the first time, `buildNumber` will start at 100
+- If the file already exists, `buildNumber` will be automatically incremented
+- The script works with both standard vcpkg ports and overlay ports in `custom-ports/`
+
+### How version-info.json is Used
+
+The `version-info.json` file is consumed by the post-build step for Windows builds:
+- The `custom-steps/<port-name>/post-build.ps1` script calls `Update-VersionInfoForDlls`
+- This function reads the `version-info.json` file and stamps each DLL with the specified version information
+- This ensures that DLLs have proper metadata visible in Windows File Explorer and version resource tools
