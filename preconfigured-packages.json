@@ -396,6 +396,38 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "onnxruntime",
+      "mac": {
+        "package": "onnxruntime",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "onnxruntime",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "wasm": {
+        "package": "onnxruntime[build-parallel,compile-no-warning-as-error,skip-submodule-sync,skip-tests]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-dynamic"
+      }
+    },
+    {
+      "name": "directml",
+      "mac": {
+        "package": "directml",
+        "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "directml",
+        "linkType": "dynamic",
+        "buildType": "release"
+      }
     }
   ]
 }
