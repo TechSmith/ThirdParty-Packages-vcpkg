@@ -396,6 +396,21 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "replxx",
+      "mac": {
+        "package": "replxx",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "replxx",
+        "customTriplet": "x64-windows-static-md",
+        "publish": {
+          "debug": true
+        }
+      }
     }
   ]
 }
