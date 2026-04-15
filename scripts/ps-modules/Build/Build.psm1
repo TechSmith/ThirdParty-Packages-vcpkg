@@ -104,11 +104,11 @@ function Copy-ItemWithSymlinks {
        [string]$destination
    )
 
-   if ( -not (Test-Path -Path $destination) ) {
+   if ( -not (Test-Path -LiteralPath $destination) ) {
       New-Item -ItemType Container -Path $destination | Out-Null
    }
 
-   $items = Get-ChildItem -Path $source
+   $items = Get-ChildItem -LiteralPath $source
    foreach ($item in $items) {
        $relativePath = $item.FullName.Substring($source.Length + 1)
        $destPath = Join-Path -Path $destination -ChildPath $relativePath
@@ -121,7 +121,7 @@ function Copy-ItemWithSymlinks {
             Copy-ItemWithSymlinks -source $item.FullName -destination $destPath
          }
          else {
-            Copy-Item -Path "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
+            Copy-Item -LiteralPath "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
          }
        }
    }
@@ -246,7 +246,10 @@ function Run-PreBuildStep {
       [string]$packageAndFeatures
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
-   Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
+   $scriptArgs = @{
+      PackageAndFeatures = $packageAndFeatures
+   }
+   Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1" -scriptArgs $scriptArgs
 }
 
 function Check-IsEmscriptenBuild {
@@ -497,18 +500,18 @@ function Run-StageSourceArtifactsStep {
    if (-not (Test-Path -Path $artifactPath)) {
        New-Item -ItemType Directory -Path $artifactPath | Out-Null
    }
-   $buildTreesSubDirs = Get-ChildItem -Path $sourceCodeRootDir -Directory
-   foreach ($buildTreesSubDir in $buildTreesSubDirs) {
-       $srcDir = Join-Path -Path $buildTreesSubDir.FullName -ChildPath "src"
-       if (Test-Path -Path $srcDir) {
-           $destDir = Join-Path -Path $artifactPath -ChildPath $buildTreesSubDir.Name
-           Write-Message "$srcDir ==> $destDir"
-           if (-not (Test-Path -Path $destDir)) {
-               New-Item -ItemType Directory -Path $destDir | Out-Null
-           }
-           Copy-ItemWithSymlinks -source "$srcDir" -destination "$destDir"
-       }
-   }
+    $buildTreesSubDirs = Get-ChildItem -LiteralPath $sourceCodeRootDir -Directory
+    foreach ($buildTreesSubDir in $buildTreesSubDirs) {
+        $srcDir = Join-Path -Path $buildTreesSubDir.FullName -ChildPath "src"
+        if (Test-Path -LiteralPath $srcDir) {
+            $destDir = Join-Path -Path $artifactPath -ChildPath $buildTreesSubDir.Name
+            Write-Message "$srcDir ==> $destDir"
+            if (-not (Test-Path -LiteralPath $destDir)) {
+                New-Item -ItemType Directory -Path $destDir | Out-Null
+            }
+            Copy-ItemWithSymlinks -source "$srcDir" -destination "$destDir"
+        }
+    }
 
    $artifactArchive = "$artifactName.tar.gz"
    Write-Message "Creating final artifact: `"$artifactArchive`""

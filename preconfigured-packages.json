@@ -396,6 +396,48 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "onnxruntime",
+      "win": {
+        "package": "onnxruntime",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.12.12"
+      },
+      "mac": {
+        "package": "onnxruntime",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.12.12"
+      }
+    },
+    {
+      "name": "onnxruntime-cuda",
+      "win": {
+        "package": "onnxruntime[cuda,tensorrt]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.12.12"
+      }
+    },
+    {
+      "name": "onnxruntime-directml",
+      "win": {
+        "package": "onnxruntime[directml]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.12.12"
+      }
+    },
+    {
+      "name": "onnxruntime-openvino",
+      "mac": {
+        "package": "onnxruntime[openvino]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2025.12.12"
+      }
     }
   ]
 }
