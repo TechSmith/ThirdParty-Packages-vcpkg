@@ -1,5 +1,5 @@
 # ThirdParty-Packages-vcpkg
-This is a repo that contains yaml and powershell scripts to build and publish third party packages which contain one or more library, using the [vcpkg](https://github.com/microsoft/vcpkg) package manager.
+This is a repo that contains YAML and PowerShell scripts to build and publish third party packages which contain one or more libraries, using the [vcpkg](https://github.com/microsoft/vcpkg) package manager.
 
 ## Pipelines
 Authorized users can access build pipelines here:
@@ -24,7 +24,7 @@ This pipeline does the following:
 8. Creates a GitHub release in this repo with the source and binary artifacts for the built package in [TechSmith/ThirdParty-Packages-vcpkg/releases](https://github.com/TechSmith/ThirdParty-Packages-vcpkg/releases)
 
 ### Pipeline: "[Build Package (custom)](https://dev.azure.com/techsmith/ThirdParty-Packages-vcpkg/_build?definitionId=790)"
-This pipeline is for use when testing out building a new package.  Artifacts from this pipeline should never be shipped to customers.  When you finish testing using this pipeline, you must configure the "[Build Package (preconfigured)](https://dev.azure.com/techsmith/ThirdParty-Packages-vcpkg/_build?definitionId=789)" pipeline to contain your new package with it's custom build options and expose it as a new package that a user can choose to build from that pipeline.
+This pipeline is for use when testing out building a new package.  Artifacts from this pipeline should never be shipped to customers.  When you finish testing using this pipeline, you must configure the "[Build Package (preconfigured)](https://dev.azure.com/techsmith/ThirdParty-Packages-vcpkg/_build?definitionId=789)" pipeline to contain your new package with its custom build options and expose it as a new package that a user can choose to build from that pipeline.
 
 This pipeline does the following:
 1. Allows user to enter in:
@@ -32,7 +32,7 @@ This pipeline does the following:
    - A link type (`dynamic` or `static`)
    - A build type (`release` or `debug`)
 2. Gets the latest version of the vcpkg repo and bootstraps the vcpkg executable (see: [microsoft/vcpkg](https://github.com/microsoft/vcpkg))
-3. Builds the package for Mac and Windows
+3. Builds the package for one or more platforms (Mac, Windows, Linux, WASM)
 4. Publishes these packages as pipeline artifacts
 
 ## Testing Locally ("Preconfigured Packages")
@@ -43,12 +43,14 @@ You can build locally from a PowerShell command prompt on Mac or Windows.  By de
 
 #### Example 1: Build the "tinyxml" package for Mac or Windows (depending on the platform you are on):
 ```PowerShell
+pwsh
 ./build-package.ps1 tinyxml
 ```
 
 #### Example 2: Build the "tinyxml" package for wasm:
 ```PowerShell
-./build-package.ps1 --PackageName tinyxml --TargetPlatform wasm
+pwsh
+./build-package.ps1 -PackageName tinyxml -TargetPlatform wasm
 ```
 
 ### Testing locally for Linux on Windows
@@ -57,7 +59,8 @@ Linux builds can be developed and run from Windows via [WSL](https://learn.micro
 #### Example 3: Build "tinyxml" package for linux in wsl †
 ```PowerShell
 wsl
-./build-package.ps1 --PackageName tinyxml
+pwsh
+./build-package.ps1 -PackageName tinyxml
 ```
 
 _† Note: Given that WSL is quite slow when reading / writing files between Linux and Windows, it is actually best to run builds directly within a Linux mounted file location (for example, in wsl you may want to clone this repo to `~/code/ThirdParty-Packages-vcpkg` and use this instead of using the Windows-mounted location of something like `/mnt/c/code/ThirdParty-Packages-vcpkg`)._
