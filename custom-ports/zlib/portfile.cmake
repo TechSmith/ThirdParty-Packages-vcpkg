@@ -7,6 +7,7 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         0001-Prevent-invalid-inclusions-when-HAVE_-is-set-to-0.patch
+        1001-tsc-output-zlib1-dll.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" ZLIB_BUILD_SHARED)
