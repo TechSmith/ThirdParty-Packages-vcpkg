@@ -1,0 +1,23 @@
+diff --git a/tools/ci_build/build.py b/tools/ci_build/build.py
+index d34c762..14a238a 100644
+--- a/tools/ci_build/build.py
++++ b/tools/ci_build/build.py
+@@ -2518,10 +2518,14 @@ def main():
+             emsdk_dir = os.path.join(source_dir, "cmake", "external", "emsdk")
+             emsdk_file = os.path.join(emsdk_dir, "emsdk.bat") if is_windows() else os.path.join(emsdk_dir, "emsdk")
+ 
+-            log.info("Installing emsdk...")
+-            run_subprocess([emsdk_file, "install", emsdk_version], cwd=emsdk_dir)
+-            log.info("Activating emsdk...")
+-            run_subprocess([emsdk_file, "activate", emsdk_version], cwd=emsdk_dir)
++            # Check if EMSDK environment variable is already set (e.g., by vcpkg)
++            if "EMSDK" not in os.environ:
++                log.info("Installing emsdk...")
++                run_subprocess([emsdk_file, "install", emsdk_version], cwd=emsdk_dir)
++                log.info("Activating emsdk...")
++                run_subprocess([emsdk_file, "activate", emsdk_version], cwd=emsdk_dir)
++            else:
++                log.info("Using existing emsdk from environment: {}".format(os.environ["EMSDK"]))
+ 
+         if args.enable_pybind and is_windows():
+             run_subprocess(

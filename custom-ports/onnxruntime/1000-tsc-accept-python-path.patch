@@ -1,0 +1,23 @@
+diff --git a/build.bat b/build.bat
+index d0c6cbcddd..0e6ea54eb2 100644
+--- a/build.bat
++++ b/build.bat
+@@ -6,5 +6,16 @@
+ setlocal
+ set PATH=C:\Program Files\Git\usr\bin;%PATH%
+ 
+-rem Requires a Python install to be available in your PATH
+-python "%~dp0\tools\ci_build\build.py" --build_dir "%~dp0\build\Windows" %*
++rem Accepts the path to the Python executable as the first argument
++set PYTHON_EXE=%~1
++shift
++
++set REMAINING_ARGS=
++:ArgLoop
++if "%~1"=="" goto EndArgLoop
++set REMAINING_ARGS=%REMAINING_ARGS% %1
++shift
++goto ArgLoop
++:EndArgLoop
++
++"%PYTHON_EXE%" "%~dp0\tools\ci_build\build.py" --build_dir "%~dp0\build\Windows" %REMAINING_ARGS%

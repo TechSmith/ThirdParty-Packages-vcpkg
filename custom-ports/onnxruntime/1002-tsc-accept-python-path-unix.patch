@@ -1,0 +1,18 @@
+diff --git a/build.sh b/build.sh
+index bf799ac..c04cc12 100755
+--- a/build.sh
++++ b/build.sh
+@@ -18,4 +18,12 @@ elif [[ "$*" == *"--android"* ]]; then
+     DIR_OS="Android"
+ fi
+ 
+-python3 $DIR/tools/ci_build/build.py --build_dir $DIR/build/$DIR_OS "$@"
++# Accept the path to Python executable as first argument if provided
++if [ -n "$1" ] && [ -x "$1" ]; then
++    PYTHON_EXE="$1"
++    shift
++else
++    PYTHON_EXE="python3"
++fi
++
++"$PYTHON_EXE" $DIR/tools/ci_build/build.py --build_dir $DIR/build/$DIR_OS "$@"
