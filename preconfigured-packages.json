@@ -396,6 +396,21 @@
           "tools": true
         }
       }
+    },
+    {
+      "name": "zlib",
+      "mac": {
+        "package": "zlib",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.03.18"
+      },
+      "win": {
+        "package": "zlib",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.03.18"
+      }
     }
   ]
 }
