@@ -243,21 +243,21 @@
     {
       "filename": "bin/pcre2-16.dll",
       "fileDescription": "Regular Expression pattern matching using the same syntax and semantics as Perl 5.",
-      "fileVersion": "10.47",
+      "fileVersion": "12.0.2",
       "productName": "Pcre2",
       "productVersion": "10.47"
     },
     {
       "filename": "bin/pcre2-32.dll",
       "fileDescription": "Regular Expression pattern matching using the same syntax and semantics as Perl 5.",
-      "fileVersion": "10.47",
+      "fileVersion": "12.0.2",
       "productName": "Pcre2",
       "productVersion": "10.47"
     },
     {
       "filename": "bin/pcre2-8.dll",
       "fileDescription": "Regular Expression pattern matching using the same syntax and semantics as Perl 5.",
-      "fileVersion": "10.47",
+      "fileVersion": "12.0.2",
       "productName": "Pcre2",
       "productVersion": "10.47"
     },
