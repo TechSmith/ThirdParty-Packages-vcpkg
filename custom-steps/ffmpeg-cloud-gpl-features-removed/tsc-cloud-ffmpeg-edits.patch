@@ -1,0 +1,53 @@
+--- "a/portfile.cmake"
++++ "b/portfile.cmake"
+@@ -1,3 +1,34 @@
++set(TSC_EXPECTED_FFMPEG_VERSION "8.0.1")
++
++if(NOT VERSION STREQUAL TSC_EXPECTED_FFMPEG_VERSION)
++    message(FATAL_ERROR "Error: For this custom techsmith build of ffmpeg, we expected upstream version ${TSC_EXPECTED_FFMPEG_VERSION}, but version ${VERSION} was used. There may be a conflict with other custom-ports for ffmpeg, or the wrong vcpkg tag was used and the requested version isn't available.")
++endif()
++
++# TechSmith custom build options for cloud. Major functionality is specified via features
++# in vcpkg.json. We only want minimal changes on top of standard ffmpeg builds.
++# Note that certain build flags require dependencies or other flags, so it's better to rely
++# on the vcpkg features.
++
++set(
++    TSC_CUSTOM_BUILD_OPTIONS
++
++    # Disable DASH playlist vulnerability
++    "--disable-libxml2"
++
++    # Remove mbedtls dependency with critical CVE
++    "--disable-mbedtls"
++
++    # Disable all network protocols since we don't need any except file
++    "--disable-protocols"
++    "--enable-protocol=file,pipe"
++)
++
++# Change list to be space-delimited string to be appended later
++list(JOIN TSC_CUSTOM_BUILD_OPTIONS " " TSC_CUSTOM_BUILD_OPTIONS)
++
++message(STATUS "TechSmith customizations: Enabled ffmpeg vcpkg features: ${FEATURES}")
++message(STATUS "TechSmith customizations: ffmpeg custom build flags: ${TSC_CUSTOM_BUILD_OPTIONS})")
++
+ vcpkg_from_github(
+     OUT_SOURCE_PATH SOURCE_PATH
+     REPO ffmpeg/ffmpeg
+@@ -719,9 +750,15 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+     set(OPTIONS "${OPTIONS} --pkg-config-flags=--static")
+ endif()
+ 
++message(STATUS "TechSmith customizations: Appending custom ffmpeg build options '${TSC_CUSTOM_BUILD_OPTIONS}'")
++
++# Append options after, so they override anything previously set. However, this can cause issues if not careful.
++set(OPTIONS "${OPTIONS} ${TSC_CUSTOM_BUILD_OPTIONS}")
++
+ message(STATUS "Building Options: ${OPTIONS}")
+ 
+ # Release build
++
+ if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
+     if (VCPKG_DETECTED_MSVC)
+         set(OPTIONS_RELEASE "${OPTIONS_RELEASE} --extra-ldflags=-libpath:\"${CURRENT_INSTALLED_DIR}/lib\"")

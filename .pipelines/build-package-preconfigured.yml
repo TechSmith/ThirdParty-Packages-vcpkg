@@ -16,6 +16,7 @@ parameters:
   - ffmpeg-desktop-base
   - ffmpeg-desktop-hevc
   - ffmpeg-wasm
+  - ffmpeg-cloud-gpl-features-removed
   - glslang
   - hunspell
   - hunspell-debug

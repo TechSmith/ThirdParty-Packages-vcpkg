@@ -11,7 +11,10 @@ function Install-FromVcpkg {
 
     $pkgToInstall = "${packageAndFeatures}:${triplet}"
     Write-Message "Installing package: `"$pkgToInstall`""
-    Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
+    $vcpkgRoot = Get-VcpkgInstallDir
+    Write-Message "Using --vcpkg-root $vcpkgRoot"
+
+    Invoke-Expression "./$(Get-VcPkgExe) install --debug --vcpkg-root $vcpkgRoot `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
 }
 
 function Get-PackageNameOnly {
@@ -130,6 +133,17 @@ function Copy-ItemWithSymlinks {
 ##################################################
 # Exported Functions
 ##################################################
+
+function Get-VcpkgInstallDir{
+   # Install local to the root of the source code repository checked out.
+   # Get absolute path so this dir is consistent for any callers in any CWD.
+   $repoRoot = Resolve-Path "$PSScriptRoot/../../.."
+   $localVcpkgDir = Join-Path "$repoRoot" "vcpkg"
+
+   # string
+   return $localVcpkgDir
+}
+
 function Get-PackageInfo
 {
     param(
@@ -198,7 +212,7 @@ function Run-CleanupStep {
    }
 
    Write-Message "Removing vcpkg dir..."
-   $vcpkgInstallDir = "./vcpkg"
+   $vcpkgInstallDir = Get-VcpkgInstallDir
    if (Test-Path -Path $vcpkgInstallDir -PathType Container) {
       Remove-Item -Path $vcpkgInstallDir -Recurse -Force
    }
@@ -216,7 +230,7 @@ function Run-SetupVcpkgStep {
    )
 
    $repo = "https://github.com/microsoft/vcpkg.git"
-   $installDir = "./vcpkg"
+   $installDir = Get-VcpkgInstallDir
    if ( (Get-IsOnWindowsOS) ) {
        $bootstrapScript = "./bootstrap-vcpkg.bat"
    } elseif ( (Get-IsOnMacOS) -or (Get-IsOnLinux) ) {
@@ -246,7 +260,11 @@ function Run-PreBuildStep {
       [string]$packageAndFeatures
    )
    $packageNameOnly = (Get-PackageNameOnly $packageAndFeatures)
-   Run-ScriptIfExists -title "Pre-build step" -script "custom-steps/$packageNameOnly/pre-build.ps1"
+   $possiblePrebuildScriptPath = "custom-steps/$packageNameOnly/pre-build.ps1"
+
+   Write-Message "Running pre-build script '$possiblePrebuildScriptPath' if it exists (working directory: $PWD)"
+
+   Run-ScriptIfExists -title "Pre-build step" -script "$possiblePrebuildScriptPath"
 }
 
 function Check-IsEmscriptenBuild {
@@ -328,10 +346,11 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    $isUniversalBinary = ((Get-IsOnMacOS) -and ($triplets.Count -eq 2))
 
    # Get dirs to copy
+   $vcpkgInstallDir = Get-VcpkgInstallDir
    $srcToDestDirs = @{}
    if($isUniversalBinary) {
-      $srcX64Dir = "./vcpkg/installed/$($triplets[0])"
-      $srcArm64Dir = "./vcpkg/installed/$($triplets[1])"
+      $srcX64Dir = "$vcpkgInstallDir/installed/$($triplets[0])"
+      $srcArm64Dir = "$vcpkgInstallDir/installed/$($triplets[1])"
       $destArm64LibDir = "$preStagePath/arm64Lib"
       $destX64LibDir = "$preStagePath/x64Lib"
       $destArm64ToolsDir = "$preStagePath/arm64Tools"
@@ -347,7 +366,7 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
    }
    else {
       $firstTriplet = $triplets | Select-Object -First 1
-      $mainSrcDir = "./vcpkg/installed/$firstTriplet"
+      $mainSrcDir = "$vcpkgInstallDir/installed/$firstTriplet"
       $srcToDestDirs = @{
          "$mainSrcDir/include" = "$preStagePath/include"
          "$mainSrcDir/share" = "$preStagePath/share"
@@ -576,6 +595,7 @@ function Apply-VcpkgPortPatch {
     $workDir = if ($WorkingDirectory) { $WorkingDirectory } else { $vcpkgPortDir }
     
     Write-Message "> Applying patch to $PortName port: $(Split-Path -Leaf $PatchFile)"
+    Write-Message "> Applying patch from working directory : $workDir"
     
     Push-Location $workDir
     try {
@@ -603,7 +623,7 @@ function Apply-VcpkgPortPatch {
     }
 }
 
-Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
+Export-ModuleMember -Function Get-VcpkgInstallDir, Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
 Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink, Apply-VcpkgPortPatch
 
 if ( (Get-IsOnMacOS) ) {

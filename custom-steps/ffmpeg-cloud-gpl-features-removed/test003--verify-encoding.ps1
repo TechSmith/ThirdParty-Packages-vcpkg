@@ -43,10 +43,9 @@ $tests = @(
 
     # --- MP4 Tests ---
     @{
-        Name = "Verify encoding fails - MP4: h.264 + AAC (libx264)"
+        Name = "Verify encoding succeeds - MP4: h.264 + AAC (libx264)"
         OutFilename = "libx264_aac.mp4"
         CmdPrefix = "$ffmpegCmd -ss 2.0 -to 5.0 -c:v libx264 -c:a aac -f mp4"
-        ExpectedReturnCode = if(Get-IsOnWindowsOS) { -1129203192 } elseif(Get-IsOnMacOS) { 8 } else { -1 }
     },
     @{
         Name = "Verify encoding succeeds - MP4: VP9 + Opus (libvpx-vp9, libopus)"
