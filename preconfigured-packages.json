@@ -161,13 +161,13 @@
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "fb87e2bb3fe69e16c224989acb5a61349166c782"
+        "vcpkgHash": "2026.03.18"
       },
       "win": {
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "fb87e2bb3fe69e16c224989acb5a61349166c782"
+        "vcpkgHash": "2026.03.18"
       }
     },
     {
@@ -395,6 +395,21 @@
           "share": true,
           "tools": true
         }
+      }
+    },
+    {
+      "name": "zlib",
+      "mac": {
+        "package": "zlib",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.03.18"
+      },
+      "win": {
+        "package": "zlib",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.03.18"
       }
     }
   ]
