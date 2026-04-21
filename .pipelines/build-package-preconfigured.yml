@@ -13,6 +13,7 @@ parameters:
   - buildcache
   - dawn
   - ffmpeg-cloud-gpl
+  - ffmpeg-cloud-leap
   - ffmpeg-desktop-base
   - ffmpeg-desktop-hevc
   - ffmpeg-wasm
