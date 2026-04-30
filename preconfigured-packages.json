@@ -31,19 +31,6 @@
     },
     {
       "name": "ffmpeg-desktop-hevc",
-      "mac": {
-        "package": "ffmpeg[tsc-desktop-mac,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc,parser-hevc]",
-        "linkType": "dynamic",
-        "buildType": "release",
-        "vcpkgHash": "2025.04.09",
-        "publish": {
-          "include": true,
-          "lib": true,
-          "bin": true,
-          "share": true,
-          "tools": true
-        }
-      },
       "win": {
         "package": "ffmpeg[tsc-desktop-win,encoder-hevc-mf,encoder-hevc-qsv,decoder-hevc,decoder-hevc-qsv,demuxer-hevc,parser-hevc]",
         "linkType": "dynamic",
