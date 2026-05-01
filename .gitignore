@@ -7,3 +7,4 @@ logs/
 _temp/
 /agent.md
 /progress.md
+**/test-output/

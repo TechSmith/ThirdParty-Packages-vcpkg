@@ -1,0 +1,10 @@
+--- a/portfile.cmake
++++ b/portfile.cmake
+@@ -6,6 +6,7 @@ vcpkg_from_git(
+     PATCHES
+         aom-rename-static.diff
+         aom-uninitialized-pointer.diff
++        1001-tsc-aom-fix-nasm-multipass-check.patch
+         export-config.diff
+ )
+ 
