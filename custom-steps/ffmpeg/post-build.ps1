@@ -72,6 +72,7 @@ $testScripts = @(
    "test002--verify-decoding.ps1"
    "test003--verify-encoding.ps1"
    "test004--verify-filters.ps1"
+   "test005--verify-ogg.ps1"
 )
 foreach($testScript in $testScripts) {
    Write-Message "$(NL)Running tests: $testScript..."
