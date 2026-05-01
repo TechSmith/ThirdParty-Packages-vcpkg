@@ -253,33 +253,54 @@ $tests +=
    NotExpectedValues = ($features -contains "encoder-hevc-qsv") ? @() : @( " hevc_qsv " )
    IsEnabled = (Get-IsOnMacOS)
 },
-{
+@{
    Name = "DecodersHEVC"
    CmdOption = "-decoders"
    ExpectedValues = ($features -contains "decoder-hevc") ? @( " hevc " ) : @()
    NotExpectedValues = ($features -contains "decoder-hevc") ? @() : @( " hevc " )
    IsEnabled = $true
 },
-{
+@{
    Name = "DecodersWinHEVCMF"
    CmdOption = "-decoders"
    ExpectedValues = ($features -contains "decoder-hevc-mf") ? @( " hevc_mf " ) : @()
    NotExpectedValues = ($features -contains "decoder-hevc-mf") ? @() : @( " hevc_mf " )
    IsEnabled = (Get-IsOnWindowsOS)
 },
-{
+@{
    Name = "DecodersWinHEVCQSV"
    CmdOption = "-decoders"
    ExpectedValues = ($features -contains "decoder-hevc-qsv") ? @( " hevc_qsv " ) : @()
    NotExpectedValues = ($features -contains "decoder-hevc-qsv") ? @() : @( " hevc_qsv " )
    IsEnabled = (Get-IsOnWindowsOS)
 },
-{
-   Name = "DemuxersHEVC"
-   CmdOption = "-demuxers"
-   ExpectedValues = ($features -contains "demuxer-hevc") ? @( " hevc " ) : @()
-   NotExpectedValues = ($features -contains "demuxer-hevc") ? @() : @( " hevc " )
-   IsEnabled = $true
+@{
+    Name = "DemuxersHEVC"
+    CmdOption = "-demuxers"
+    ExpectedValues = ($features -contains "demuxer-hevc") ? @( " hevc " ) : @()
+    NotExpectedValues = ($features -contains "demuxer-hevc") ? @() : @( " hevc " )
+    IsEnabled = $true
+},
+@{
+    Name = "MuxersOGG"
+    CmdOption = "-muxers"
+    ExpectedValues = ($features -contains "muxer-ogg") ? @( " ogg " ) : @()
+    NotExpectedValues = ($features -contains "muxer-ogg") ? @() : @( " ogg " )
+    IsEnabled = $true
+},
+@{
+    Name = "DemuxersOGG"
+    CmdOption = "-demuxers"
+    ExpectedValues = ($features -contains "demuxer-ogg") ? @( " ogg " ) : @()
+    NotExpectedValues = ($features -contains "demuxer-ogg") ? @() : @( " ogg " )
+    IsEnabled = $true
+},
+@{
+    Name = "MuxersWAV"
+    CmdOption = "-muxers"
+    ExpectedValues = ($features -contains "muxer-wav") ? @( " wav " ) : @()
+    NotExpectedValues = ($features -contains "muxer-wav") ? @() : @( " wav " )
+    IsEnabled = $true
 }
 
 $runMsg     = " RUN      "
