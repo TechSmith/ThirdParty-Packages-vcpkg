@@ -411,6 +411,19 @@
         "buildType": "release",
         "vcpkgHash": "2026.03.18"
       }
+    },
+    {
+      "name": "thorvg",
+      "mac": {
+        "package": "thorvg",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "win": {
+        "package": "thorvg",
+        "linkType": "static",
+        "buildType": "release"
+      }
     }
   ]
 }
