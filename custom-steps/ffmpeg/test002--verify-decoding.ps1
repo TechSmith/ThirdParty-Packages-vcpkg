@@ -21,10 +21,33 @@ if (-Not (Test-Path $OutputDir)) {
 $ffmpegExe = "$FFMpegExePath -hide_banner"
 $tests = @()
 $features = Get-Features $PackageAndFeatures
-$resourcesDir = "$PSScriptRoot/../../resources" 
+$resourcesDir = "$PSScriptRoot/../../resources"
+
+# OGG decode tests
+$inputOggVorbis = "$resourcesDir/AudioClip-vorbis.ogg"
+$inputOggOpus = "$resourcesDir/AudioClip-opus.ogg"
+if($features -contains "demuxer-ogg" -and $features -contains "decoder-vorbis")
+{
+   $tests += 
+   @{
+      Name = "Verify decoding succeeds - OGG: Vorbis to WAV"
+      OutFilename = "ogg-vorbis-decoded.wav"
+      CmdPrefix = "$ffmpegExe -i `"$inputOggVorbis`" -c:a pcm_s16le -f wav"
+      ExpectedReturnCode = 0
+   }
+}
+if($features -contains "demuxer-ogg" -and $features -contains "decoder-opus")
+{
+   $tests += 
+   @{
+      Name = "Verify decoding succeeds - OGG: Opus to WAV"
+      OutFilename = "ogg-opus-decoded.wav"
+      CmdPrefix = "$ffmpegExe -i `"$inputOggOpus`" -c:a pcm_s16le -f wav"
+      ExpectedReturnCode = 0
+   }
+}
 
 # H.264 decode tests
-$features = Get-Features $PackageAndFeatures
 $inputH264Video = "$PSScriptRoot/../../resources/BigBuckBunnyClip-h264-240p.mp4"
 $ffmpegDecodeH264FrameCmd = "$ffmpegExe -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1"
 $tests += 

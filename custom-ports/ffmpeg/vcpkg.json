@@ -1,7 +1,7 @@
 {
   "name": "ffmpeg",
-  "version": "7.1.1",
-  "port-version": 1,
+  "version": "7.1.2",
+  "port-version": 3,
   "description": [
     "A library to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created.",
     "FFmpeg is the leading multimedia framework, able to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created. It supports the most obscure ancient formats up to the cutting edge. No matter if they were designed by some standards committee, the community or a corporation. It is also highly portable: FFmpeg compiles, runs, and passes our testing infrastructure FATE across Linux, Mac OS X, Microsoft Windows, the BSDs, Solaris, etc. under a wide variety of build environments, machine architectures, and configurations."
@@ -62,6 +62,7 @@
             "theora",
             "vorbis",
             "vpx",
+            "vulkan",
             "webp",
             "xml2",
             "zlib"
@@ -647,6 +648,17 @@
         "libtheora"
       ]
     },
+    "vaapi": {
+      "description": "VAAPI video decoding/encoding acceleration",
+      "supports": "linux",
+      "dependencies": [
+        {
+          "name": "libva",
+          "default-features": false,
+          "platform": "linux"
+        }
+      ]
+    },
     "version3": {
       "description": "Upgrade (L)GPL to version 3"
     },
@@ -667,6 +679,12 @@
           ]
         },
         "libvpx"
+      ]
+    },
+    "vulkan": {
+      "description": "H.264, HEVC and AV1 de/encoding via Vulkan",
+      "dependencies": [
+        "vulkan-headers"
       ]
     },
     "webp": {
@@ -776,6 +794,9 @@
             "encoder-libvpx-vp8",
             "encoder-libvpx-vp9",
             "encoder-opus",
+            "encoder-pcm-s16le",
+            "encoder-pcm-s24le",
+            "encoder-pcm-f32le",
             "encoder-png",
             "encoder-vorbis",
             "demuxer-aac",
@@ -785,6 +806,7 @@
             "demuxer-mp3",
             "demuxer-mpegts",
             "demuxer-mpegtsraw",
+            "demuxer-ogg",
             "demuxer-wav",
             "muxer-image2",
             "muxer-matroska",
@@ -793,7 +815,9 @@
             "muxer-mp4",
             "muxer-mpegts",
             "muxer-mkvtimestamp-v2",
+            "muxer-ogg",
             "muxer-rtp-mpegts",
+            "muxer-wav",
             "muxer-webm",
             "parser-aac",
             "parser-aac-latm",
@@ -868,11 +892,15 @@
             "decoder-pcm-all",
             "encoder-aac",
             "encoder-libopus",
+            "encoder-pcm-s16le",
+            "encoder-pcm-s24le",
+            "encoder-pcm-f32le",
             "demuxer-mov",
             "demuxer-mp3",
             "demuxer-wav",
             "muxer-mov",
             "muxer-mp4",
+            "muxer-wav",
             "parser-aac",
             "parser-aac-latm",
             "parser-opus",

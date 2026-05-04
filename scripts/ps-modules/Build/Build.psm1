@@ -114,7 +114,8 @@ function Copy-ItemWithSymlinks {
        $destPath = Join-Path -Path $destination -ChildPath $relativePath
 
        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-         New-Item -ItemType SymbolicLink -Path $destPath -Target $item.Target -Force | Out-Null
+          $targetPath = if ($item.Target -is [array]) { $item.Target[0] } else { $item.Target }
+          New-Item -ItemType SymbolicLink -Path $destPath -Target $targetPath -Force | Out-Null
        }
        else {
          if ($item.PSIsContainer) {

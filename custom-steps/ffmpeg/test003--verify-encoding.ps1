@@ -19,11 +19,12 @@ if (-Not (Test-Path $OutputDir)) {
 }
 
 $inputVideo = "$PSScriptRoot/../../resources/BigBuckBunnyClip-vp9-240p.mp4"
+$inputMp3Audio = "$PSScriptRoot/../../resources/AIVoiceAudioClip.mp3"
 $ffmpegExe = "$FFMpegExePath -hide_banner"
 $ffmpegCmd = "$ffmpegExe -i `"$inputVideo`" -r 30 -b:a 192k"
 
 # Define the encoding commands with explicit format specification
-$features = ($PackageAndFeatures -match '\[(.*?)\]')[1] -split ','
+$features = Get-Features $PackageAndFeatures
 $tests = @(
     # --- M4A Tests ---
     @{
@@ -93,6 +94,26 @@ $tests = @(
         CmdPrefix = "$ffmpegCmd -ss 2.0 -to 5.0 -c:v libvpx -c:a libvorbis -f matroska"
     }
 )
+
+# OGG encoding tests (conditional based on features)
+if($features -contains "muxer-ogg" -and $features -contains "encoder-vorbis")
+{
+   $tests += 
+   @{
+      Name = "Verify encoding succeeds - OGG: Vorbis (libvorbis) from MP3"
+      OutFilename = "vorbis.ogg"
+      CmdPrefix = "$ffmpegExe -ss 0 -to 3.0 -i `"$inputMp3Audio`" -c:a libvorbis -b:a 128k -f ogg"
+   }
+}
+if($features -contains "muxer-ogg" -and $features -contains "encoder-opus")
+{
+   $tests += 
+   @{
+      Name = "Verify encoding succeeds - OGG: Opus (libopus) from MP3"
+      OutFilename = "opus.ogg"
+      CmdPrefix = "$ffmpegExe -ss 0 -to 3.0 -i `"$inputMp3Audio`" -c:a libopus -b:a 128k -f ogg"
+   }
+}
 
 $runMsg     = " RUN      "
 $successMsg = "       OK "

@@ -1,0 +1,12 @@
+diff --git a/ports/aom/portfile.cmake b/ports/aom/portfile.cmake
+index dad9f4f17f..796d0a9bce 100644
+--- a/ports/aom/portfile.cmake
++++ b/ports/aom/portfile.cmake
+@@ -6,6 +6,7 @@ vcpkg_from_git(
+     PATCHES
+         aom-rename-static.diff
+         aom-uninitialized-pointer.diff
++        1001-tsc-aom-fix-nasm-multipass-check.patch
+ )
+ 
+ vcpkg_find_acquire_program(NASM)
