@@ -12,6 +12,7 @@ parameters:
   values:
   - buildcache
   - dawn
+  - directx-headers
   - ffmpeg-cloud-gpl
   - ffmpeg-desktop-base
   - ffmpeg-desktop-hevc
