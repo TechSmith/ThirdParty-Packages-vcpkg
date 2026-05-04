@@ -12,6 +12,7 @@ parameters:
   values:
   - buildcache
   - dawn
+  - directx-headers
   - ffmpeg-cloud-gpl
   - ffmpeg-desktop-base
   - ffmpeg-desktop-hevc
@@ -24,6 +25,7 @@ parameters:
   - libzip-static
   - libzip-dynamic
   - minizip
+  - onnxruntime
   - openblas
   - openssl-static
   - opencv4

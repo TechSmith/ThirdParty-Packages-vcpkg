@@ -1,0 +1,220 @@
+{
+  "name": "onnxruntime",
+  "version-semver": "1.23.2",
+  "description": "ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator",
+  "homepage": "https://github.com/microsoft/onnxruntime",
+  "license": "MIT",
+  "supports": "!uwp",
+  "default-features": [
+    {
+      "name": "directml",
+      "platform": "windows"
+    },
+    {
+      "name": "directx-headers",
+      "platform": "windows"
+    },
+    {
+      "name": "cppwinrt",
+      "platform": "windows"
+    },
+    {
+      "name": "winml",
+      "platform": "windows"
+    },
+    {
+      "name": "coreml",
+      "platform": "osx | ios"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "abseil",
+      "version>=": "20250512.1"
+    },
+    {
+      "name": "boost-config",
+      "version>=": "1.82.0"
+    },
+    {
+      "name": "boost-mp11",
+      "version>=": "1.82.0"
+    },
+    "cpuinfo",
+    "cxxopts",
+    "date",
+    "dlpack",
+    "eigen3",
+    {
+      "name": "flatbuffers-onnxruntime",
+      "host": true
+    },
+    "flatbuffers-onnxruntime",
+    "ms-gsl",
+    "nlohmann-json",
+    {
+      "name": "onnx",
+      "version>=": "1.19.0"
+    },
+    "optional-lite",
+    {
+      "name": "protobuf",
+      "version>=": "3.21.12"
+    },
+    {
+      "name": "protobuf",
+      "host": true,
+      "version>=": "3.21.12"
+    },
+    "re2",
+    "safeint",
+    "utf8-range",
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    {
+      "name": "wil",
+      "platform": "windows"
+    }
+  ],
+  "features": {
+    "azure": {
+      "description": "Build with Azure execution provider support"
+    },
+    "cann": {
+      "description": "Build with CANN execution provider (Huawei Ascend)",
+      "supports": "linux"
+    },
+    "coreml": {
+      "description": "Build with CoreML execution provider (macOS/iOS only)",
+      "supports": "osx | ios"
+    },
+    "cppwinrt": {
+      "description": "Build with C++/WinRT projection headers (Windows only)",
+      "supports": "windows",
+      "dependencies": [
+        "cppwinrt"
+      ]
+    },
+    "cuda": {
+      "description": "Build with CUDA support",
+      "supports": "(x64 & windows & !static) | (x64 & linux)",
+      "dependencies": [
+        "cuda",
+        "cudnn",
+        "cudnn-frontend",
+        "nvidia-cutlass"
+      ]
+    },
+    "directml": {
+      "description": "Build with DirectML execution provider (Windows only)",
+      "supports": "windows & !uwp",
+      "dependencies": [
+        "directml"
+      ]
+    },
+    "directx-headers": {
+      "description": "Build with DirectX headers (Windows only)",
+      "supports": "windows",
+      "dependencies": [
+        "directx-headers"
+      ]
+    },
+    "dnnl": {
+      "description": "Build with oneDNN (DNNL) execution provider",
+      "supports": "!android & !ios"
+    },
+    "framework": {
+      "description": "Build a macOS/iOS framework, Objective-C library",
+      "supports": "osx | ios"
+    },
+    "migraphx": {
+      "description": "Build with AMD MIGraphX execution provider",
+      "supports": "linux"
+    },
+    "mimalloc": {
+      "description": "Build with mimalloc allocator",
+      "dependencies": [
+        "mimalloc"
+      ]
+    },
+    "nccl": {
+      "description": "Build with NCCL support for distributed training",
+      "supports": "linux"
+    },
+    "nnapi": {
+      "description": "Build with NNAPI execution provider (Android only)",
+      "supports": "android"
+    },
+    "openvino": {
+      "description": "Build with OpenVINO support",
+      "supports": "!(osx | ios | android | emscripten)",
+      "dependencies": [
+        {
+          "name": "openvino",
+          "default-features": false,
+          "features": [
+            "cpu",
+            "gpu",
+            "onnx"
+          ]
+        }
+      ]
+    },
+    "qnn": {
+      "description": "Build with Qualcomm QNN execution provider",
+      "supports": "(windows | linux | android) & (x64 | arm64)"
+    },
+    "rknpu": {
+      "description": "Build with Rockchip RKNPU execution provider",
+      "supports": "linux & arm64"
+    },
+    "snpe": {
+      "description": "Build with Qualcomm SNPE execution provider",
+      "supports": "android"
+    },
+    "telemetry": {
+      "description": "Build with telemetry support",
+      "supports": "windows"
+    },
+    "tensorrt": {
+      "description": "Build with TensorRT support",
+      "dependencies": [
+        {
+          "name": "onnxruntime",
+          "default-features": false,
+          "features": [
+            "cuda"
+          ]
+        }
+      ]
+    },
+    "test": {
+      "description": "Build unit tests and benchmarks"
+    },
+    "training": {
+      "description": "Enable full training functionality including ORTModule and ORT Training APIs"
+    },
+    "vitisai": {
+      "description": "Build with AMD Vitis-AI execution provider"
+    },
+    "vsinpu": {
+      "description": "Build with VSI NPU execution provider"
+    },
+    "webnn": {
+      "description": "Build with WebNN execution provider for browser hardware acceleration"
+    },
+    "winml": {
+      "description": "Build with WinML support",
+      "supports": "windows & !uwp"
+    },
+    "xnnpack": {
+      "description": "Build with XNNPACK execution provider"
+    }
+  }
+}
