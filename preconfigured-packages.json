@@ -424,6 +424,15 @@
         "customTriplets": ["onnxruntime/x64-windows-dynamic-release"],
         "vcpkgHash": "2026.03.18"
       }
+    },
+    {
+      "name": "directx-headers",
+      "win": {
+        "package": "directx-headers",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.03.18"
+      }
     }
   ]
 }
