@@ -6,7 +6,7 @@ index ff54d64..6a9f8b5 100644
  
  # Set the version numbers
  set_target_properties(whisper PROPERTIES
-+    OUTPUT_NAME "whisper-basic"
++    OUTPUT_NAME "whisper-cpuaccel"
      VERSION ${PROJECT_VERSION}
      SOVERSION ${SOVERSION}
  )
