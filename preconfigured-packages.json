@@ -371,6 +371,23 @@
       }
     },
     {
+      "name": "boost-tsc",
+      "mac": {
+        "package": "boost-tsc[process]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.04.27"
+      },
+      "win": {
+        "package": "boost-tsc",
+        "customTriplet": "x64-windows-static-md",
+        "vcpkgHash": "2026.04.27",
+        "publish": {
+          "debug": true
+        }
+      }
+    },
+    {
       "name": "buildcache",
       "mac": {
         "package": "buildcache",
