@@ -6,6 +6,7 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         harden-jerryscript.patch
+        use-system-libwebp.patch
 )
 
 if ("tools" IN_LIST FEATURES)

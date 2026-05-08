@@ -6,6 +6,7 @@
   "license": "MIT",
   "supports": "!uwp",
   "dependencies": [
+    "libwebp",
     {
       "name": "vcpkg-tool-meson",
       "host": true
