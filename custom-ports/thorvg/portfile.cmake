@@ -4,11 +4,20 @@ vcpkg_from_github(
     REF "v${VERSION}"
     SHA512 2f25b36d5dffa2258a05616ea07fb881407a5d665d80696c8438854cb72ff52f6020c6e44a3eacde135dc0e5301a05aaca8a136204b03f5d3803fc638d2b38b4
     HEAD_REF master
+    PATCHES
+        harden-jerryscript.patch
 )
 
 if ("tools" IN_LIST FEATURES)
     list(APPEND BUILD_OPTIONS -Dtools=all)
 endif()
+
+# Harden the bundled JerryScript used by Lottie expressions:
+#   JERRY_VM_HALT=1       — compile in the VM halt callback mechanism so
+#                           infinite loops can be terminated.
+#   JERRY_STACK_LIMIT=96  — cap the JS native stack at 96 KB to prevent
+#                           stack-overflow crashes from deeply recursive scripts.
+string(APPEND JERRY_HARDENING_FLAGS " -DJERRY_VM_HALT=1 -DJERRY_STACK_LIMIT=96")
 
 vcpkg_configure_meson(
     SOURCE_PATH "${SOURCE_PATH}"
@@ -23,7 +32,8 @@ vcpkg_configure_meson(
         -Dbindings=capi
         -Dtests=false
         -Dstrip=false
-        -Dextra=['']
+        -Dextra=['lottie_exp']
+        -Dcpp_args=${JERRY_HARDENING_FLAGS}
     OPTIONS_DEBUG
         -Dlog=true
         -Dbindir=${CURRENT_PACKAGES_DIR}/debug/bin
