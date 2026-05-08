@@ -6,6 +6,8 @@
   "license": "MIT",
   "supports": "!uwp",
   "dependencies": [
+    "libjpeg-turbo",
+    "libwebp",
     {
       "name": "vcpkg-tool-meson",
       "host": true
