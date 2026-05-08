@@ -423,6 +423,16 @@
         "package": "thorvg",
         "linkType": "static",
         "buildType": "release"
+      },
+      "linux": {
+        "package": "thorvg",
+        "linkType": "static",
+        "buildType": "release"
+      },
+      "wasm": {
+        "package": "thorvg",
+        "linkType": "static",
+        "buildType": "release"
       }
     }
   ]
