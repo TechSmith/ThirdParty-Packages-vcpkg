@@ -358,13 +358,13 @@
     {
       "name": "dawn",
       "mac": {
-        "package": "dawn",
+        "package": "dawn[tint-tools]",
         "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "2026.04.27"
       },
       "win": {
-        "package": "dawn[core,d3d12,vulkan]",
+        "package": "dawn[core,d3d12,vulkan,tint-tools]",
         "customTriplet": "x64-windows-static-md",
         "vcpkgHash": "2026.04.27",
         "publish": {
