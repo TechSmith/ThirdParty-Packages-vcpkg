@@ -1,0 +1,14 @@
+diff --git a/ports/dawn/portfile.cmake b/ports/dawn/portfile.cmake
+index 2c000124..a99699b5 100644
+--- a/ports/dawn/portfile.cmake
++++ b/ports/dawn/portfile.cmake
+@@ -54,6 +54,9 @@ vcpkg_from_github(
+         011-fix-dxc.patch
+         # https://github.com/google/dawn/commit/d0a283a7a5e6320ca919f9580590371086f41dd6
+         012-fix-non-target-leaking.patch
++        # Apple Clang does not support implicit CTAD for aggregates (P1816R0/P1021R4).
++        # Add explicit deduction guide for the `overloaded` helper struct.
++        1002-tsc-fix-overloaded-ctad-macos.patch
+ )
+ 
+ function(checkout_in_path PATH URL REF)
