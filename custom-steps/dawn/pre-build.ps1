@@ -9,11 +9,28 @@ if (-not (Get-IsOnMacOS)) {
 # so we add an explicit deduction guide.
 Write-Message "Applying dawn overloaded CTAD fix for macOS..."
 $portDir = "vcpkg/ports/dawn"
-if (Test-Path $portDir) {
+$portfile = "$portDir/portfile.cmake"
+if (Test-Path $portfile) {
+    # Copy the source patch into the port directory
     Copy-Item "$PSScriptRoot/dawn-port-patches/1002-tsc-fix-overloaded-ctad-macos.patch" "$portDir/"
-    $patchSuccess = Apply-VcpkgPortPatch -PortName "dawn" -PatchFile "$PSScriptRoot/add-dawn-port-patch.patch"
-    if (-not $patchSuccess) {
-        Write-Message "WARNING: Failed to apply dawn portfile patch" -Error
+
+    # Directly insert our patch reference into the portfile's PATCHES list.
+    # We avoid Apply-VcpkgPortPatch because its --inaccurate-eof flag strips
+    # trailing newlines, merging the closing ')' with the next line.
+    $content = Get-Content $portfile -Raw
+    $anchor = "012-fix-non-target-leaking.patch"
+    $insertion = @"
+        012-fix-non-target-leaking.patch
+        # Apple Clang does not support implicit CTAD for aggregates (P1816R0/P1021R4).
+        # Add explicit deduction guide for the ``overloaded`` helper struct.
+        1002-tsc-fix-overloaded-ctad-macos.patch
+"@
+    $newContent = $content.Replace("        $anchor", $insertion)
+    if ($newContent -eq $content) {
+        Write-Message "WARNING: Could not find anchor line '$anchor' in portfile.cmake" -Error
+    } else {
+        Set-Content -Path $portfile -Value $newContent -NoNewline
+        Write-Message "Successfully patched portfile.cmake to include CTAD fix"
     }
 } else {
     Write-Message "WARNING: dawn port directory not found, skipping CTAD patch"

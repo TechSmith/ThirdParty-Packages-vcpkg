@@ -1,5 +1,4 @@
 diff --git a/ports/dawn/portfile.cmake b/ports/dawn/portfile.cmake
-index 2c000124..a99699b5 100644
 --- a/ports/dawn/portfile.cmake
 +++ b/ports/dawn/portfile.cmake
 @@ -54,6 +54,9 @@ vcpkg_from_github(
