@@ -1,0 +1,12 @@
+diff --git a/ports/libvorbis/portfile.cmake b/ports/libvorbis/portfile.cmake
+index dad9f4f17f..796d0a9bce 100644
+--- a/ports/libvorbis/portfile.cmake
++++ b/ports/libvorbis/portfile.cmake
+@@ -6,6 +6,7 @@ vcpkg_from_github(
+     PATCHES
+         0001-Dont-export-vorbisenc-functions.patch
+         0002-Fixup-pkgconfig-libs.patch
++        1001-tsc-libvorbis-add-windows-version-resources.patch
+         0003-def-mingw-compat.patch
+         0004-ogg-find-dependency.patch
+ )
