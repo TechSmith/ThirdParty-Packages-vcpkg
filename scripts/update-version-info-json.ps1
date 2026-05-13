@@ -71,6 +71,11 @@ function Normalize-VersionNumber {
     if ([string]::IsNullOrWhiteSpace($Version)) {
         return $Version
     }
+
+    # Normalize comma-separated version strings (e.g. "2, 32, 10, 0" -> "2.32.10.0")
+    if ($Version -match '^\d+,') {
+        $Version = ($Version -split '\s*,\s*' | ForEach-Object { $_.Trim() }) -join '.'
+    }
     
     # Split version by dots
     $parts = $Version -split '\.'
@@ -394,38 +399,67 @@ $results = @(Get-ChildItem -Path "$InputDllDir/" -Filter "*.dll" | ForEach-Objec
             
             # Use port metadata to fill in missing fields from DLL
             $finalDescription = $dllInfo.fileDescription
-            if ([string]::IsNullOrWhiteSpace($finalDescription) -and $portMetadata.description) {
-                $finalDescription = $portMetadata.description
+            if ([string]::IsNullOrWhiteSpace($finalDescription)) {
+                if ($portMetadata.description) {
+                    $finalDescription = $portMetadata.description
+                    Write-Host "    ! $($_.Name): fileDescription empty in DLL, using port value `"$finalDescription`"" -ForegroundColor Yellow
+                } else {
+                    Write-Warning "  ! $($_.Name): fileDescription will be blank (not found in DLL or port metadata)"
+                }
             }
-            
+
             $finalProductName = $dllInfo.productName
-            if ([string]::IsNullOrWhiteSpace($finalProductName) -and $portMetadata.productName) {
-                $finalProductName = $portMetadata.productName
+            if ([string]::IsNullOrWhiteSpace($finalProductName)) {
+                if ($portMetadata.productName) {
+                    $finalProductName = $portMetadata.productName
+                    Write-Host "    ! $($_.Name): productName empty in DLL, using port value `"$finalProductName`"" -ForegroundColor Yellow
+                } else {
+                    Write-Warning "  ! $($_.Name): productName will be blank (not found in DLL or port metadata)"
+                }
             }
-            
+
             $finalCopyright = $dllInfo.copyright
-            if ([string]::IsNullOrWhiteSpace($finalCopyright) -and $portMetadata.copyright) {
-                $finalCopyright = $portMetadata.copyright
+            if ([string]::IsNullOrWhiteSpace($finalCopyright)) {
+                if ($portMetadata.copyright) {
+                    $finalCopyright = $portMetadata.copyright
+                    Write-Host "    ! $($_.Name): copyright empty in DLL, using port value `"$finalCopyright`"" -ForegroundColor Yellow
+                } else {
+                    Write-Warning "  ! $($_.Name): copyright will be omitted (not found in DLL or port metadata)"
+                }
             }
-            
-            # Always use version from vcpkg.json (versionSource) if available
-            # This ensures consistency with the port version, not what's embedded in the DLL
-            $finalFileVersion = $portMetadata.version
+
+            # Prefer DLL's own embedded fileVersion; fallback to port version
+            $finalFileVersion = $dllInfo.fileVersion
             if ([string]::IsNullOrWhiteSpace($finalFileVersion)) {
-                # Fallback to DLL metadata only if vcpkg.json doesn't have version
-                $finalFileVersion = $dllInfo.fileVersion
+                if ($portMetadata.version) {
+                    $finalFileVersion = $portMetadata.version
+                    Write-Host "    ! $($_.Name): fileVersion empty in DLL, using port value `"$finalFileVersion`"" -ForegroundColor Yellow
+                } else {
+                    Write-Warning "  ! $($_.Name): fileVersion will be blank (not found in DLL or port metadata)"
+                }
             }
-            
+
             # Normalize versions (strip 4th part if present)
+            if ($finalFileVersion -match '^\d+,') {
+                Write-Host "    ! $($_.Name): fileVersion `"$finalFileVersion`" uses comma format, normalizing to dot format" -ForegroundColor Yellow
+            }
             $finalFileVersion = Normalize-VersionNumber -Version $finalFileVersion
-            
-            $finalProductVersion = $portMetadata.version
+
+            # Prefer DLL's own embedded productVersion; fallback to port version
+            $finalProductVersion = $dllInfo.productVersion
             if ([string]::IsNullOrWhiteSpace($finalProductVersion)) {
-                # Fallback to DLL metadata only if vcpkg.json doesn't have version
-                $finalProductVersion = $dllInfo.productVersion
+                if ($portMetadata.version) {
+                    $finalProductVersion = $portMetadata.version
+                    Write-Host "    ! $($_.Name): productVersion empty in DLL, using port value `"$finalProductVersion`"" -ForegroundColor Yellow
+                } else {
+                    Write-Warning "  ! $($_.Name): productVersion will be blank (not found in DLL or port metadata)"
+                }
             }
-            
+
             # Normalize versions (strip 4th part if present)
+            if ($finalProductVersion -match '^\d+,') {
+                Write-Host "    ! $($_.Name): productVersion `"$finalProductVersion`" uses comma format, normalizing to dot format" -ForegroundColor Yellow
+            }
             $finalProductVersion = Normalize-VersionNumber -Version $finalProductVersion
             
             # Build the object conditionally including copyright
