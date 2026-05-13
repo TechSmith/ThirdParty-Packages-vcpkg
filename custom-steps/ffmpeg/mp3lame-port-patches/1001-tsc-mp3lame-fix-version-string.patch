@@ -1,0 +1,13 @@
+diff --git a/libmp3lame/version.h b/libmp3lame/version.h
+index f5fef50..bd544a9 100644
+--- a/libmp3lame/version.h
++++ b/libmp3lame/version.h
+@@ -61,7 +61,7 @@
+ #endif
+ #endif
+ 
+-# define LAME_VERSION_STRING STR(LAME_MAJOR_VERSION) "." STR(LAME_MINOR_VERSION) LAME_PATCH_LEVEL_STRING
++# define LAME_VERSION_STRING STR(LAME_MAJOR_VERSION) "." STR(LAME_MINOR_VERSION) "." STR(LAME_TYPE_VERSION) LAME_PATCH_LEVEL_STRING
+ 
+ #endif /* LAME_VERSION_H */
+ 
