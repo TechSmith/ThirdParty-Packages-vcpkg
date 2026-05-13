@@ -19,6 +19,7 @@ vcpkg_from_github(
         0043-fix-miss-head.patch
         0044-fix-vulkan-debug-callback-abi.patch
         1001-tsc-disable-aac-non-lc-profiles.patch
+        1002-tsc-avcodec-fix-version-micro.patch
 )
 
 if(SOURCE_PATH MATCHES " ")
@@ -581,9 +582,11 @@ endif()
 
 if(VCPKG_DETECTED_CMAKE_RC_COMPILER)
     get_filename_component(RC_path "${VCPKG_DETECTED_CMAKE_RC_COMPILER}" DIRECTORY)
-    get_filename_component(RC_filename "${VCPKG_DETECTED_CMAKE_RC_COMPILER}" NAME)
-    set(ENV{WINDRES} "${RC_filename}")
-    string(APPEND OPTIONS " --windres=${RC_filename}")
+    # Do not override --windres here. When --toolchain=msvc is set, ffmpeg's configure
+    # defaults windres to compat/windows/mswindres, a shell wrapper that translates
+    # GNU windres arguments to rc.exe syntax. Passing --windres=rc.exe directly
+    # bypasses that wrapper and causes gnu_windres detection to fail (rc.exe has no
+    # --version flag), resulting in no .rc files being compiled into the DLLs.
     list(APPEND prog_env "${RC_path}")
 endif()
 
