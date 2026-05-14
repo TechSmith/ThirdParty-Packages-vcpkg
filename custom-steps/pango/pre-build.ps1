@@ -8,6 +8,14 @@ if (-not $patchSuccess) {
     exit 1
 }
 
+# Apply patch to vcpkg's harfbuzz portfile to add Objective-C/Objective-C++ language support for macOS
+Write-Message "Applying TechSmith patches to vcpkg harfbuzz port..."
+$patchSuccess = Apply-VcpkgPortPatch -PortName "harfbuzz" -PatchFile "$PSScriptRoot/1001-tsc-add-objc-support-to-harfbuzz.patch"
+if (-not $patchSuccess) {
+    Write-Message "FATAL: Failed to apply patch to harfbuzz port" -Error
+    exit 1
+}
+
 if ((Get-IsOnMacOS)) {
     Write-Message "Installing build tools via Homebrew..."
     
