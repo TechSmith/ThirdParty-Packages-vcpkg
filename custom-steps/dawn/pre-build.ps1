@@ -32,14 +32,12 @@ for ($i = 0; $i -lt $patchBytes.Length - 1; $i++) {
 Write-Message "Patch file line endings: CRLF=$crlfCount, LF-only=$lfOnlyCount"
 
 # DEBUG: Portfile diagnostics before patch
-Write-Message "=== DEBUG: Portfile Before Patch ==="
+Write-Message "=== DEBUG: COMPLETE Portfile BEFORE Patch ==="
 $portfilePath = "vcpkg/ports/dawn/portfile.cmake"
-$portfileLines = Get-Content $portfilePath
-Write-Message "Line 59: $($portfileLines[58])"
-Write-Message "Line 60: $($portfileLines[59])"
-Write-Message "Line 61: $($portfileLines[60])"
-Write-Message "Line 62: $($portfileLines[61])"
-Write-Message "Line 63: $($portfileLines[62])"
+$portfileContent = Get-Content $portfilePath -Raw
+Write-Message "--- BEGIN PORTFILE.CMAKE (BEFORE) ---"
+Write-Message $portfileContent
+Write-Message "--- END PORTFILE.CMAKE (BEFORE) ---"
 
 # Apply the combined portfile customizations patch that:
 # 1. Adds reference to the macOS CTAD fix patch (1002-tsc-fix-overloaded-ctad-macos.patch)
@@ -51,13 +49,9 @@ if (-not (Apply-VcpkgPortPatch -PortName "dawn" -PatchFile $patchFile)) {
 }
 
 # DEBUG: Portfile diagnostics after patch
-Write-Message "=== DEBUG: Portfile After Patch ==="
-$portfileLines = Get-Content $portfilePath
-Write-Message "Line 59: $($portfileLines[58])"
-Write-Message "Line 60: $($portfileLines[59])"
-Write-Message "Line 61: $($portfileLines[60])"
-Write-Message "Line 62: $($portfileLines[61])"
-Write-Message "Line 63: $($portfileLines[62])"
-Write-Message "Line 64: $($portfileLines[63])"
-Write-Message "Line 65: $($portfileLines[64])"
+Write-Message "=== DEBUG: COMPLETE Portfile AFTER Patch ==="
+$portfileContent = Get-Content $portfilePath -Raw
+Write-Message "--- BEGIN PORTFILE.CMAKE (AFTER) ---"
+Write-Message $portfileContent
+Write-Message "--- END PORTFILE.CMAKE (AFTER) ---"
 Write-Message "=== DEBUG: End Diagnostics ==="
