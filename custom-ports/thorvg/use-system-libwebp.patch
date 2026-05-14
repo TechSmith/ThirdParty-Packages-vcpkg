@@ -1,0 +1,19 @@
+diff --git a/src/loaders/meson.build b/src/loaders/meson.build
+--- a/src/loaders/meson.build
++++ b/src/loaders/meson.build
+@@ -31,13 +31,11 @@ if jpg_loader
+ endif
+ 
+ if webp_loader
+-    if get_option('static')
++    subdir('external_webp')
++    if not webp_dep.found()
+         subdir('webp')
+-    else
+-        subdir('external_webp')
+-        if not webp_dep.found()
+-            subdir('webp')
+-        endif
+     endif
+ endif
+ 
