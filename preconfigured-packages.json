@@ -432,7 +432,8 @@
       "wasm": {
         "package": "thorvg",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-static"
       }
     }
   ]
