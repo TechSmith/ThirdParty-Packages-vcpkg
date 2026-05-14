@@ -124,15 +124,11 @@ When setting up a new package or updating an existing package that needs DLL ver
 
 ```powershell
 # Step 1: Build your package locally on Windows to generate DLLs and metadata
-./build-package.ps1 -PackageName mypackage
+./build-package.ps1 -PackageName pango-desktop
 
 # Step 2: Generate or update the version-info.json from the built DLLs
 # The script will automatically enrich metadata from vcpkg sources
-./scripts/tools/update-version-info-json.ps1 `
-    -InputDllDir "./vcpkg/installed/x64-windows-dynamic-release/bin" `
-    -OutputJsonFile "./custom-steps/mypackage/version-info.json" `
-    -VcpkgRoot "./vcpkg" `
-    -Triplet "x64-windows-dynamic-release"
+./scripts/update-version-info-json.ps1 -InputDllDir "./vcpkg/installed/x64-windows-dynamic-release/bin" -OutputJsonFile "./custom-steps/pango/version-info.json" -VcpkgRoot "./vcpkg" -Triplet "x64-windows-dynamic-release"
 ```
 
 This script will:

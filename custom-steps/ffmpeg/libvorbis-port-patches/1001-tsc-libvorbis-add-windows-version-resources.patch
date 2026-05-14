@@ -1,0 +1,136 @@
+diff --git a/lib/CMakeLists.txt b/lib/CMakeLists.txt
+index 7cd68e5..637f4e1 100644
+--- a/lib/CMakeLists.txt
++++ b/lib/CMakeLists.txt
+@@ -61,6 +61,26 @@ if(WIN32)
+     list(APPEND VORBIS_SOURCES vorbisenc.c)
+ endif()
+ 
++if(WIN32)
++    get_version_info(VORBISENC_VERSION_INFO "VE_LIB_CURRENT" "VE_LIB_AGE" "VE_LIB_REVISION")
++    get_version_info(VORBISFILE_VERSION_INFO "VF_LIB_CURRENT" "VF_LIB_AGE" "VF_LIB_REVISION")
++    string(REPLACE "." "," VORBISENC_VERSION_INFO_RC ${VORBISENC_VERSION_INFO})
++    string(REPLACE "." "," VORBISFILE_VERSION_INFO_RC ${VORBISFILE_VERSION_INFO})
++    string(REPLACE "." "," PROJECT_VERSION_RC ${PROJECT_VERSION})
++    configure_file(
++        ${CMAKE_CURRENT_SOURCE_DIR}/../win32/vorbis_version.rc.in
++        ${CMAKE_CURRENT_BINARY_DIR}/vorbis_version.rc @ONLY)
++    configure_file(
++        ${CMAKE_CURRENT_SOURCE_DIR}/../win32/vorbisenc_version.rc.in
++        ${CMAKE_CURRENT_BINARY_DIR}/vorbisenc_version.rc @ONLY)
++    configure_file(
++        ${CMAKE_CURRENT_SOURCE_DIR}/../win32/vorbisfile_version.rc.in
++        ${CMAKE_CURRENT_BINARY_DIR}/vorbisfile_version.rc @ONLY)
++    list(APPEND VORBIS_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/vorbis_version.rc)
++    list(APPEND VORBISENC_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/vorbisenc_version.rc)
++    list(APPEND VORBISFILE_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/vorbisfile_version.rc)
++endif()
++
+ if(WIN32)
+     list(APPEND VORBIS_SOURCES ../win32/vorbis.def)
+     list(APPEND VORBISENC_SOURCES ../win32/vorbisenc.def)
+diff --git a/win32/vorbis_version.rc.in b/win32/vorbis_version.rc.in
+new file mode 100644
+index 0000000..3b42958
+--- /dev/null
++++ b/win32/vorbis_version.rc.in
+@@ -0,0 +1,29 @@
++#include <winver.h>
++
++VS_VERSION_INFO VERSIONINFO
++	FILEVERSION @PROJECT_VERSION_RC@,0
++	PRODUCTVERSION @PROJECT_VERSION_RC@,0
++	FILEFLAGSMASK 0x3fL
++	FILEFLAGS 0x0L
++	FILEOS VOS__WINDOWS32
++	FILETYPE VFT_DLL
++	FILESUBTYPE 0x0L
++	BEGIN
++		BLOCK "StringFileInfo"
++		BEGIN
++			BLOCK "040904E4"
++			BEGIN
++				VALUE "CompanyName", "Xiph.Org\0"
++				VALUE "FileDescription", "Ogg Vorbis is a fully open, non-proprietary, patent-and-royalty-free, general-purpose compressed audio format\0"
++				VALUE "FileVersion", "@PROJECT_VERSION@\0"
++				VALUE "LegalCopyright", "Copyright (c) 2002-2020 Xiph.Org Foundation\0"
++				VALUE "OriginalFilename", "vorbis.dll\0"
++				VALUE "ProductName", "Libvorbis\0"
++				VALUE "ProductVersion", "@PROJECT_VERSION@\0"
++			END
++		END
++		BLOCK "VarFileInfo"
++		BEGIN
++			VALUE "Translation", 0x409, 1252
++		END
++	END
+diff --git a/win32/vorbisenc_version.rc.in b/win32/vorbisenc_version.rc.in
+new file mode 100644
+index 0000000..841574d
+--- /dev/null
++++ b/win32/vorbisenc_version.rc.in
+@@ -0,0 +1,29 @@
++#include <winver.h>
++
++VS_VERSION_INFO VERSIONINFO
++	FILEVERSION @VORBISENC_VERSION_INFO_RC@,0
++	PRODUCTVERSION @PROJECT_VERSION_RC@,0
++	FILEFLAGSMASK 0x3fL
++	FILEFLAGS 0x0L
++	FILEOS VOS__WINDOWS32
++	FILETYPE VFT_DLL
++	FILESUBTYPE 0x0L
++	BEGIN
++		BLOCK "StringFileInfo"
++		BEGIN
++			BLOCK "040904E4"
++			BEGIN
++				VALUE "CompanyName", "Xiph.Org\0"
++				VALUE "FileDescription", "Ogg Vorbis is a fully open, non-proprietary, patent-and-royalty-free, general-purpose compressed audio format\0"
++				VALUE "FileVersion", "@VORBISENC_VERSION_INFO@\0"
++				VALUE "LegalCopyright", "Copyright (c) 2002-2020 Xiph.Org Foundation\0"
++				VALUE "OriginalFilename", "vorbisenc.dll\0"
++				VALUE "ProductName", "Libvorbis\0"
++				VALUE "ProductVersion", "@PROJECT_VERSION@\0"
++			END
++		END
++		BLOCK "VarFileInfo"
++		BEGIN
++			VALUE "Translation", 0x409, 1252
++		END
++	END
+diff --git a/win32/vorbisfile_version.rc.in b/win32/vorbisfile_version.rc.in
+new file mode 100644
+index 0000000..233e520
+--- /dev/null
++++ b/win32/vorbisfile_version.rc.in
+@@ -0,0 +1,29 @@
++#include <winver.h>
++
++VS_VERSION_INFO VERSIONINFO
++	FILEVERSION @VORBISFILE_VERSION_INFO_RC@,0
++	PRODUCTVERSION @PROJECT_VERSION_RC@,0
++	FILEFLAGSMASK 0x3fL
++	FILEFLAGS 0x0L
++	FILEOS VOS__WINDOWS32
++	FILETYPE VFT_DLL
++	FILESUBTYPE 0x0L
++	BEGIN
++		BLOCK "StringFileInfo"
++		BEGIN
++			BLOCK "040904E4"
++			BEGIN
++				VALUE "CompanyName", "Xiph.Org\0"
++				VALUE "FileDescription", "Ogg Vorbis is a fully open, non-proprietary, patent-and-royalty-free, general-purpose compressed audio format\0"
++				VALUE "FileVersion", "@VORBISFILE_VERSION_INFO@\0"
++				VALUE "LegalCopyright", "Copyright (c) 2002-2020 Xiph.Org Foundation\0"
++				VALUE "OriginalFilename", "vorbisfile.dll\0"
++				VALUE "ProductName", "Libvorbis\0"
++				VALUE "ProductVersion", "@PROJECT_VERSION@\0"
++			END
++		END
++		BLOCK "VarFileInfo"
++		BEGIN
++			VALUE "Translation", 0x409, 1252
++		END
++	END

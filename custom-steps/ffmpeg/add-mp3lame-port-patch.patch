@@ -1,0 +1,12 @@
+diff --git a/ports/mp3lame/portfile.cmake b/ports/mp3lame/portfile.cmake
+index dad9f4f17f..796d0a9bce 100644
+--- a/ports/mp3lame/portfile.cmake
++++ b/ports/mp3lame/portfile.cmake
+@@ -5,6 +5,7 @@ vcpkg_from_sourceforge(
+     PATCHES
+         00001-msvc-upgrade-solution-up-to-vc11.patch
+         remove_lame_init_old_from_symbol_list.patch # deprecated https://github.com/zlargon/lame/blob/master/include/lame.h#L169
++        1001-tsc-mp3lame-fix-version-string.patch
+         add-macos-universal-config.patch
+         fix-mingw-w64-compatibility.patch
+ )
