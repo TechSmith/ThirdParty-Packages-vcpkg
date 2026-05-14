@@ -1,0 +1,29 @@
+diff --git a/ports/dawn/portfile.cmake b/ports/dawn/portfile.cmake
+index 2c00012431..5e4f8f161d 100644
+--- a/ports/dawn/portfile.cmake
++++ b/ports/dawn/portfile.cmake
+@@ -169,6 +169,24 @@ vcpkg_cmake_configure(
+ vcpkg_cmake_install()
+ vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/Dawn)
+ 
++# <TechSmith Customizations>
++# Install tint public headers manually since TINT_ENABLE_INSTALL=OFF.
++# The upstream TINT_ENABLE_INSTALL=ON option is broken - it tries to install
++# lib targets that aren't built due to EXCLUDE_FROM_ALL.
++file(GLOB TINT_PUBLIC_HEADERS "${SOURCE_PATH}/include/tint/*.h")
++if(TINT_PUBLIC_HEADERS)
++    file(INSTALL ${TINT_PUBLIC_HEADERS} DESTINATION "${CURRENT_PACKAGES_DIR}/include/tint")
++endif()
++
++# Install tint source headers (needed for some internal includes)
++file(GLOB_RECURSE TINT_SRC_HEADERS "${SOURCE_PATH}/src/tint/*.h")
++foreach(HEADER_FILE ${TINT_SRC_HEADERS})
++    file(RELATIVE_PATH REL_PATH "${SOURCE_PATH}" "${HEADER_FILE}")
++    get_filename_component(REL_DIR "${REL_PATH}" DIRECTORY)
++    file(INSTALL "${HEADER_FILE}" DESTINATION "${CURRENT_PACKAGES_DIR}/include/${REL_DIR}")
++endforeach()
++# </TechSmith Customizations>
++
+ # Restore the original library linkage
+ set(VCPKG_LIBRARY_LINKAGE ${VCPKG_LIBRARY_LINKAGE_BACKUP})
+ 

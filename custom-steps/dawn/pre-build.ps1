@@ -1,12 +1,12 @@
 Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 
-# Enable tint header installation (all platforms).
-# The upstream dawn port sets TINT_ENABLE_INSTALL=OFF; we need it ON so that
-# tint public headers are installed alongside dawn.
-Write-Message "Enabling TINT_ENABLE_INSTALL in dawn portfile..."
-$patchFile = "$PSScriptRoot/1003-tsc-enable-tint-install.patch"
+# Install tint headers alongside dawn (all platforms).
+# The upstream TINT_ENABLE_INSTALL=ON is broken - it tries to install lib targets
+# that aren't built due to EXCLUDE_FROM_ALL. Instead, we manually copy headers.
+Write-Message "Applying tint headers installation patch..."
+$patchFile = "$PSScriptRoot/1003-tsc-install-tint-headers.patch"
 if (-not (Apply-VcpkgPortPatch -PortName "dawn" -PatchFile $patchFile)) {
-    Write-Message "FATAL: Failed to apply tint install patch" -Error
+    Write-Message "FATAL: Failed to apply tint headers patch" -Error
     exit 1
 }
 
