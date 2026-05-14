@@ -1,0 +1,13 @@
+diff --git a/ports/dawn/portfile.cmake b/ports/dawn/portfile.cmake
+index 2c00012431..9a33db4cc3 100644
+--- a/ports/dawn/portfile.cmake
++++ b/ports/dawn/portfile.cmake
+@@ -157,7 +157,7 @@ vcpkg_cmake_configure(
+         -DDAWN_BUILD_SAMPLES=OFF
+         -DDAWN_BUILD_TESTS=OFF
+         -DTINT_BUILD_TESTS=OFF
+-        -DTINT_ENABLE_INSTALL=OFF
++        -DTINT_ENABLE_INSTALL=ON
+         -DTINT_BUILD_WGSL_READER=ON
+         -DTINT_BUILD_WGSL_WRITER=ON
+         -DTINT_BUILD_SPV_READER=${DAWN_USE_TINT_SPV}
