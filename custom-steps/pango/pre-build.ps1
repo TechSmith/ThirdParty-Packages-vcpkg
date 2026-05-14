@@ -16,6 +16,36 @@ if (-not $patchSuccess) {
     exit 1
 }
 
+# Apply patch to vcpkg core to enable OBJCXX language detection in get_cmake_vars
+Write-Message "Applying TechSmith patches to vcpkg core (get_cmake_vars)..."
+$vcpkgRoot = "$PSScriptRoot/../../vcpkg"
+$patchFile = "$PSScriptRoot/1002-tsc-enable-objcxx-in-get-cmake-vars.patch"
+if (-not (Test-Path $patchFile)) {
+    Write-Message "FATAL: Patch file not found: $patchFile" -Error
+    exit 1
+}
+
+Push-Location $vcpkgRoot
+try {
+    $output = git apply --unidiff-zero --inaccurate-eof --ignore-space-change --ignore-whitespace --whitespace=nowarn "$patchFile" 2>&1
+    if ($LASTEXITCODE -eq 0) {
+        Write-Message "> vcpkg core patch applied successfully"
+    } else {
+        # Check if patch is already applied
+        $checkOutput = git apply --reverse --check --ignore-whitespace "$patchFile" 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Message "> vcpkg core patch appears to be already applied (skipping)"
+        } else {
+            Write-Message "FATAL: Failed to apply vcpkg core patch" -Error
+            Write-Message "> Git apply exit code: $LASTEXITCODE" -Error
+            Write-Message "> Git apply output: $output" -Error
+            exit 1
+        }
+    }
+} finally {
+    Pop-Location
+}
+
 if ((Get-IsOnMacOS)) {
     Write-Message "Installing build tools via Homebrew..."
     

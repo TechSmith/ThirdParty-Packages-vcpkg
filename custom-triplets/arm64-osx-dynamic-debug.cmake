@@ -10,3 +10,6 @@ set(VCPKG_BUILD_TYPE debug)
 set(VCPKG_C_FLAGS "-mmacosx-version-min=11.0 -g -gdwarf-2")
 set(VCPKG_CXX_FLAGS "-mmacosx-version-min=11.0 -g -gdwarf-2")
 set(VCPKG_LINKER_FLAGS -mmacosx-version-min=11.0)
+
+# Enable Objective-C and Objective-C++ compiler detection for meson builds
+set(VCPKG_ENABLE_OBJC ON)
