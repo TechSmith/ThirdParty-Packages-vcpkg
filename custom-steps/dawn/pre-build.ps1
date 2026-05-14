@@ -5,8 +5,7 @@ Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameCheckin
 # tint public headers are installed alongside dawn.
 Write-Message "Enabling TINT_ENABLE_INSTALL in dawn portfile..."
 $patchFile = "$PSScriptRoot/1003-tsc-enable-tint-install.patch"
-$portDir = "vcpkg/ports/dawn"
-if (-not (Apply-VcpkgPortPatch -PatchFile $patchFile -PortDirectory $portDir)) {
+if (-not (Apply-VcpkgPortPatch -PortName "dawn" -PatchFile $patchFile)) {
     Write-Message "FATAL: Failed to apply tint install patch" -Error
     exit 1
 }
