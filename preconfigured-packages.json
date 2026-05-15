@@ -436,7 +436,10 @@
       "win": {
         "package": "thorvg",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "publish": {
+          "debug": true
+        }
       },
       "linux": {
         "package": "thorvg",
