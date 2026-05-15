@@ -580,13 +580,13 @@ function Apply-VcpkgPortPatch {
     
     Push-Location $workDir
     try {
-        $output = git apply --unidiff-zero --inaccurate-eof --ignore-space-change --ignore-whitespace --whitespace=nowarn "$PatchFile" 2>&1
+        $output = git apply --unidiff-zero "$PatchFile" 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Message "> Patch applied successfully"
             return $true
         } else {
             # Check if patch is already applied
-            $checkOutput = git apply --reverse --check --ignore-whitespace "$PatchFile" 2>&1
+            $checkOutput = git apply --reverse --check "$PatchFile" 2>&1
             if ($LASTEXITCODE -eq 0) {
                 Write-Message "> Patch appears to be already applied (skipping)"
                 return $true

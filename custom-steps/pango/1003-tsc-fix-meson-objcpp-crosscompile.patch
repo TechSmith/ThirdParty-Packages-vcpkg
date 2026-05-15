@@ -1,0 +1,45 @@
+diff --git a/scripts/buildsystems/meson/meson.template.in b/scripts/buildsystems/meson/meson.template.in
+index 995d39b30c..ae97144dcd 100644
+--- a/scripts/buildsystems/meson/meson.template.in
++++ b/scripts/buildsystems/meson/meson.template.in
+@@ -12,8 +12,8 @@ pkgconfig= ['@PKGCONFIG@']
+ @MESON_CXX_LD@
+ @MESON_OBJC@
+ @MESON_OBJC_LD@
+-@MESON_OBJCPP@
+-@MESON_OBJCPP_LD@
++@MESON_OBJCXX@
++@MESON_OBJCXX_LD@
+ @MESON_FC@
+ @MESON_FC_LD@
+ @MESON_WINDRES@
+@@ -35,7 +35,7 @@ werror = false
+ @MESON_CXXFLAGS@
+ @MESON_FCFLAGS@
+ @MESON_OBJCFLAGS@
+-@MESON_OBJCPPFLAGS@
++@MESON_OBJCXXFLAGS@
+ # b_vscrt
+ @MESON_VSCRT_LINKAGE@
+ # c_winlibs/cpp_winlibs
+diff --git a/scripts/cmake/vcpkg_configure_meson.cmake b/scripts/cmake/vcpkg_configure_meson.cmake
+index ac20f5295f..291b874bca 100644
+--- a/scripts/cmake/vcpkg_configure_meson.cmake
++++ b/scripts/cmake/vcpkg_configure_meson.cmake
+@@ -30,6 +30,7 @@ function(z_vcpkg_meson_set_proglist_variables config_type)
+     set(meson_RC windres)
+     set(meson_Fortran fc)
+     set(meson_CXX cpp)
++    set(meson_OBJCXX objcpp)
+     foreach(prog IN LISTS compilers)
+         if(VCPKG_DETECTED_CMAKE_${prog}_COMPILER)
+             string(TOUPPER "MESON_${prog}" var_to_set)
+@@ -107,6 +108,8 @@ function(z_vcpkg_meson_set_flags_variables config_type)
+         string(TOLOWER "${lang_mapping}" langlower)
+         if(lang STREQUAL "CXX")
+             set(langlower cpp)
++        elseif(lang STREQUAL "OBJCXX")
++            set(langlower objcpp)
+         endif()
+         set(MESON_${lang_mapping}FLAGS "${langlower}_args = ${${lang}flags}\n")
+         set(linker_flags "${VCPKG_DETECTED_CMAKE_SHARED_LINKER_FLAGS_${config_type}}")
