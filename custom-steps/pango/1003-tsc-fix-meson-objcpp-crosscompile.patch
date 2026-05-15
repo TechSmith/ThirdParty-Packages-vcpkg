@@ -1,3 +1,64 @@
+diff --git a/ports/vcpkg-tool-meson/meson.template.in b/ports/vcpkg-tool-meson/meson.template.in
+index fb8d08431f..59db4d43fd 100644
+--- a/ports/vcpkg-tool-meson/meson.template.in
++++ b/ports/vcpkg-tool-meson/meson.template.in
+@@ -11,8 +11,8 @@ pkg-config = ['@PKGCONFIG@']
+ @MESON_CXX_LD@
+ @MESON_OBJC@
+ @MESON_OBJC_LD@
+-@MESON_OBJCPP@
+-@MESON_OBJCPP_LD@
++@MESON_OBJCXX@
++@MESON_OBJCXX_LD@
+ @MESON_FC@
+ @MESON_FC_LD@
+ @MESON_WINDRES@
+@@ -36,7 +36,7 @@ werror = false
+ @MESON_CXXFLAGS@
+ @MESON_FCFLAGS@
+ @MESON_OBJCFLAGS@
+-@MESON_OBJCPPFLAGS@
++@MESON_OBJCXXFLAGS@
+ # b_vscrt
+ @MESON_VSCRT_LINKAGE@
+ # c_winlibs/cpp_winlibs
+diff --git a/ports/vcpkg-tool-meson/vcpkg_configure_meson.cmake b/ports/vcpkg-tool-meson/vcpkg_configure_meson.cmake
+index 3796697fa2..34e0f342e1 100644
+--- a/ports/vcpkg-tool-meson/vcpkg_configure_meson.cmake
++++ b/ports/vcpkg-tool-meson/vcpkg_configure_meson.cmake
+@@ -30,6 +30,7 @@ function(z_vcpkg_meson_set_proglist_variables config_type)
+     set(meson_RC windres)
+     set(meson_Fortran fortran)
+     set(meson_CXX cpp)
++    set(meson_OBJCXX objcpp)
+     foreach(prog IN LISTS compilers)
+         if(VCPKG_DETECTED_CMAKE_${prog}_COMPILER)
+             string(TOUPPER "MESON_${prog}" var_to_set)
+@@ -111,6 +112,8 @@ function(z_vcpkg_meson_set_flags_variables config_type)
+         string(TOLOWER "${lang_mapping}" langlower)
+         if(lang STREQUAL "CXX")
+             set(langlower cpp)
++        elseif(lang STREQUAL "OBJCXX")
++            set(langlower objcpp)
+         endif()
+         set(MESON_${lang_mapping}FLAGS "${langlower}_args = ${${lang}flags}\n")
+         set(linker_flags "${VCPKG_COMBINED_SHARED_LINKER_FLAGS_${config_type}}")
+@@ -343,7 +346,14 @@ function(vcpkg_generate_meson_cmd_args)
+         z_vcpkg_select_default_vcpkg_chainload_toolchain()
+     endif()
+     vcpkg_list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DVCPKG_LANGUAGES=${arg_LANGUAGES}")
+-    vcpkg_cmake_get_vars(cmake_vars_file)
++    # Pass non-standard languages to vcpkg_cmake_get_vars so they get their own cache entry
++    set(_extra_languages "${arg_LANGUAGES}")
++    list(REMOVE_ITEM _extra_languages C CXX)
++    if(_extra_languages)
++        vcpkg_cmake_get_vars(cmake_vars_file ADDITIONAL_LANGUAGES ${_extra_languages})
++    else()
++        vcpkg_cmake_get_vars(cmake_vars_file)
++    endif()
+     debug_message("Including cmake vars from: ${cmake_vars_file}")
+     include("${cmake_vars_file}")
+ 
 diff --git a/scripts/buildsystems/meson/meson.template.in b/scripts/buildsystems/meson/meson.template.in
 index 995d39b30c..ae97144dcd 100644
 --- a/scripts/buildsystems/meson/meson.template.in
