@@ -435,8 +435,7 @@
       },
       "win": {
         "package": "thorvg",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
           "debug": true
         }
