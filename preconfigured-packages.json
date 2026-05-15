@@ -359,26 +359,26 @@
       "name": "dawn",
       "mac": {
         "package": "dawn[tint-tools]",
-        "linkType": "dynamic",
+        "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "2026.04.27",
         "publish": {
           "include": true,
           "lib": true,
-          "bin": true,
+          "bin": false,
           "share": true,
           "tools": true
         }
       },
       "win": {
         "package": "dawn[core,d3d12,tint-tools]",
-        "linkType": "dynamic",
+        "linkType": "static",
         "buildType": "release",
         "vcpkgHash": "2026.04.27",
         "publish": {
           "include": true,
           "lib": true,
-          "bin": true,
+          "bin": false,
           "share": true,
           "tools": true
         }
