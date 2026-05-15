@@ -29,11 +29,11 @@ if (-not (Test-Path $patchFile)) {
 
 Push-Location $vcpkgRoot
 try {
-    $output = git apply --unidiff-zero "$patchFile" 2>&1
+    $output = git apply --unidiff-zero --ignore-whitespace "$patchFile" 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Message "> vcpkg core patch (get_cmake_vars) applied successfully"
     } else {
-        $checkOutput = git apply --reverse --check "$patchFile" 2>&1
+        $checkOutput = git apply --reverse --check --ignore-whitespace "$patchFile" 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Message "> vcpkg core patch (get_cmake_vars) already applied (skipping)"
         } else {
@@ -57,11 +57,11 @@ if (-not (Test-Path $patchFile)) {
 
 Push-Location $vcpkgRoot
 try {
-    $output = git apply --unidiff-zero "$patchFile" 2>&1
+    $output = git apply --unidiff-zero --ignore-whitespace "$patchFile" 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Message "> vcpkg core patch (meson objcpp) applied successfully"
     } else {
-        $checkOutput = git apply --reverse --check "$patchFile" 2>&1
+        $checkOutput = git apply --reverse --check --ignore-whitespace "$patchFile" 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Message "> vcpkg core patch (meson objcpp) already applied (skipping)"
         } else {
