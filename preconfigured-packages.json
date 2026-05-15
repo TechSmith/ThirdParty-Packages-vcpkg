@@ -433,7 +433,7 @@
         "package": "thorvg",
         "linkType": "static",
         "buildType": "release",
-        "customTriplet": "wasm32-emscripten"
+        "customTriplet": "wasm32-emscripten-static"
       }
     }
   ]
