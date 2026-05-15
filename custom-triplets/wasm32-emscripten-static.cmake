@@ -24,8 +24,8 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_CMAKE_SYSTEM_NAME Emscripten)
 set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake")
 
-# Add -fPIC flag for position-independent code (required for MAIN_MODULE linking)
-# Add -pthread to enable atomics and bulk-memory (required for --shared-memory linking)
-set(VCPKG_C_FLAGS "-pthread -fPIC")
-set(VCPKG_CXX_FLAGS "-pthread -fPIC")
-set(VCPKG_LINKER_FLAGS "-pthread -s USE_PTHREADS=1")
+# Hacky way to force pthread flags through a makefile
+set(VCPKG_ENV_PASSTHROUGH_UNTRACKED CFLAGS CXXFLAGS LDFLAGS)
+set(ENV{CFLAGS} "-pthread")
+set(ENV{CXXFLAGS} "-pthread")
+set(ENV{LDFLAGS} "-pthread")
