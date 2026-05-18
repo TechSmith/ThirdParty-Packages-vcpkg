@@ -83,10 +83,10 @@
     {
       "filename": "bin/freetype.dll",
       "fileDescription": "Font Rendering Library",
-      "fileVersion": "2.13.3",
+      "fileVersion": "2.14.3",
       "productName": "FreeType",
-      "productVersion": "2.13.3",
-      "copyright": "© 2000-2024 The FreeType Project www.freetype.org. All rights reserved."
+      "productVersion": "2.14.3",
+      "copyright": "© 2000-2026 The FreeType Project freetype.org. All rights reserved."
     },
     {
       "filename": "bin/fribidi-0.dll",
@@ -107,9 +107,9 @@
     {
       "filename": "bin/girepository-2.0-0.dll",
       "fileDescription": "Portable, general-purpose utility library.",
-      "fileVersion": "2.86.3",
+      "fileVersion": "2.88.0",
       "productName": "Glib",
-      "productVersion": "2.86.3",
+      "productVersion": "2.88.0",
       "copyright": "Copyright (C) 1991, 1999 Free Software Foundation, Inc"
     },
     {
@@ -145,35 +145,43 @@
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald, Sebastian Wilhelmi and others."
     },
     {
+      "filename": "bin/harfbuzz-gpu.dll",
+      "fileDescription": "HarfBuzz OpenType text shaping engine",
+      "fileVersion": "14.2.0",
+      "productName": "Harfbuzz",
+      "productVersion": "14.2.0",
+      "copyright": "Copyright © 2010-2022  Google, Inc"
+    },
+    {
       "filename": "bin/harfbuzz-raster.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "13.0.1",
+      "fileVersion": "14.2.0",
       "productName": "Harfbuzz",
-      "productVersion": "13.0.1",
+      "productVersion": "14.2.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
       "filename": "bin/harfbuzz-subset.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "13.0.1",
+      "fileVersion": "14.2.0",
       "productName": "Harfbuzz",
-      "productVersion": "13.0.1",
+      "productVersion": "14.2.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
       "filename": "bin/harfbuzz-vector.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "13.0.1",
+      "fileVersion": "14.2.0",
       "productName": "Harfbuzz",
-      "productVersion": "13.0.1",
+      "productVersion": "14.2.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
       "filename": "bin/harfbuzz.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "13.0.1",
+      "fileVersion": "14.2.0",
       "productName": "Harfbuzz",
-      "productVersion": "13.0.1",
+      "productVersion": "14.2.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
@@ -195,49 +203,49 @@
     {
       "filename": "bin/libexpat.dll",
       "fileDescription": "XML parser library written in C",
-      "fileVersion": "2.7.4",
+      "fileVersion": "2.8.0",
       "productName": "Expat",
-      "productVersion": "2.7.4",
+      "productVersion": "2.8.0",
       "copyright": "Copyright (c) 1998-2000 Thai Open Source Software Center Ltd and Clark Cooper"
     },
     {
       "filename": "bin/libpng16.dll",
       "fileDescription": "libpng is a library implementing an interface for reading and writing PNG (Portable Network Graphics) format files",
-      "fileVersion": "1.6.55",
+      "fileVersion": "1.6.58",
       "productName": "Libpng",
-      "productVersion": "1.6.55",
+      "productVersion": "1.6.58",
       "copyright": "Copyright (c) 1995-2026 The PNG Reference Library Authors"
     },
     {
       "filename": "bin/pango-1.0-0.dll",
       "fileDescription": "Pango",
-      "fileVersion": "1.57.0",
+      "fileVersion": "1.57.1",
       "productName": "Pango",
-      "productVersion": "1.57.0",
+      "productVersion": "1.57.1",
       "copyright": "Copyright 1999 Red Hat Software."
     },
     {
       "filename": "bin/pangocairo-1.0-0.dll",
       "fileDescription": "PangoCairo",
-      "fileVersion": "1.57.0",
+      "fileVersion": "1.57.1",
       "productName": "PangoCairo",
-      "productVersion": "1.57.0",
+      "productVersion": "1.57.1",
       "copyright": "Copyright 2010 Red Hat Software."
     },
     {
       "filename": "bin/pangoft2-1.0-0.dll",
       "fileDescription": "PangoFT2",
-      "fileVersion": "1.57.0",
+      "fileVersion": "1.57.1",
       "productName": "PangoFT2",
-      "productVersion": "1.57.0",
+      "productVersion": "1.57.1",
       "copyright": "Copyright 1999 Red Hat Software. Copyright 2000 Tor Lillqvist"
     },
     {
       "filename": "bin/pangowin32-1.0-0.dll",
       "fileDescription": "PangoWin32",
-      "fileVersion": "1.57.0",
+      "fileVersion": "1.57.1",
       "productName": "PangoWin32",
-      "productVersion": "1.57.0",
+      "productVersion": "1.57.1",
       "copyright": "Copyright 1999 Red Hat Software. Copyright 2000 Tor Lillqvist"
     },
     {
@@ -264,7 +272,7 @@
     {
       "filename": "bin/pcre2-posix.dll",
       "fileDescription": "Regular Expression pattern matching using the same syntax and semantics as Perl 5.",
-      "fileVersion": "10.47",
+      "fileVersion": "12.0.2",
       "productName": "Pcre2",
       "productVersion": "10.47"
     },
@@ -309,5 +317,5 @@
       "copyright": "(C) 1995-2026 Jean-loup Gailly & Mark Adler"
     }
   ],
-  "buildNumber": 103
+  "buildNumber": 104
 }
