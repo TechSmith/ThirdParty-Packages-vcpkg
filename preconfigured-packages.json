@@ -365,20 +365,19 @@
         "publish": {
           "include": true,
           "lib": true,
-          "bin": false,
+          "bin": true,
           "share": true,
           "tools": true
         }
       },
       "win": {
         "package": "dawn[core,d3d12,tint-tools]",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md-release",
         "vcpkgHash": "2026.04.27",
         "publish": {
           "include": true,
           "lib": true,
-          "bin": false,
+          "bin": true,
           "share": true,
           "tools": true
         }
