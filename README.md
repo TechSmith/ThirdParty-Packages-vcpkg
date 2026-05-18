@@ -132,26 +132,27 @@ When setting up a new package or updating an existing package that needs DLL ver
 ```
 
 This script will:
-1. Scan all DLL files in the input directory
+1. Scan all DLL files in the input directory and extract their embedded version information
 2. Read vcpkg's package installation metadata (the `.list` files in `vcpkg/installed/vcpkg/info/`)
 3. Map each DLL to its source vcpkg port
-4. Enrich metadata by reading:
-   - **Descriptions** from `vcpkg.json` files (in `custom-ports/` or `vcpkg/ports/`)
-   - **Versions** from `vcpkg.json` files (supports `version`, `version-semver`, `version-string`)
-   - **Product names** from port names
-   - **Copyright information** from `vcpkg/installed/<triplet>/share/<portname>/copyright` files
+4. For each DLL, **prefer the DLL's embedded `fileVersion`/`productVersion`** metadata, falling back to vcpkg port metadata only when the DLL has no embedded values:
+   - **fileVersion/productVersion**: Use DLL-embedded values first; fallback to vcpkg.json version if empty
+   - **fileDescription**: Use DLL-embedded value first; fallback to vcpkg.json description if empty
+   - **productName**: Use DLL-embedded value first; fallback to port name if empty
+   - **copyright**: Use DLL-embedded value first; fallback to `vcpkg/installed/<triplet>/share/<portname>/copyright` if empty
 5. **Automatically increment `buildNumber`** if the file already exists (reads existing value and adds 1)
-6. Create or overwrite the `version-info.json` file with enriched metadata
+6. Create or overwrite the `version-info.json` file with the collected metadata
 
 **Key Features:**
+- **Prefers DLL-embedded metadata**: The script uses the version information already embedded in the DLLs, falling back to vcpkg sources only when DLL metadata is missing
 - **No manual `versionSource` tracking**: The script directly reads vcpkg metadata at generation time
 - **Automatic buildNumber increment**: Ensures proper versioning for TechSmith installers
-- **Automatic metadata enrichment**: Pulls descriptions, versions, and copyright from vcpkg sources
+- **Automatic metadata enrichment**: Fills in missing fields from vcpkg sources when DLL metadata is incomplete
 - **Triplet auto-detection**: If `-Triplet` is omitted and only one triplet exists, it's auto-detected
 
 After generation, you should:
 1. Review the generated file to verify all metadata is correct
-2. Manually update any fields that need correction (rare, as metadata comes from vcpkg)
+2. Manually update any fields that need correction (rare, as most metadata comes from DLL-embedded values or vcpkg sources)
 3. Commit the `version-info.json` file to the repository
 
 **Important Notes:**
