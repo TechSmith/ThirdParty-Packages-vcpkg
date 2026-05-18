@@ -580,13 +580,13 @@ function Apply-VcpkgPortPatch {
     
     Push-Location $workDir
     try {
-        $output = git apply --unidiff-zero --inaccurate-eof --ignore-space-change --ignore-whitespace --whitespace=nowarn "$PatchFile" 2>&1
+        $output = git apply --unidiff-zero "$PatchFile" 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Message "> Patch applied successfully"
             return $true
         } else {
             # Check if patch is already applied
-            $checkOutput = git apply --reverse --check --ignore-whitespace "$PatchFile" 2>&1
+            $checkOutput = git apply --reverse --check "$PatchFile" 2>&1
             if ($LASTEXITCODE -eq 0) {
                 Write-Message "> Patch appears to be already applied (skipping)"
                 return $true
@@ -604,8 +604,69 @@ function Apply-VcpkgPortPatch {
     }
 }
 
+function Apply-VcpkgCorePatch {
+    <#
+    .SYNOPSIS
+    Applies a patch file to vcpkg core infrastructure files.
+    
+    .DESCRIPTION
+    Applies a git patch to vcpkg core files (scripts/, ports/vcpkg-tool-*, etc.)
+    that are not regular vcpkg ports. Uses --ignore-whitespace for cross-platform
+    compatibility.
+    
+    .PARAMETER PatchFile
+    Path to the patch file to apply
+    
+    .PARAMETER Description
+    Description of what this patch does (for logging)
+    
+    .EXAMPLE
+    Apply-VcpkgCorePatch -PatchFile "$PSScriptRoot/fix-meson.patch" -Description "meson OBJCXX support"
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$PatchFile,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$Description
+    )
+    
+    if (-not (Test-Path $PatchFile)) {
+        Write-Message "> Patch file not found: $PatchFile" -Warning
+        return $false
+    }
+    
+    $vcpkgRoot = "$PSScriptRoot/../../../vcpkg"
+    
+    Write-Message "> Applying vcpkg core patch ($Description): $(Split-Path -Leaf $PatchFile)"
+    
+    Push-Location $vcpkgRoot
+    try {
+        $output = git apply --unidiff-zero --ignore-whitespace "$PatchFile" 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Message "> Patch applied successfully"
+            return $true
+        } else {
+            # Check if patch is already applied
+            $checkOutput = git apply --reverse --check --ignore-whitespace "$PatchFile" 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Message "> Patch appears to be already applied (skipping)"
+                return $true
+            } else {
+                Write-Message "> FAILED to apply vcpkg core patch ($Description)" -Error
+                Write-Message "> Git apply exit code: $LASTEXITCODE" -Error
+                Write-Message "> Git apply output: $output" -Error
+                Write-Message "> Patch file: $PatchFile" -Error
+                return $false
+            }
+        }
+    } finally {
+        Pop-Location
+    }
+}
+
 Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
-Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink, Apply-VcpkgPortPatch
+Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink, Apply-VcpkgPortPatch, Apply-VcpkgCorePatch
 
 if ( (Get-IsOnMacOS) ) {
    Import-Module "$PSScriptRoot/../../ps-modules/MacBuild" -DisableNameChecking -Force

@@ -72,7 +72,8 @@ function Normalize-VersionNumber {
         return $Version
     }
 
-    # Normalize comma-separated version strings (e.g. "2, 32, 10, 0" -> "2.32.10.0")
+    # Normalize comma-separated version strings (e.g. "2, 32, 10, 0" -> "2.32.10")
+    # Note: The 4th part will be stripped in the next step
     if ($Version -match '^\d+,') {
         $Version = ($Version -split '\s*,\s*' | ForEach-Object { $_.Trim() }) -join '.'
     }

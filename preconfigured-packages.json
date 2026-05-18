@@ -161,13 +161,13 @@
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2026.03.18"
+        "vcpkgHash": "2026.04.27"
       },
       "win": {
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2026.03.18"
+        "vcpkgHash": "2026.04.27"
       }
     },
     {
@@ -358,15 +358,28 @@
     {
       "name": "dawn",
       "mac": {
-        "package": "dawn",
+        "package": "dawn[tint-tools]",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2026.04.27",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       },
       "win": {
-        "package": "dawn",
-        "customTriplet": "x64-windows-static-md",
+        "package": "dawn[core,d3d12,tint-tools]",
+        "customTriplet": "x64-windows-static-md-release",
+        "vcpkgHash": "2026.04.27",
         "publish": {
-          "debug": true
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
         }
       }
     },
