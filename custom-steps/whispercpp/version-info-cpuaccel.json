@@ -1,7 +1,7 @@
 {
   "files": [
     {
-      "filename": "bin/whisper.dll",
+      "filename": "bin/whisper-cpuaccel.dll",
       "fileDescription": "High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.",
       "fileVersion": "1.7.6",
       "productName": "WhisperCpp",
