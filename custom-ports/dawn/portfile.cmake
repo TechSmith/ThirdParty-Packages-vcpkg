@@ -54,6 +54,9 @@ vcpkg_from_github(
         011-fix-dxc.patch
         # https://github.com/google/dawn/commit/d0a283a7a5e6320ca919f9580590371086f41dd6
         012-fix-non-target-leaking.patch
+        # Apple Clang does not support implicit CTAD for aggregates (P1816R0/P1021R4).
+        # Add explicit deduction guide for the `overloaded` helper struct.
+        1001-tsc-fix-overloaded-ctad-macos.patch
 )
 
 function(checkout_in_path PATH URL REF)
@@ -112,11 +115,13 @@ checkout_in_path(
 
 vcpkg_find_acquire_program(PYTHON3)
 
-if (VCPKG_LIBRARY_LINKAGE STREQUAL "static")
-    set(DAWN_BUILD_MONOLITHIC_LIBRARY "STATIC")
-else()
-    set(DAWN_BUILD_MONOLITHIC_LIBRARY "SHARED")
-endif()
+# <TechSmith Customizations>
+# Do NOT use DAWN_BUILD_MONOLITHIC_LIBRARY. Instead, build Dawn the classic way:
+# - webgpu_dawn as a shared library (DLL/dylib) for the WebGPU C API
+# - Individual tint libraries as static libs for direct C++ API usage
+# This matches the old custom port behavior and allows CommonCpp to link
+# individual tint libs (e.g. tint_lang_wgsl_writer for WgslFromIR).
+# </TechSmith Customizations>
 
 vcpkg_check_features(
     OUT_FEATURE_OPTIONS FEATURE_OPTIONS
@@ -136,13 +141,17 @@ set(DAWN_USE_BUILT_DXC OFF)
 if(DAWN_ENABLE_D3D11 OR DAWN_ENABLE_D3D12)
     set(DAWN_USE_BUILT_DXC ON)
 endif()
-set(DAWN_USE_TINT_SPV OFF)
-if(DAWN_ENABLE_VULKAN)
-    set(DAWN_USE_TINT_SPV ON)
-endif()
 
-# DAWN_BUILD_MONOLITHIC_LIBRARY SHARED/STATIC requires BUILD_SHARED_LIBS=OFF
+# <TechSmith Customizations>
+# Use DAWN_BUILD_MONOLITHIC_LIBRARY=SHARED to get webgpu_dawn.dll (WebGPU C API),
+# while keeping BUILD_SHARED_LIBS=OFF so individual tint libraries are static.
+# TINT_ENABLE_INSTALL=ON ensures the individual tint .lib files are installed
+# alongside the monolithic DLL, allowing CommonCpp to link tint C++ symbols directly.
+# </TechSmith Customizations>
+
+# Keep linkage backup/restore for compatibility with downstream vcpkg logic
 set(VCPKG_LIBRARY_LINKAGE_BACKUP ${VCPKG_LIBRARY_LINKAGE})
+# DAWN_BUILD_MONOLITHIC_LIBRARY SHARED/STATIC requires BUILD_SHARED_LIBS=OFF
 set(VCPKG_LIBRARY_LINKAGE static)
 
 vcpkg_cmake_configure(
@@ -150,24 +159,105 @@ vcpkg_cmake_configure(
     OPTIONS
         ${FEATURE_OPTIONS}
         "-DPython3_EXECUTABLE=${PYTHON3}"
-        -DDAWN_BUILD_MONOLITHIC_LIBRARY=${DAWN_BUILD_MONOLITHIC_LIBRARY}
+        -DDAWN_BUILD_MONOLITHIC_LIBRARY=SHARED
+        -DDAWN_FETCH_DEPENDENCIES=OFF
         -DDAWN_ENABLE_INSTALL=ON
         -DDAWN_USE_GLFW=OFF
         -DDAWN_BUILD_PROTOBUF=OFF
         -DDAWN_BUILD_SAMPLES=OFF
         -DDAWN_BUILD_TESTS=OFF
         -DTINT_BUILD_TESTS=OFF
-        -DTINT_ENABLE_INSTALL=OFF
+        -DTINT_ENABLE_INSTALL=ON
         -DTINT_BUILD_WGSL_READER=ON
         -DTINT_BUILD_WGSL_WRITER=ON
-        -DTINT_BUILD_SPV_READER=${DAWN_USE_TINT_SPV}
-        -DTINT_BUILD_SPV_WRITER=${DAWN_USE_TINT_SPV}
+        -DTINT_BUILD_SPV_READER=ON
+        -DTINT_BUILD_SPV_WRITER=ON
         -DDAWN_ENABLE_NULL=ON
+        -DDAWN_ENABLE_VULKAN=OFF
         -DDAWN_USE_BUILT_DXC=${DAWN_USE_BUILT_DXC}
 )
 
+# <TechSmith Customizations>
+# Tint's install expects certain library files to exist that may not have been
+# built (e.g. language backends we didn't enable, fuzz helpers, etc.).
+# Instead of maintaining a hardcoded list, scan the generated cmake_install.cmake
+# for all .lib references under src/tint/ and create empty placeholders for any
+# that weren't actually built.
+set(PREFIX ${VCPKG_TARGET_STATIC_LIBRARY_PREFIX})
+set(SUFFIX ${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX})
+
+if(VCPKG_BUILD_TYPE STREQUAL "release")
+    list(APPEND BUILD_DIR_SUFFIXES "-rel")
+elseif(VCPKG_BUILD_TYPE STREQUAL "debug")
+    list(APPEND BUILD_DIR_SUFFIXES "-dbg")
+else()
+    list(APPEND BUILD_DIR_SUFFIXES "-dbg")
+    list(APPEND BUILD_DIR_SUFFIXES "-rel")
+endif()
+
+foreach(BUILD_DIR_SUFFIX ${BUILD_DIR_SUFFIXES})
+    set(BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}${BUILD_DIR_SUFFIX}")
+    set(TINT_INSTALL_FILE "${BUILD_DIR}/src/tint/cmake_install.cmake")
+    if(EXISTS "${TINT_INSTALL_FILE}")
+        file(READ "${TINT_INSTALL_FILE}" TINT_INSTALL_CONTENTS)
+        # Match all .lib file paths referenced in the install script
+        string(REGEX MATCHALL "${BUILD_DIR}/src/tint/[^ \"\n]*\\${SUFFIX}" EXPECTED_LIBS "${TINT_INSTALL_CONTENTS}")
+        list(REMOVE_DUPLICATES EXPECTED_LIBS)
+        foreach(LIB_PATH ${EXPECTED_LIBS})
+            if(NOT EXISTS "${LIB_PATH}")
+                get_filename_component(LIB_DIR "${LIB_PATH}" DIRECTORY)
+                file(MAKE_DIRECTORY "${LIB_DIR}")
+                file(TOUCH "${LIB_PATH}")
+                message(STATUS "Created placeholder: ${LIB_PATH}")
+            endif()
+        endforeach()
+    endif()
+endforeach()
+# </TechSmith Customizations>
+
 vcpkg_cmake_install()
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/Dawn)
+
+# <TechSmith Customizations>
+# Install tint public headers manually.
+file(GLOB TINT_PUBLIC_HEADERS "${SOURCE_PATH}/include/tint/*.h")
+if(TINT_PUBLIC_HEADERS)
+    file(INSTALL ${TINT_PUBLIC_HEADERS} DESTINATION "${CURRENT_PACKAGES_DIR}/include/tint")
+endif()
+
+# Install tint source headers (needed for some internal includes)
+file(GLOB_RECURSE TINT_SRC_HEADERS "${SOURCE_PATH}/src/tint/*.h")
+foreach(HEADER_FILE ${TINT_SRC_HEADERS})
+    file(RELATIVE_PATH REL_PATH "${SOURCE_PATH}" "${HEADER_FILE}")
+    get_filename_component(REL_DIR "${REL_PATH}" DIRECTORY)
+    file(INSTALL "${HEADER_FILE}" DESTINATION "${CURRENT_PACKAGES_DIR}/include/${REL_DIR}")
+endforeach()
+
+# Install src/utils headers required by tint internal headers.
+file(GLOB UTILS_SRC_HEADERS "${SOURCE_PATH}/src/utils/*.h")
+if(UTILS_SRC_HEADERS)
+    file(INSTALL ${UTILS_SRC_HEADERS} DESTINATION "${CURRENT_PACKAGES_DIR}/include/src/utils")
+endif()
+
+# Copy SPIRV-Tools libraries that Dawn builds internally
+foreach(BUILD_DIR_SUFFIX ${BUILD_DIR_SUFFIXES})
+    set(BUILD_DIR "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}${BUILD_DIR_SUFFIX}")
+    if(BUILD_DIR_SUFFIX STREQUAL "-dbg")
+        set(DST_DIR "${CURRENT_PACKAGES_DIR}/debug/lib")
+    else()
+        set(DST_DIR "${CURRENT_PACKAGES_DIR}/lib")
+    endif()
+    if(EXISTS "${BUILD_DIR}/third_party/spirv-tools/source/${PREFIX}SPIRV-Tools${SUFFIX}")
+        file(COPY "${BUILD_DIR}/third_party/spirv-tools/source/${PREFIX}SPIRV-Tools${SUFFIX}" DESTINATION "${DST_DIR}")
+    endif()
+    if(EXISTS "${BUILD_DIR}/third_party/spirv-tools/source/opt/${PREFIX}SPIRV-Tools-opt${SUFFIX}")
+        file(COPY "${BUILD_DIR}/third_party/spirv-tools/source/opt/${PREFIX}SPIRV-Tools-opt${SUFFIX}" DESTINATION "${DST_DIR}")
+    endif()
+endforeach()
+
+# Allow bin/webgpu_dawn.dll to be in the package even though this is a static build
+set(VCPKG_POLICY_DLLS_IN_STATIC_LIBRARY enabled)
+# </TechSmith Customizations>
 
 # Restore the original library linkage
 set(VCPKG_LIBRARY_LINKAGE ${VCPKG_LIBRARY_LINKAGE_BACKUP})
