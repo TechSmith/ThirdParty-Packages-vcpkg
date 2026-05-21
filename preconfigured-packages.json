@@ -356,7 +356,7 @@
       }
     },
     {
-      "name": "dawn-release",
+      "name": "dawn",
       "mac": {
         "package": "dawn[tint-tools]",
         "linkType": "static",
@@ -372,33 +372,14 @@
       },
       "win": {
         "package": "dawn[core,d3d12,tint-tools]",
-        "customTriplet": "x64-windows-static-md-release",
+        "customTriplet": "x64-windows-static-md",
         "vcpkgHash": "2026.04.27",
         "publish": {
           "include": true,
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
-        }
-      }
-    },
-    {
-      "name": "dawn-debug",
-      "mac": {
-        "package": "dawn",
-        "linkType": "static",
-        "buildType": "debug",
-        "vcpkgHash": "2026.04.27",
-        "publish": {
-          "debug": true
-        }
-      },
-      "win": {
-        "package": "dawn[core,d3d12]",
-        "customTriplet": "x64-windows-static-md",
-        "vcpkgHash": "2026.04.27",
-        "publish": {
+          "tools": true,
           "debug": true
         }
       }

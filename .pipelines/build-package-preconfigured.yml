@@ -11,8 +11,7 @@ parameters:
   type: string
   values:
   - buildcache
-  - dawn-release
-  - dawn-debug
+  - dawn
   - ffmpeg-cloud-gpl
   - ffmpeg-desktop-base
   - ffmpeg-desktop-hevc
