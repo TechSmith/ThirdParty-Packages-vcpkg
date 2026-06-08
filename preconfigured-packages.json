@@ -287,6 +287,11 @@
         "package": "whispercpp",
         "linkType": "dynamic",
         "buildType": "release"
+      },
+      "linux": {
+	"package": "whispercpp",
+	"linktype": "dynamic",
+	"buildType": "release"
       }
     },
     {
@@ -299,6 +304,11 @@
       "win": {
         "package": "whispercpp-basic",
         "linkType": "dynamic",
+        "buildType": "release"
+      },
+      "linux": {
+        "package": "whispercpp",
+        "linktype": "dynamic",
         "buildType": "release"
       }
     },
