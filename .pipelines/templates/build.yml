@@ -99,6 +99,13 @@ stages:
       name: CheckDirectories
       displayName: 'Verify builds ran'
 
+    - powershell: |
+        Get-ChildItem "$(Build.ArtifactStagingDirectory)/package" -Recurse |
+            Select-Object FullName, Length |
+            Format-Table -AutoSize | Out-String -Width 4096 |
+            Write-Host
+      displayName: 'Display package contents'
+
     - task: PublishBuildArtifacts@1
       displayName: Publish build artifacts
       inputs:
