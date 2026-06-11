@@ -6,8 +6,8 @@ vcpkg_from_github(
     SHA512 944d8a6e4a770462e77139d918fd1d5b93efca377051d83a584d91164ec73fa50b5bfbc7d85014151b3b5c80fa59cfd386e456960401f8b3c66a9788585cac46
     HEAD_REF master
     PATCHES
-        0001-BuildGgmlAsStatic.patch
         0002-UpdateTargetName.patch
+        0001-BuildGgmlAsStatic.patch
 )
 
 set(VCPKG_POLICY_SKIP_MISPLACED_CMAKE_FILES_CHECK enabled)
