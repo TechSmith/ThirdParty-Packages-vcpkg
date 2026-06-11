@@ -35,6 +35,10 @@ function Get-Triplets {
    if (Get-IsOnWindowsOS) {
        return @("x64-windows-$linkType-$buildType")
    } elseif (Get-IsOnLinux) {
+       if ($linkType -eq "dynamic") {
+        return @("x64-linux-dynamic") # using microsoft community provided release
+       }
+
        return @("x64-linux") # using microsoft provided release
    } elseif (Get-IsOnMacOS) {
        return @("x64-osx-$linkType-$buildType", "arm64-osx-$linkType-$buildType")
