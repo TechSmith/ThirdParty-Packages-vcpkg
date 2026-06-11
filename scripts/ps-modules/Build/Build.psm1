@@ -363,6 +363,13 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       }
    }
 
+   Get-ChildItem "./vcpkg/installed" -Recurse |
+        Sort-Object FullName |
+        Select-Object FullName, Length |
+        Format-Table -AutoSize |
+        Out-String -Width 4096 |
+        Write-Host
+
    $keysToRemove = @()
    foreach ($srcDir in $srcToDestDirs.Keys) {
      $destDir = $srcToDestDirs[$srcDir]
