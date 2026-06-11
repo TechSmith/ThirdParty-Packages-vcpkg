@@ -307,7 +307,7 @@
         "buildType": "release"
       },
       "linux": {
-        "package": "whispercpp",
+        "package": "whispercpp-basic",
         "linkType": "dynamic",
         "buildType": "release"
       }
