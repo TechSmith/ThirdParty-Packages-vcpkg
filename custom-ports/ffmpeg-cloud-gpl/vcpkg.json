@@ -1,14 +1,18 @@
 {
   "name": "ffmpeg-cloud-gpl",
-  "version": "6.1.1",
-  "port-version": 1,
+  "version": "8.1.1",
+  "port-version": 2,
   "description": [
-    "a library to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created.",
+    "A library to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created.",
     "FFmpeg is the leading multimedia framework, able to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created. It supports the most obscure ancient formats up to the cutting edge. No matter if they were designed by some standards committee, the community or a corporation. It is also highly portable: FFmpeg compiles, runs, and passes our testing infrastructure FATE across Linux, Mac OS X, Microsoft Windows, the BSDs, Solaris, etc. under a wide variety of build environments, machine architectures, and configurations."
   ],
   "homepage": "https://ffmpeg.org",
   "license": null,
   "dependencies": [
+    {
+      "name": "ffmpeg-bin2c",
+      "host": true
+    },
     {
       "name": "vcpkg-cmake-get-vars",
       "host": true
@@ -34,6 +38,13 @@
           "name": "ffmpeg-cloud-gpl",
           "default-features": false,
           "features": [
+            "sdl2"
+          ]
+        },
+        {
+          "name": "ffmpeg-cloud-gpl",
+          "default-features": false,
+          "features": [
             "aom",
             "avcodec",
             "avdevice",
@@ -43,20 +54,20 @@
             "freetype",
             "iconv",
             "lzma",
-            "mjepg",
             "mp3lame",
             "openjpeg",
             "openmpt",
             "opus",
-            "png",
             "snappy",
             "soxr",
             "speex",
             "swresample",
             "swscale",
             "theora",
+            "twolame",
             "vorbis",
             "vpx",
+            "vulkan",
             "webp",
             "xml2",
             "zlib"
@@ -69,14 +80,6 @@
             "alsa"
           ],
           "platform": "linux"
-        },
-        {
-          "name": "ffmpeg-cloud-gpl",
-          "default-features": false,
-          "features": [
-            "sdl2"
-          ],
-          "platform": "!osx"
         },
         {
           "name": "ffmpeg-cloud-gpl",
@@ -114,31 +117,7 @@
           "name": "ffmpeg-cloud-gpl",
           "default-features": false,
           "features": [
-            "mjpeg"
-          ],
-          "platform": "!uwp"
-        },
-        {
-          "name": "ffmpeg-cloud-gpl",
-          "default-features": false,
-          "features": [
-            "opencl"
-          ],
-          "platform": "!uwp"
-        },
-        {
-          "name": "ffmpeg-cloud-gpl",
-          "default-features": false,
-          "features": [
             "openh264"
-          ],
-          "platform": "!uwp"
-        },
-        {
-          "name": "ffmpeg-cloud-gpl",
-          "default-features": false,
-          "features": [
-            "png"
           ],
           "platform": "!uwp"
         },
@@ -178,6 +157,14 @@
           "name": "ffmpeg-cloud-gpl",
           "default-features": false,
           "features": [
+            "opencl"
+          ],
+          "platform": "!uwp & !osx"
+        },
+        {
+          "name": "ffmpeg-cloud-gpl",
+          "default-features": false,
+          "features": [
             "opengl"
           ],
           "platform": "!uwp & !(arm64 & windows)"
@@ -212,7 +199,7 @@
           "features": [
             "qsv"
           ],
-          "platform": "linux | (!osx & !uwp & !(arm & windows))"
+          "platform": "(x64 | x86) & (windows | linux) & !uwp"
         },
         {
           "name": "ffmpeg-cloud-gpl",
@@ -232,8 +219,7 @@
           "default-features": false,
           "features": [
             "all",
-            "gpl",
-            "postproc"
+            "gpl"
           ]
         },
         {
@@ -361,6 +347,33 @@
         "dav1d"
       ]
     },
+    "drawtext": {
+      "description": "Enable the drawtext filter",
+      "dependencies": [
+        {
+          "name": "ffmpeg-cloud-gpl",
+          "default-features": false,
+          "features": [
+            "freetype"
+          ]
+        },
+        "harfbuzz"
+      ]
+    },
+    "dvdvideo": {
+      "description": "DVD-Video demuxer",
+      "dependencies": [
+        {
+          "name": "ffmpeg-cloud-gpl",
+          "default-features": false,
+          "features": [
+            "gpl"
+          ]
+        },
+        "libdvdnav",
+        "libdvdread"
+      ]
+    },
     "fdk-aac": {
       "description": "AAC de/encoding via libfdk-aac, **including GPL-incompatible patent-encumbered HE-AAC**. If you do not require HE-AAC, use the built-in FFmpeg AAC codec.",
       "dependencies": [
@@ -466,12 +479,6 @@
         "liblzma"
       ]
     },
-    "mjpeg": {
-      "description": "Mjpeg encoding & decoding support",
-      "dependencies": [
-        "libjpeg-turbo"
-      ]
-    },
     "modplug": {
       "description": "ModPlug via libmodplug",
       "dependencies": [
@@ -528,7 +535,7 @@
       ]
     },
     "openssl": {
-      "description": "Needed for https support if gnutls, libtls or mbedtls is not used",
+      "description": "Use OpenSSL for TLS support",
       "dependencies": [
         {
           "name": "ffmpeg-cloud-gpl",
@@ -546,14 +553,14 @@
         "opus"
       ]
     },
-    "png": {
-      "description": "PNG encoding & decoding (requires zlib)",
+    "qsv": {
+      "description": "Intel QSV Codec via oneVPL",
       "dependencies": [
-        "zlib"
+        "libvpl"
       ]
     },
-    "postproc": {
-      "description": "Build the postproc library",
+    "rubberband": {
+      "description": "Enable rubberband support",
       "dependencies": [
         {
           "name": "ffmpeg-cloud-gpl",
@@ -561,13 +568,8 @@
           "features": [
             "gpl"
           ]
-        }
-      ]
-    },
-    "qsv": {
-      "description": "Intel QSV Codec",
-      "dependencies": [
-        "mfx-dispatch"
+        },
+        "rubberband"
       ]
     },
     "sdl2": {
@@ -651,6 +653,23 @@
         "libtheora"
       ]
     },
+    "twolame": {
+      "description": "MP2 encoding via libtwolame",
+      "dependencies": [
+        "libtwolame"
+      ]
+    },
+    "vaapi": {
+      "description": "VAAPI video decoding/encoding acceleration",
+      "supports": "linux",
+      "dependencies": [
+        {
+          "name": "libva",
+          "default-features": false,
+          "platform": "linux"
+        }
+      ]
+    },
     "version3": {
       "description": "Upgrade (L)GPL to version 3"
     },
@@ -671,6 +690,12 @@
           ]
         },
         "libvpx"
+      ]
+    },
+    "vulkan": {
+      "description": "H.264, HEVC and AV1 de/encoding via Vulkan",
+      "dependencies": [
+        "vulkan-headers"
       ]
     },
     "webp": {
@@ -715,6 +740,12 @@
       "description": "zlib support",
       "dependencies": [
         "zlib"
+      ]
+    },
+    "zmq": {
+      "description": "Enable ZeroMQ support",
+      "dependencies": [
+        "zeromq"
       ]
     }
   }

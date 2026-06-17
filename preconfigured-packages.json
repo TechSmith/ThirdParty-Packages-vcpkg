@@ -71,10 +71,10 @@
     {
       "name": "ffmpeg-cloud-gpl",
       "win": {
-        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
+        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
-        "vcpkgHash": "2025.09.17",
+        "vcpkgHash": "2026.06.02",
         "publish": {
           "include": false,
           "lib": false,
@@ -84,10 +84,10 @@
         }
       },
       "linux": {
-        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,mjpeg,png,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
+        "package": "ffmpeg-cloud-gpl[core,avcodec,avdevice,avfilter,avformat,avresample,swscale,swresample,mp3lame,ffmpeg,ffprobe,openssl,zlib,x264,dav1d,vpx,nonfree,gpl,version3]",
         "linkType": "static",
         "buildType": "release",
-        "vcpkgHash": "2025.09.17",
+        "vcpkgHash": "2026.06.02",
         "publish": {
           "include": false,
           "lib": false,
