@@ -608,6 +608,24 @@ else()
     set(WITH_RUBBERBAND OFF)
 endif()
 
+# Additional features start
+if("png" IN_LIST FEATURES)
+    set(OPTIONS "${OPTIONS} --enable-encoder=png --enable-decoder=png --enable-muxer=png --enable-demuxer=png")
+    set(WITH_LIBPNG ON)
+else()
+    set(OPTIONS "${OPTIONS} --disable-encoder=png --disable-decoder=png --disable-muxer=png --disable-demuxer=png")
+    set(WITH_LIBPNG OFF)
+endif()
+
+if("mjpeg" IN_LIST FEATURES)
+    set(OPTIONS "${OPTIONS} --enable-decoder=mjpeg --enable-demuxer=image2 --enable-encoder=mjpeg --enable-muxer=image2")
+    set(WITH_LIBJPEG ON)
+else()
+    set(OPTIONS "${OPTIONS} --disable-decoder=mjpeg --disable-demuxer=image2 --disable-encoder=mjpeg --disable-muxer=image2")
+    set(WITH_LIBJPEG OFF)
+endif()
+# Addtional features end
+
 set(OPTIONS_CROSS "--enable-cross-compile")
 
 # ffmpeg needs --cross-prefix option to use appropriate tools for cross-compiling.
