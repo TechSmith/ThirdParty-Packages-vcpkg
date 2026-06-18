@@ -44,6 +44,9 @@ function Get-IsOnWindowsOS {
 }
 
 function Get-IsOnMacOS {
+    if ($IsMacOS) {
+        return $true
+    }
     if ($PSVersionTable.OS -like '*Darwin*') {
         return $true
     }
