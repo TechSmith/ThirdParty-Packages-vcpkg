@@ -28,6 +28,7 @@ parameters:
   - openssl-static
   - opencv4
   - pango-desktop
+  - rive
   - sqlite3
   - sqlite-modern-cpp
   - tinyxml

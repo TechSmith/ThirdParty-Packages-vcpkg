@@ -1,0 +1,7 @@
+{
+  "name": "rive",
+  "version": "0.1.130",
+  "description": "Low-level C++ Rive animation runtime with Metal, OpenGL, and CoreGraphics renderers",
+  "license": "MIT",
+  "supports": "osx"
+}

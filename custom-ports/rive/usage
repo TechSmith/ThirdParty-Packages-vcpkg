@@ -1,0 +1,15 @@
+rive provides CMake imported targets:
+
+    find_package(rive CONFIG REQUIRED)
+
+    # Core animation runtime (required for all use cases)
+    target_link_libraries(<your_target> PRIVATE rive::rive)
+
+    # GPU renderer: Metal + OpenGL (macOS). Links Metal/QuartzCore frameworks.
+    target_link_libraries(<your_target> PRIVATE rive::pls_renderer)
+
+    # CoreGraphics renderer (macOS/iOS). Links CoreGraphics/CoreText frameworks.
+    target_link_libraries(<your_target> PRIVATE rive::cg_renderer)
+
+    # Image decoders (PNG, JPEG, WebP) - needed if .riv files embed images
+    target_link_libraries(<your_target> PRIVATE rive::decoders)

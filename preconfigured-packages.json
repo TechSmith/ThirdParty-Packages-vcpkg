@@ -412,6 +412,22 @@
       }
     },
     {
+      "name": "rive",
+      "mac": {
+        "package": "rive",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.05.27",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": false,
+          "share": true,
+          "tools": false
+        }
+      }
+    },
+    {
       "name": "zlib",
       "mac": {
         "package": "zlib",
