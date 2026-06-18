@@ -54,7 +54,7 @@ endif()
 #   --with_rive_canvas  ORE canvas layer; enables ORE_BACKEND_METAL on macOS,
 #                       which compiles src/metal/*.mm and src/ore/metal/*.mm and
 #                       embeds the compiled .metallib as a C byte array in the lib
-set(ENV{RIVE_PREMAKE_ARGS} "--with_rive_text --with_rive_layout --with_rive_canvas")
+set(ENV{RIVE_PREMAKE_ARGS} "--with_rive_text --with_rive_layout --with_rive_canvas --with-rtti")
 
 message(STATUS "Building rive (${VCPKG_TARGET_ARCHITECTURE}): running premake5 + gmake2 (downloads dependencies on first run, ~5-10 min)")
 
