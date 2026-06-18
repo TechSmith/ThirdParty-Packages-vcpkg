@@ -54,12 +54,10 @@
             "freetype",
             "iconv",
             "lzma",
-            "mjpeg",
             "mp3lame",
             "openjpeg",
             "openmpt",
             "opus",
-            "png",
             "snappy",
             "soxr",
             "speex",
@@ -210,22 +208,6 @@
             "nvcodec"
           ],
           "platform": "linux | (!osx & !uwp & !(arm64 & windows))"
-        },
-        {
-          "name": "ffmpeg-cloud-gpl",
-          "default-features": false,
-          "features": [
-            "mjpeg"
-          ],
-          "platform": "!uwp"
-        },
-        {
-          "name": "ffmpeg-cloud-gpl",
-          "default-features": false,
-          "features": [
-            "png"
-          ],
-          "platform": "!uwp"
         }
       ]
     },
@@ -497,12 +479,6 @@
         "liblzma"
       ]
     },
-    "mjpeg": {
-      "description": "Mjpeg encoding & decoding support",
-      "dependencies": [
-        "libjpeg-turbo"
-      ]
-    },
     "modplug": {
       "description": "ModPlug via libmodplug",
       "dependencies": [
@@ -575,12 +551,6 @@
       "description": "Opus de/encoding via libopus",
       "dependencies": [
         "opus"
-      ]
-    },
-    "png": {
-      "description": "PNG encoding & decoding (requires zlib)",
-      "dependencies": [
-        "zlib"
       ]
     },
     "qsv": {
