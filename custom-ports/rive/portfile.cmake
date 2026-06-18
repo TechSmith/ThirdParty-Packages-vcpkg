@@ -89,6 +89,13 @@ file(COPY "${SOURCE_PATH}/include/"             DESTINATION "${CURRENT_PACKAGES_
 file(COPY "${SOURCE_PATH}/renderer/include/"    DESTINATION "${CURRENT_PACKAGES_DIR}/include")
 file(COPY "${SOURCE_PATH}/cg_renderer/include/" DESTINATION "${CURRENT_PACKAGES_DIR}/include")
 
+# utils/ contains source-only utilities intentionally excluded from the
+# premake build (not in src/). Install them alongside the headers so that
+# consumers can unity-include them (e.g. #include "utils/no_op_factory.cpp").
+file(COPY "${SOURCE_PATH}/utils/"
+     DESTINATION "${CURRENT_PACKAGES_DIR}/include/utils"
+     FILES_MATCHING PATTERN "*.cpp")
+
 # ── Install static libs ───────────────────────────────────────────────────────
 file(GLOB RIVE_STATIC_LIBS "${RIVE_OUTDIR}/*.a")
 if(NOT RIVE_STATIC_LIBS)
