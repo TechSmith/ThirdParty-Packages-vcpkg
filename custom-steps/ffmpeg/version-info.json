@@ -1,60 +1,59 @@
 {
-  "buildNumber": 107,
   "files": [
     {
       "filename": "bin/aom.dll",
       "fileDescription": "AV1 codec library",
-      "fileVersion": "3.13.1",
+      "fileVersion": "3.13.3",
       "productName": "Aom",
-      "productVersion": "3.13.1",
+      "productVersion": "3.13.3",
       "copyright": "Copyright (c) 2016, Alliance for Open Media"
     },
     {
-      "filename": "bin/avcodec-61.dll",
+      "filename": "bin/avcodec-62.dll",
       "fileDescription": "FFmpeg codec library",
-      "fileVersion": "61.19.102",
+      "fileVersion": "62.28.101",
       "productName": "FFmpeg",
-      "productVersion": "7.1.2",
-      "copyright": "Copyright (C) 2000-2025 FFmpeg Project"
+      "productVersion": "8.1.1",
+      "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
-      "filename": "bin/avdevice-61.dll",
+      "filename": "bin/avdevice-62.dll",
       "fileDescription": "FFmpeg device handling library",
-      "fileVersion": "61.3.100",
+      "fileVersion": "62.3.101",
       "productName": "FFmpeg",
-      "productVersion": "7.1.2",
-      "copyright": "Copyright (C) 2000-2025 FFmpeg Project"
+      "productVersion": "8.1.1",
+      "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
-      "filename": "bin/avfilter-10.dll",
+      "filename": "bin/avfilter-11.dll",
       "fileDescription": "FFmpeg audio/video filtering library",
-      "fileVersion": "10.4.100",
+      "fileVersion": "11.14.101",
       "productName": "FFmpeg",
-      "productVersion": "7.1.2",
-      "copyright": "Copyright (C) 2000-2025 FFmpeg Project"
+      "productVersion": "8.1.1",
+      "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
-      "filename": "bin/avformat-61.dll",
+      "filename": "bin/avformat-62.dll",
       "fileDescription": "FFmpeg container format library",
-      "fileVersion": "61.7.100",
+      "fileVersion": "62.12.101",
       "productName": "FFmpeg",
-      "productVersion": "7.1.2",
-      "copyright": "Copyright (C) 2000-2025 FFmpeg Project"
+      "productVersion": "8.1.1",
+      "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
-      "filename": "bin/avutil-59.dll",
+      "filename": "bin/avutil-60.dll",
       "fileDescription": "FFmpeg utility library",
-      "fileVersion": "59.39.100",
+      "fileVersion": "60.26.101",
       "productName": "FFmpeg",
-      "productVersion": "7.1.2",
-      "copyright": "Copyright (C) 2000-2025 FFmpeg Project"
+      "productVersion": "8.1.1",
+      "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
       "filename": "bin/dav1d.dll",
-      "fileDescription": "dav1d 1.5.1 - AV1 decoder",
+      "fileDescription": "dav1d 1.5.3 - AV1 decoder",
       "fileVersion": "7.0.0",
       "productName": "dav1d",
-      "productVersion": "1.5.1",
+      "productVersion": "1.5.3",
       "copyright": "Copyright © 2018-2025 VideoLAN and dav1d Authors"
     },
     {
@@ -90,20 +89,20 @@
       "copyright": "Copyright (C) 2025 Sam Lantinga"
     },
     {
-      "filename": "bin/swresample-5.dll",
+      "filename": "bin/swresample-6.dll",
       "fileDescription": "FFmpeg audio resampling library",
-      "fileVersion": "5.3.100",
+      "fileVersion": "6.3.101",
       "productName": "FFmpeg",
-      "productVersion": "7.1.2",
-      "copyright": "Copyright (C) 2000-2025 FFmpeg Project"
+      "productVersion": "8.1.1",
+      "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
-      "filename": "bin/swscale-8.dll",
+      "filename": "bin/swscale-9.dll",
       "fileDescription": "FFmpeg image rescaling library",
-      "fileVersion": "8.3.100",
+      "fileVersion": "9.5.101",
       "productName": "FFmpeg",
-      "productVersion": "7.1.2",
-      "copyright": "Copyright (C) 2000-2025 FFmpeg Project"
+      "productVersion": "8.1.1",
+      "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
       "filename": "bin/vorbis.dll",
@@ -137,5 +136,6 @@
       "productVersion": "1.3.2",
       "copyright": "(C) 1995-2026 Jean-loup Gailly & Mark Adler"
     }
-  ]
+  ],
+  "buildNumber": 108
 }
