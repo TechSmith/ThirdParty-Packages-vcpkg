@@ -1,12 +1,13 @@
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index ff54d64..6a9f8b5 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -87,6 +87,7 @@ add_library(whisper
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 45f8270..62ed832 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -143,7 +143,7 @@ set(WHISPER_BIN_INSTALL_DIR     ${CMAKE_INSTALL_BINDIR}     CACHE PATH "Location
  
- # Set the version numbers
- set_target_properties(whisper PROPERTIES
-+    OUTPUT_NAME "whisper-basic"
-     VERSION ${PROJECT_VERSION}
-     SOVERSION ${SOVERSION}
- )
+ get_directory_property(WHISPER_TRANSIENT_DEFINES COMPILE_DEFINITIONS)
+ 
+-set_target_properties(whisper PROPERTIES PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/whisper.h)
++set_target_properties(whisper PROPERTIES OUTPUT_NAME "whisper-basic" PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/whisper.h)
+ install(TARGETS whisper LIBRARY PUBLIC_HEADER)
+ 
+ configure_package_config_file(
