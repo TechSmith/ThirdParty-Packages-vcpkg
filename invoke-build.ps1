@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$true)][string]$PackageAndFeatures, # Name of package + optional feature flags ("foo" or "foo[feature1,feature2]")
-    [string]$LinkType,                                       # Linking type: static or dynamic
+    [string]$LinkType = "dynamic",                            # Linking type: static or dynamic
     [string]$PackageName = "",                               # The base name of the tag to be used when publishing the release (ex. "openssl-static").  If not specified, it will default to "$Package-$LinkType"
     [string]$BuildType = "release",                          # Build type: release or debug
     [string]$CustomTriplet = "",                             # Optional: Custom triplet to use for vcpkg. Overrides LinkType and BuildType
@@ -17,7 +17,7 @@ Run-CleanupStep
 Run-SetupVcPkgStep $VcPkgHash
 Run-PreBuildStep $PackageAndFeatures
 
-$triplets = Get-Triplets -linkType $linkType -buildType $BuildType -customTriplet $CustomTriplet
+$triplets = Get-Triplets -linkType $LinkType -buildType $BuildType -customTriplet $CustomTriplet
 Run-InstallCompilerIfNecessary -triplets $triplets
 Run-InstallPackageStep -packageAndFeatures $PackageAndFeatures -triplets $triplets
 Run-PrestageAndFinalizeBuildArtifactsStep -triplets $triplets -publishInfo $PublishInfo

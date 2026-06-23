@@ -3,17 +3,17 @@
         {
             "filename": "tools/ffmpeg-cloud-gpl/ffmpeg.exe",
             "fileDescription": "FFmpeg",
-            "fileVersion": "6.1.1",
+            "fileVersion": "7.1.1",
             "productName": "FFmpeg",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         },
         {
             "filename": "tools/ffmpeg-cloud-gpl/ffprobe.exe",
             "fileDescription": "FFProbe",
-            "fileVersion": "6.1.1",
+            "fileVersion": "7.1.1",
             "productName": "FFProbe",
-            "productVersion": "6.1.1",
+            "productVersion": "7.1.1",
             "copyright": "Copyright (C) 2000-2023 FFmpeg Project"
         }
     ]
