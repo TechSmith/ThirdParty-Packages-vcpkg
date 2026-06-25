@@ -1,8 +1,8 @@
 diff --git a/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp b/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp
-index ca3ae01..f231e44 100644
+index ca3ae01..c13fd44 100644
 --- a/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp
 +++ b/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp
-@@ -650,3 +650,26 @@ jerry_register_magic_strings (const jerry_char_t *const *ext_strings_p, /**< cha
+@@ -650,3 +650,27 @@ jerry_register_magic_strings (const jerry_char_t *const *ext_strings_p, /**< cha
  /**
   * @}
   */
@@ -23,6 +23,7 @@ index ca3ae01..f231e44 100644
 +            void *user_p,             /**< user pointer */
 +            uint32_t frequency)       /**< call frequency (0 = disable) */
 +{
++  JERRY_DEFINE_CURRENT_CONTEXT ();
 +  JERRY_CONTEXT (vm_exec_stop_cb)        = (ecma_vm_exec_stop_callback_t) handler;
 +  JERRY_CONTEXT (vm_exec_stop_user_p)    = user_p;
 +  JERRY_CONTEXT (vm_exec_stop_frequency) = frequency;
