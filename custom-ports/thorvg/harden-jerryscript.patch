@@ -1,8 +1,8 @@
 diff --git a/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp b/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp
-index d98cd7e..8603ed1 100644
+index ca3ae01..f231e44 100644
 --- a/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp
 +++ b/src/loaders/lottie/jerryscript/jerry-core/api/jerryscript.cpp
-@@ -646,3 +646,26 @@ jerry_register_magic_strings (const jerry_char_t *const *ext_strings_p, /**< cha
+@@ -650,3 +650,26 @@ jerry_register_magic_strings (const jerry_char_t *const *ext_strings_p, /**< cha
  /**
   * @}
   */
@@ -53,12 +53,12 @@ index 14f8a53..c0df4b5 100644
  
  #endif /* !JERRYSCRIPT_CORE_H */
 diff --git a/src/loaders/lottie/tvgLottieExpressions.cpp b/src/loaders/lottie/tvgLottieExpressions.cpp
-index e3c1427..12a8ac6 100644
+index d7e9a29..5d9f044 100644
 --- a/src/loaders/lottie/tvgLottieExpressions.cpp
 +++ b/src/loaders/lottie/tvgLottieExpressions.cpp
-@@ -28,6 +28,27 @@
- 
- #ifdef THORVG_LOTTIE_EXPRESSIONS_SUPPORT
+@@ -33,6 +33,27 @@
+     #include "jerryscript-port.h"
+ #endif
  
 +/************************************************************************/
 +/* JerryScript VM hardening                                             */
@@ -84,26 +84,25 @@ index e3c1427..12a8ac6 100644
  /************************************************************************/
  /* Internal Class Implementation                                        */
  /************************************************************************/
-@@ -1464,6 +1485,10 @@ jerry_value_t LottieExpressions::evaluate(float frameNo, LottieExpression* exp)
+@@ -1466,6 +1487,10 @@ jerry_value_t LottieExpressions::evaluate(float frameNo, LottieExpression* exp)
  {
-     if (exp->disabled && exp->writables.empty()) return jerry_undefined();
+     if (exp->disabled) return jerry_undefined();
  
 +#if JERRY_VM_HALT
 +    _haltCounter = 0;
 +#endif
 +
-     buildGlobal(frameNo, exp);
+     auto& context = this->context();
  
-     //main composition
-@@ -1523,6 +1548,11 @@ LottieExpressions::LottieExpressions()
+     buildGlobal(context, frameNo, exp);
+@@ -1560,6 +1585,10 @@ LottieExpressions::Context& LottieExpressions::context()
+ void LottieExpressions::init(Context& context)
  {
      jerry_init(JERRY_INIT_EMPTY);
- 
 +#if JERRY_VM_HALT
 +    /* Register the halt callback so infinite loops are terminated. */
 +    jerry_halt(_vmHaltCallback, nullptr, 256);
 +#endif
-+
-     //build magic string arrays from the magic pool
-     auto p = _magicPool;
-     for (uint32_t i = 0; i < MAGIC_STRING_COUNT; ++i) {
+ #ifdef THORVG_THREAD_SUPPORT
+     context.ctx = jerry_port_context_get();
+ #endif
