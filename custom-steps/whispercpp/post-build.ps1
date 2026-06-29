@@ -13,5 +13,11 @@ if(-not (Get-Module -Name $moduleName)) {
 }
 
 if((Get-IsOnWindowsOS)) {
-    Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+    # Check to see if "cpu-acceleration" is in the features list
+    $PackageAndFeaturesArray = $PackageAndFeatures -split '\[|\]' | Where-Object {$_ -ne ""}
+    if("cpu-acceleration" -in $PackageAndFeaturesArray) {
+        Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info-cpuaccel.json"
+    } else {
+        Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+    }
 }
