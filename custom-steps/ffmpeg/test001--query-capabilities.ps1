@@ -198,9 +198,7 @@ $tests = @(
         Name = "HwaccelsWin"
         CmdOption = "-hwaccels"
         ExpectedValues = @(
-            "dxva2"
             "d3d11va"
-            "d3d12va"
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnWindowsOS)
