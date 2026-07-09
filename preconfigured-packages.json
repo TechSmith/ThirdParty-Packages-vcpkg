@@ -147,7 +147,8 @@
       "mac": {
         "package": "openssl",
         "linkType": "static",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "2026.06.24"
       },
       "win": {
         "package": "openssl",
