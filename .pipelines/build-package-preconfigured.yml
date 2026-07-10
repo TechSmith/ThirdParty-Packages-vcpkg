@@ -39,6 +39,11 @@ parameters:
   type: boolean
   default: true
 
+- name: isReleaseBuild
+  displayName: Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmss)
+  type: boolean
+  default: false
+
 - name: appendStringToGitHubRelease
   displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
   type: string
@@ -51,4 +56,5 @@ stages:
     publishToPipelineArtifacts: true
     publishToGitHubRelease: ${{ parameters.publishToGitHubRelease }}
     appendStringToGitHubRelease: ${{parameters.appendStringToGitHubRelease}}
+    isReleaseBuild: ${{ parameters.isReleaseBuild }}
     isPreconfiguredBuild: true
