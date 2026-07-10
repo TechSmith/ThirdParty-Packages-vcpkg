@@ -29,6 +29,11 @@ parameters:
   type: boolean
   default: false
 
+- name: publishAsFinalRelease
+  displayName: "Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmssZ-BuildId)"
+  type: boolean
+  default: false
+
 - name: appendStringToGitHubRelease
   displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
   type: string
@@ -212,6 +217,13 @@ stages:
           if( $gitReleaseTagSuffix -ne "") {
              $gitReleaseTagName += "--$gitReleaseTagSuffix"
           }
+          $isPreconfiguredBuild = "${{ parameters.isPreconfiguredBuild }}" -eq "true"
+          $publishAsFinalRelease = "${{ parameters.publishAsFinalRelease }}" -eq "true"
+          if ($isPreconfiguredBuild -and -not $publishAsFinalRelease) {
+             $utcDateTime = (Get-Date).ToUniversalTime().ToString("yyyyMMdd-HHmmssZ")
+             $buildId = "$(Build.BuildId)".Trim()
+             $gitReleaseTagName += "--prerelease-$utcDateTime-$buildId"
+          }
           Write-Host "##vso[task.setvariable variable=gitReleaseTagName]$gitReleaseTagName"
           Write-Host "##vso[task.setvariable variable=gitReleaseNotes]$gitReleaseNotes"
 
@@ -230,7 +242,7 @@ stages:
           $(gitReleaseNotes)
         addChangeLog: false
         isDraft: false
-        isPreRelease: false
+        isPreRelease: ${{ and(eq(parameters.isPreconfiguredBuild, true), eq(parameters.publishAsFinalRelease, false)) }}
         assets: |
           $(Build.ArtifactStagingDirectory)/*
       condition: and(succeeded(), ${{ parameters.publishToGitHubRelease }})
