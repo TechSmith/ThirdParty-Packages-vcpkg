@@ -40,7 +40,7 @@ parameters:
   default: true
 
 - name: isReleaseBuild
-  displayName: "Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmss)"
+  displayName: "Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmssZ-BuildId)"
   type: boolean
   default: false
 
