@@ -65,7 +65,7 @@
         "linkType": "dynamic",
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-dynamic",
-        "vcpkgHash": "2026.06.01"
+        "vcpkgHash": "2026.06.24"
       }
     },
     {
