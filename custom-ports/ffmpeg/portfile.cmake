@@ -247,6 +247,7 @@ SET(ENCODER_NAMES
     av1_mediacodec          h264_nvenc              libshine                msmpeg4v2               pcm_u32le               targa
     av1_nvenc               h264_omx                libspeex                msmpeg4v3               pcm_u8                  text
     av1_qsv                 h264_qsv                libsvtav1               msrle                   pcm_vidc                tiff
+    av1_vulkan
 )
 add_configure_options_from_enabled_features(ENCODER_NAMES "encoder-" "--enable-encoder=")
 
