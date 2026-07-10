@@ -11,41 +11,41 @@
     {
       "filename": "bin/avcodec-62.dll",
       "fileDescription": "FFmpeg codec library",
-      "fileVersion": "62.28.101",
+      "fileVersion": "62.28.102",
       "productName": "FFmpeg",
-      "productVersion": "8.1.1",
+      "productVersion": "8.1.2",
       "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
       "filename": "bin/avdevice-62.dll",
       "fileDescription": "FFmpeg device handling library",
-      "fileVersion": "62.3.101",
+      "fileVersion": "62.3.102",
       "productName": "FFmpeg",
-      "productVersion": "8.1.1",
+      "productVersion": "8.1.2",
       "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
       "filename": "bin/avfilter-11.dll",
       "fileDescription": "FFmpeg audio/video filtering library",
-      "fileVersion": "11.14.101",
+      "fileVersion": "11.14.102",
       "productName": "FFmpeg",
-      "productVersion": "8.1.1",
+      "productVersion": "8.1.2",
       "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
       "filename": "bin/avformat-62.dll",
       "fileDescription": "FFmpeg container format library",
-      "fileVersion": "62.12.101",
+      "fileVersion": "62.12.102",
       "productName": "FFmpeg",
-      "productVersion": "8.1.1",
+      "productVersion": "8.1.2",
       "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
       "filename": "bin/avutil-60.dll",
       "fileDescription": "FFmpeg utility library",
-      "fileVersion": "60.26.101",
+      "fileVersion": "60.26.102",
       "productName": "FFmpeg",
-      "productVersion": "8.1.1",
+      "productVersion": "8.1.2",
       "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
@@ -91,17 +91,17 @@
     {
       "filename": "bin/swresample-6.dll",
       "fileDescription": "FFmpeg audio resampling library",
-      "fileVersion": "6.3.101",
+      "fileVersion": "6.3.102",
       "productName": "FFmpeg",
-      "productVersion": "8.1.1",
+      "productVersion": "8.1.2",
       "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
       "filename": "bin/swscale-9.dll",
       "fileDescription": "FFmpeg image rescaling library",
-      "fileVersion": "9.5.101",
+      "fileVersion": "9.5.102",
       "productName": "FFmpeg",
-      "productVersion": "8.1.1",
+      "productVersion": "8.1.2",
       "copyright": "Copyright (C) 2000-2026 FFmpeg Project"
     },
     {
@@ -137,5 +137,5 @@
       "copyright": "(C) 1995-2026 Jean-loup Gailly & Mark Adler"
     }
   ],
-  "buildNumber": 108
+  "buildNumber": 109
 }
