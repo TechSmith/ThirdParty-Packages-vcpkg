@@ -212,13 +212,35 @@ $tests = @(
 )
 
 $features = Get-Features $PackageAndFeatures
-$tests += 
+$expectedVp8Vp9Av1Encoders = @()
+$notExpectedVp8Vp9Av1Encoders = @()
+
+if($features -contains "encoder-libvpx-vp8") { $expectedVp8Vp9Av1Encoders += " libvpx " } else { $notExpectedVp8Vp9Av1Encoders += " libvpx " }
+if($features -contains "encoder-libvpx-vp9") { $expectedVp8Vp9Av1Encoders += " libvpx-vp9 " } else { $notExpectedVp8Vp9Av1Encoders += " libvpx-vp9 " }
+if($features -contains "encoder-libaom-av1") { $expectedVp8Vp9Av1Encoders += " libaom-av1 " } else { $notExpectedVp8Vp9Av1Encoders += " libaom-av1 " }
+if($features -contains "encoder-av1-vulkan") { $expectedVp8Vp9Av1Encoders += " av1_vulkan " } else { $notExpectedVp8Vp9Av1Encoders += " av1_vulkan " }
+
+$expectedVp8Vp9Av1Decoders = @()
+$notExpectedVp8Vp9Av1Decoders = @()
+
+if($features -contains "decoder-vp8") { $expectedVp8Vp9Av1Decoders += " vp8 " } else { $notExpectedVp8Vp9Av1Decoders += " vp8 " }
+if($features -contains "decoder-vp9") { $expectedVp8Vp9Av1Decoders += " vp9 " } else { $notExpectedVp8Vp9Av1Decoders += " vp9 " }
+if($features -contains "decoder-av1") { $expectedVp8Vp9Av1Decoders += " av1 " } else { $notExpectedVp8Vp9Av1Decoders += " av1 " }
+
+$expectedHwaccelsFromFeatures = @()
+if(($features | Where-Object { $_ -match "^hwaccel-.*-d3d11va2?$" }).Count -gt 0) { $expectedHwaccelsFromFeatures += "d3d11va" }
+if(($features | Where-Object { $_ -match "^hwaccel-.*-d3d12va$" }).Count -gt 0) { $expectedHwaccelsFromFeatures += "d3d12va" }
+if(($features | Where-Object { $_ -match "^hwaccel-.*-dxva2$" }).Count -gt 0) { $expectedHwaccelsFromFeatures += "dxva2" }
+if(($features | Where-Object { $_ -match "^hwaccel-.*-videotoolbox$" }).Count -gt 0) { $expectedHwaccelsFromFeatures += "videotoolbox" }
+if(($features | Where-Object { $_ -match "^hwaccel-.*-vulkan$" }).Count -gt 0) { $expectedHwaccelsFromFeatures += "vulkan" }
+
+$tests += @(
 @{
    Name = "EncodersMacH264"
    CmdOption = "-encoders"
    ExpectedValues = ($features -contains "encoder-h264-videotoolbox") ? @( " h264_videotoolbox " ) : @()
    NotExpectedValues = ($features -contains "encoder-h264-videotoolbox") ? @() : @( " h264_videotoolbox " )
-   IsEnabled = (Get-IsOnWindowsOS)
+   IsEnabled = (Get-IsOnMacOS)
 },
 @{
    Name = "EncodersWinH264"
@@ -228,25 +250,18 @@ $tests +=
    IsEnabled = (Get-IsOnWindowsOS)
 },
 @{
-   Name = "EncodersMacHEVC"
+   Name = "EncodersVp8Vp9Av1FeatureDriven"
    CmdOption = "-encoders"
-   ExpectedValues = ($features -contains "encoder-hevc-videotoolbox") ? @( " hevc_videotoolbox " ) : @()
-   NotExpectedValues = ($features -contains "encoder-hevc-videotoolbox") ? @() : @( " hevc_videotoolbox " )
-   IsEnabled = (Get-IsOnMacOS)
-},
-@{ 
-   Name = "EncodersWinHEVCMF"
-   CmdOption = "-encoders"
-   ExpectedValues = ($features -contains "encoder-hevc-mf") ? @( " hevc_mf " ) : @()
-   NotExpectedValues = ($features -contains "encoder-hevc-mf") ? @() : @( " hevc_mf " )
-   IsEnabled = (Get-IsOnWindowsOS)
+   ExpectedValues = $expectedVp8Vp9Av1Encoders
+   NotExpectedValues = $notExpectedVp8Vp9Av1Encoders
+   IsEnabled = $true
 },
 @{
-   Name = "EncodersWinHEVCQSV"
-   CmdOption = "-encoders"
-   ExpectedValues = ($features -contains "encoder-hevc-qsv") ? @( " hevc_qsv " ) : @()
-   NotExpectedValues = ($features -contains "encoder-hevc-qsv") ? @() : @( " hevc_qsv " )
-   IsEnabled = (Get-IsOnWindowsOS)
+   Name = "DecodersVp8Vp9Av1FeatureDriven"
+   CmdOption = "-decoders"
+   ExpectedValues = $expectedVp8Vp9Av1Decoders
+   NotExpectedValues = $notExpectedVp8Vp9Av1Decoders
+   IsEnabled = $true
 },
 @{
    Name = "DecodersHEVC"
@@ -256,47 +271,55 @@ $tests +=
    IsEnabled = $true
 },
 @{
-   Name = "DecodersWinHEVCMF"
+   Name = "DemuxersHEVC"
+   CmdOption = "-demuxers"
+   ExpectedValues = ($features -contains "demuxer-hevc") ? @( " hevc " ) : @()
+   NotExpectedValues = ($features -contains "demuxer-hevc") ? @() : @( " hevc " )
+   IsEnabled = $true
+},
+@{
+   Name = "MuxersOGG"
+   CmdOption = "-muxers"
+   ExpectedValues = ($features -contains "muxer-ogg") ? @( " ogg " ) : @()
+   NotExpectedValues = ($features -contains "muxer-ogg") ? @() : @( " ogg " )
+   IsEnabled = $true
+},
+@{
+   Name = "DemuxersOGG"
+   CmdOption = "-demuxers"
+   ExpectedValues = ($features -contains "demuxer-ogg") ? @( " ogg " ) : @()
+   NotExpectedValues = ($features -contains "demuxer-ogg") ? @() : @( " ogg " )
+   IsEnabled = $true
+},
+@{
+   Name = "MuxersWAV"
+   CmdOption = "-muxers"
+   ExpectedValues = ($features -contains "muxer-wav") ? @( " wav " ) : @()
+   NotExpectedValues = ($features -contains "muxer-wav") ? @() : @( " wav " )
+   IsEnabled = $true
+},
+@{
+   Name = "HwaccelsFeatureDriven"
+   CmdOption = "-hwaccels"
+   ExpectedValues = $expectedHwaccelsFromFeatures
+   NotExpectedValues = @("qsv", "nvdec")
+   IsEnabled = $true
+},
+@{
+   Name = "ForbiddenEncoders"
+   CmdOption = "-encoders"
+   ExpectedValues = @()
+   NotExpectedValues = @("_qsv", "_nvenc", "_amf")
+   IsEnabled = $true
+},
+@{
+   Name = "ForbiddenDecoders"
    CmdOption = "-decoders"
-   ExpectedValues = ($features -contains "decoder-hevc-mf") ? @( " hevc_mf " ) : @()
-   NotExpectedValues = ($features -contains "decoder-hevc-mf") ? @() : @( " hevc_mf " )
-   IsEnabled = (Get-IsOnWindowsOS)
-},
-@{
-   Name = "DecodersWinHEVCQSV"
-   CmdOption = "-decoders"
-   ExpectedValues = ($features -contains "decoder-hevc-qsv") ? @( " hevc_qsv " ) : @()
-   NotExpectedValues = ($features -contains "decoder-hevc-qsv") ? @() : @( " hevc_qsv " )
-   IsEnabled = (Get-IsOnWindowsOS)
-},
-@{
-    Name = "DemuxersHEVC"
-    CmdOption = "-demuxers"
-    ExpectedValues = ($features -contains "demuxer-hevc") ? @( " hevc " ) : @()
-    NotExpectedValues = ($features -contains "demuxer-hevc") ? @() : @( " hevc " )
-    IsEnabled = $true
-},
-@{
-    Name = "MuxersOGG"
-    CmdOption = "-muxers"
-    ExpectedValues = ($features -contains "muxer-ogg") ? @( " ogg " ) : @()
-    NotExpectedValues = ($features -contains "muxer-ogg") ? @() : @( " ogg " )
-    IsEnabled = $true
-},
-@{
-    Name = "DemuxersOGG"
-    CmdOption = "-demuxers"
-    ExpectedValues = ($features -contains "demuxer-ogg") ? @( " ogg " ) : @()
-    NotExpectedValues = ($features -contains "demuxer-ogg") ? @() : @( " ogg " )
-    IsEnabled = $true
-},
-@{
-    Name = "MuxersWAV"
-    CmdOption = "-muxers"
-    ExpectedValues = ($features -contains "muxer-wav") ? @( " wav " ) : @()
-    NotExpectedValues = ($features -contains "muxer-wav") ? @() : @( " wav " )
-    IsEnabled = $true
+   ExpectedValues = @()
+   NotExpectedValues = @("_qsv", "_cuvid", "_amf")
+   IsEnabled = $true
 }
+)
 
 $runMsg     = " RUN      "
 $successMsg = "       OK "
