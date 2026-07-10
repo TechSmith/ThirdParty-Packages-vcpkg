@@ -863,9 +863,21 @@
           "default-features": false,
           "features": [
             "tsc-desktop-base",
+            "vulkan",
+            "decoder-av1",
             "encoder-aac-mf",
             "encoder-h264-mf",
-            "encoder-mp3-mf"
+            "encoder-mp3-mf",
+            "encoder-av1-vulkan",
+            "hwaccel-av1-d3d11va",
+            "hwaccel-av1-d3d11va2",
+            "hwaccel-av1-d3d12va",
+            "hwaccel-av1-dxva2",
+            "hwaccel-av1-vulkan",
+            "hwaccel-vp9-d3d11va",
+            "hwaccel-vp9-d3d11va2",
+            "hwaccel-vp9-d3d12va",
+            "hwaccel-vp9-dxva2"
           ]
         }
       ]
@@ -878,9 +890,14 @@
           "default-features": false,
           "features": [
             "tsc-desktop-base",
+            "vulkan",
+            "decoder-av1",
             "encoder-aac-at",
             "encoder-h264-videotoolbox",
-            "decoder-aac-at"
+            "encoder-av1-vulkan",
+            "decoder-aac-at",
+            "hwaccel-av1-vulkan",
+            "hwaccel-vp9-videotoolbox"
           ]
         }
       ]
@@ -1616,6 +1633,7 @@
     "encoder-av1-mediacodec": { "description": "" },
     "encoder-av1-nvenc": { "description": "" },
     "encoder-av1-qsv": { "description": "" },
+    "encoder-av1-vulkan": { "description": "" },
     "encoder-av1-vaapi": { "description": "" },
     "encoder-avrp": { "description": "" },
     "encoder-avui": { "description": "" },
