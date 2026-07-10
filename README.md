@@ -29,7 +29,7 @@ This pipeline does the following:
 | --- | --- | --- |
 | `Package to install` | Chooses the preconfigured package to build and publish. The package metadata determines the base GitHub tag name format (`<packageName>-<version>`). | _(Required)_ |
 | `Publish built package artifacts to a tagged release in the GitHub repo` | Enables/disables publishing artifacts to a GitHub release. | `true` |
-| `Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmssZ-BuildId)` | If checked, publishes a normal GitHub release and does not append the prerelease suffix. If unchecked, publishes as a GitHub pre-release and appends `--prerelease-YYYYMMDD-HHmmssZ-BuildId`. | `false` _(unchecked)_ |
+| `Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmssZ-BuildId)` (`publishAsFinalRelease`) | If checked, publishes a normal GitHub release and does not append the prerelease suffix. If unchecked, publishes as a GitHub pre-release and appends `--prerelease-YYYYMMDD-HHmmssZ-BuildId`. | `false` _(unchecked)_ |
 | `Append a string to a GitHub release` | Appends `--<your-value>` to the package tag (for example, `somepackage-1.2.3--myfeature`). If prerelease mode is also used, this append-string is added first, then prerelease suffix. | _(Blank)_ |
 
 Examples:

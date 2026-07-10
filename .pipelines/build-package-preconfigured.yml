@@ -39,7 +39,7 @@ parameters:
   type: boolean
   default: true
 
-- name: isReleaseBuild
+- name: publishAsFinalRelease
   displayName: "Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmssZ-BuildId)"
   type: boolean
   default: false
@@ -56,5 +56,5 @@ stages:
     publishToPipelineArtifacts: true
     publishToGitHubRelease: ${{ parameters.publishToGitHubRelease }}
     appendStringToGitHubRelease: ${{parameters.appendStringToGitHubRelease}}
-    isReleaseBuild: ${{ parameters.isReleaseBuild }}
+    publishAsFinalRelease: ${{ parameters.publishAsFinalRelease }}
     isPreconfiguredBuild: true
