@@ -29,6 +29,11 @@ parameters:
   type: boolean
   default: false
 
+- name: isReleaseBuild
+  displayName: Publish as final GitHub release build (unchecked: publishes as a GitHub pre-release and appends --prerelease-YYYYMMDD-HHmmss)
+  type: boolean
+  default: false
+
 - name: appendStringToGitHubRelease
   displayName: Append a string to a GitHub release (If "20240401" specified, then "somepackage-1.2.3" would become "somepackage-1.2.3--20240401")
   type: string
@@ -212,6 +217,12 @@ stages:
           if( $gitReleaseTagSuffix -ne "") {
              $gitReleaseTagName += "--$gitReleaseTagSuffix"
           }
+          $isPreconfiguredBuild = "${{ parameters.isPreconfiguredBuild }}" -eq "true"
+          $isReleaseBuild = "${{ parameters.isReleaseBuild }}" -eq "true"
+          if ($isPreconfiguredBuild -and -not $isReleaseBuild) {
+             $currentDateTime = Get-Date -Format "yyyyMMdd-HHmmss"
+             $gitReleaseTagName += "--prerelease-$currentDateTime"
+          }
           Write-Host "##vso[task.setvariable variable=gitReleaseTagName]$gitReleaseTagName"
           Write-Host "##vso[task.setvariable variable=gitReleaseNotes]$gitReleaseNotes"
 
@@ -230,7 +241,7 @@ stages:
           $(gitReleaseNotes)
         addChangeLog: false
         isDraft: false
-        isPreRelease: false
+        isPreRelease: ${{ and(eq(parameters.isPreconfiguredBuild, true), eq(parameters.isReleaseBuild, false)) }}
         assets: |
           $(Build.ArtifactStagingDirectory)/*
       condition: and(succeeded(), ${{ parameters.publishToGitHubRelease }})
