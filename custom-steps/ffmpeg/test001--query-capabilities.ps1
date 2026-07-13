@@ -37,7 +37,7 @@ $tests = @(
             " png "
             " vorbis "
         )
-        NotExpectedValues = @(" h264 ")
+        NotExpectedValues = @()
         IsEnabled = $true
     },
     @{
@@ -46,7 +46,6 @@ $tests = @(
         ExpectedValues = @(
             "aac_mf"
             "mp3_mf"
-            "h264_mf"
         )
         NotExpectedValues = @("_qsv")
         IsEnabled = (Get-IsOnWindowsOS)
@@ -56,7 +55,6 @@ $tests = @(
         CmdOption = "-encoders"
         ExpectedValues = @(
             " aac_at "
-            " h264_videotoolbox "
         )
         NotExpectedValues = @()
         IsEnabled = (Get-IsOnMacOS)
@@ -122,7 +120,7 @@ $tests = @(
             " vp8 "
             " vp9 "
         )
-        NotExpectedValues = @(" h264 ")
+        NotExpectedValues = @()
         IsEnabled = $true
     },
     @{
@@ -220,6 +218,21 @@ if($features -contains "encoder-libvpx-vp9") { $expectedVp8Vp9Av1Encoders += " l
 if($features -contains "encoder-libaom-av1") { $expectedVp8Vp9Av1Encoders += " libaom-av1 " } else { $notExpectedVp8Vp9Av1Encoders += " libaom-av1 " }
 if($features -contains "encoder-av1-vulkan") { $expectedVp8Vp9Av1Encoders += " av1_vulkan " } else { $notExpectedVp8Vp9Av1Encoders += " av1_vulkan " }
 
+$expectedH264HevcEncoders = @()
+$notExpectedH264HevcEncoders = @()
+if($features -contains "encoder-h264-mf") { $expectedH264HevcEncoders += " h264_mf " }
+elseif($features -contains "encoder-h264-videotoolbox") { $expectedH264HevcEncoders += " h264_videotoolbox " }
+else { $notExpectedH264HevcEncoders += " h264_mf "; $notExpectedH264HevcEncoders += " h264_videotoolbox " }
+
+if($features -contains "encoder-hevc-mf") { $expectedH264HevcEncoders += " hevc_mf " }
+elseif($features -contains "encoder-hevc-videotoolbox") { $expectedH264HevcEncoders += " hevc_videotoolbox " }
+else { $notExpectedH264HevcEncoders += " hevc_mf "; $notExpectedH264HevcEncoders += " hevc_videotoolbox " }
+
+$expectedH264HevcDecoders = @()
+$notExpectedH264HevcDecoders = @()
+if($features -contains "decoder-h264") { $expectedH264HevcDecoders += " h264 " } else { $notExpectedH264HevcDecoders += " h264 " }
+if($features -contains "decoder-hevc") { $expectedH264HevcDecoders += " hevc " } else { $notExpectedH264HevcDecoders += " hevc " }
+
 $expectedVp8Vp9Av1Decoders = @()
 $notExpectedVp8Vp9Av1Decoders = @()
 
@@ -257,10 +270,24 @@ $tests += @(
    IsEnabled = $true
 },
 @{
+   Name = "EncodersH264HevcFeatureDriven"
+   CmdOption = "-encoders"
+   ExpectedValues = $expectedH264HevcEncoders
+   NotExpectedValues = $notExpectedH264HevcEncoders
+   IsEnabled = $true
+},
+@{
    Name = "DecodersVp8Vp9Av1FeatureDriven"
    CmdOption = "-decoders"
    ExpectedValues = $expectedVp8Vp9Av1Decoders
    NotExpectedValues = $notExpectedVp8Vp9Av1Decoders
+   IsEnabled = $true
+},
+@{
+   Name = "DecodersH264HevcFeatureDriven"
+   CmdOption = "-decoders"
+   ExpectedValues = $expectedH264HevcDecoders
+   NotExpectedValues = $notExpectedH264HevcDecoders
    IsEnabled = $true
 },
 @{

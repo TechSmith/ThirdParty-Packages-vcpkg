@@ -55,14 +55,26 @@ function Try-HwEncodePath {
         [Parameter(Mandatory=$true)][string]$OutputFile
     )
 
-    $probeTarget = if(Get-IsOnWindowsOS) { "NUL" } else { "/dev/null" }
-    $probeCommand = "$ffmpegExe -v error -y -f lavfi -i color=size=128x72:rate=30:duration=1 -an -c:v $EncoderName -f null $probeTarget"
+    $container = switch ($CodecName) {
+        "H264" { "mp4" }
+        "HEVC" { "mp4" }
+        "VP8"  { "webm" }
+        "VP9"  { "webm" }
+        default { "matroska" }
+    }
+
+    $probeOutputFile = "$OutputDir/hw-encode-probe-$($CodecName.ToLower())-$EncoderName.$container"
+    $probeCommand = "$ffmpegExe -v error -y -ss 00:00:00 -t 1.0 -i `"$inputVideo`" -an -c:v $EncoderName -f $container `"$probeOutputFile`""
     Invoke-Expression $probeCommand
     if($LASTEXITCODE -ne 0) {
         return @{ ProbeSucceeded = $false; EncodeSucceeded = $false }
     }
 
-    $encodeCommand = "$ffmpegExe -v error -y -f lavfi -i color=size=128x72:rate=30:duration=1 -an -c:v $EncoderName `"$OutputFile`""
+    if(Test-Path $probeOutputFile) {
+        Remove-Item -LiteralPath $probeOutputFile -Force -ErrorAction SilentlyContinue
+    }
+
+    $encodeCommand = "$ffmpegExe -v error -y -ss 00:00:00 -t 1.0 -i `"$inputVideo`" -an -c:v $EncoderName -f $container `"$OutputFile`""
     $result = Invoke-FFmpegCommand -Name "Verify HW encoding succeeds - $CodecName via $EncoderName" -Command $encodeCommand -ExpectedReturnCode 0
     if(-not $result.IsSuccess -and $script:finalExitCode -eq 0) {
         $script:finalExitCode = $result.ExitCode
@@ -104,19 +116,25 @@ foreach ($test in $softwareTests) {
     }
 }
 
-# VP8/VP9/AV1 HW encode tests
+# H.264/HEVC/VP8/VP9/AV1 HW encode tests
 $codecToEncoders = @{
+    "H264" = @()
+    "HEVC" = @()
     "VP8" = @()
     "VP9" = @()
     "AV1" = @()
 }
 
 if(Get-IsOnWindowsOS) {
+    if($features -contains "encoder-h264-mf") { $codecToEncoders["H264"] += "h264_mf" }
+    if($features -contains "encoder-hevc-mf") { $codecToEncoders["HEVC"] += "hevc_mf" }
     if($features -contains "encoder-vp8-mf") { $codecToEncoders["VP8"] += "vp8_mf" }
     if($features -contains "encoder-vp9-mf") { $codecToEncoders["VP9"] += "vp9_mf" }
     if($features -contains "encoder-av1-mf") { $codecToEncoders["AV1"] += "av1_mf" }
 }
 elseif(Get-IsOnMacOS) {
+    if($features -contains "encoder-h264-videotoolbox") { $codecToEncoders["H264"] += "h264_videotoolbox" }
+    if($features -contains "encoder-hevc-videotoolbox") { $codecToEncoders["HEVC"] += "hevc_videotoolbox" }
     if($features -contains "encoder-vp8-videotoolbox") { $codecToEncoders["VP8"] += "vp8_videotoolbox" }
     if($features -contains "encoder-vp9-videotoolbox") { $codecToEncoders["VP9"] += "vp9_videotoolbox" }
     if($features -contains "encoder-av1-videotoolbox") { $codecToEncoders["AV1"] += "av1_videotoolbox" }
@@ -126,7 +144,7 @@ if($features -contains "encoder-av1-vulkan") {
     $codecToEncoders["AV1"] += "av1_vulkan"
 }
 
-foreach($codecName in @("VP8", "VP9", "AV1")) {
+foreach($codecName in @("H264", "HEVC", "VP8", "VP9", "AV1")) {
     $encoders = $codecToEncoders[$codecName]
     if($encoders.Count -eq 0) {
         Write-Host "[ $skipMsg ] No hardware encoding support for $codecName on this machine" -ForegroundColor Yellow
@@ -136,7 +154,13 @@ foreach($codecName in @("VP8", "VP9", "AV1")) {
     $encoded = $false
     $hasSupportedHwPath = $false
     foreach($encoderName in $encoders) {
-        $outputExtension = if($codecName -eq "AV1") { "mkv" } elseif($codecName -eq "VP9") { "webm" } else { "webm" }
+        $outputExtension = switch ($codecName) {
+            "H264" { "mp4" }
+            "HEVC" { "mp4" }
+            "VP8"  { "webm" }
+            "VP9"  { "webm" }
+            default { "mkv" }
+        }
         $outputFile = "$OutputDir/hw-encode-$($codecName.ToLower())-$encoderName.$outputExtension"
         $encodeResult = Try-HwEncodePath -CodecName $codecName -EncoderName $encoderName -OutputFile $outputFile
         if($encodeResult.ProbeSucceeded) {
