@@ -8,12 +8,13 @@ Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameCheckin
 # Without this patch the CMake build produces no version resources on Windows,
 # causing update-version-info-json.ps1 to fall back to the port version (1.3.7)
 # for all three DLLs.
+$supportedLibvorbisVersion = "1.3.7"
 $libvorbisPortDir = "vcpkg/ports/libvorbis"
 $libvorbisVcpkgJson = "$libvorbisPortDir/vcpkg.json"
 if (Test-Path $libvorbisVcpkgJson) {
     $libvorbisVersion = (Get-Content $libvorbisVcpkgJson -Raw | ConvertFrom-Json).version
-    if ($libvorbisVersion -eq "1.3.7") {
-        Write-Message "Applying libvorbis Windows version resource patch (v1.3.7)..."
+    if ($libvorbisVersion -eq $supportedLibvorbisVersion) {
+        Write-Message "Applying libvorbis Windows version resource patch (v$supportedLibvorbisVersion)..."
         Copy-Item "$PSScriptRoot/libvorbis-port-patches/1001-tsc-libvorbis-add-windows-version-resources.patch" "$libvorbisPortDir/"
         $patchSuccess = Apply-VcpkgPortPatch -PortName "libvorbis" -PatchFile "$PSScriptRoot/add-libvorbis-port-patch.patch"
         if (-not $patchSuccess) {
@@ -21,7 +22,7 @@ if (Test-Path $libvorbisVcpkgJson) {
         }
     }
     else {
-        Write-Message "libvorbis version is '$libvorbisVersion' (not 1.3.7), skipping version resource patch"
+        Write-Message "libvorbis version is '$libvorbisVersion' (not $supportedLibvorbisVersion), skipping version resource patch"
     }
 }
 else {
