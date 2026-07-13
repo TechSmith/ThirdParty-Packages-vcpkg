@@ -7,10 +7,11 @@ Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameCheckin
 # dotted part so the embedded string becomes "3.100.2".
 $mp3lamePortDir = "vcpkg/ports/mp3lame"
 $mp3lameVcpkgJson = "$mp3lamePortDir/vcpkg.json"
+$supportedMp3lameVersion = "3.100"
 if (Test-Path $mp3lameVcpkgJson) {
     $mp3lameVersion = (Get-Content $mp3lameVcpkgJson -Raw | ConvertFrom-Json).version
-    if ($mp3lameVersion -eq "3.100") {
-        Write-Message "Applying mp3lame version string fix (3.100 -> 3.100.2)..."
+    if ($mp3lameVersion -eq $supportedMp3lameVersion) {
+        Write-Message "Applying mp3lame version string fix ($supportedMp3lameVersion -> 3.100.2)..."
         Copy-Item "$PSScriptRoot/mp3lame-port-patches/1001-tsc-mp3lame-fix-version-string.patch" "$mp3lamePortDir/"
         $patchSuccess = Apply-VcpkgPortPatch -PortName "mp3lame" -PatchFile "$PSScriptRoot/add-mp3lame-port-patch.patch"
         if (-not $patchSuccess) {
@@ -18,7 +19,7 @@ if (Test-Path $mp3lameVcpkgJson) {
         }
     }
     else {
-        Write-Message "mp3lame version is '$mp3lameVersion' (not 3.100), skipping version string patch"
+        Write-Message "mp3lame version is '$mp3lameVersion' (not $supportedMp3lameVersion), skipping version string patch"
     }
 }
 else {
