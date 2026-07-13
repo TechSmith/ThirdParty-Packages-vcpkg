@@ -123,14 +123,20 @@ if($features -contains "demuxer-ogg" -and $features -contains "decoder-opus") {
     if(-not $result.IsSuccess -and $finalExitCode -eq 0) { $finalExitCode = $result.ExitCode }
 }
 
-# H.264 decode negative test (kept from previous behavior)
+# H.264 decode conditional test
 $inputH264Video = "$resourcesDir/BigBuckBunnyClip-h264-240p.mp4"
-$expectedH264FailCode = if(Get-IsOnWindowsOS) { -22 } elseif(Get-IsOnMacOS) { 234 } else { -1 }
-$result = Invoke-FFmpegCommand -Name "Verify decoding fails - MP4: h.264" -Command "$ffmpegExe -y -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1 `"$OutputDir/h264-frame.png`"" -ExpectedReturnCode $expectedH264FailCode
+$inputHevcVideo = "$resourcesDir/BigBuckBunnyClip-hevc-240p.mp4"
+
+if($features -contains "decoder-h264") {
+    $result = Invoke-FFmpegCommand -Name "Verify decoding succeeds - MP4: h.264" -Command "$ffmpegExe -y -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1 `"$OutputDir/h264-frame.png`"" -ExpectedReturnCode 0
+}
+else {
+    $expectedH264FailCode = if(Get-IsOnWindowsOS) { -22 } elseif(Get-IsOnMacOS) { 234 } else { -1 }
+    $result = Invoke-FFmpegCommand -Name "Verify decoding fails - MP4: h.264" -Command "$ffmpegExe -y -i `"$inputH264Video`" -ss 00:00:04.5 -frames:v 1 `"$OutputDir/h264-frame.png`"" -ExpectedReturnCode $expectedH264FailCode
+}
 if(-not $result.IsSuccess -and $finalExitCode -eq 0) { $finalExitCode = $result.ExitCode }
 
-# HEVC decode conditional test (kept)
-$inputHevcVideo = "$resourcesDir/BigBuckBunnyClip-hevc-240p.mp4"
+# HEVC decode conditional test
 if($features -contains "decoder-hevc") {
     $result = Invoke-FFmpegCommand -Name "Verify decoding succeeds - MP4: hevc" -Command "$ffmpegExe -y -i `"$inputHevcVideo`" -ss 00:00:04.5 -frames:v 1 `"$OutputDir/hevc-frame.png`"" -ExpectedReturnCode 0
 }
@@ -140,7 +146,7 @@ else {
 }
 if(-not $result.IsSuccess -and $finalExitCode -eq 0) { $finalExitCode = $result.ExitCode }
 
-# VP8/VP9/AV1 HW decode tests
+# H.264/HEVC/VP8/VP9/AV1 HW decode tests
 $vp9Source = "$resourcesDir/BigBuckBunnyClip-vp9-240p.mp4"
 $vp8Sample = "$OutputDir/sample-vp8.webm"
 $av1Sample = "$OutputDir/sample-av1.mkv"
@@ -149,6 +155,8 @@ $hasVp8Sample = Ensure-SampleClip -CodecName "vp8" -SamplePath $vp8Sample -Sourc
 $hasAv1Sample = Ensure-SampleClip -CodecName "av1" -SamplePath $av1Sample -SourcePath $vp9Source
 
 $codecSpecs = @(
+    @{ Name = "H264"; Codec = "h264"; Feature = "decoder-h264"; Input = $inputH264Video; SampleReady = $true },
+    @{ Name = "HEVC"; Codec = "hevc"; Feature = "decoder-hevc"; Input = $inputHevcVideo; SampleReady = $true },
     @{ Name = "VP8"; Codec = "vp8"; Feature = "decoder-vp8"; Input = $vp8Sample; SampleReady = $hasVp8Sample },
     @{ Name = "VP9"; Codec = "vp9"; Feature = "decoder-vp9"; Input = $vp9Source; SampleReady = $true },
     @{ Name = "AV1"; Codec = "av1"; Feature = "decoder-av1"; Input = $av1Sample; SampleReady = $hasAv1Sample }
