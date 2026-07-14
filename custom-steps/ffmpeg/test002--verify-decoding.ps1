@@ -166,6 +166,9 @@ $codecSpecs = @(
 $hwaccelCandidates = @()
 if(Get-IsOnWindowsOS) {
     $hwaccelCandidates = @("d3d11va", "dxva2")
+    if($features | Where-Object { $_ -match "^hwaccel-.*-d3d12va$" }) {
+        $hwaccelCandidates += "d3d12va"
+    }
     if($features | Where-Object { $_ -match "^hwaccel-.*-vulkan$" }) {
         $hwaccelCandidates += "vulkan"
     }
