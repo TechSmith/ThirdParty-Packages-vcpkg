@@ -284,13 +284,26 @@ function Find-VcpkgPortForDll {
         [string]$DllName,
         
         [Parameter(Mandatory=$true)]
-        [hashtable]$DllToPortMapping
+        [hashtable]$DllToPortMapping,
+
+        [Parameter(Mandatory=$true)]
+        [string]$CustomPortsDir
     )
 
     if ($DllToPortMapping.ContainsKey($DllName)) {
         $portName = $DllToPortMapping[$DllName]
+        $customPortVcpkgJsonPath = Join-Path $CustomPortsDir "$portName/vcpkg.json"
+        $versionSource = if (Test-Path -LiteralPath $customPortVcpkgJsonPath -PathType Leaf) {
+            "custom-ports/$portName/vcpkg.json"
+        } else {
+            "ports/$portName/vcpkg.json"
+        }
+
         Write-Verbose "Found port for $DllName -> $portName (from vcpkg metadata)"
-        return "ports/$portName/vcpkg.json"
+        return [PSCustomObject]@{
+            portName = $portName
+            versionSource = $versionSource
+        }
     }
 
     Write-Verbose "No port found for $DllName in vcpkg metadata"
@@ -305,8 +318,13 @@ if (-not (Test-Path -LiteralPath $InputDllDir -PathType Container)) {
 
 # Determine paths
 $scriptRoot = $PSScriptRoot
-$repoRoot = Split-Path (Split-Path $scriptRoot -Parent) -Parent
+$repoRoot = Split-Path $scriptRoot -Parent
 $customPortsDir = Join-Path $repoRoot "custom-ports"
+
+if (-not (Test-Path -LiteralPath $customPortsDir -PathType Container)) {
+    Write-Warning "custom-ports directory not found at expected path: $customPortsDir"
+    Write-Warning "Falling back to vcpkg/ports metadata only."
+}
 
 # Check if output file already exists and read buildNumber if present
 $buildNumber = 100  # Default starting value
@@ -377,6 +395,7 @@ $detectedCount = 0
 
 $results = @(Get-ChildItem -Path "$InputDllDir/" -Filter "*.dll" | ForEach-Object {
     $dllCount++
+    $versionSource = $null
     $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($_.FullName)
     
     $dllInfo = [PSCustomObject]@{
@@ -390,10 +409,10 @@ $results = @(Get-ChildItem -Path "$InputDllDir/" -Filter "*.dll" | ForEach-Objec
     
     # Try to detect versionSource if VcpkgRoot is available
     if ($useVcpkgDetection) {
-        $versionSource = Find-VcpkgPortForDll -DllName $_.Name -DllToPortMapping $dllToPortMapping
-        if ($versionSource) {
-            # Extract port name from versionSource path
-            $portName = $versionSource -replace '^ports/([^/]+)/vcpkg\.json$', '$1'
+        $portMatch = Find-VcpkgPortForDll -DllName $_.Name -DllToPortMapping $dllToPortMapping -CustomPortsDir $customPortsDir
+        if ($portMatch) {
+            $portName = $portMatch.portName
+            $versionSource = $portMatch.versionSource
             
             # Get metadata from vcpkg port
             $portMetadata = Get-PortMetadata -PortName $portName -VcpkgRoot $VcpkgRoot -CustomPortsDir $customPortsDir -Triplet $Triplet
