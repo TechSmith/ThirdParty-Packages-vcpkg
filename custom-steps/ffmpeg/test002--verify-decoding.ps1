@@ -56,6 +56,7 @@ function Test-HwDecodeSupport {
 
     $hwOutputFormat = switch ($HwAccel) {
         "d3d11va" { "d3d11" }
+        "d3d12va" { "d3d12" }
         "dxva2" { "dxva2_vld" }
         "videotoolbox" { "videotoolbox_vld" }
         default { $HwAccel }
