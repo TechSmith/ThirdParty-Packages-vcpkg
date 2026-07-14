@@ -239,6 +239,11 @@
         "package": "sqlite3",
         "linkType": "static",
         "buildType": "release"
+      },
+      "wasm": {
+        "package": "sqlite3",
+        "linkType": "static",
+        "buildType": "release"
       }
     },
     {
