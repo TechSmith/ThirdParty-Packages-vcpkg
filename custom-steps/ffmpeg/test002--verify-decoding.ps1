@@ -181,8 +181,12 @@ elseif(Get-IsOnMacOS) {
 }
 
 foreach($spec in $codecSpecs) {
-    if((-not ($features -contains $spec.Feature)) -or (-not $spec.SampleReady)) {
-        Write-Host "[ $skipMsg ] No hardware decoding support for $($spec.Name) on this machine" -ForegroundColor Yellow
+    if(-not ($features -contains $spec.Feature)) {
+        Write-Host "[ $skipMsg ] $($spec.Name) HW decode skipped (feature '$($spec.Feature)' not enabled)" -ForegroundColor Yellow
+        continue
+    }
+    if(-not $spec.SampleReady) {
+        Write-Host "[ $skipMsg ] $($spec.Name) HW decode skipped (sample clip unavailable)" -ForegroundColor Yellow
         continue
     }
 
