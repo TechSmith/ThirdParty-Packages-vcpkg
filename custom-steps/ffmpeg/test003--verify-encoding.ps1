@@ -147,7 +147,7 @@ if($features -contains "encoder-av1-vulkan") {
 foreach($codecName in @("H264", "HEVC", "VP8", "VP9", "AV1")) {
     $encoders = $codecToEncoders[$codecName]
     if($encoders.Count -eq 0) {
-        Write-Host "[ $skipMsg ] No hardware encoding support for $codecName on this machine" -ForegroundColor Yellow
+        Write-Host "[ $skipMsg ] $codecName HW encode skipped (no encoder features enabled)" -ForegroundColor Yellow
         continue
     }
 
