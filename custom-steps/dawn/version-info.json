@@ -4,7 +4,7 @@
     {
       "filename": "bin/webgpu_dawn.dll",
       "fileDescription": "Dawn is an open-source and cross-platform implementation of the WebGPU standard.",
-      "fileVersion": "20260410.140140",
+      "fileVersion": "2026.4.10",
       "productName": "Dawn",
       "productVersion": "20260410.140140",
       "copyright": "Copyright 2017-2023 The Dawn & Tint Authors"
