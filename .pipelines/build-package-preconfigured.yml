@@ -31,6 +31,7 @@ parameters:
   - openblas
   - openssl-static
   - opencv4
+  - opentelemetry-cpp
   - pango-desktop
   - sqlite3
   - sqlite-modern-cpp
