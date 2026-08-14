@@ -1,0 +1,80 @@
+{
+  "name": "boost-tsc",
+  "version": "1.90.0",
+  "description": "TechSmith-curated subset of Boost C++ libraries",
+  "homepage": "https://www.boost.org",
+  "license": "BSL-1.0",
+  "default-features": [
+    "atomic",
+    "chrono",
+    "date-time",
+    "filesystem",
+    "program-options",
+    "regex",
+    "serialization",
+    "system",
+    "thread"
+  ],
+  "features": {
+    "atomic": {
+      "description": "Boost.Atomic - C++11-style atomic<> for pre-C++11 compilers",
+      "dependencies": [
+        "boost-atomic"
+      ]
+    },
+    "chrono": {
+      "description": "Boost.Chrono - Useful time utilities",
+      "dependencies": [
+        "boost-chrono"
+      ]
+    },
+    "date-time": {
+      "description": "Boost.DateTime - Date/time types and operations",
+      "dependencies": [
+        "boost-date-time"
+      ]
+    },
+    "filesystem": {
+      "description": "Boost.Filesystem - Portable file system paths and operations",
+      "dependencies": [
+        "boost-filesystem"
+      ]
+    },
+    "program-options": {
+      "description": "Boost.ProgramOptions - Command line and config file option parsing",
+      "dependencies": [
+        "boost-program-options"
+      ]
+    },
+    "regex": {
+      "description": "Boost.Regex - Regular expression library",
+      "dependencies": [
+        "boost-regex"
+      ]
+    },
+    "serialization": {
+      "description": "Boost.Serialization - Object serialization and deserialization",
+      "dependencies": [
+        "boost-serialization"
+      ]
+    },
+    "system": {
+      "description": "Boost.System - Operating system support including error codes",
+      "dependencies": [
+        "boost-system"
+      ]
+    },
+    "thread": {
+      "description": "Boost.Thread - Portable multi-threading",
+      "dependencies": [
+        "boost-thread"
+      ]
+    },
+    "process": {
+      "description": "Boost.Process - Process launching and management",
+      "dependencies": [
+        "boost-process"
+      ]
+    }
+  }
+}
