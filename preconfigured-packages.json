@@ -400,6 +400,19 @@
           "tools": true,
           "debug": true
         }
+      },
+      "linux": {
+        "package": "dawn[core,vulkan,tint-tools]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.04.27",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
       }
     },
     {
