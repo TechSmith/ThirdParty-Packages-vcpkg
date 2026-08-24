@@ -172,8 +172,14 @@ vcpkg_cmake_configure(
         -DTINT_BUILD_WGSL_WRITER=ON
         -DTINT_BUILD_SPV_READER=ON
         -DTINT_BUILD_SPV_WRITER=ON
+        # <TechSmith Customizations>
+        # Keep the null backend available as a headless/software fallback.
+        # NOTE: Do NOT hardcode -DDAWN_ENABLE_VULKAN / -DDAWN_ENABLE_D3D12 / etc. here.
+        # These are driven by ${FEATURE_OPTIONS} above, and any duplicate -D<VAR> listed
+        # after it silently wins (CMake takes the last definition of a cache variable),
+        # which previously disabled the Vulkan backend even for dawn[vulkan].
+        # </TechSmith Customizations>
         -DDAWN_ENABLE_NULL=ON
-        -DDAWN_ENABLE_VULKAN=OFF
         -DDAWN_USE_BUILT_DXC=${DAWN_USE_BUILT_DXC}
 )
 
