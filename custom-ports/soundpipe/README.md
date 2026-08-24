@@ -33,5 +33,3 @@ To test locally:
 
 Once the package builds successfully in CI, CommonCpp's `AddSoundpipe.cmake` can:
 - Use `find_package(soundpipe)` to locate the pre-built vcpkg package
-- Fall back to building from source if vcpkg package not found
-
