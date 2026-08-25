@@ -469,6 +469,162 @@
         "buildType": "release",
         "customTriplet": "wasm32-emscripten-static"
       }
+    },
+    {
+      "name": "azure-identity",
+      "mac": {
+        "package": "azure-identity-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "win": {
+        "package": "azure-identity-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "linux": {
+        "package": "azure-identity-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      }
+    },
+    {
+      "name": "azure-keyvault-keys",
+      "mac": {
+        "package": "azure-security-keyvault-keys-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "win": {
+        "package": "azure-security-keyvault-keys-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "linux": {
+        "package": "azure-security-keyvault-keys-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      }
+    },
+    {
+      "name": "azure-keyvault-secrets",
+      "mac": {
+        "package": "azure-security-keyvault-secrets-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "win": {
+        "package": "azure-security-keyvault-secrets-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "linux": {
+        "package": "azure-security-keyvault-secrets-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      }
+    },
+    {
+      "name": "azure-storage",
+      "mac": {
+        "package": "azure-storage-blobs-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "win": {
+        "package": "azure-storage-blobs-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "linux": {
+        "package": "azure-storage-blobs-cpp",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      }
     }
   ]
 }
