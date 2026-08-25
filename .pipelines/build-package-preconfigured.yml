@@ -10,11 +10,10 @@ parameters:
   displayName: Package to install (builds as a dynamic library, unless otherwise specified)
   type: string
   values:
-  - azure-core
   - azure-identity
   - azure-keyvault-keys
   - azure-keyvault-secrets
-  - azure-storage-blobs
+  - azure-storage
   - buildcache
   - dawn
   - ffmpeg-cloud-gpl

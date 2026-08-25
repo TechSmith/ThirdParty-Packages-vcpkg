@@ -465,33 +465,6 @@
       }
     },
     {
-      "name": "azure-core",
-      "mac": {
-        "package": "azure-core-cpp",
-        "linkType": "static",
-        "buildType": "release",
-        "publish": {
-          "include": true,
-          "lib": true,
-          "bin": true,
-          "share": true,
-          "tools": true
-        }
-      },
-      "win": {
-        "package": "azure-core-cpp",
-        "linkType": "static",
-        "buildType": "release",
-        "publish": {
-          "include": true,
-          "lib": true,
-          "bin": true,
-          "share": true,
-          "tools": true
-        }
-      }
-    },
-    {
       "name": "azure-identity",
       "mac": {
         "package": "azure-identity-cpp",
@@ -502,7 +475,7 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       },
       "win": {
@@ -514,7 +487,7 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       }
     },
@@ -529,7 +502,7 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       },
       "win": {
@@ -541,7 +514,7 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       }
     },
@@ -556,7 +529,7 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       },
       "win": {
@@ -568,12 +541,12 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       }
     },
     {
-      "name": "azure-storage-blobs",
+      "name": "azure-storage",
       "mac": {
         "package": "azure-storage-blobs-cpp",
         "linkType": "static",
@@ -583,7 +556,7 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       },
       "win": {
@@ -595,7 +568,7 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": false
         }
       }
     }
