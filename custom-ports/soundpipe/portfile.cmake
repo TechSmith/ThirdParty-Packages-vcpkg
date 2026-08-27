@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO shybyte/soundpipe
-    REF 7384294519b250c68a94804c9d79901b73941824
-    SHA512 06e8b330f410d668f935d2858a1360430f9da0b9345615aab53e3593c2f36fd43af4eb0b164c2531d9d16d1b9f564d2db307f9d46304d072fe84dce96e447fad
+    REPO TechSmith/Soundpipe
+    REF 3efb43bdabd0ed23b17c694292b5a79f1692a3ea
+    SHA512 6a20b5fc7420a062a79bd22d2b0aa731acb7a0ac0ee587cfedd36918d7344848335b2da159bf630d869817c47986105522bcfbb3d6c961c31ef51b8f2db9d6a5
     HEAD_REF master
     PATCHES
         include-spa-header.patch

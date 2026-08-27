@@ -2,7 +2,7 @@
   "name": "soundpipe",
   "version": "1.7.0",
   "description": "A lightweight music DSP library written in C",
-  "homepage": "https://github.com/shybyte/soundpipe",
+  "homepage": "https://github.com/TechSmith/Soundpipe",
   "license": "MIT",
   "dependencies": [
     {
