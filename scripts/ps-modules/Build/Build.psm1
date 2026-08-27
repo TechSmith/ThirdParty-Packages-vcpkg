@@ -11,7 +11,7 @@ function Install-FromVcpkg {
 
     $pkgToInstall = "${packageAndFeatures}:${triplet}"
     Write-Message "Installing package: `"$pkgToInstall`""
-    Invoke-Expression "./$(Get-VcPkgExe) install `"$pkgToInstall`" --overlay-triplets=`"custom-triplets`" --overlay-ports=`"custom-ports`""
+    & {./$(Get-VcPkgExe) install "$pkgToInstall" --overlay-triplets="custom-triplets" --overlay-ports="custom-ports"}
 }
 
 function Get-PackageNameOnly {
