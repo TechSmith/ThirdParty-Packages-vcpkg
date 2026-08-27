@@ -4,6 +4,7 @@ vcpkg_from_github(
     REF 3efb43bdabd0ed23b17c694292b5a79f1692a3ea
     SHA512 6a20b5fc7420a062a79bd22d2b0aa731acb7a0ac0ee587cfedd36918d7344848335b2da159bf630d869817c47986105522bcfbb3d6c961c31ef51b8f2db9d6a5
     HEAD_REF main
+    AUTHORIZATION_TOKEN $ENV{GithubToken}
     PATCHES
         include-spa-header.patch
 )
