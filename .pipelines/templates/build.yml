@@ -100,18 +100,16 @@ stages:
       condition: and(succeeded(), eq(variables['osName'], 'win'))
 
     - pwsh: |
+        $env:GithubToken = "$(GithubToken)"
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
-      env:
-        GithubToken: $(GithubToken)
 
     - pwsh: |
+        $env:GithubToken = "$(GithubToken)"
         ./invoke-build.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
       displayName: 'Run: install & stage (custom)'
       condition: and(succeeded(), ${{ parameters.isCustomBuild }})
-      env:
-        GithubToken: $(GithubToken)
 
     - powershell: |
         echo "##vso[task.setvariable variable=binExists]$(if (Test-Path "$(Build.ArtifactStagingDirectory)/package/bin") { 'true' } else { 'false' })"
