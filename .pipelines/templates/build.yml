@@ -100,7 +100,13 @@ stages:
       condition: and(succeeded(), eq(variables['osName'], 'win'))
 
     - pwsh: |
-        $env:GithubToken = "$(GithubToken)"
+        $token = "$(GithubToken)"
+        Write-Host "DEBUG: Token length from pipeline variable: $($token.Length)"
+        if ($token.Length -eq 0) {
+          Write-Error "GithubToken pipeline variable is empty!"
+          exit 1
+        }
+        $env:GithubToken = $token
         ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)
       displayName: 'Run: install & stage (preconfigured)'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
