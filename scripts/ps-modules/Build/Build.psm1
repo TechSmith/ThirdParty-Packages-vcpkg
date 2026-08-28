@@ -11,7 +11,8 @@ function Install-FromVcpkg {
 
     $pkgToInstall = "${packageAndFeatures}:${triplet}"
     Write-Message "Installing package: `"$pkgToInstall`""
-    & {./$(Get-VcPkgExe) install "$pkgToInstall" --overlay-triplets="custom-triplets" --overlay-ports="custom-ports"}
+    $vcpkgExe = "./$(Get-VcPkgExe)"
+    & $vcpkgExe install "$pkgToInstall" --overlay-triplets="custom-triplets" --overlay-ports="custom-ports"
 }
 
 function Get-PackageNameOnly {
@@ -48,6 +49,23 @@ function Get-Triplets {
 
 function Get-PreStagePath {
    return "PreStage"
+}
+
+function Get-PreconfiguredPackage {
+    param(
+        [string]$packageName
+    )
+
+    $jsonFilePath = "preconfigured-packages.json"
+    Write-Message "Reading config from: `"$jsonFilePath`""
+    $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
+    $matchingPackages = @($packagesJson.packages | Where-Object { $_.name -eq $packageName })
+
+    if ($matchingPackages.Count -ne 1) {
+        throw "Expected exactly one package named '$packageName' in $jsonFilePath; found $($matchingPackages.Count)."
+    }
+
+    return $matchingPackages[0]
 }
 
 function Get-VcPkgExe {
@@ -141,14 +159,7 @@ function Get-PackageInfo
         [string]$packageName,
         [string]$targetPlatform
     )
-    $jsonFilePath = "preconfigured-packages.json"
-    Write-Message "Reading config from: `"$jsonFilePath`""
-    $packagesJson = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
-    $pkg = $packagesJson.packages | Where-Object { $_.name -eq $packageName }
-    if (-not $pkg) {
-        Write-Message "> Package not found in $jsonFilePath."
-        exit
-    }
+    $pkg = Get-PreconfiguredPackage -packageName $packageName
 
     $pkgInfo = $pkg.$targetPlatform
 
@@ -177,6 +188,24 @@ function Get-PackageInfo
     }
 
     return $pkg.$targetPlatform
+}
+
+function Get-PackageRequiresGithubToken {
+    param(
+        [string]$packageName
+    )
+
+    $pkg = Get-PreconfiguredPackage -packageName $packageName
+    $property = $pkg.PSObject.Properties['requiresGithubToken']
+    if ($null -eq $property) {
+        return $false
+    }
+
+    if ($property.Value -isnot [bool]) {
+        throw "Property 'requiresGithubToken' for package '$packageName' must be a JSON boolean."
+    }
+
+    return $property.Value
 }
 
 function Run-WriteParamsStep {
@@ -646,7 +675,7 @@ function Apply-VcpkgPortPatch {
     return Apply-VcpkgCorePatch -PatchFile $PatchFile -WorkingDirectory $workDir -Description "$PortName port"
 }
 
-Export-ModuleMember -Function Get-PackageInfo, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
+Export-ModuleMember -Function Get-PackageInfo, Get-PackageRequiresGithubToken, Run-WriteParamsStep, Run-SetupVcpkgStep, Run-PreBuildStep, Run-InstallCompilerIfNecessary, Run-InstallPackageStep, Run-PrestageAndFinalizeBuildArtifactsStep, Run-PostBuildStep, Run-StageBuildArtifactsStep, Run-StageSourceArtifactsStep, Run-CleanupStep, Get-Triplets
 Export-ModuleMember -Function NL, Write-Banner, Write-Message, Check-IsEmscriptenBuild, Get-PSObjectAsFormattedList, Get-IsOnMacOS, Get-IsOnWindowsOS, Get-IsOnLinux, Get-OSType, Get-VcPkgExe, Resolve-Symlink, Apply-VcpkgPortPatch, Apply-VcpkgCorePatch
 
 if ( (Get-IsOnMacOS) ) {
