@@ -1,10 +1,6 @@
-# Debug: Check if GithubToken is set
-if(DEFINED ENV{GithubToken})
-    message(STATUS "GithubToken environment variable is set (length: ${CMAKE_MATCH_0})")
-    set(GITHUB_AUTH_TOKEN "$ENV{GithubToken}")
-else()
-    message(WARNING "GithubToken environment variable is NOT set - download will likely fail for private repo")
-    set(GITHUB_AUTH_TOKEN "")
+set(GITHUB_AUTH_TOKEN "$ENV{GithubToken}")
+if("${GITHUB_AUTH_TOKEN}" STREQUAL "")
+    message(FATAL_ERROR "GithubToken environment variable must be set to download TechSmith/Soundpipe.")
 endif()
 
 vcpkg_from_github(
@@ -13,6 +9,7 @@ vcpkg_from_github(
     REF 3efb43bdabd0ed23b17c694292b5a79f1692a3ea
     SHA512 0c7e6e3a044213612bcb8e0aac91bfff8c385a91a970b551eba442cee328284bc922b8256522675af0dfac405cd8eca123556fbcc506de296ac826af90056cc9
     HEAD_REF main
+    USE_TARBALL_API
     AUTHORIZATION_TOKEN "${GITHUB_AUTH_TOKEN}"
     PATCHES
         include-spa-header.patch
