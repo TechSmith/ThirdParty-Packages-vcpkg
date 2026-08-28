@@ -5,11 +5,13 @@ parameters:
   type: boolean
 - name: requiresGithubToken
   type: string
+- name: displayName
+  type: string
 
 steps:
 - pwsh: |
     ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)
-  displayName: 'Run: install & stage (preconfigured)'
+  displayName: ${{ parameters.displayName }}
   condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }}, eq(variables['requiresGithubToken'], '${{ parameters.requiresGithubToken }}'))
   ${{ if eq(parameters.requiresGithubToken, 'true') }}:
     env:
