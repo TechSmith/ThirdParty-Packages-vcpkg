@@ -628,6 +628,7 @@
     },
     {
       "name": "soundpipe",
+      "requiresGithubToken": true,
       "win": {
         "package": "soundpipe",
         "linkType": "static",
