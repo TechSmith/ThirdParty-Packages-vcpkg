@@ -1,0 +1,13 @@
+{
+  "buildNumber": 100,
+  "files": [
+    {
+      "filename": "bin/c2pa_c.dll",
+      "fileDescription": "C bindings for the C2PA Rust SDK",
+      "fileVersion": "0.90.16",
+      "productName": "c2pa-c",
+      "productVersion": "0.90.16",
+      "copyright": "Copyright 2024 Adobe"
+    }
+  ]
+}

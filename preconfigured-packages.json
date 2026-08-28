@@ -430,6 +430,24 @@
       }
     },
     {
+      "name": "c2pa-c",
+      "mac": {
+        "package": "c2pa-c",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.03.18",
+        "publish": {
+          "bin": false
+        }
+      },
+      "win": {
+        "package": "c2pa-c",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.03.18"
+      }
+    },
+    {
       "name": "zlib",
       "mac": {
         "package": "zlib",

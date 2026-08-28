@@ -1,0 +1,8 @@
+{
+  "name": "c2pa-c",
+  "version": "0.90.16",
+  "description": "C bindings for the Coalition for Content Provenance and Authenticity (C2PA) Rust SDK",
+  "homepage": "https://github.com/contentauth/c2pa-rs",
+  "license": "Apache-2.0 OR MIT",
+  "supports": "(osx & (arm64 | x64)) | (windows & x64)"
+}
