@@ -632,7 +632,6 @@
         "package": "opentelemetry-cpp[otlp-http]",
         "linkType": "static",
         "buildType": "release",
-        "vcpkgHash": "1.28.0",
         "publish": {
           "include": true,
           "lib": true,
@@ -643,7 +642,8 @@
       },
       "win": {
         "package": "opentelemetry-cpp[otlp-http]",
-        "vcpkgHash": "1.28.0",
+        "linkType": "static",
+        "buildType": "release",
         "publish": {
           "include": true,
           "lib": true,
@@ -654,7 +654,8 @@
       },
       "linux": {
         "package": "opentelemetry-cpp[otlp-http]",
-        "vcpkgHash": "1.28.0",
+        "linkType": "static",
+        "buildType": "release",
         "publish": {
           "include": true,
           "lib": true,
