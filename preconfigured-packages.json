@@ -628,6 +628,7 @@
         "package": "opentelemetry-cpp[otlp-http]",
         "linkType": "static",
         "buildType": "release",
+        "vcpkgHash": "2026.07.29",
         "publish": {
           "include": true,
           "lib": true,
@@ -639,6 +640,7 @@
       "win": {
         "package": "opentelemetry-cpp[otlp-http]",
         "customTriplet": "x64-windows-static-md",
+        "vcpkgHash": "2026.07.29",
         "publish": {
           "include": true,
           "lib": true,
@@ -651,6 +653,7 @@
         "package": "opentelemetry-cpp[otlp-http]",
         "linkType": "static",
         "buildType": "release",
+        "vcpkgHash": "2026.07.29",
         "publish": {
           "include": true,
           "lib": true,
