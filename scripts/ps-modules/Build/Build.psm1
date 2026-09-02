@@ -126,7 +126,7 @@ function Copy-ItemWithSymlinks {
             Copy-ItemWithSymlinks -source $item.FullName -destination $destPath
          }
          else {
-            Copy-Item -Path "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
+            Copy-Item -LiteralPath "$($item.FullName)" -Destination "$destPath" -Force | Out-Null
          }
        }
    }
