@@ -625,6 +625,51 @@
           "tools": false
         }
       }
+    },
+    {
+      "name": "soundpipe",
+      "requiresGithubToken": true,
+      "win": {
+        "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "share": true
+        }
+      },
+      "mac": {
+        "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "share": true
+        }
+      },
+      "wasm": {
+        "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release",
+        "customTriplet": "wasm32-emscripten-static",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "share": true
+        }
+      },
+      "linux": {
+        "package": "soundpipe",
+        "linkType": "static",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "share": true
+        }
+      }
     }
   ]
 }

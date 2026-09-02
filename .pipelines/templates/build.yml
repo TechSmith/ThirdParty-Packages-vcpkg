@@ -84,18 +84,47 @@ stages:
       name: $(poolName)
 
     steps:
-    - template: steps/setup-auth.yml
+    - ${{ if eq(parameters.isCustomBuild, true) }}:
+      - template: steps/setup-auth.yml
 
     - template: steps/full-checkout.yml
 
     - pwsh: |
-        ./build-package.ps1 -PackageName "${{ parameters.packageName }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package" -TargetPlatform $(osName)
-      displayName: 'Run: install & stage (preconfigured)'
+        Import-Module "$(Build.SourcesDirectory)/scripts/ps-modules/Build" -Force -DisableNameChecking
+        $requiresGithubToken = Get-PackageRequiresGithubToken -packageName "${{ parameters.packageName }}"
+        Write-Host "##vso[task.setvariable variable=requiresGithubToken]$($requiresGithubToken.ToString().ToLowerInvariant())"
+      displayName: 'Classify preconfigured package token requirement'
       condition: and(succeeded(), ${{ parameters.isPreconfiguredBuild }})
 
+    - template: steps/setup-msvc.yml
+    
     - pwsh: |
+        choco install llvm -y --no-progress --force
+        $env:PATH = "C:\Program Files\LLVM\bin;$env:PATH"
+        Write-Host "##vso[task.setvariable variable=PATH]C:\Program Files\LLVM\bin;$env:PATH"
+        Write-Host "LLVM installed, clang-cl location:"
+        Get-Command clang-cl -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+      displayName: 'Install LLVM/clang-cl for C99 support'
+      condition: and(succeeded(), eq(variables['osName'], 'win'))
+
+    - template: steps/run-preconfigured.yml
+      parameters:
+        packageName: ${{ parameters.packageName }}
+        isPreconfiguredBuild: ${{ parameters.isPreconfiguredBuild }}
+        requiresGithubToken: 'false'
+        displayName: 'Build w/o gh token (preconfigured)'
+
+    - template: steps/run-preconfigured.yml
+      parameters:
+        packageName: ${{ parameters.packageName }}
+        isPreconfiguredBuild: ${{ parameters.isPreconfiguredBuild }}
+        requiresGithubToken: 'true'
+        displayName: 'Build w/ gh token (preconfigured)'
+
+    - pwsh: |
+        $env:GithubToken = "$(GithubToken)"
         ./invoke-build.ps1 -PackageAndFeatures "${{ parameters.package }}" -LinkType "${{ parameters.linkType }}" -BuildType "${{ parameters.buildType }}" -StagedArtifactsPath "$(Build.ArtifactStagingDirectory)/package"
-      displayName: 'Run: install & stage (custom)'
+      displayName: 'Build (custom)'
       condition: and(succeeded(), ${{ parameters.isCustomBuild }})
 
     - powershell: |
