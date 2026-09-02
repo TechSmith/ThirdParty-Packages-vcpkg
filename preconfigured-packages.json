@@ -486,8 +486,7 @@
       },
       "win": {
         "package": "azure-identity-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
           "include": true,
           "lib": true,
@@ -525,8 +524,7 @@
       },
       "win": {
         "package": "azure-security-keyvault-keys-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
           "include": true,
           "lib": true,
@@ -564,8 +562,7 @@
       },
       "win": {
         "package": "azure-security-keyvault-secrets-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
           "include": true,
           "lib": true,
@@ -603,8 +600,7 @@
       },
       "win": {
         "package": "azure-storage-blobs-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
           "include": true,
           "lib": true,
@@ -642,8 +638,7 @@
       },
       "win": {
         "package": "opentelemetry-cpp[otlp-http]",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
           "include": true,
           "lib": true,
