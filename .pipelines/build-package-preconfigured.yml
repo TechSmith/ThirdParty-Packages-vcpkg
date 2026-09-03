@@ -15,6 +15,7 @@ parameters:
   - azure-keyvault-secrets
   - azure-storage
   - buildcache
+  - c2pa-c
   - dawn
   - ffmpeg-cloud-gpl
   - ffmpeg-desktop-base
