@@ -477,6 +477,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -488,6 +489,7 @@
         "package": "azure-identity-cpp",
         "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -500,6 +502,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -515,6 +518,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -526,6 +530,7 @@
         "package": "azure-security-keyvault-keys-cpp",
         "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -538,6 +543,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -553,6 +559,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -564,6 +571,7 @@
         "package": "azure-security-keyvault-secrets-cpp",
         "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -576,6 +584,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -591,6 +600,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -602,6 +612,7 @@
         "package": "azure-storage-blobs-cpp",
         "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -614,6 +625,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -630,6 +642,7 @@
         "buildType": "release",
         "vcpkgHash": "2026.07.29",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -642,6 +655,7 @@
         "customTriplet": "x64-windows-static-md",
         "vcpkgHash": "2026.07.29",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -655,6 +669,7 @@
         "buildType": "release",
         "vcpkgHash": "2026.07.29",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
