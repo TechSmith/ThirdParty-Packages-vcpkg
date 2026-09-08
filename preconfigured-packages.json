@@ -477,6 +477,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -486,9 +487,9 @@
       },
       "win": {
         "package": "azure-identity-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -501,6 +502,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -516,6 +518,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -525,9 +528,9 @@
       },
       "win": {
         "package": "azure-security-keyvault-keys-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -540,6 +543,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -555,6 +559,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -564,9 +569,9 @@
       },
       "win": {
         "package": "azure-security-keyvault-secrets-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -579,6 +584,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -594,6 +600,7 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -603,9 +610,9 @@
       },
       "win": {
         "package": "azure-storage-blobs-cpp",
-        "linkType": "static",
-        "buildType": "release",
+        "customTriplet": "x64-windows-static-md",
         "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
@@ -618,6 +625,51 @@
         "linkType": "static",
         "buildType": "release",
         "publish": {
+          "debug": true,
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      }
+    },
+    {
+      "name": "opentelemetry-cpp",
+      "mac": {
+        "package": "opentelemetry-cpp[otlp-http]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.07.29",
+        "publish": {
+          "debug": true,
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "win": {
+        "package": "opentelemetry-cpp[otlp-http]",
+        "customTriplet": "x64-windows-static-md",
+        "vcpkgHash": "2026.07.29",
+        "publish": {
+          "debug": true,
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      },
+      "linux": {
+        "package": "opentelemetry-cpp[otlp-http]",
+        "linkType": "static",
+        "buildType": "release",
+        "vcpkgHash": "2026.07.29",
+        "publish": {
+          "debug": true,
           "include": true,
           "lib": true,
           "bin": true,
