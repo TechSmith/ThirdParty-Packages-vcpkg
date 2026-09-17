@@ -1,0 +1,23 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index a091e66a..d4f21b1d 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -100,7 +100,7 @@ endif()
+ 
+ # whisper
+ 
+-add_library(whisper
++add_library(whisper SHARED
+             ../include/whisper.h
+             whisper-arch.h
+             whisper.cpp
+@@ -137,7 +137,7 @@ if (WHISPER_MKL)
+     target_link_libraries(whisper PRIVATE MKL::MKL)
+ endif()
+ 
+-if (BUILD_SHARED_LIBS)
++#if (BUILD_SHARED_LIBS)
+     set_target_properties(whisper PROPERTIES POSITION_INDEPENDENT_CODE ON)
+     target_compile_definitions(whisper PRIVATE WHISPER_SHARED WHISPER_BUILD)
+-endif()
++#endif()
