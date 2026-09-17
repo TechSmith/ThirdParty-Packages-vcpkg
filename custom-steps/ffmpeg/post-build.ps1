@@ -77,7 +77,7 @@ foreach($testScript in $testScripts) {
    Write-Message "$(NL)Running tests: $testScript..."
    Invoke-Powershell -FilePath "$testScript" -ArgumentList $testScriptArgs
    $scriptReturnCode = $LASTEXITCODE
-   if ( ($finalExitCode -eq 0) -and ($returnCode -ne 0) ) {
+   if ( ($finalExitCode -eq 0) -and ($scriptReturnCode -ne 0) ) {
        $finalExitCode = $scriptReturnCode
    }
 }
