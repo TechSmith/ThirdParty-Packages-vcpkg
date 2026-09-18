@@ -31,6 +31,7 @@ parameters:
   - openblas
   - openssl-static
   - opencv4
+  - opentelemetry-cpp
   - pango-desktop
   - soundpipe
   - sqlite3
