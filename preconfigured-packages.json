@@ -32,7 +32,7 @@
     {
       "name": "ffmpeg-desktop-hevc",
       "mac": {
-        "package": "ffmpeg[tsc-desktop-mac,encoder-hevc-videotoolbox,decoder-hevc,demuxer-hevc,parser-hevc]",
+        "package": "ffmpeg[tsc-desktop-mac,encoder-h264-videotoolbox,encoder-hevc-videotoolbox,decoder-h264,decoder-hevc,demuxer-h264,demuxer-hevc,parser-h264,parser-hevc,hwaccel-h264-videotoolbox,hwaccel-hevc-videotoolbox]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2026.06.24",
@@ -45,7 +45,7 @@
         }
       },
       "win": {
-        "package": "ffmpeg[tsc-desktop-win,encoder-hevc-mf,decoder-hevc,demuxer-hevc,parser-hevc]",
+        "package": "ffmpeg[tsc-desktop-win,encoder-h264-mf,encoder-hevc-mf,decoder-h264,decoder-hevc,demuxer-h264,demuxer-hevc,parser-h264,parser-hevc,hwaccel-h264-d3d11va,hwaccel-h264-d3d11va2,hwaccel-h264-d3d12va,hwaccel-h264-dxva2,hwaccel-hevc-d3d11va,hwaccel-hevc-d3d11va2,hwaccel-hevc-d3d12va,hwaccel-hevc-dxva2]",
         "linkType": "dynamic",
         "buildType": "release",
         "vcpkgHash": "2026.06.24",
