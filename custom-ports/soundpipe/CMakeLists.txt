@@ -7,12 +7,12 @@ set(MODULE_SOURCES
     modules/atone.c modules/autowah.c modules/bal.c modules/bar.c modules/biquad.c
     modules/biscale.c modules/blsaw.c modules/blsquare.c modules/bltriangle.c modules/fold.c
     modules/bitcrush.c modules/brown.c modules/butbp.c modules/butbr.c modules/buthp.c
-    modules/butlp.c modules/clip.c modules/clock.c modules/comb.c modules/compressor.c
+    modules/butlp.c modules/clamp.c modules/clip.c modules/clock.c modules/comb.c modules/compressor.c
     modules/count.c modules/conv.c modules/crossfade.c modules/dcblock.c modules/delay.c
     modules/diode.c modules/dist.c modules/dmetro.c modules/drip.c modules/dtrig.c
     modules/dust.c modules/eqfil.c modules/expon.c modules/fof.c modules/fog.c
-    modules/fofilt.c modules/foo.c modules/fosc.c modules/gbuzz.c modules/hilbert.c
-    modules/in.c modules/incr.c modules/jcrev.c modules/jitter.c modules/line.c
+    modules/fofilt.c modules/foo.c modules/fosc.c modules/gbuzz.c modules/granule.c modules/hilbert.c
+    modules/in.c modules/incr.c modules/jcrev.c modules/jitter.c modules/line.c modules/loadwav.c
     modules/lpf18.c modules/maygate.c modules/metro.c modules/mincer.c modules/mode.c
     modules/moogladder.c modules/noise.c modules/nsmp.c modules/osc.c modules/oscmorph.c
     modules/pan2.c modules/panst.c modules/pareq.c modules/paulstretch.c modules/pdhalf.c
@@ -21,7 +21,7 @@ set(MODULE_SOURCES
     modules/pshift.c modules/ptrack.c modules/randh.c modules/randi.c modules/randmt.c
     modules/random.c modules/reverse.c modules/reson.c modules/revsc.c modules/rms.c
     modules/rpt.c modules/rspline.c modules/saturator.c modules/samphold.c modules/scale.c
-    modules/scrambler.c modules/sdelay.c modules/slice.c modules/smoothdelay.c modules/spa.c
+    modules/scrambler.c modules/sdelay.c modules/slice.c modules/smoothdelay.c modules/sndwarp.c modules/spa.c
     modules/sparec.c modules/streson.c modules/switch.c modules/tabread.c modules/tadsr.c
     modules/talkbox.c modules/tblrec.c modules/tbvcf.c modules/tdiv.c modules/tenv.c
     modules/tenv2.c modules/tenvx.c modules/tgate.c modules/thresh.c modules/timer.c

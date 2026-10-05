@@ -63,6 +63,7 @@ set(ALL_MODULES
     butbr
     buthp
     butlp
+    clamp
     clip
     clock
     comb
@@ -86,12 +87,14 @@ set(ALL_MODULES
     foo
     fosc
     gbuzz
+    granule
     hilbert
     in
     incr
     jcrev
     jitter
     line
+    loadwav
     lpf18
     maygate
     metro
@@ -136,6 +139,7 @@ set(ALL_MODULES
     sdelay
     slice
     smoothdelay
+    sndwarp
     spa
     sparec
     streson
