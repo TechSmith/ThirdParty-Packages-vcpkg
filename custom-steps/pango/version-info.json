@@ -100,9 +100,9 @@
     {
       "filename": "bin/gio-2.0-0.dll",
       "fileDescription": "Gio",
-      "fileVersion": "2.86.3",
+      "fileVersion": "2.88.2",
       "productName": "GLib",
-      "productVersion": "2.86.3",
+      "productVersion": "2.88.2",
       "copyright": "Copyright 2006-2011 Red Hat, Inc. and others."
     },
     {
@@ -116,33 +116,33 @@
     {
       "filename": "bin/glib-2.0-0.dll",
       "fileDescription": "GLib",
-      "fileVersion": "2.86.3",
+      "fileVersion": "2.88.2",
       "productName": "GLib",
-      "productVersion": "2.86.3",
+      "productVersion": "2.88.2",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/gmodule-2.0-0.dll",
       "fileDescription": "GModule",
-      "fileVersion": "2.86.3",
+      "fileVersion": "2.88.2",
       "productName": "GLib",
-      "productVersion": "2.86.3",
+      "productVersion": "2.88.2",
       "copyright": "Copyright 1998-2011 Tim Janik and others."
     },
     {
       "filename": "bin/gobject-2.0-0.dll",
       "fileDescription": "GObject",
-      "fileVersion": "2.86.3",
+      "fileVersion": "2.88.2",
       "productName": "GLib",
-      "productVersion": "2.86.3",
+      "productVersion": "2.88.2",
       "copyright": "Copyright 1998-2011 Tim Janik, Red Hat, Inc. and others"
     },
     {
       "filename": "bin/gthread-2.0-0.dll",
       "fileDescription": "GThread",
-      "fileVersion": "2.86.3",
+      "fileVersion": "2.88.2",
       "productName": "GLib",
-      "productVersion": "2.86.3",
+      "productVersion": "2.88.2",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald, Sebastian Wilhelmi and others."
     },
     {
