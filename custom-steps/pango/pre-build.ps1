@@ -1,33 +1,11 @@
 Import-Module "$PSScriptRoot/../../scripts/ps-modules/Build" -DisableNameChecking
 
-# Apply patch to vcpkg's pango portfile to add Objective-C language support for macOS
+# The 2026.07.29 vcpkg baseline includes Objective-C/Objective-C++ support in
+# HarfBuzz and vcpkg's Meson helper. Only Pango's language patch remains needed.
 Write-Message "Applying TechSmith patches to vcpkg pango port..."
 $patchSuccess = Apply-VcpkgPortPatch -PortName "pango" -PatchFile "$PSScriptRoot/add-objc-language-support.patch"
 if (-not $patchSuccess) {
     Write-Message "FATAL: Failed to apply patch to pango port" -Error
-    exit 1
-}
-
-# Apply patch to vcpkg's harfbuzz portfile to add Objective-C/Objective-C++ language support for macOS
-Write-Message "Applying TechSmith patches to vcpkg harfbuzz port..."
-$patchSuccess = Apply-VcpkgPortPatch -PortName "harfbuzz" -PatchFile "$PSScriptRoot/1001-tsc-add-objc-support-to-harfbuzz.patch"
-if (-not $patchSuccess) {
-    Write-Message "FATAL: Failed to apply patch to harfbuzz port" -Error
-    exit 1
-}
-
-# Apply patches to vcpkg core infrastructure files
-Write-Message "Applying TechSmith patches to vcpkg core (get_cmake_vars)..."
-$patchSuccess = Apply-VcpkgCorePatch -PatchFile "$PSScriptRoot/1002-tsc-enable-objcxx-in-get-cmake-vars.patch" -Description "get_cmake_vars OBJCXX support"
-if (-not $patchSuccess) {
-    Write-Message "FATAL: Failed to apply patch to vcpkg core (get_cmake_vars)" -Error
-    exit 1
-}
-
-Write-Message "Applying TechSmith patches to vcpkg core (meson OBJCXX/OBJCPP)..."
-$patchSuccess = Apply-VcpkgCorePatch -PatchFile "$PSScriptRoot/1003-tsc-fix-meson-objcpp-crosscompile.patch" -Description "meson OBJCXX/OBJCPP cross-compile fix"
-if (-not $patchSuccess) {
-    Write-Message "FATAL: Failed to apply patch to vcpkg core (meson)" -Error
     exit 1
 }
 
