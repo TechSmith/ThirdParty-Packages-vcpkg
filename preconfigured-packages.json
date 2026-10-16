@@ -680,6 +680,45 @@
       }
     },
     {
+      "name": "qt6",
+      "mac": {
+        "package": "qt",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "qt",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "linux": {
+        "package": "qt",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "opentelemetry-cpp",
       "mac": {
         "package": "opentelemetry-cpp[otlp-http]",
