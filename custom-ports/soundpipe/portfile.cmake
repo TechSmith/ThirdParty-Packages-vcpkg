@@ -18,14 +18,14 @@ vcpkg_from_github(
 # Generate soundpipe.h by concatenating all module headers
 set(ALL_MODULES
     base ftbl tevent adsr allpass atone autowah bal bar biquad biscale blsaw
-    blsquare bltriangle fold bitcrush brown butbp butbr buthp butlp clip clock
+    blsquare bltriangle fold bitcrush brown butbp butbr buthp butlp clamp clip clock
     comb compressor count conv crossfade dcblock delay diode dist dmetro drip
-    dtrig dust eqfil expon fof fog fofilt foo fosc gbuzz hilbert in incr jcrev
-    jitter line lpf18 maygate metro mincer mode moogladder noise nsmp osc oscmorph
+    dtrig dust eqfil expon fof fog fofilt foo fosc gbuzz granule hilbert in incr jcrev
+    jitter line loadwav lpf18 maygate metro mincer mode moogladder noise nsmp osc oscmorph
     pan2 panst pareq paulstretch pdhalf peaklim phaser phasor pinknoise pitchamdf
     pluck port posc3 progress prop pshift ptrack randh randi randmt random reverse
     reson revsc rms rpt rspline saturator samphold scale scrambler sdelay slice
-    smoothdelay spa sparec streson switch tabread tadsr talkbox tblrec tbvcf tdiv
+    smoothdelay sndwarp spa sparec streson switch tabread tadsr talkbox tblrec tbvcf tdiv
     tenv tenv2 tenvx tgate thresh timer tin tone trand tseg tseq vdelay voc
     vocoder waveset wpkorg35 zitarev fftwrapper padsynth
 )
