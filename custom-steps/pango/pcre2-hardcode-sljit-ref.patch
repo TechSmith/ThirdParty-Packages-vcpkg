@@ -1,0 +1,30 @@
+diff --git a/ports/pcre2/portfile.cmake b/ports/pcre2/portfile.cmake
+index 0bfff18..2844429 100644
+--- a/ports/pcre2/portfile.cmake
++++ b/ports/pcre2/portfile.cmake
+@@ -24,19 +24,13 @@ if("jit" IN_LIST FEATURES)
+     # to fetch. The 'pcre2-${VERSION}' tag chooses the sljit commit that ought to be fetched.
+     # This ensures that a vcpkg maintainer only has to update the SHA hashes until everything passes, when bumping
+     # to a new PCRE2 tag. There should be no risk of accidentally specifying mismatched pcre2 and sljit commits.
+-    vcpkg_download_distfile(sljit_gitlink
+-        URLS "https://api.github.com/repos/PCRE2Project/pcre2/contents/deps/sljit?ref=${pcre2_ref}"
+-        FILENAME "pcre2-${pcre2_ref}-sljit-gitlink.json"
+-        ${sljit_gitlink_hash}
+-    )
+-    file(READ "${sljit_gitlink}" sljit_gitlink_contents)
+-    string(JSON sljit_ref GET "${sljit_gitlink_contents}" sha)
+-    string(JSON sljit_url GET "${sljit_gitlink_contents}" submodule_git_url)
+-    string(LENGTH "${sljit_ref}" sljit_ref_length)
+-    if(NOT sljit_ref MATCHES "^[0-9a-f]+$" OR NOT sljit_ref_length EQUAL 40
+-        OR NOT sljit_url STREQUAL "https://github.com/zherczeg/sljit.git")
+-        message(FATAL_ERROR "Unexpected deps/sljit gitlink in PCRE2 ${pcre2_ref}: ${sljit_url} at ${sljit_ref}")
++    # <TechSmith Customizations> Hardcode the deps/sljit gitlink for pcre2-10.49 instead of querying api.github.com,
++    # which rate limits unauthenticated requests from shared CI agents (403). Update this when pcre2 is bumped.
++    if(VCPKG_USE_HEAD_VERSION OR NOT VERSION STREQUAL "10.49")
++        message(FATAL_ERROR "TechSmith pcre2 patch hardcodes the sljit commit for pcre2 10.49; update it for ${pcre2_ref}")
+     endif()
++    set(sljit_ref "de0259c7aaf36aa40cba8014f3fad3edde9307f9")
++    # </TechSmith Customizations>
+ 
+     if(VCPKG_USE_HEAD_VERSION)
+         # Fetch PCRE2's resolved gitlink, not an independently moving SLJIT HEAD.
