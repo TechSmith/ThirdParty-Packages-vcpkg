@@ -99,11 +99,11 @@
     },
     {
       "filename": "bin/gio-2.0-0.dll",
-      "fileDescription": "Gio",
+      "fileDescription": "Gio is a library providing general purpose I/O, networking, IPC, settings, and other high level application functionality",
       "fileVersion": "2.90.1",
       "productName": "GLib",
       "productVersion": "2.90.1",
-      "copyright": "Copyright 2006-2011 Red Hat, Inc. and others."
+      "copyright": "© 2026 the GLib developer community. © 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/girepository-2.0-0.dll",
@@ -115,35 +115,35 @@
     },
     {
       "filename": "bin/glib-2.0-0.dll",
-      "fileDescription": "GLib",
+      "fileDescription": "GLib is a general-purpose, portable utility library",
       "fileVersion": "2.90.1",
       "productName": "GLib",
       "productVersion": "2.90.1",
-      "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
+      "copyright": "© 2026 the GLib developer community. © 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/gmodule-2.0-0.dll",
-      "fileDescription": "GModule",
+      "fileDescription": "Portable API for dynamically loading modules",
       "fileVersion": "2.90.1",
       "productName": "GLib",
       "productVersion": "2.90.1",
-      "copyright": "Copyright 1998-2011 Tim Janik and others."
+      "copyright": "© 2026 the GLib developer community. © 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/gobject-2.0-0.dll",
-      "fileDescription": "GObject",
+      "fileDescription": "The base type system and object class",
       "fileVersion": "2.90.1",
       "productName": "GLib",
       "productVersion": "2.90.1",
-      "copyright": "Copyright 1998-2011 Tim Janik, Red Hat, Inc. and others"
+      "copyright": "© 2026 the GLib developer community. © 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/gthread-2.0-0.dll",
-      "fileDescription": "GThread",
+      "fileDescription": "Portable threading API",
       "fileVersion": "2.90.1",
       "productName": "GLib",
       "productVersion": "2.90.1",
-      "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald, Sebastian Wilhelmi and others."
+      "copyright": "© 2026 the GLib developer community. © 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/harfbuzz-gpu.dll",
