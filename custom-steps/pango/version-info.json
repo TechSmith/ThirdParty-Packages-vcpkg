@@ -1,28 +1,28 @@
 {
-  "buildNumber": 105,
+  "buildNumber": 106,
   "files": [
     {
       "filename": "bin/brotlicommon.dll",
       "fileDescription": "a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling.",
-      "fileVersion": "1.2.0",
+      "fileVersion": "1.2.1",
       "productName": "Brotli",
-      "productVersion": "1.2.0",
+      "productVersion": "1.2.1",
       "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors"
     },
     {
       "filename": "bin/brotlidec.dll",
       "fileDescription": "a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling.",
-      "fileVersion": "1.2.0",
+      "fileVersion": "1.2.1",
       "productName": "Brotli",
-      "productVersion": "1.2.0",
+      "productVersion": "1.2.1",
       "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors"
     },
     {
       "filename": "bin/brotlienc.dll",
       "fileDescription": "a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling.",
-      "fileVersion": "1.2.0",
+      "fileVersion": "1.2.1",
       "productName": "Brotli",
-      "productVersion": "1.2.0",
+      "productVersion": "1.2.1",
       "copyright": "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors"
     },
     {
@@ -36,25 +36,25 @@
     {
       "filename": "bin/cairo-2.dll",
       "fileDescription": "Cairo is a 2D graphics library with support for multiple output devices. Currently supported output targets include the X Window System (via both Xlib and XCB), Quartz, Win32, image buffers, PostScript, PDF, and SVG file output. Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.",
-      "fileVersion": "1.18.4",
+      "fileVersion": "1.18.6",
       "productName": "Cairo",
-      "productVersion": "1.18.4",
+      "productVersion": "1.18.6",
       "copyright": "Copyright (C) 1991, 1999 Free Software Foundation, Inc"
     },
     {
       "filename": "bin/cairo-gobject-2.dll",
       "fileDescription": "Cairo is a 2D graphics library with support for multiple output devices. Currently supported output targets include the X Window System (via both Xlib and XCB), Quartz, Win32, image buffers, PostScript, PDF, and SVG file output. Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.",
-      "fileVersion": "1.18.4",
+      "fileVersion": "1.18.6",
       "productName": "Cairo",
-      "productVersion": "1.18.4",
+      "productVersion": "1.18.6",
       "copyright": "Copyright (C) 1991, 1999 Free Software Foundation, Inc"
     },
     {
       "filename": "bin/cairo-script-interpreter-2.dll",
       "fileDescription": "Cairo is a 2D graphics library with support for multiple output devices. Currently supported output targets include the X Window System (via both Xlib and XCB), Quartz, Win32, image buffers, PostScript, PDF, and SVG file output. Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.",
-      "fileVersion": "1.18.4",
+      "fileVersion": "1.18.6",
       "productName": "Cairo",
-      "productVersion": "1.18.4",
+      "productVersion": "1.18.6",
       "copyright": "Copyright (C) 1991, 1999 Free Software Foundation, Inc"
     },
     {
@@ -68,9 +68,9 @@
     {
       "filename": "bin/ffi-8.dll",
       "fileDescription": "Portable, high level programming interface to various calling conventions",
-      "fileVersion": "3.7.1",
+      "fileVersion": "3.8.0",
       "productName": "Libffi",
-      "productVersion": "3.7.1",
+      "productVersion": "3.8.0",
       "copyright": "Copyright (c) 1996-2026  Anthony Green, Red Hat, Inc and others"
     },
     {
@@ -92,97 +92,97 @@
     {
       "filename": "bin/fribidi-0.dll",
       "fileDescription": "GNU FriBidi is an implementation of the Unicode Bidirectional Algorithm (bidi)",
-      "fileVersion": "1.0.16",
+      "fileVersion": "1.0.17",
       "productName": "Fribidi",
-      "productVersion": "1.0.16",
+      "productVersion": "1.0.17",
       "copyright": "Copyright (C) 1991, 1999 Free Software Foundation, Inc"
     },
     {
       "filename": "bin/gio-2.0-0.dll",
       "fileDescription": "Gio",
-      "fileVersion": "2.88.2",
+      "fileVersion": "2.90.1",
       "productName": "GLib",
-      "productVersion": "2.88.2",
+      "productVersion": "2.90.1",
       "copyright": "Copyright 2006-2011 Red Hat, Inc. and others."
     },
     {
       "filename": "bin/girepository-2.0-0.dll",
       "fileDescription": "Portable, general-purpose utility library.",
-      "fileVersion": "2.88.2",
+      "fileVersion": "2.90.1",
       "productName": "Glib",
-      "productVersion": "2.88.2",
+      "productVersion": "2.90.1",
       "copyright": "Copyright (C) 1991, 1999 Free Software Foundation, Inc"
     },
     {
       "filename": "bin/glib-2.0-0.dll",
       "fileDescription": "GLib",
-      "fileVersion": "2.88.2",
+      "fileVersion": "2.90.1",
       "productName": "GLib",
-      "productVersion": "2.88.2",
+      "productVersion": "2.90.1",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald and others."
     },
     {
       "filename": "bin/gmodule-2.0-0.dll",
       "fileDescription": "GModule",
-      "fileVersion": "2.88.2",
+      "fileVersion": "2.90.1",
       "productName": "GLib",
-      "productVersion": "2.88.2",
+      "productVersion": "2.90.1",
       "copyright": "Copyright 1998-2011 Tim Janik and others."
     },
     {
       "filename": "bin/gobject-2.0-0.dll",
       "fileDescription": "GObject",
-      "fileVersion": "2.88.2",
+      "fileVersion": "2.90.1",
       "productName": "GLib",
-      "productVersion": "2.88.2",
+      "productVersion": "2.90.1",
       "copyright": "Copyright 1998-2011 Tim Janik, Red Hat, Inc. and others"
     },
     {
       "filename": "bin/gthread-2.0-0.dll",
       "fileDescription": "GThread",
-      "fileVersion": "2.88.2",
+      "fileVersion": "2.90.1",
       "productName": "GLib",
-      "productVersion": "2.88.2",
+      "productVersion": "2.90.1",
       "copyright": "Copyright 1995-2011 Peter Mattis, Spencer Kimball, Josh MacDonald, Sebastian Wilhelmi and others."
     },
     {
       "filename": "bin/harfbuzz-gpu.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "14.2.1",
+      "fileVersion": "14.6.0",
       "productName": "Harfbuzz",
-      "productVersion": "14.2.1",
+      "productVersion": "14.6.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
       "filename": "bin/harfbuzz-raster.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "14.2.1",
+      "fileVersion": "14.6.0",
       "productName": "Harfbuzz",
-      "productVersion": "14.2.1",
+      "productVersion": "14.6.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
       "filename": "bin/harfbuzz-subset.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "14.2.1",
+      "fileVersion": "14.6.0",
       "productName": "Harfbuzz",
-      "productVersion": "14.2.1",
+      "productVersion": "14.6.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
       "filename": "bin/harfbuzz-vector.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "14.2.1",
+      "fileVersion": "14.6.0",
       "productName": "Harfbuzz",
-      "productVersion": "14.2.1",
+      "productVersion": "14.6.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
       "filename": "bin/harfbuzz.dll",
       "fileDescription": "HarfBuzz OpenType text shaping engine",
-      "fileVersion": "14.2.1",
+      "fileVersion": "14.6.0",
       "productName": "Harfbuzz",
-      "productVersion": "14.2.1",
+      "productVersion": "14.6.0",
       "copyright": "Copyright © 2010-2022  Google, Inc"
     },
     {
@@ -212,9 +212,9 @@
     {
       "filename": "bin/libpng16.dll",
       "fileDescription": "libpng is a library implementing an interface for reading and writing PNG (Portable Network Graphics) format files",
-      "fileVersion": "1.6.58",
+      "fileVersion": "1.6.59",
       "productName": "Libpng",
-      "productVersion": "1.6.58",
+      "productVersion": "1.6.59",
       "copyright": "Copyright (c) 1995-2026 The PNG Reference Library Authors"
     },
     {
