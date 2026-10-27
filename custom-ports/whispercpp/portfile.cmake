@@ -3,7 +3,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggerganov/whisper.cpp
     REF "v${VERSION}"
-    SHA512 944d8a6e4a770462e77139d918fd1d5b93efca377051d83a584d91164ec73fa50b5bfbc7d85014151b3b5c80fa59cfd386e456960401f8b3c66a9788585cac46
+    SHA512 84ea48babc78a048e8c1b67d9ce5492b270f9ce86a175f3878905bf3403ce6954d74e6289f020b1aa1f15eaf623251f8fed8c25b68f5882299a10bdb9643ae05
     HEAD_REF master
     PATCHES
         0001-BuildGgmlAsStatic.patch
@@ -22,6 +22,8 @@ if(VCPKG_HOST_IS_OSX)
 else()
     vcpkg_cmake_configure(
         SOURCE_PATH ${SOURCE_PATH}
+        OPTIONS
+            -DGGML_VULKAN=ON
     )
 endif()
 
