@@ -1,0 +1,22 @@
+diff --git a/ports/pcre2/portfile.cmake b/ports/pcre2/portfile.cmake
+index 0bfff18427..2cfb8da066 100644
+--- a/ports/pcre2/portfile.cmake
++++ b/ports/pcre2/portfile.cmake
+@@ -24,10 +24,17 @@ if("jit" IN_LIST FEATURES)
+     # to fetch. The 'pcre2-${VERSION}' tag chooses the sljit commit that ought to be fetched.
+     # This ensures that a vcpkg maintainer only has to update the SHA hashes until everything passes, when bumping
+     # to a new PCRE2 tag. There should be no risk of accidentally specifying mismatched pcre2 and sljit commits.
++    # <TechSmith Customizations> Authenticate the GitHub API request; unauthenticated calls from shared CI agents hit the per-IP rate limit (403)
++    set(sljit_gitlink_headers "")
++    if(DEFINED ENV{GithubToken} AND NOT "$ENV{GithubToken}" STREQUAL "")
++        set(sljit_gitlink_headers HEADERS "Authorization: Bearer $ENV{GithubToken}")
++    endif()
++    # </TechSmith Customizations>
+     vcpkg_download_distfile(sljit_gitlink
+         URLS "https://api.github.com/repos/PCRE2Project/pcre2/contents/deps/sljit?ref=${pcre2_ref}"
+         FILENAME "pcre2-${pcre2_ref}-sljit-gitlink.json"
+         ${sljit_gitlink_hash}
++        ${sljit_gitlink_headers}
+     )
+     file(READ "${sljit_gitlink}" sljit_gitlink_contents)
+     string(JSON sljit_ref GET "${sljit_gitlink_contents}" sha)

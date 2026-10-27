@@ -159,6 +159,7 @@
     },
     {
       "name": "pango-desktop",
+      "requiresGithubToken": true,
       "mac": {
         "package": "pango",
         "linkType": "dynamic",
