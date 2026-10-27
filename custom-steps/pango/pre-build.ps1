@@ -8,6 +8,11 @@ if (-not $patchSuccess) {
     Write-Message "FATAL: Failed to apply patch to pango port" -Error
     exit 1
 }
+$patchSuccess = Apply-VcpkgPortPatch -PortName "pango" -PatchFile "$PSScriptRoot/add-glib-compile-resources.patch"
+if (-not $patchSuccess) {
+    Write-Message "FATAL: Failed to apply patch to pango port" -Error
+    exit 1
+}
 
 if ((Get-IsOnMacOS)) {
     Write-Message "Installing build tools via Homebrew..."

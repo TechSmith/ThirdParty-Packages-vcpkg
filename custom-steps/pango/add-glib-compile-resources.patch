@@ -1,0 +1,14 @@
+diff --git a/ports/pango/portfile.cmake b/ports/pango/portfile.cmake
+index 297a1b41a2..d57cd3c504 100644
+--- a/ports/pango/portfile.cmake
++++ b/ports/pango/portfile.cmake
+@@ -40,6 +40,9 @@ vcpkg_configure_meson(
+     ADDITIONAL_BINARIES
+         "glib-genmarshal='${CURRENT_HOST_INSTALLED_DIR}/tools/glib/glib-genmarshal'"
+         "glib-mkenums='${CURRENT_HOST_INSTALLED_DIR}/tools/glib/glib-mkenums'"
++        # <TechSmith Customizations> utils/pango-view compiles Cocoa resources when cairo has Quartz support
++        "glib-compile-resources='${CURRENT_HOST_INSTALLED_DIR}/tools/glib/glib-compile-resources'"
++        # </TechSmith Customizations>
+         "g-ir-compiler='${GIR_COMPILER}'"
+         "g-ir-scanner='${GIR_SCANNER}'"
+ )
