@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO thorvg/thorvg
     REF "v${VERSION}"
-    SHA512 cfae7b94d2f56fe133687ce1ef5b4f91dd6b052ce93cee822e55e3fdda19ab8ce616cc1b18c240cf0db7137e5de0a001f19a313bb649a71a64d109a589e699b6
+    SHA512 0b4489bf589196b23f04396929ffe0523a013f42a799c8c2018ea9784bda4044d6b843b8bb4c677f997e99b52f44e1fb2847672ec6659edb9ae89132396f57b2
     HEAD_REF master
     PATCHES
         harden-jerryscript.patch
