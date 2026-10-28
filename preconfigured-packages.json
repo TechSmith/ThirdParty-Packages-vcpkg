@@ -163,13 +163,13 @@
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2026.07.29"
+        "vcpkgHash": "61d7eaeb094a6acbc23d9c2e54de9208175fda47"
       },
       "win": {
         "package": "pango",
         "linkType": "dynamic",
         "buildType": "release",
-        "vcpkgHash": "2026.07.29"
+        "vcpkgHash": "61d7eaeb094a6acbc23d9c2e54de9208175fda47"
       }
     },
     {
@@ -220,12 +220,14 @@
       "mac": {
         "package": "skia[core,harfbuzz]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "61d7eaeb094a6acbc23d9c2e54de9208175fda47"
       },
       "win": {
         "package": "skia[core,harfbuzz]",
         "linkType": "dynamic",
-        "buildType": "release"
+        "buildType": "release",
+        "vcpkgHash": "61d7eaeb094a6acbc23d9c2e54de9208175fda47"
       }
     },
     {
