@@ -1,0 +1,54 @@
+diff --git a/libavformat/isom_tags.c b/libavformat/isom_tags.c
+index 1cd655b..056cd69 100644
+--- a/libavformat/isom_tags.c
++++ b/libavformat/isom_tags.c
+@@ -85,6 +85,7 @@ const AVCodecTag ff_codec_movvideo_tags[] = {
+     { AV_CODEC_ID_SVQ3, MKTAG('S', 'V', 'Q', '3') }, /* Sorenson Video v3 */
+ 
+     { AV_CODEC_ID_MPEG4, MKTAG('m', 'p', '4', 'v') },
++    { AV_CODEC_ID_TSCC2, MKTAG('t', 's', 'c', '2') }, /* TechSmith TSC2 */
+     { AV_CODEC_ID_MPEG4, MKTAG('D', 'I', 'V', 'X') }, /* OpenDiVX *//* sample files at http://heroinewarrior.com/xmovie.php3 use this tag */
+     { AV_CODEC_ID_MPEG4, MKTAG('X', 'V', 'I', 'D') },
+     { AV_CODEC_ID_MPEG4, MKTAG('3', 'I', 'V', '2') }, /* experimental: 3IVX files before ivx D4 4.5.1 */
+diff --git a/libavformat/movenc.c b/libavformat/movenc.c
+index fe6b259..3b588ba 100644
+--- a/libavformat/movenc.c
++++ b/libavformat/movenc.c
+@@ -772,7 +772,7 @@ static int mov_write_esds_tag(AVIOContext *pb, MOVTrack *track) // Basic
+ 
+     // ES descriptor
+     put_descr(pb, 0x03, 3 + 5+13 + decoder_specific_info_len + 5+1);
+-    avio_wb16(pb, track->track_id);
++    avio_wb16(pb, track->tag == MKTAG('t','s','c','2') ? 0 : track->track_id);
+     avio_w8(pb, 0x00); // flags (= no flags)
+ 
+     // DecoderConfig descriptor
+@@ -2853,7 +2853,8 @@ static int mov_write_video_tag(AVFormatContext *s, AVIOContext *pb, MOVMuxContex
+     } else
+         avio_wb16(pb, 0xffff); /* Reserved */
+ 
+-    if (track->tag == MKTAG('m','p','4','v'))
++    if (track->tag == MKTAG('m','p','4','v') ||
++        track->tag == MKTAG('t','s','c','2'))
+         mov_write_esds_tag(pb, track);
+     else if (track->par->codec_id == AV_CODEC_ID_H263)
+         mov_write_d263_tag(pb);
+@@ -8229,7 +8230,8 @@ static int mov_init(AVFormatContext *s)
+                     av_log(s, AV_LOG_WARNING, "Warning: some tools, like mp4split, assume a timescale of 10000000 for ISMV.\n");
+             } else {
+                 track->timescale = st->time_base.den;
+-                while(track->timescale < 10000)
++                while(track->timescale < 10000 &&
++                      track->tag != MKTAG('t','s','c','2'))
+                     track->timescale *= 2;
+             }
+             if (st->codecpar->width > 65535 || st->codecpar->height > 65535) {
+@@ -8900,7 +8902,7 @@ static const AVCodecTag codec_mp4_tags[] = {
+     { AV_CODEC_ID_JPEG2000,        MKTAG('m', 'p', '4', 'v') },
+     { AV_CODEC_ID_VC1,             MKTAG('v', 'c', '-', '1') },
+     { AV_CODEC_ID_DIRAC,           MKTAG('d', 'r', 'a', 'c') },
+-    { AV_CODEC_ID_TSCC2,           MKTAG('m', 'p', '4', 'v') },
++    { AV_CODEC_ID_TSCC2,           MKTAG('t', 's', 'c', '2') },
+     { AV_CODEC_ID_VP9,             MKTAG('v', 'p', '0', '9') },
+     { AV_CODEC_ID_AV1,             MKTAG('a', 'v', '0', '1') },
+     { AV_CODEC_ID_AAC,             MKTAG('m', 'p', '4', 'a') },

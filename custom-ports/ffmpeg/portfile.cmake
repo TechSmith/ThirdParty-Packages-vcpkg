@@ -20,6 +20,7 @@ vcpkg_from_github(
         0049-fix-twolame-pkgconfig.patch
         0050-fix-test-ld-absolute-lib-paths.patch
         1001-tsc-disable-aac-non-lc-profiles.patch
+        1002-tsc2-mov-mp4-sample-entry.patch
 )
 
 if(SOURCE_PATH MATCHES " ")
