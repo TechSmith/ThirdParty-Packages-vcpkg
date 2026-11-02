@@ -38,6 +38,8 @@ Examples:
 - Prerelease (default): `somepackage-1.2.3--prerelease-YYYYMMDD-HHmmssZ-BuildId`
 - Prerelease with append-string: `somepackage-1.2.3--myfeature--prerelease-YYYYMMDD-HHmmssZ-BuildId`
 
+The Windows-only `ffmpeg-desktop-mp4-mux-only` package contains the FFmpeg libraries and MP4 muxer needed to mux pre-encoded samples. It does not include FFmpeg command-line tools or the desktop-base codec set.
+
 ### Pipeline: "[Build Package (custom)](https://dev.azure.com/techsmith/ThirdParty-Packages-vcpkg/_build?definitionId=790)"
 This pipeline is for use when testing out building a new package.  Artifacts from this pipeline should never be shipped to customers.  When you finish testing using this pipeline, you must configure the "[Build Package (preconfigured)](https://dev.azure.com/techsmith/ThirdParty-Packages-vcpkg/_build?definitionId=789)" pipeline to contain your new package with its custom build options and expose it as a new package that a user can choose to build from that pipeline.
 

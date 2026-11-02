@@ -21,8 +21,10 @@ if( Check-IsEmscriptenBuild -triplets $Triplets ) {
 
 $pathToTools = "$BuildArtifactsPath/tools/ffmpeg"
 $pathToFFmpegExe = ""
+$isMp4MuxOnlyPackage = $PackageAndFeatures -match "tsc-mp4-mux-only"
 if((Get-IsOnWindowsOS)) {
-    Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath "$PSScriptRoot/version-info.json"
+    $versionInfoPath = $isMp4MuxOnlyPackage ? "$PSScriptRoot/version-info-mp4-mux-only.json" : "$PSScriptRoot/version-info.json"
+    Update-VersionInfoForDlls -buildArtifactsPath $buildArtifactsPath -versionInfoJsonPath $versionInfoPath
     $pathToFFmpegExe = "$pathToTools/ffmpeg.exe"
 }
 
@@ -51,6 +53,20 @@ $pathToCustomPorts = "$PSScriptRoot/../../custom-ports"
 $vcpkgCommand = "$vcpkgExe install $PackageAndFeatures --overlay-ports '$pathToCustomPorts' --dry-run"
 $dryRunOutput = Invoke-Expression $vcpkgCommand
 $ffmpegPackageAndFeaturesExpanded = ($dryRunOutput -split "`n" | Select-String -Pattern 'ffmpeg\[[^\]]+\]').Matches.Value
+
+if ($isMp4MuxOnlyPackage) {
+    Push-Location $PSScriptRoot
+    try {
+        Invoke-Powershell -FilePath "test005--verify-mp4-mux-only-package.ps1" -ArgumentList @{
+            BuildArtifactsPath = $BuildArtifactsPath
+            PackageAndFeatures = $ffmpegPackageAndFeaturesExpanded
+        }
+    }
+    finally {
+        Pop-Location
+    }
+    Exit $LASTEXITCODE
+}
 
 # Run tests
 Write-Message "$(NL)Running post-build tests..."

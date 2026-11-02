@@ -855,6 +855,21 @@
         }
       ]
     },
+    "tsc-mp4-mux-only": {
+      "description": "Build only the FFmpeg libraries and MP4 muxer needed to mux pre-encoded samples",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "avcodec",
+            "avformat",
+            "muxer-mp4",
+            "protocol-file"
+          ]
+        }
+      ]
+    },
     "tsc-desktop-win": {
       "description": "The base set of features for all TSC desktop builds for windows",
       "dependencies": [

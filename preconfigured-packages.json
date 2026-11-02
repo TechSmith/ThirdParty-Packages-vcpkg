@@ -59,6 +59,22 @@
       }
     },
     {
+      "name": "ffmpeg-desktop-mp4-mux-only",
+      "win": {
+        "package": "ffmpeg[core,tsc-mp4-mux-only]",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "vcpkgHash": "2026.06.24",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": false
+        }
+      }
+    },
+    {
       "name": "ffmpeg-wasm",
       "wasm": {
         "package": "ffmpeg[tsc-wasm-base]",
