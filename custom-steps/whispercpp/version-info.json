@@ -3,10 +3,10 @@
     {
       "filename": "bin/whisper.dll",
       "fileDescription": "High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model.",
-      "fileVersion": "1.7.1",
+      "fileVersion": "1.7.6",
       "productName": "WhisperCpp",
-      "productVersion": "1.7.1",
-      "copyright": "Copyright (c) 2023-2024 The ggml authors"
+      "productVersion": "1.7.6",
+      "copyright": "Copyright (c) 2023-2025 The ggml authors"
     }
   ]
 }
