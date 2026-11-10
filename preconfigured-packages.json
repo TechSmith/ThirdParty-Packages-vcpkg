@@ -173,6 +173,33 @@
       }
     },
     {
+      "name": "qt6",
+      "mac": {
+        "package": "qt6",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      },
+      "win": {
+        "package": "qt6",
+        "linkType": "dynamic",
+        "buildType": "release",
+        "publish": {
+          "include": true,
+          "lib": true,
+          "bin": true,
+          "share": true,
+          "tools": true
+        }
+      }
+    },
+    {
       "name": "opencv4",
       "mac": {
         "package": "opencv4[core,dnn,quirc]",
