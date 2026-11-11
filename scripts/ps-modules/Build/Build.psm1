@@ -390,6 +390,9 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
          "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
          "$mainSrcDir/debug" = "$preStagePath/debug"
       }
+      if (Get-IsOnWindowsOS) {
+         $srcToDestDirs["$mainSrcDir/Qt6"] = "$preStagePath/Qt6"
+      }
    }
 
    $keysToRemove = @()
