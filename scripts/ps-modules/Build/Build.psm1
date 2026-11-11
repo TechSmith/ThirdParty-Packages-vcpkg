@@ -91,7 +91,7 @@ function Get-ArtifactName {
       $packageName = "$packageNameOnly-$linkType"
    }
 
-   if($null -ne $customTriplet) {
+    if (-not [string]::IsNullOrWhiteSpace($customTriplet)) {
        $buildName = $customTriplet
    } else {
        $buildName = $buildType
@@ -171,6 +171,8 @@ function Get-PackageInfo
       "share" = $true
       "tools" = $false
       "debug" = $false
+      "Qt6" = $true
+      "metatypes" = $true
     }
 
     if (-not ($pkgInfo.PSObject)) {
@@ -384,11 +386,16 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
          "$mainSrcDir/include" = "$preStagePath/include"
+          # Qt exported CMake targets may reference files in metatypes.
+          "$mainSrcDir/metatypes" = "$preStagePath/metatypes"
          "$mainSrcDir/share" = "$preStagePath/share"
          "$mainSrcDir/$libDir" = "$preStagePath/lib"
          "$mainSrcDir/$binDir" = "$preStagePath/bin"
          "$mainSrcDir/$toolsDir" = "$preStagePath/tools"
          "$mainSrcDir/debug" = "$preStagePath/debug"
+      }
+      if (Get-IsOnWindowsOS) {
+         $srcToDestDirs["$mainSrcDir/Qt6"] = "$preStagePath/Qt6"
       }
    }
 

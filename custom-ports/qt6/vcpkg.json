@@ -1,0 +1,42 @@
+{
+  "name": "qt6",
+  "version": "6.11.3",
+  "description": "Qt 6 modules used by CommonCpp",
+  "homepage": "https://www.qt.io",
+  "dependencies": [
+    {
+      "name": "qtbase",
+      "default-features": false,
+      "features": [
+        "doubleconversion",
+        "freetype",
+        "gui",
+        "harfbuzz",
+        "jpeg",
+        "network",
+        "opengl",
+        "openssl",
+        "png",
+        "widgets"
+      ]
+    },
+    {
+      "name": "qtdeclarative",
+      "default-features": false
+    },
+    {
+      "name": "qtmultimedia",
+      "default-features": false,
+      "features": [
+        "ffmpeg",
+        "qml",
+        "widgets"
+      ]
+    },
+    {
+      "name": "qtimageformats",
+      "default-features": false
+    },
+    "qtsvg"
+  ]
+}
