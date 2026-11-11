@@ -91,7 +91,7 @@ function Get-ArtifactName {
       $packageName = "$packageNameOnly-$linkType"
    }
 
-   if($null -ne $customTriplet) {
+    if (-not [string]::IsNullOrWhiteSpace($customTriplet)) {
        $buildName = $customTriplet
    } else {
        $buildName = $buildType
