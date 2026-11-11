@@ -33,6 +33,7 @@ parameters:
   - opencv4
   - opentelemetry-cpp
   - pango-desktop
+  - qt6
   - soundpipe
   - sqlite3
   - sqlite-modern-cpp
