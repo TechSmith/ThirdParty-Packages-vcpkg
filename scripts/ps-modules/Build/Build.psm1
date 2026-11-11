@@ -384,6 +384,8 @@ function Run-PrestageAndFinalizeBuildArtifactsStep {
       $mainSrcDir = "./vcpkg/installed/$firstTriplet"
       $srcToDestDirs = @{
          "$mainSrcDir/include" = "$preStagePath/include"
+          # Qt exported CMake targets may reference files in metatypes.
+          "$mainSrcDir/metatypes" = "$preStagePath/metatypes"
          "$mainSrcDir/share" = "$preStagePath/share"
          "$mainSrcDir/$libDir" = "$preStagePath/lib"
          "$mainSrcDir/$binDir" = "$preStagePath/bin"
