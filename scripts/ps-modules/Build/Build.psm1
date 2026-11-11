@@ -171,6 +171,8 @@ function Get-PackageInfo
       "share" = $true
       "tools" = $false
       "debug" = $false
+      "Qt6" = $true
+      "metatypes" = $true
     }
 
     if (-not ($pkgInfo.PSObject)) {

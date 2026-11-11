@@ -183,7 +183,9 @@
           "lib": true,
           "bin": true,
           "share": true,
-          "tools": true
+          "tools": true,
+          "Qt6": true,
+          "metatypes": true
         }
       }
     },
