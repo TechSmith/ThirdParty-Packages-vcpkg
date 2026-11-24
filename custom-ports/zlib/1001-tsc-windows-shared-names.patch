@@ -1,0 +1,78 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2ccbab9..66aa9b1 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -23,6 +23,7 @@ option(ZLIB_BUILD_TESTING "Enable Zlib Examples as tests" ON)
+ option(ZLIB_BUILD_SHARED "Enable building zlib shared library" ON)
+ option(ZLIB_BUILD_STATIC "Enable building zlib static library" ON)
+ option(ZLIB_INSTALL "Enable installation of zlib" ON)
++option(ZLIB_TSC_SHARED_NAMES "Use TechSmith Windows shared-library names" OFF)
+ set(ZLIB_PREFIX "" CACHE STRING
+     "prefix for all types and library functions, see zconf.h.in")
+ mark_as_advanced(ZLIB_PREFIX)
+@@ -258,6 +259,7 @@ if(ZLIB_BUILD_SHARED)
+                 $<$<BOOL:${HAVE___ATTR__VIS_HIDDEN}>:HAVE_HIDDEN>
+                 $<$<BOOL:${MSVC}>:_CRT_SECURE_NO_DEPRECATE>
+                 $<$<BOOL:${MSVC}>:_CRT_NONSTDC_NO_DEPRECATE>
++                $<$<AND:$<BOOL:${MSVC}>,$<BOOL:${ZLIB_TSC_SHARED_NAMES}>>:ZLIB_TSC_SHARED_NAMES>
+         PUBLIC $<$<BOOL:${HAVE_OFF64_T}>:_LARGEFILE64_SOURCE=1>
+                $<$<BOOL:${ZLIB_PREFIX}>:Z_PREFIX=${ZLIB_PREFIX}>)
+ 
+@@ -276,11 +278,17 @@ if(ZLIB_BUILD_SHARED)
+             EXPORT_NAME ZLIB
+             PUBLIC_HEADER "${ZLIB_PUBLIC_HDRS}")
+ 
+-    if(MSVC)
++    if(MSVC AND ZLIB_TSC_SHARED_NAMES)
++        set_target_properties(zlib PROPERTIES
++            OUTPUT_NAME zlib1
++            ARCHIVE_OUTPUT_NAME zlib
++            PDB_NAME zlib
++            PDB_NAME_DEBUG zlibd)
++    elseif(MSVC)
+         set_target_properties(zlib PROPERTIES OUTPUT_NAME libz)
+-    else(MSVC)
++    else()
+         set_target_properties(zlib PROPERTIES OUTPUT_NAME z)
+-    endif(MSVC)
++    endif()
+ 
+     if(UNIX
+         AND NOT APPLE
+diff --git a/win32/zlib-cmake.rc b/win32/zlib-cmake.rc
+index 3f0fc23..4bbb493 100644
+--- a/win32/zlib-cmake.rc
++++ b/win32/zlib-cmake.rc
+@@ -22,16 +22,32 @@ BEGIN
+     BEGIN
+       VALUE "FileDescription",	"zlib data compression library\0"
+       VALUE "FileVersion",	ZLIB_VERSION "\0"
++#ifdef ZLIB_TSC_SHARED_NAMES
++#ifdef _DEBUG
++      VALUE "InternalName",	"zlib1d.dll\0"
++#else
++      VALUE "InternalName",	"zlib1.dll\0"
++#endif
++#else
+ #ifdef _DEBUG
+       VALUE "InternalName",	"libzd.dll\0"
+ #else
+       VALUE "InternalName",	"libz.dll\0"
++#endif
+ #endif
+       VALUE "LegalCopyright",	"(C) 1995-2026 Jean-loup Gailly & Mark Adler\0"
++#ifdef ZLIB_TSC_SHARED_NAMES
++#ifdef _DEBUG
++      VALUE "OriginalFilename",	"zlib1d.dll\0"
++#else
++      VALUE "OriginalFilename",	"zlib1.dll\0"
++#endif
++#else
+ #ifdef _DEBUG
+       VALUE "OriginalFilename",	"libzd.dll\0"
+ #else
+       VALUE "OriginalFilename",	"libz.dll\0"
++#endif
+ #endif
+       VALUE "ProductName",	"zlib\0"
+       VALUE "ProductVersion",	ZLIB_VERSION "\0"

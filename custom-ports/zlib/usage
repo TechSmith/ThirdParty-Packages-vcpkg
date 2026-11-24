@@ -7,3 +7,8 @@ zlib provides pkg-config modules:
 
   # zlib compression library
   zlib
+
+Custom TechSmith changes:
+MSVC Windows dynamic builds use zlib1.dll / zlib.lib (release) and
+zlib1d.dll / zlibd.lib (debug). MSVC static builds retain upstream archive
+names libzs.lib (release) and libzsd.lib (debug).

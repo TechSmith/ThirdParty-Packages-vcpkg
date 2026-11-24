@@ -7,10 +7,16 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         0001-no-version-script-on-ohos.patch
+        1001-tsc-windows-shared-names.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" ZLIB_BUILD_SHARED)
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" ZLIB_BUILD_STATIC)
+if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW AND ZLIB_BUILD_SHARED)
+    set(ZLIB_TSC_SHARED_NAMES ON)
+else()
+    set(ZLIB_TSC_SHARED_NAMES OFF)
+endif()
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
@@ -18,6 +24,7 @@ vcpkg_cmake_configure(
         -DZLIB_BUILD_TESTING=OFF
         -DZLIB_BUILD_SHARED=${ZLIB_BUILD_SHARED}
         -DZLIB_BUILD_STATIC=${ZLIB_BUILD_STATIC}
+        -DZLIB_TSC_SHARED_NAMES=${ZLIB_TSC_SHARED_NAMES}
 )
 
 vcpkg_cmake_install()
@@ -32,6 +39,8 @@ if(VCPKG_TARGET_IS_WINDOWS)
 
     if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
         vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/lib/pkgconfig/zlib.pc" " -lz" " -l${_rewrite_lib_prefix}zs")
+    elseif(ZLIB_TSC_SHARED_NAMES)
+        vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/lib/pkgconfig/zlib.pc" " -lz" " -lzlib")
     else()
         vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/lib/pkgconfig/zlib.pc" " -lz" " -l${_rewrite_lib_prefix}z")
     endif()
@@ -39,6 +48,8 @@ if(VCPKG_TARGET_IS_WINDOWS)
     if(NOT VCPKG_BUILD_TYPE)
         if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
             vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/zlib.pc" " -lz" " -l${_rewrite_lib_prefix}zsd")
+        elseif(ZLIB_TSC_SHARED_NAMES)
+            vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/zlib.pc" " -lz" " -lzlibd")
         else()
             vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/zlib.pc" " -lz" " -l${_rewrite_lib_prefix}zd")
         endif()
