@@ -36,6 +36,7 @@ parameters:
   - soundpipe
   - sqlite3
   - sqlite-modern-cpp
+  - skia
   - tinyxml
   - thorvg
   - whispercpp
