@@ -36,10 +36,12 @@ parameters:
   - soundpipe
   - sqlite3
   - sqlite-modern-cpp
+  - skia
   - tinyxml
   - thorvg
   - whispercpp
   - whispercpp-basic
+  - zlib
 
 - name: publishToGitHubRelease
   displayName: Publish built package artifacts to a tagged release in the GitHub repo (A package name + version tag will be created like "somepackage-1.2.3")
